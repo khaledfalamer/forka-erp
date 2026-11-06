@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="google" content="notranslate">
+<title>Forka Apps</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@500;600&family=Inter+Tight:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --fk-charcoal:#23211f;--fk-charcoal-dark:#171513;--fk-charcoal-soft:#3a3631;
+  --fk-paper:#f6f3ee;--fk-card:#fffdf9;--fk-line:#e5dfd5;
+  --fk-bronze:#9a6b3f;--fk-bronze-hover:#86592f;--fk-bronze-light:#b8875a;--fk-bronze-soft:#e9dccb;
+  --fk-text:#23211f;--fk-text-2:#5c5852;--fk-muted:#8d877e;
+  --fk-success:#4f7a3a;--fk-success-bg:#eef3e8;--fk-warning:#a8731c;--fk-warning-bg:#fbf2e2;
+  --fk-danger:#a33a2c;--fk-danger-bg:#f8e9e5;--fk-info:#3e5c8a;--fk-info-bg:#eaeff6;
+  --fk-radius:14px;--fk-radius-sm:10px;
+  --fk-sans:'Inter Tight','IBM Plex Sans Arabic',system-ui,sans-serif;
+  --fk-serif:'EB Garamond','IBM Plex Sans Arabic',serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:var(--fk-sans);background:var(--fk-paper);color:var(--fk-text);font-size:14px;line-height:1.45;min-height:100vh}
+[dir=rtl] body{font-family:'IBM Plex Sans Arabic','Inter Tight',system-ui,sans-serif}
+h1,h2,h3{font-family:var(--fk-serif);font-weight:600;margin:0}
+[dir=rtl] h1,[dir=rtl] h2,[dir=rtl] h3{font-family:'IBM Plex Sans Arabic',serif}
+button,input,select,textarea{font-family:inherit;font-size:14px}
+.btn{border:1px solid var(--fk-line);background:var(--fk-card);color:var(--fk-text);border-radius:10px;padding:9px 16px;cursor:pointer;font-weight:600;min-height:40px}
+.btn:hover{border-color:var(--fk-bronze-light)}
+.btn.pri{background:var(--fk-bronze);border-color:var(--fk-bronze);color:#fff;box-shadow:0 3px 0 var(--fk-bronze-hover)}
+.btn.pri:hover{background:var(--fk-bronze-hover)}
+.btn.dan{color:var(--fk-danger);border-color:#e6c4bd}
+.btn.sm{padding:5px 11px;min-height:32px;font-size:13px}
+.btn:disabled{opacity:.5;cursor:default}
+.lnk{border:0;background:none;color:var(--fk-bronze);cursor:pointer;font-weight:600;padding:4px;text-decoration:underline}
+input[type=text],input[type=email],input[type=password],select,textarea{border:1px solid var(--fk-line);border-radius:10px;padding:9px 11px;background:#fff;color:var(--fk-text);width:100%}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--fk-bronze-soft);border-color:var(--fk-bronze-light)}
+.miss{border-color:var(--fk-danger)!important;background:var(--fk-danger-bg)!important}
+label.f{display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--fk-text-2);font-weight:600}
+/* sign in */
+.gate{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px 18px;background:radial-gradient(900px 500px at 50% 25%,rgba(184,135,90,.2),transparent 65%),radial-gradient(circle at 50% 30%,#2a2724,#141210);color:#fff;position:relative}
+.gate .brand-sub:before,.gate .brand-sub:after{content:"";display:inline-block;width:34px;height:1px;background:rgba(199,154,107,.6);vertical-align:middle;margin:0 14px}
+.gate .lang{position:absolute;top:16px;right:18px}
+.lang{direction:ltr}
+.top{direction:ltr}
+.top .me .txt{text-align:left}
+.brand{font-family:var(--fk-serif);font-weight:600;font-size:72px;letter-spacing:14px;text-transform:uppercase;line-height:1}
+.brand-sub{color:#d6b58d;letter-spacing:6px;text-transform:uppercase;font-size:20px;margin-top:10px;font-weight:600}
+.gcard{margin-top:38px;border:1px solid rgba(199,154,107,.35);background:var(--fk-card);color:var(--fk-text);border-radius:18px;padding:26px;width:100%;max-width:400px;box-shadow:0 20px 50px rgba(0,0,0,.35);display:flex;flex-direction:column;gap:14px}
+.gcard h2{font-size:24px}
+.gcard p{margin:0;color:var(--fk-text-2)}
+.gbtn{display:flex;align-items:center;justify-content:center;gap:10px;border:1px solid #dadce0;background:#fff;border-radius:10px;padding:11px;font-weight:600;cursor:pointer;min-height:46px;color:#3c4043}
+.gbtn:hover{background:#f8f9fa}
+.gbox{min-height:44px;display:flex;justify-content:center}
+.gbtn svg{width:18px;height:18px}
+.or{display:flex;align-items:center;gap:10px;color:var(--fk-muted);font-size:12px}
+.or:before,.or:after{content:"";flex:1;height:1px;background:var(--fk-line)}
+.note{font-size:12px;color:var(--fk-muted)}
+.prev{background:var(--fk-warning-bg);color:var(--fk-warning);border-radius:10px;padding:8px 10px;font-size:12px}
+.err{background:var(--fk-danger-bg);color:var(--fk-danger);border-radius:10px;padding:9px 11px;font-size:13px}
+.ok{background:var(--fk-success-bg);color:var(--fk-success);border-radius:10px;padding:9px 11px;font-size:13px}
+/* top */
+.top{background:rgba(253,251,247,.92);backdrop-filter:blur(10px);color:var(--fk-text);padding:14px 28px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;position:sticky;top:0;z-index:6;border-bottom:1px solid #eadfce}
+.logo{font-family:var(--fk-serif);font-weight:600;font-size:22px;letter-spacing:5px;text-transform:uppercase;white-space:nowrap;cursor:pointer;color:var(--fk-charcoal)}
+.top .sub{color:var(--fk-bronze);font-size:11px;letter-spacing:3px;text-transform:uppercase;padding-inline-start:14px;border-inline-start:1px solid #e0cfb8}
+.sp{flex:1}
+.lang{display:flex;gap:3px;background:#f1ebe2;border-radius:999px;padding:3px;border:1px solid #e6dccd}
+.lang button{border:0;background:none;color:var(--fk-text-2);border-radius:999px;padding:6px 12px;cursor:pointer;font-weight:600}
+.lang button.on{background:linear-gradient(135deg,#c79a6b,#9a6b3f);color:#fff}
+.gate .lang{background:rgba(255,255,255,.07);border-color:rgba(184,135,90,.25)}.gate .lang button{color:#d9d3c9}.gate .lang button.on{color:#fff}
+.me{display:flex;align-items:center;gap:10px}
+.av{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#c79a6b,#86592f);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex:none;box-shadow:0 0 0 3px #f3e7d6}
+.me .nm{font-weight:600;font-size:13px;line-height:1.2}
+.me .lv{color:var(--fk-bronze);font-size:11px;letter-spacing:.5px}
+.top .btn{background:#fff;color:var(--fk-text);border-color:#e6dccd;box-shadow:none}
+.top .btn:hover{border-color:#c79a6b}
+.page{padding:22px 28px 70px;max-width:1200px;margin:0 auto;display:flex;flex-direction:column;gap:26px}
+.page.lift{margin-top:-40px;position:relative}
+/* hero */
+.hero{background:radial-gradient(700px 320px at 8% 0%,rgba(214,170,120,.32),transparent 70%),radial-gradient(640px 300px at 92% 8%,rgba(120,170,160,.22),transparent 70%),radial-gradient(600px 260px at 55% 110%,rgba(160,130,170,.14),transparent 70%),linear-gradient(180deg,#fbf6ee 0%,#f7f0e6 60%,var(--fk-paper) 100%);color:var(--fk-text);padding:40px 28px 70px}
+.hero-in{max-width:1200px;margin:0 auto}
+.hero .date{color:var(--fk-bronze);font-size:12px;letter-spacing:2.5px;text-transform:uppercase;font-weight:700}
+.hero h1{font-size:44px;margin-top:8px;letter-spacing:.3px;color:var(--fk-charcoal)}
+.hero p{color:var(--fk-text-2);margin:6px 0 0;font-size:15px}
+.card{background:var(--fk-card);border:1px solid var(--fk-line);border-radius:var(--fk-radius);padding:18px}
+/* ceo box */
+.ceo{margin-top:26px;background:rgba(255,255,255,.82);border:1px solid #eadfce;border-radius:20px;padding:20px;color:var(--fk-text);box-shadow:0 18px 40px -28px rgba(120,80,40,.45);backdrop-filter:blur(6px)}
+.ceo .hd{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.ceo .hd h3{font-size:20px}
+.tag{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;border-radius:999px;padding:4px 10px;background:#f6ead9;color:#86592f;border:1px solid #ead6b9}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.kpi{--k:#a8703d;background:linear-gradient(180deg,#fff,#fbf8f3);padding:14px 16px;border-radius:14px;border:1px solid #efe6d9;border-top:3px solid var(--k)}
+.kpi .v{font-family:var(--fk-serif);font-size:34px;font-weight:600;font-variant-numeric:tabular-nums;line-height:1.1;color:var(--k)}
+.kpi .l{color:var(--fk-text-2);font-size:12px;margin-top:2px}
+.kpi.warn{background:linear-gradient(180deg,#fff8ee,#fdf1e2)}
+.grp{color:var(--fk-bronze);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:2px;margin:16px 0 8px}
+/* apps */
+.sec h2{font-family:var(--fk-sans);font-size:12px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--fk-bronze);margin-bottom:14px;display:flex;align-items:center;gap:12px}
+.sec h2:after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba(154,107,63,.4),transparent)}
+[dir=rtl] .sec h2:after{background:linear-gradient(270deg,rgba(154,107,63,.4),transparent)}
+.apps{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px}
+.app{--c:#a8703d;background:radial-gradient(420px 160px at 100% 0%,color-mix(in srgb,var(--c) 12%,transparent),transparent 70%),linear-gradient(170deg,#fff,#fdfaf5);border:1px solid #ebe1d3;border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:10px;cursor:pointer;text-align:start;color:inherit;position:relative;min-height:210px;overflow:hidden;box-shadow:0 14px 34px -26px rgba(60,40,20,.5);transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}
+.app:before{content:"";position:absolute;inset:0 0 auto 0;height:4px;background:linear-gradient(90deg,var(--c),color-mix(in srgb,var(--c) 40%,#fff))}
+.app:hover{transform:translateY(-4px);border-color:color-mix(in srgb,var(--c) 45%,#fff);box-shadow:0 24px 44px -26px color-mix(in srgb,var(--c) 70%,#000)}
+.app.off{cursor:default;background:#f7f3ed;box-shadow:none}.app.off:before{background:#e3dbd0}
+.app.off:hover{transform:none;box-shadow:none;border-color:#ebe1d3}
+.app.off .ic{background:#e3dbd0;color:#fff;box-shadow:none}
+.app.off h3,.app.off p{color:var(--fk-muted)}
+.ic{width:56px;height:56px;border-radius:16px;display:flex;align-items:center;justify-content:center;background:linear-gradient(145deg,color-mix(in srgb,var(--c) 80%,#fff),var(--c) 55%,color-mix(in srgb,var(--c) 70%,#000));color:#fff;box-shadow:0 10px 20px -10px var(--c),inset 0 1px 0 rgba(255,255,255,.35);margin-bottom:6px}
+.ic svg{width:27px;height:27px}
+.app h3{font-size:23px;color:var(--fk-charcoal)}
+.app p{margin:0;color:var(--fk-text-2);font-size:13.5px;line-height:1.5}
+.app .meta{font-size:12px;color:var(--c);font-weight:700}
+.app .go{margin-top:auto;padding-top:10px;font-size:13px;font-weight:700;color:var(--c);letter-spacing:.3px;opacity:.8;transition:opacity .18s}
+.app .go i{font-style:normal;display:inline-block;transition:transform .18s}
+[dir=rtl] .app .go i{transform:scaleX(-1)}
+.app:hover .go{opacity:1}.app:hover .go i{transform:translateX(4px)}
+[dir=rtl] .app:hover .go i{transform:scaleX(-1) translateX(4px)}
+.badge{position:absolute;top:18px;inset-inline-end:18px;background:var(--fk-danger);color:#fff;border-radius:999px;font-size:12px;font-weight:700;padding:2px 9px}
+.soon{font-size:11px;font-weight:600;color:var(--fk-muted);background:#fff;border:1px solid var(--fk-line);border-radius:999px;padding:3px 10px;align-self:flex-start}
+.soon.gold{color:color-mix(in srgb,var(--c) 85%,#000);background:color-mix(in srgb,var(--c) 12%,#fff);border-color:transparent}
+.empty-apps{background:var(--fk-card);border:1px dashed var(--fk-line);border-radius:18px;padding:26px;color:var(--fk-muted);text-align:center}
+/* people */
+.bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.bar h1{font-size:28px}
+.back{border:0;background:none;color:var(--fk-text-2);cursor:pointer;font-weight:600;padding:6px 0;align-self:flex-start}
+.reqs{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.req{border:1px solid #ecd9b8;background:var(--fk-warning-bg);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:8px}
+.req .who{font-weight:700}
+.req .em{color:var(--fk-text-2);font-size:13px}
+.req .why{font-size:13px}
+.tbl{width:100%;border-collapse:collapse}
+.tbl th{font-size:12px;color:var(--fk-muted);font-weight:600;text-align:start;padding:8px 10px;border-bottom:1px solid var(--fk-line)}
+.tbl td{padding:11px 10px;border-bottom:1px solid var(--fk-line);vertical-align:middle;overflow-wrap:anywhere}
+.tw{overflow-x:auto}
+.tbl .mst{display:none}
+.tbl tr.row{cursor:pointer}
+.tbl tr.row:hover td{background:#fbf8f3}
+.pill{display:inline-block;border-radius:999px;font-size:12px;font-weight:600;padding:3px 10px;white-space:nowrap}
+.p-active{background:var(--fk-success-bg);color:var(--fk-success)}
+.p-pending{background:var(--fk-warning-bg);color:var(--fk-warning)}
+.p-blocked{background:var(--fk-danger-bg);color:var(--fk-danger)}
+.p-lv{background:var(--fk-bronze-soft);color:var(--fk-bronze-hover)}
+.chips{display:flex;gap:5px;flex-wrap:wrap}
+.chip{font-size:12px;background:var(--fk-paper);border:1px solid var(--fk-line);border-radius:8px;padding:2px 8px}
+.sm-t{font-size:12px;color:var(--fk-muted)}
+.filters{display:flex;gap:8px;flex-wrap:wrap}
+.filters input{width:240px}
+.filters select{width:160px}
+.nw{white-space:nowrap}
+/* modal */
+.ov{position:fixed;inset:0;background:rgba(23,21,19,.55);display:flex;align-items:flex-start;justify-content:center;z-index:20;padding:30px 14px;overflow:auto}
+.md{background:var(--fk-card);border-radius:16px;width:100%;max-width:620px;padding:22px;display:flex;flex-direction:column;gap:14px}
+.md h2{font-size:24px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.box{border:1px solid var(--fk-line);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:10px}
+.box .t{font-weight:700;font-size:13px}
+.ck{display:flex;align-items:center;gap:8px;font-size:14px;cursor:pointer}
+.ck input{width:18px;height:18px;accent-color:var(--fk-bronze)}
+.subs{display:flex;flex-wrap:wrap;gap:6px 16px;padding-inline-start:26px}
+.seg{display:flex;gap:4px;background:var(--fk-paper);border-radius:10px;padding:3px;flex-wrap:wrap}
+.seg button{border:0;background:none;border-radius:8px;padding:7px 12px;cursor:pointer;font-weight:600;color:var(--fk-text-2)}
+.seg button.on{background:#fff;color:var(--fk-text);box-shadow:0 1px 3px rgba(0,0,0,.1)}
+.acts{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+.acts .sp{flex:1}
+/* activity */
+.log{display:flex;flex-direction:column}
+.log .it{display:flex;gap:12px;padding:11px 0;border-bottom:1px solid var(--fk-line);align-items:flex-start}
+.log .it:last-child{border-bottom:0}
+.log .tm{color:var(--fk-muted);font-size:12px;min-width:120px}
+.log .tx b{font-weight:600}
+.empty{color:var(--fk-muted);padding:16px 0;text-align:center}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--fk-charcoal);color:#fff;border-radius:10px;padding:10px 16px;z-index:30;font-weight:600}
+@media (max-width:720px){
+  .top{padding:10px 14px}.page{padding:16px 14px 50px}
+  .g2{grid-template-columns:1fr}
+  .brand{font-size:52px;letter-spacing:9px}.brand-sub{font-size:16px;letter-spacing:4px}
+  .tbl .hm{display:none}
+  .tbl th,.tbl td{padding:9px 6px}
+  .tbl .mst{display:block;margin-top:6px}.tbl .dst{display:none}
+  .filters,.filters input,.filters select{max-width:none;width:100%}
+  .bar h1{font-size:24px}
+  .me .txt{display:none}
+  .top{flex-wrap:nowrap;gap:10px;padding:10px 14px}.top .sub{display:none}.logo{font-size:19px;letter-spacing:3px}
+  .hero{padding:26px 14px 56px}.hero h1{font-size:32px}.page.lift{margin-top:-34px}
+  .kpi .v{font-size:28px}.app{min-height:0}
+  .top .btn{padding:5px 9px}
+}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script src="config.js"></script>
+<script>
+'use strict';
+const CFG=window.FORKA_APPS||{};
+const LIVE=!!(CFG.ACCOUNTS_URL&&CFG.GOOGLE_CLIENT_ID);
+/* ---------- settings ---------- */
+const PROCUREMENT_URL='https://khaledfalamer.github.io/Forka-Procurment/';
+const ALLOWED_DOMAINS=['forka.com','kuwaitikitchen.com'];
+const SIDES=['plan','ops','fin','dept','ceo'];
+const APPS=[
+  {id:'proc',color:'#a8703d',letter:'P',url:PROCUREMENT_URL},
+  {id:'hire',color:'#2c7a76',letter:'H',url:'https://claude.ai/artifact/Bn6y2FWinUhxH9AyVsu7BY',ceoOnlyUntilMoved:true},
+  {id:'branch',color:'#5f8a45',letter:'B',url:'https://claude.ai/artifact/TcvkdXqHbBkpfd4CwRZz6x',ceoOnlyUntilMoved:true}
+];
+const ICONS={
+  proc:'<path d="M5.5 8h13l-1.2 12H6.7L5.5 8z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/>',
+  hire:'<circle cx="9" cy="8.5" r="3.2"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M15.5 5.3a3.2 3.2 0 0 1 0 6.4"/><path d="M17.5 14.4c2.1.8 3.5 2.9 3.5 5.6"/>',
+  branch:'<rect x="5" y="4.5" width="14" height="16.5" rx="2.2"/><path d="M9 4.5h6V7H9z"/><path d="M8.8 13.6l2.2 2.2 4.3-4.3"/>',
+  people:'<path d="M12 3.2l7 3v5.2c0 4.4-2.9 8.3-7 9.6-4.1-1.3-7-5.2-7-9.6V6.2l7-3z"/><path d="M9.3 12.2l2 2 3.6-3.6"/>',
+  act:'<path d="M3 12.5h4l2.6-7 4.6 14 2.6-7H21"/>'};
+const icon=k=>'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">'+ICONS[k]+'</svg>';
+const SEED=[
+  {email:'ceo@forka.com',name:'Khaled Alamer',title:'CEO',level:'ceo',status:'active',apps:{proc:1,hire:1,branch:1},sides:['plan','ops','fin','dept','ceo']},
+  {email:'abu.ali@forka.com',name:'Mohammad Abu Ali',title:'Operations Manager',level:'manager',status:'pending',apps:{proc:1,hire:1,branch:1},sides:['ops']},
+  {email:'mohammed@kuwaitikitchen.com',name:'Mohammed Abdelrahman',title:'Purchasing',level:'staff',status:'pending',apps:{proc:1,hire:0,branch:0},sides:['plan']},
+  {email:'store@kuwaitikitchen.com',name:'Hamim',title:'Store / Purchasing',level:'staff',status:'pending',apps:{proc:1,hire:0,branch:0},sides:['plan']},
+  {email:'arman@kuwaitikitchen.com',name:'Arman',title:'Operations',level:'staff',status:'pending',apps:{proc:1,hire:0,branch:0},sides:['ops']},
+  {email:'tahani@forka.com',name:'Tahani Alamer',title:'',level:'manager',status:'pending',apps:{proc:1,hire:1,branch:1},sides:['dept']},
+  {email:'jennifer@forka.com',name:'Jennifer Tudara',title:'HR',level:'manager',status:'pending',apps:{proc:0,hire:1,branch:0},sides:[]},
+  {email:'admin@forka.com',name:'Ruby Ann Margate',title:'Admin',level:'staff',status:'pending',apps:{proc:1,hire:1,branch:0},sides:['dept']},
+  {email:'hr@kuwaitikitchen.com',name:'HR Officer (Kuwaiti Kitchen)',title:'HR',level:'staff',status:'pending',apps:{proc:0,hire:1,branch:0},sides:[]},
+  {email:'operations@kuwaitikitchen.com',name:'Operations (Kuwaiti Kitchen)',title:'Operations',level:'staff',status:'pending',apps:{proc:1,hire:0,branch:1},sides:['ops']}
+];
+
+/* ---------- words ---------- */
+const T={en:{
+  apps:'Apps',sub:'Forka Collective Investment',signin:'Sign in',signinTxt:'Use your company Google account to open your apps.',
+  google:'Sign in with Google',or:'or',usePin:'No company email? Sign in with a PIN',pin:'PIN',pinGo:'Sign in with PIN',back:'Back',
+  prevNote:'Preview: on erp.forka.com this opens the real Google sign-in. Here you pick who to sign in as.',
+  choose:'Choose an account',other:'Another email',cont:'Continue',badPin:'That PIN is not right, or it is not active yet.',
+  badMail:'Enter a valid email address.',
+  reqT:'Request access',reqTxt:'This email is not on the Forka Apps list yet. Send a request and the CEO will allow or reject it.',
+  name:'Full name',title:'Job title',why:'What do you need access for?',send:'Send request',
+  waitT:'Request sent',waitTxt:'The CEO will review your request. You will be able to sign in once it is allowed.',
+  pendT:'Access being confirmed',pendTxt:'Your account is on the list but not confirmed yet. The CEO will confirm it shortly.',
+  blockT:'Access not allowed',blockTxt:'This account cannot open Forka Apps. Contact the CEO if you think this is a mistake.',
+  rejT:'Request not approved',
+  out:'Sign out',ceoLv:'CEO',managerLv:'Manager',staffLv:'Staff',
+  morning:'Good morning',afternoon:'Good afternoon',evening:'Good evening',helloTxt:'Choose an app to start.',
+  ceoOnly:'Only you see this',today:'Today',month:'This month so far',
+  kSign:'Sign-ins',kAct:'Actions',kWait:'Access requests waiting',kConf:'People to confirm',kActive:'Active people',kOpen:'Apps opened',kChg:'Access changes',
+  yourApps:'Your apps',noApps:'No apps are switched on for you yet. Ask the CEO.',
+  a_proc:'Procurement',d_proc:'Purchase plan, requests, LPOs, receiving and supplier payments.',
+  a_hire:'Hiring',d_hire:'Job openings, candidates and interviews.',
+  a_branch:'Branch Check',d_branch:'Daily branch checks and follow-ups.',
+  soon:'Moving here soon',curOnly:'Current version - only you can open it until it moves here',openA:'Open',admin:'Administration',
+  a_people:'People and access',d_people:'Add people, set clearance and apps, approve requests.',
+  a_act:'Activity',d_act:'Who did what, and when.',
+  s_plan:'Purchasing',s_ops:'Operations',s_fin:'Finance',s_dept:'Requests',s_ceo:'CEO approvals',
+  people:'People and access',addP:'Add person',waiting:'Waiting for approval',allow:'Allow',reject:'Reject',
+  team:'Team',search:'Search name or email',all:'All',st_active:'Active',st_pending:'To confirm',st_blocked:'Blocked',
+  colP:'Person',colL:'Clearance',colS:'Status',colA:'Apps',colM:'Sign-in',m_google:'Google',m_pin:'PIN',
+  edit:'Edit person',newP:'Add a person',email:'Company email',lv:'Clearance level',st:'Status',appsAcc:'Apps they can open',
+  procSides:'Procurement sections',method:'Sign-in method',setPin:'PIN (4 to 8 digits)',pinKeep:'Leave empty to keep the current PIN',
+  save:'Save',cancel:'Cancel',confirm:'Confirm access',block:'Block',unblock:'Allow again',
+  need:'Fill in the fields marked in red.',dupe:'This email is already on the list.',lastCeo:'There must always be at least one active CEO.',
+  pinDupe:'This PIN is already used by someone else.',pinBad:'PIN must be 4 to 8 digits.',domainNote:'Not a company domain. Allowed anyway, check it is right.',
+  rejWhy:'Reason (the person will see this)',rejGo:'Reject request',saved:'Saved',
+  act:'Activity',everyone:'Everyone',noAct:'Nothing yet.',
+  v_signin:'signed in',v_signout:'signed out',v_open:'opened',v_req:'requested access',v_allow:'allowed access for',v_reject:'rejected the request from',
+  v_add:'added',v_edit:'changed access for',v_confirm:'confirmed access for',v_block:'blocked',v_unblock:'allowed again',
+  reset:'Reset preview data',busy:'Signing in...',setupT:'Almost ready',setupTxt:'Forka Apps is being set up. Please check back shortly.',sessionEnd:'Please sign in again.',netErr:'Could not reach the server. Check the internet and try again.',noClient:'Google sign-in is not set up yet.',gWait:'Loading Google sign-in...',resetQ:'Reset all preview data back to the start?',yes:'Yes, reset'
+},ar:{
+  apps:'التطبيقات',sub:'فوركا للاستثمار الجماعي',signin:'تسجيل الدخول',signinTxt:'استخدم حساب Google الخاص بالشركة لفتح تطبيقاتك.',
+  google:'الدخول بحساب Google',or:'أو',usePin:'لا يوجد بريد للشركة؟ ادخل بالرقم السري',pin:'الرقم السري',pinGo:'الدخول بالرقم السري',back:'رجوع',
+  prevNote:'معاينة: على erp.forka.com يفتح هنا تسجيل الدخول الحقيقي من Google. في المعاينة تختار الحساب.',
+  choose:'اختر الحساب',other:'بريد آخر',cont:'متابعة',badPin:'الرقم السري غير صحيح أو غير مفعل بعد.',
+  badMail:'أدخل بريدا إلكترونيا صحيحا.',
+  reqT:'طلب صلاحية دخول',reqTxt:'هذا البريد غير موجود في قائمة تطبيقات فوركا. أرسل طلبا وسيقوم الرئيس التنفيذي بالموافقة أو الرفض.',
+  name:'الاسم الكامل',title:'المسمى الوظيفي',why:'لماذا تحتاج الدخول؟',send:'إرسال الطلب',
+  waitT:'تم إرسال الطلب',waitTxt:'سيراجع الرئيس التنفيذي طلبك. يمكنك الدخول بعد الموافقة.',
+  pendT:'بانتظار تأكيد الصلاحية',pendTxt:'حسابك في القائمة لكنه لم يؤكد بعد. سيؤكده الرئيس التنفيذي قريبا.',
+  blockT:'الدخول غير مسموح',blockTxt:'هذا الحساب لا يمكنه فتح تطبيقات فوركا. تواصل مع الرئيس التنفيذي إذا كان هناك خطأ.',
+  rejT:'لم تتم الموافقة على الطلب',
+  out:'تسجيل الخروج',ceoLv:'الرئيس التنفيذي',managerLv:'مدير',staffLv:'موظف',
+  morning:'صباح الخير',afternoon:'مساء الخير',evening:'مساء الخير',helloTxt:'اختر تطبيقا للبدء.',
+  ceoOnly:'تظهر لك فقط',today:'اليوم',month:'هذا الشهر حتى الآن',
+  kSign:'مرات الدخول',kAct:'الإجراءات',kWait:'طلبات بانتظار الموافقة',kConf:'أشخاص بانتظار التأكيد',kActive:'الأشخاص المفعلون',kOpen:'مرات فتح التطبيقات',kChg:'تغييرات الصلاحيات',
+  yourApps:'تطبيقاتك',noApps:'لا توجد تطبيقات مفعلة لك بعد. اطلب من الرئيس التنفيذي.',
+  a_proc:'المشتريات',d_proc:'خطة الشراء والطلبات وأوامر الشراء والاستلام ودفعات الموردين.',
+  a_hire:'التوظيف',d_hire:'الوظائف الشاغرة والمرشحون والمقابلات.',
+  a_branch:'متابعة الفروع',d_branch:'فحص الفروع اليومي والمتابعة.',
+  soon:'سينقل هنا قريبا',curOnly:'النسخة الحالية - تفتح لك فقط حتى تنقل هنا',openA:'فتح',admin:'الإدارة',
+  a_people:'الأشخاص والصلاحيات',d_people:'إضافة الأشخاص وتحديد الصلاحيات والتطبيقات والموافقة على الطلبات.',
+  a_act:'سجل النشاط',d_act:'من فعل ماذا ومتى.',
+  s_plan:'المشتريات',s_ops:'العمليات',s_fin:'المالية',s_dept:'الطلبات',s_ceo:'موافقات الرئيس التنفيذي',
+  people:'الأشخاص والصلاحيات',addP:'إضافة شخص',waiting:'بانتظار الموافقة',allow:'موافقة',reject:'رفض',
+  team:'الفريق',search:'ابحث بالاسم أو البريد',all:'الكل',st_active:'مفعل',st_pending:'بانتظار التأكيد',st_blocked:'محظور',
+  colP:'الشخص',colL:'الصلاحية',colS:'الحالة',colA:'التطبيقات',colM:'طريقة الدخول',m_google:'Google',m_pin:'رقم سري',
+  edit:'تعديل الشخص',newP:'إضافة شخص',email:'بريد الشركة',lv:'مستوى الصلاحية',st:'الحالة',appsAcc:'التطبيقات المسموحة',
+  procSides:'أقسام المشتريات',method:'طريقة الدخول',setPin:'الرقم السري (من 4 إلى 8 أرقام)',pinKeep:'اتركه فارغا للإبقاء على الرقم الحالي',
+  save:'حفظ',cancel:'إلغاء',confirm:'تأكيد الصلاحية',block:'حظر',unblock:'السماح مرة أخرى',
+  need:'املأ الحقول المظللة بالأحمر.',dupe:'هذا البريد موجود في القائمة.',lastCeo:'يجب أن يبقى رئيس تنفيذي مفعل واحد على الأقل.',
+  pinDupe:'هذا الرقم السري مستخدم لشخص آخر.',pinBad:'الرقم السري من 4 إلى 8 أرقام.',domainNote:'ليس نطاق الشركة. مسموح، لكن تأكد أنه صحيح.',
+  rejWhy:'السبب (سيظهر للشخص)',rejGo:'رفض الطلب',saved:'تم الحفظ',
+  act:'سجل النشاط',everyone:'الجميع',noAct:'لا يوجد شيء بعد.',
+  v_signin:'سجل الدخول',v_signout:'سجل الخروج',v_open:'فتح',v_req:'طلب صلاحية دخول',v_allow:'وافق على دخول',v_reject:'رفض طلب',
+  v_add:'أضاف',v_edit:'غير صلاحيات',v_confirm:'أكد صلاحية',v_block:'حظر',v_unblock:'سمح مرة أخرى لـ',
+  reset:'إعادة بيانات المعاينة',busy:'جاري تسجيل الدخول...',setupT:'قريبا',setupTxt:'يتم الآن تجهيز تطبيقات فوركا. يرجى المحاولة بعد قليل.',sessionEnd:'يرجى تسجيل الدخول مرة أخرى.',netErr:'تعذر الوصول إلى الخادم. تحقق من الإنترنت وحاول مرة أخرى.',noClient:'تسجيل الدخول عبر Google غير مفعل بعد.',gWait:'جاري تحميل تسجيل الدخول من Google...',resetQ:'إعادة كل بيانات المعاينة إلى البداية؟',yes:'نعم، إعادة'
+}};
+let lang='en';try{lang=localStorage.getItem('fa-lang')||'en'}catch(_){}
+const t=k=>(T[lang]&&T[lang][k])||T.en[k]||k;
+
+/* ---------- storage (Claude preview db, or memory) ---------- */
+let db=null;const DATA={people:{},requests:{},activity:{}};
+function put(coll,id,obj){DATA[coll][id]=obj;if(db){try{db.collection(coll).doc(id).set(obj).catch(()=>{})}catch(_){}}}
+const key=e=>String(e||'').trim().toLowerCase();
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+function log(by,verb,target,extra){const id=uid();put('activity',id,{at:new Date().toISOString(),by:by||'',verb,target:target||'',extra:extra||''})}
+function seed(){SEED.forEach(p=>put('people',key(p.email),Object.assign({method:'google',addedBy:'Sheet',at:new Date().toISOString()},p,{email:key(p.email)})))}
+
+/* ---------- state ---------- */
+let me=null;          // signed-in person id
+let view='gate';      // gate | home | people | activity
+let gate={step:'start',email:'',err:'',pinErr:''};
+let modal=null;       // {kind:'person',id,draft} | {kind:'reject',id} | {kind:'reset'}
+let flt={q:'',st:'all',who:'all'};
+let toastMsg='';
+try{const s=sessionStorage.getItem('fa-me');if(s)me=s}catch(_){}
+
+const P=()=>DATA.people;
+const person=id=>P()[id];
+const isCeo=p=>p&&p.level==='ceo'&&p.status==='active';
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const initials=n=>String(n||'?').split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase();
+const lvName=l=>t(l+'Lv');
+const fmtT=iso=>{try{return new Date(iso).toLocaleString(lang==='ar'?'ar':'en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}catch(_){return iso}};
+const validEmail=e=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
+
+/* ---------- sign in ---------- */
+function signInEmail(email){
+  const e=key(email);if(!validEmail(e)){gate.err=t('badMail');render();return}
+  gate.email=e;gate.err='';const p=person(e);
+  if(p){
+    if(p.status==='active'){doSignIn(e);return}
+    gate.step=p.status==='blocked'?'blocked':'pending';render();return}
+  const r=DATA.requests[e];
+  if(r&&r.state==='waiting'){gate.step='waiting';render();return}
+  if(r&&r.state==='rejected'){gate.step='rejected';render();return}
+  gate.step='request';render()}
+function signInPin(pin){
+  const v=String(pin||'').trim();
+  const p=Object.values(P()).find(x=>x.method==='pin'&&x.pin&&x.pin===v&&x.status==='active');
+  if(!p){gate.pinErr=t('badPin');render();return}
+  doSignIn(p.email)}
+function doSignIn(id){me=id;try{sessionStorage.setItem('fa-me',id)}catch(_){}log(id,'signin');view='home';gate={step:'start',email:'',err:'',pinErr:''};render()}
+function signOut(){if(me)log(me,'signout');me=null;try{sessionStorage.removeItem('fa-me')}catch(_){}view='gate';modal=null;render()}
+function sendRequest(f){
+  const name=f.name.value.trim(),title=f.title.value.trim(),why=f.why.value.trim();
+  gate.rq={name:f.name.value,title:f.title.value,why:f.why.value,bad:[!name&&'name',!why&&'why'].filter(Boolean)};
+  if(!name||!why){gate.err=t('need');render();return}
+  put('requests',gate.email,{email:gate.email,name,title,why,at:new Date().toISOString(),state:'waiting'});
+  log(gate.email,'req','','');gate.step='waiting';gate.err='';gate.rq=null;render()}
+
+/* ---------- people actions ---------- */
+function openPerson(id,fromReq){
+  const base=id&&person(id)?JSON.parse(JSON.stringify(person(id))):{email:'',name:'',title:'',level:'staff',status:'active',apps:{proc:0,hire:0,branch:0},sides:[],method:'google'};
+  if(fromReq){const r=DATA.requests[fromReq];base.email=r.email;base.name=r.name;base.title=r.title||'';base.status='active'}
+  base.pinNew='';modal={kind:'person',id:id||null,fromReq:fromReq||null,draft:base,err:''};render()}
+function readDraft(){
+  const d=modal.draft,m=document.getElementById('pm');if(!m)return d;
+  ['name','title','email','pinNew'].forEach(k=>{const el=m.querySelector('[data-k="'+k+'"]');if(el)d[k]=el.value});
+  return d}
+function savePerson(){
+  const d=readDraft();const errs=[];
+  d.email=key(d.email);d.name=d.name.trim();
+  const isNew=!modal.id;
+  if(!d.name)errs.push('name');
+  if(d.method==='google'&&!validEmail(d.email))errs.push('email');
+  if(d.method==='pin'&&!d.email)d.email='pin-'+uid();
+  if(isNew&&person(d.email))return modalErr(t('dupe'),['email']);
+  if(d.method==='pin'){
+    const pn=String(d.pinNew||'').trim();
+    if(pn&&!/^\d{4,8}$/.test(pn))return modalErr(t('pinBad'),['pinNew']);
+    if(!pn&&!(modal.id&&person(modal.id).pin))return modalErr(t('pinBad'),['pinNew']);
+    if(pn&&Object.values(P()).some(x=>x.pin===pn&&x.email!==(modal.id||d.email)))return modalErr(t('pinDupe'),['pinNew']);
+    if(pn)d.pin=pn}
+  if(errs.length)return modalErr(t('need'),errs);
+  // keep one active CEO
+  if(modal.id){const old=person(modal.id);if(isCeo(old)&&!(d.level==='ceo'&&d.status==='active')&&Object.values(P()).filter(isCeo).length<2)return modalErr(t('lastCeo'),[])}
+  if(!d.apps.proc)d.sides=[];
+  const id=modal.id||d.email;const old=modal.id?person(modal.id):null;
+  delete d.pinNew;d.updatedBy=me;d.updatedAt=new Date().toISOString();
+  if(isNew){d.addedBy=me;d.at=d.updatedAt}
+  put('people',id,d);
+  if(modal.fromReq){const r=DATA.requests[modal.fromReq];put('requests',modal.fromReq,Object.assign({},r,{state:'approved',decidedBy:me,decidedAt:d.updatedAt}));log(me,'allow',id)}
+  else if(isNew)log(me,'add',id);
+  else log(me,'edit',id,diff(old,d));
+  modal=null;toast(t('saved'));render()}
+function diff(a,b){const out=[];if(!a)return '';
+  if(a.level!==b.level)out.push(lvName(a.level)+' > '+lvName(b.level));
+  if(a.status!==b.status)out.push(t('st_'+a.status)+' > '+t('st_'+b.status));
+  APPS.forEach(x=>{if(!!a.apps[x.id]!==!!b.apps[x.id])out.push((b.apps[x.id]?'+ ':'- ')+t('a_'+x.id))});
+  SIDES.forEach(s=>{const h1=(a.sides||[]).includes(s),h2=(b.sides||[]).includes(s);if(h1!==h2)out.push((h2?'+ ':'- ')+t('s_'+s))});
+  if(a.method!==b.method)out.push(t('m_'+b.method));
+  return out.join(', ')}
+function modalErr(msg,fields){modal.err=msg;modal.bad=fields;render()}
+function setStatus(id,st){const p=person(id);if(!p)return;
+  if(isCeo(p)&&st!=='active'&&Object.values(P()).filter(isCeo).length<2){toast(t('lastCeo'));return}
+  put('people',id,Object.assign({},p,{status:st,updatedBy:me,updatedAt:new Date().toISOString()}));
+  log(me,st==='active'?(p.status==='blocked'?'unblock':'confirm'):'block',id);render()}
+function rejectReq(id,reason){const r=DATA.requests[id];
+  put('requests',id,Object.assign({},r,{state:'rejected',reason:reason||'',decidedBy:me,decidedAt:new Date().toISOString()}));
+  log(me,'reject',id,reason||'');modal=null;render()}
+function canOpen(a,p){return !!a.url&&!!p.apps[a.id]&&(!a.ceoOnlyUntilMoved||isCeo(p))}
+function openApp(a){const p=person(me);if(!canOpen(a,p))return;log(me,'open','',t('a_'+a.id));try{window.open(a.url,'_blank','noopener')}catch(_){}}
+function toast(m){toastMsg=m;render();setTimeout(()=>{toastMsg='';const el=document.querySelector('.toast');if(el)el.remove()},1800)}
+
+/* ---------- counts for CEO box ---------- */
+function stats(){
+  const now=new Date(),d0=new Date(now.getFullYear(),now.getMonth(),now.getDate()).getTime(),m0=new Date(now.getFullYear(),now.getMonth(),1).getTime();
+  const A=Object.values(DATA.activity);const at=x=>new Date(x.at).getTime();
+  const td=A.filter(x=>at(x)>=d0),mo=A.filter(x=>at(x)>=m0);
+  return{
+    sign:td.filter(x=>x.verb==='signin').length,
+    act:td.filter(x=>!['signin','signout'].includes(x.verb)).length,
+    wait:Object.values(DATA.requests).filter(r=>r.state==='waiting').length,
+    conf:Object.values(P()).filter(p=>p.status==='pending').length,
+    active:Object.values(P()).filter(p=>p.status==='active').length,
+    open:mo.filter(x=>x.verb==='open').length,
+    chg:mo.filter(x=>['allow','reject','add','edit','confirm','block','unblock'].includes(x.verb)).length}}
+
+/* ---------- views ---------- */
+const G_ICON='<svg viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.1H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.6-.4-3.9z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.1H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.6-.4-3.9z"/></svg>';
+const langSw=()=>'<div class="lang"><button data-lang="en" class="'+(lang==='en'?'on':'')+'">EN</button><button data-lang="ar" class="'+(lang==='ar'?'on':'')+'">ع</button></div>';
+
+function vGate(){
+  let body='';const g=gate;
+  if(g.step==='start')body='<h2>'+t('signin')+'</h2><p>'+t('signinTxt')+'</p>'+
+    (LIVE?'<div id="gbtn" class="gbox"><div class="note">'+t('gWait')+'</div></div>'+(g.err?'<div class="err">'+esc(g.err)+'</div>':''):'<button class="gbtn" data-a="g-open">'+G_ICON+'<span>'+t('google')+'</span></button>')+
+    '<div class="or">'+t('or')+'</div><button class="lnk" data-a="g-pin">'+t('usePin')+'</button>';
+  else if(g.step==='busy')body='<h2>'+t('signin')+'</h2><div class="note">'+t('busy')+'</div>';
+  else if(g.step==='pick'){
+    const list=Object.values(P()).sort((a,b)=>a.name.localeCompare(b.name)).filter(p=>p.method!=='pin');
+    body='<h2>'+t('choose')+'</h2><div class="prev">'+t('prevNote')+'</div>'+
+      '<select id="gpick"><option value="">'+t('choose')+'</option>'+list.map(p=>'<option value="'+esc(p.email)+'">'+esc(p.name)+' - '+esc(p.email)+'</option>').join('')+'</select>'+
+      '<label class="f">'+t('other')+'<input type="email" id="gmail" placeholder="name@forka.com" value="'+esc(g.typed||'')+'"></label>'+
+      (g.err?'<div class="err">'+esc(g.err)+'</div>':'')+
+      '<button class="btn pri" data-a="g-go">'+t('cont')+'</button><button class="lnk" data-a="g-start">'+t('back')+'</button>'}
+  else if(g.step==='pin')body='<h2>'+t('pinGo')+'</h2><label class="f">'+t('pin')+'<input type="password" inputmode="numeric" id="gpin" autocomplete="off"></label>'+
+    (g.pinErr?'<div class="err">'+esc(g.pinErr)+'</div>':'')+'<button class="btn pri" data-a="p-go">'+t('signin')+'</button><button class="lnk" data-a="g-start">'+t('back')+'</button>';
+  else if(g.step==='request')body='<h2>'+t('reqT')+'</h2><p>'+t('reqTxt')+'</p><div class="note">'+esc(g.email)+'</div>'+
+    (()=>{const q=g.rq||{name:'',title:'',why:'',bad:[]};const m=k=>q.bad.includes(k)?' class="miss"':'';
+      return '<form id="rq" style="display:flex;flex-direction:column;gap:12px" onsubmit="return false"><label class="f">'+t('name')+'<input type="text" name="name" value="'+esc(q.name)+'"'+m('name')+'></label>'+
+    '<label class="f">'+t('title')+'<input type="text" name="title" value="'+esc(q.title)+'"></label><label class="f">'+t('why')+'<textarea name="why" rows="3"'+m('why')+'>'+esc(q.why)+'</textarea></label></form>'})()+
+    (g.err?'<div class="err">'+esc(g.err)+'</div>':'')+'<button class="btn pri" data-a="r-send">'+t('send')+'</button><button class="lnk" data-a="g-start">'+t('back')+'</button>';
+  else{const m={waiting:['waitT','waitTxt','ok'],pending:['pendT','pendTxt','ok'],blocked:['blockT','blockTxt','err'],rejected:['rejT','blockTxt','err']}[g.step];
+    const r=DATA.requests[g.email];
+    body='<h2>'+t(m[0])+'</h2><div class="'+m[2]+'">'+t(m[1])+(g.step==='rejected'&&r&&r.reason?'<br><b>'+esc(r.reason)+'</b>':'')+'</div><div class="note">'+esc(g.email)+'</div><button class="lnk" data-a="g-start">'+t('back')+'</button>'}
+  return '<div class="gate">'+langSw()+'<div class="brand">Forka</div><div class="brand-sub">'+t('apps')+'</div><div class="gcard">'+body+'</div></div>'}
+
+function vTop(){const p=person(me);
+  return '<div class="top"><div class="logo" data-a="home">Forka</div><div class="sub">'+t('apps')+'</div><div class="sp"></div>'+
+    '<div class="me"><div class="av">'+esc(initials(p.name))+'</div><div class="txt"><div class="nm">'+esc(p.name)+'</div><div class="lv">'+lvName(p.level)+'</div></div></div>'+
+    '<button class="btn sm" data-a="out">'+t('out')+'</button>'+langSw()+'</div>'}
+
+function vHero(){const p=person(me);const h=new Date().getHours();
+  const greet=t(h<12?'morning':h<17?'afternoon':'evening');
+  let d='';try{d=new Date().toLocaleDateString(lang==='ar'?'ar':'en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}catch(_){}
+  let out='<div class="hero"><div class="hero-in"><div class="date">'+esc(d)+'</div><h1>'+greet+(lang==='ar'?'، ':', ')+esc(p.name.split(' ')[0])+'</h1><p>'+t('helloTxt')+'</p>';
+  if(isCeo(p)){const s=stats();
+    out+='<div class="card ceo" id="ceobox"><div class="hd"><h3>'+t('today')+'</h3><span class="tag">'+t('ceoOnly')+'</span></div><div class="kpis">'+
+      kpi(s.sign,'kSign',0,'#2c7a76')+kpi(s.act,'kAct',0,'#3e5c8a')+kpi(s.wait,'kWait',s.wait>0,'#a8703d')+kpi(s.conf,'kConf',s.conf>0,'#b5651d')+'</div>'+
+      '<div class="grp">'+t('month')+'</div><div class="kpis">'+kpi(s.active,'kActive',0,'#5f8a45')+kpi(s.open,'kOpen',0,'#a8703d')+kpi(s.chg,'kChg',0,'#7b4e6e')+'</div></div>'}
+  return out+'</div></div>'}
+function vHome(){const p=person(me);let out='';
+  const mine=APPS.filter(a=>p.apps&&p.apps[a.id]);
+  out+='<div class="sec"><h2>'+t('yourApps')+'</h2>'+(mine.length?'<div class="apps">'+mine.map(a=>appTile(a,p)).join('')+'</div>':'<div class="empty-apps">'+t('noApps')+'</div>')+'</div>';
+  if(isCeo(p)){const s=stats();
+    out+='<div class="sec"><h2>'+t('admin')+'</h2><div class="apps">'+
+      '<button class="app adm" style="--c:#7b4e6e" data-a="v-people"><div class="ic">'+icon('people')+'</div><h3>'+t('a_people')+'</h3><p>'+t('d_people')+'</p>'+((s.wait+s.conf)?'<span class="badge">'+(s.wait+s.conf)+'</span>':'')+'</button>'+
+      '<button class="app adm" style="--c:#3e5c8a" data-a="v-act"><div class="ic">'+icon('act')+'</div><h3>'+t('a_act')+'</h3><p>'+t('d_act')+'</p></button></div></div>'}
+  return out}
+const kpi=(v,l,w,c)=>'<div class="kpi'+(w?' warn':'')+'"'+(c?' style="--k:'+c+'"':'')+'><div class="v">'+v+'</div><div class="l">'+t(l)+'</div></div>';
+function appTile(a,p){const ok=canOpen(a,p);
+  const meta=a.id==='proc'&&p.sides&&p.sides.length?'<div class="meta">'+p.sides.map(s=>t('s_'+s)).join(' · ')+'</div>':'';
+  const note=!ok?'<span class="soon">'+t('soon')+'</span>':(a.ceoOnlyUntilMoved?'<span class="soon gold">'+t('curOnly')+'</span>':'');
+  return '<button class="app'+(ok?'':' off')+'" style="--c:'+a.color+'" data-app="'+a.id+'"'+(ok?'':' aria-disabled="true"')+'><div class="ic">'+icon(a.id)+'</div><h3>'+t('a_'+a.id)+'</h3><p>'+t('d_'+a.id)+'</p>'+meta+note+(ok?'<span class="go">'+t('openA')+' <i>&rarr;</i></span>':'')+'</button>'}
+function vPeople(){
+  const reqs=Object.values(DATA.requests).filter(r=>r.state==='waiting').sort((a,b)=>a.at<b.at?-1:1);
+  let out='<button class="back" data-a="home">&larr; '+t('back')+'</button><div class="bar"><h1>'+t('people')+'</h1><div class="sp" style="flex:1"></div><button class="btn pri" data-a="p-add">'+t('addP')+'</button></div>';
+  if(reqs.length)out+='<div class="sec"><h2>'+t('waiting')+' ('+reqs.length+')</h2><div class="reqs">'+reqs.map(r=>
+    '<div class="req" data-req="'+esc(r.email)+'"><div class="who">'+esc(r.name)+(r.title?' <span class="sm-t">- '+esc(r.title)+'</span>':'')+'</div><div class="em">'+esc(r.email)+'</div><div class="why">'+esc(r.why)+'</div><div class="sm-t">'+fmtT(r.at)+'</div>'+
+    '<div class="acts" style="justify-content:flex-start"><button class="btn pri sm" data-a="r-allow" data-id="'+esc(r.email)+'">'+t('allow')+'</button><button class="btn dan sm" data-a="r-rej" data-id="'+esc(r.email)+'">'+t('reject')+'</button></div></div>').join('')+'</div></div>';
+  const q=flt.q.toLowerCase();
+  const list=Object.entries(P()).filter(([id,p])=>(flt.st==='all'||p.status===flt.st)&&(!q||(p.name+' '+p.email).toLowerCase().includes(q)))
+    .sort((a,b)=>(a[1].status==='pending'?0:1)-(b[1].status==='pending'?0:1)||a[1].name.localeCompare(b[1].name));
+  out+='<div class="card"><div class="bar" style="margin-bottom:10px"><h2 style="font-size:20px">'+t('team')+'</h2><div style="flex:1"></div><div class="filters"><input type="text" id="fq" placeholder="'+t('search')+'" value="'+esc(flt.q)+'"><select id="fst">'+
+    ['all','active','pending','blocked'].map(s=>'<option value="'+s+'"'+(flt.st===s?' selected':'')+'>'+(s==='all'?t('all'):t('st_'+s))+'</option>').join('')+'</select></div></div>'+
+    '<div class="tw"><table class="tbl"><thead><tr><th>'+t('colP')+'</th><th>'+t('colL')+'</th><th class="dst">'+t('colS')+'</th><th class="hm">'+t('colA')+'</th><th class="hm">'+t('colM')+'</th><th></th></tr></thead><tbody>'+
+    list.map(([id,p])=>'<tr class="row" data-pid="'+esc(id)+'"><td><b>'+esc(p.name)+'</b><div class="sm-t">'+esc(p.method==='pin'?t('m_pin'):p.email)+(p.title?' - '+esc(p.title):'')+'</div></td>'+
+      '<td><span class="pill p-lv">'+lvName(p.level)+'</span><span class="pill p-'+p.status+' mst">'+t('st_'+p.status)+'</span></td><td class="dst"><span class="pill p-'+p.status+'">'+t('st_'+p.status)+'</span></td>'+
+      '<td class="hm"><div class="chips">'+APPS.filter(a=>p.apps&&p.apps[a.id]).map(a=>'<span class="chip">'+t('a_'+a.id)+(a.id==='proc'&&p.sides&&p.sides.length?': '+p.sides.map(s=>t('s_'+s)).join(', '):'')+'</span>').join('')+'</div></td>'+
+      '<td class="hm nw">'+t('m_'+(p.method||'google'))+'</td>'+
+      '<td style="white-space:nowrap">'+(p.status==='pending'?'<button class="btn pri sm" data-a="p-confirm" data-id="'+esc(id)+'">'+t('confirm')+'</button>':'')+'</td></tr>').join('')+
+    '</tbody></table></div>'+(list.length?'':'<div class="empty">-</div>')+'</div>';
+  if(!LIVE)out+='<div><button class="lnk" data-a="reset">'+t('reset')+'</button></div>';
+  return out}
+
+function vActivity(){
+  const A=Object.values(DATA.activity).filter(x=>flt.who==='all'||x.by===flt.who).sort((a,b)=>a.at<b.at?1:-1).slice(0,300);
+  const nm=id=>{const p=person(id);return p?p.name:(DATA.requests[id]?DATA.requests[id].name:id)};
+  const who=[...new Set(Object.values(DATA.activity).map(x=>x.by))];
+  return '<button class="back" data-a="home">&larr; '+t('back')+'</button><div class="bar"><h1>'+t('act')+'</h1><div style="flex:1"></div><select id="fwho" style="max-width:260px"><option value="all">'+t('everyone')+'</option>'+
+    who.map(w=>'<option value="'+esc(w)+'"'+(flt.who===w?' selected':'')+'>'+esc(nm(w))+'</option>').join('')+'</select></div>'+
+    '<div class="card"><div class="log">'+(A.length?A.map(x=>'<div class="it"><div class="tm">'+fmtT(x.at)+'</div><div class="tx"><b>'+esc(nm(x.by))+'</b> '+t('v_'+x.verb)+
+      (x.target?' <b>'+esc(nm(x.target))+'</b>':'')+(x.extra?' <span class="sm-t">('+esc(x.extra)+')</span>':'')+'</div></div>').join(''):'<div class="empty">'+t('noAct')+'</div>')+'</div></div>'}
+
+function vModal(){
+  if(!modal)return '';
+  if(modal.kind==='reject'){const r=DATA.requests[modal.id];
+    return '<div class="ov"><div class="md"><h2>'+t('reject')+': '+esc(r.name)+'</h2><div class="sm-t">'+esc(r.email)+'</div><label class="f">'+t('rejWhy')+'<textarea id="rjw" rows="3"></textarea></label>'+
+      '<div class="acts"><button class="btn" data-a="m-close">'+t('cancel')+'</button><button class="btn dan" data-a="r-rejgo">'+t('rejGo')+'</button></div></div></div>'}
+  if(modal.kind==='reset')return '<div class="ov"><div class="md"><h2>'+t('reset')+'</h2><p>'+t('resetQ')+'</p><div class="acts"><button class="btn" data-a="m-close">'+t('cancel')+'</button><button class="btn dan" data-a="reset-go">'+t('yes')+'</button></div></div></div>';
+  const d=modal.draft,bad=modal.bad||[],isNew=!modal.id;const cls=k=>bad.includes(k)?' class="miss"':'';
+  const dom=d.email&&validEmail(d.email)&&!ALLOWED_DOMAINS.includes(d.email.split('@')[1]);
+  return '<div class="ov"><div class="md" id="pm"><h2>'+(modal.fromReq?t('allow')+': '+esc(d.name):isNew?t('newP'):t('edit'))+'</h2>'+
+    '<div class="g2"><label class="f">'+t('name')+'<input type="text" data-k="name" value="'+esc(d.name)+'"'+cls('name')+'></label>'+
+    '<label class="f">'+t('title')+'<input type="text" data-k="title" value="'+esc(d.title)+'"></label></div>'+
+    '<div class="box"><div class="t">'+t('method')+'</div><div class="seg">'+['google','pin'].map(m=>'<button data-a="d-method" data-v="'+m+'" class="'+(d.method===m?'on':'')+'">'+t('m_'+m)+'</button>').join('')+'</div>'+
+      (d.method==='google'?'<label class="f">'+t('email')+'<input type="email" data-k="email" value="'+esc(d.email.startsWith('pin-')?'':d.email)+'"'+(isNew?'':' readonly')+cls('email')+'></label>'+(dom?'<div class="sm-t">'+t('domainNote')+'</div>':'')
+        :'<label class="f">'+t('setPin')+'<input type="password" inputmode="numeric" autocomplete="new-password" data-k="pinNew" value="'+esc(d.pinNew||'')+'"'+cls('pinNew')+'></label>'+(d.pin?'<div class="sm-t">'+t('pinKeep')+'</div>':''))+'</div>'+
+    '<div class="g2"><div class="box"><div class="t">'+t('lv')+'</div><div class="seg">'+['staff','manager','ceo'].map(l=>'<button data-a="d-level" data-v="'+l+'" class="'+(d.level===l?'on':'')+'">'+lvName(l)+'</button>').join('')+'</div></div>'+
+    '<div class="box"><div class="t">'+t('st')+'</div><div class="seg">'+['active','pending','blocked'].map(s=>'<button data-a="d-status" data-v="'+s+'" class="'+(d.status===s?'on':'')+'">'+t('st_'+s)+'</button>').join('')+'</div></div></div>'+
+    '<div class="box"><div class="t">'+t('appsAcc')+'</div>'+APPS.map(a=>'<label class="ck"><input type="checkbox" data-a="d-app" data-v="'+a.id+'"'+(d.apps[a.id]?' checked':'')+'>'+t('a_'+a.id)+'</label>'+
+      (a.id==='proc'&&d.apps.proc?'<div class="subs" id="sides"><span class="sm-t" style="width:100%">'+t('procSides')+'</span>'+SIDES.map(s=>'<label class="ck"><input type="checkbox" data-a="d-side" data-v="'+s+'"'+((d.sides||[]).includes(s)?' checked':'')+'>'+t('s_'+s)+'</label>').join('')+'</div>':'')).join('')+'</div>'+
+    (modal.err?'<div class="err">'+esc(modal.err)+'</div>':'')+
+    '<div class="acts">'+(!isNew&&modal.id!==me?(d.status==='blocked'?'':'<button class="btn dan" data-a="d-block">'+t('block')+'</button>'):'')+'<div class="sp"></div><button class="btn" data-a="m-close">'+t('cancel')+'</button><button class="btn pri" data-a="p-save">'+t('save')+'</button></div></div></div>'}
+
+function render(){
+  document.documentElement.lang=lang;document.documentElement.dir=lang==='ar'?'rtl':'ltr';
+  const root=document.getElementById('app');
+  if(modal&&modal.kind==='person'&&document.getElementById('pm'))readDraft();
+  const rqf=document.getElementById('rq');if(rqf&&gate.step==='request')gate.rq=Object.assign({bad:[]},gate.rq,{name:rqf.name.value,title:rqf.title.value,why:rqf.why.value});
+  const gm=document.getElementById('gmail');if(gm)gate.typed=gm.value;
+  const fq=document.activeElement&&document.activeElement.id==='fq'?document.activeElement.selectionStart:null;
+  if(me&&(!person(me)||person(me).status!=='active')){me=null;view='gate';try{sessionStorage.removeItem('fa-me')}catch(_){}}
+  if(CFG.MODE==='live'&&!LIVE){root.innerHTML='<div class="gate">'+langSw()+'<div class="brand">Forka</div><div class="brand-sub">'+t('apps')+'</div><div class="gcard"><h2>'+t('setupT')+'</h2><p>'+t('setupTxt')+'</p></div></div>';return}
+  if(!me){root.innerHTML=vGate();if(LIVE&&gate.step==='start')drawGoogle()}
+  else{if(view==='gate')view='home';
+    if((view==='people'||view==='activity')&&!isCeo(person(me)))view='home';
+    root.innerHTML=vTop()+(view==='home'?vHero()+'<div class="page lift">'+vHome()+'</div>':'<div class="page">'+(view==='people'?vPeople():vActivity())+'</div>')+vModal()}
+  if(toastMsg)root.insertAdjacentHTML('beforeend','<div class="toast">'+esc(toastMsg)+'</div>');
+  if(fq!=null){const f=document.getElementById('fq');if(f){f.focus();try{f.setSelectionRange(fq,fq)}catch(_){}}}
+}
+
+/* ---------- events ---------- */
+document.addEventListener('click',e=>{
+  const l=e.target.closest('[data-lang]');if(l){lang=l.dataset.lang;try{localStorage.setItem('fa-lang',lang)}catch(_){}render();return}
+  const ap=e.target.closest('[data-app]');if(ap){openApp(APPS.find(a=>a.id===ap.dataset.app));return}
+  const b=e.target.closest('[data-a]');
+  if(!b){const r=e.target.closest('tr.row');if(r&&!e.target.closest('button'))openPerson(r.dataset.pid);
+    else if(e.target.classList&&e.target.classList.contains('ov')){modal=null;render()}return}
+  const a=b.dataset.a,id=b.dataset.id,v=b.dataset.v;
+  if(modal&&modal.kind==='person'&&a.startsWith('d-'))readDraft();
+  switch(a){
+    case 'g-open':gate.step='pick';gate.err='';break;
+    case 'g-pin':gate.step='pin';gate.pinErr='';break;
+    case 'g-start':gate={step:'start',email:'',err:'',pinErr:'',rq:null,typed:''};break;
+    case 'g-go':{const s=document.getElementById('gpick').value,o=document.getElementById('gmail').value;signInEmail(o.trim()||s);return}
+    case 'p-go':signInPin(document.getElementById('gpin').value);return;
+    case 'r-send':sendRequest(document.getElementById('rq'));return;
+    case 'out':signOut();return;
+    case 'home':view='home';modal=null;break;
+    case 'v-people':view='people';break;
+    case 'v-act':view='activity';break;
+    case 'p-add':openPerson(null);return;
+    case 'p-confirm':setStatus(id,'active');return;
+    case 'r-allow':openPerson(null,id);return;
+    case 'r-rej':modal={kind:'reject',id};break;
+    case 'r-rejgo':rejectReq(modal.id,document.getElementById('rjw').value.trim());return;
+    case 'm-close':modal=null;break;
+    case 'p-save':savePerson();return;
+    case 'd-method':modal.draft.method=v;break;
+    case 'd-level':modal.draft.level=v;break;
+    case 'd-status':modal.draft.status=v;break;
+    case 'd-app':modal.draft.apps[v]=b.checked?1:0;if(v==='proc'&&b.checked&&!(modal.draft.sides||[]).length)modal.draft.sides=['dept'];break;
+    case 'd-side':{const s=new Set(modal.draft.sides||[]);b.checked?s.add(v):s.delete(v);modal.draft.sides=SIDES.filter(x=>s.has(x));break}
+    case 'd-block':{const pid=modal.id;modal=null;setStatus(pid,'blocked');return}
+    case 'reset':modal={kind:'reset'};break;
+    case 'reset-go':resetAll();return;
+  }
+  render()});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Enter'){if(e.target.id==='gpin'){signInPin(e.target.value)}else if(e.target.id==='gmail'){signInEmail(e.target.value)}}
+  if(e.key==='Escape'&&modal){modal=null;render()}});
+document.addEventListener('input',e=>{
+  if(e.target.id==='fq'){flt.q=e.target.value;render()}});
+document.addEventListener('change',e=>{
+  if(e.target.id==='fst'){flt.st=e.target.value;render()}
+  if(e.target.id==='fwho'){flt.who=e.target.value;render()}});
+
+function resetAll(){
+  const ids={people:Object.keys(DATA.people),requests:Object.keys(DATA.requests),activity:Object.keys(DATA.activity)};
+  if(db)Object.entries(ids).forEach(([c,list])=>list.forEach(i=>{try{db.collection(c).doc(i).delete().catch(()=>{})}catch(_){}}));
+  DATA.people={};DATA.requests={};DATA.activity={};seed();modal=null;const keep=me;me=null;if(keep&&person(keep))me=keep;render()}
+
+/* ---------- start ---------- */
+/* ---------- live mode: erp.forka.com talks to the accounts server ---------- */
+if(CFG.PROCUREMENT_URL)APPS[0].url=CFG.PROCUREMENT_URL;
+let TOKEN='',ID_TOKEN='',gReady=false;
+async function api(action,payload){
+  try{const r=await fetch(CFG.ACCOUNTS_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(Object.assign({action,token:TOKEN},payload||{}))});return await r.json()}
+  catch(e){return {ok:false,error:'net'}}}
+function applyBundle(b){
+  if(b.token){TOKEN=b.token;try{localStorage.setItem('fa-token',TOKEN)}catch(_){}}
+  const P0={};(b.people||[b.me]).forEach(p=>{P0[p.email]=p});P0[b.me.email]=b.me;DATA.people=P0;
+  const R0={};(b.requests||[]).forEach(r=>{R0[r.email]=r});DATA.requests=R0;
+  const A0={};(b.activity||[]).forEach((a,i)=>{A0['a'+i]=a});DATA.activity=A0;
+  me=b.me.email}
+function sessionGone(msg){TOKEN='';try{localStorage.removeItem('fa-token')}catch(_){}me=null;view='gate';modal=null;gate={step:'start',email:'',err:msg||'',pinErr:''};render()}
+const errText=e=>e==='net'?t('netErr'):e==='noclient'?t('noClient'):e==='need'?t('need'):e==='dupe'?t('dupe'):e==='pinBad'?t('pinBad'):e==='pinDupe'?t('pinDupe'):e==='lastCeo'?t('lastCeo'):e==='pin'?t('badPin'):e==='locked'?t('badPin'):e==='session'?t('sessionEnd'):String(e||'');
+function drawGoogle(){
+  const el=document.getElementById('gbtn');if(!el)return;
+  const go=()=>{try{google.accounts.id.initialize({client_id:CFG.GOOGLE_CLIENT_ID,callback:onGoogle,ux_mode:'popup',auto_select:false});
+    el.innerHTML='';google.accounts.id.renderButton(el,{theme:'outline',size:'large',shape:'pill',text:'signin_with',width:300,locale:lang==='ar'?'ar':'en'})}catch(e){el.innerHTML='<div class="err">'+t('noClient')+'</div>'}};
+  if(window.google&&google.accounts&&google.accounts.id){go();return}
+  if(!gReady){gReady=true;const sc=document.createElement('script');sc.src='https://accounts.google.com/gsi/client';sc.async=true;sc.onload=()=>{const e2=document.getElementById('gbtn');if(e2)go()};document.head.appendChild(sc)}}
+async function onGoogle(resp){
+  ID_TOKEN=resp.credential;gate={step:'busy',email:'',err:'',pinErr:''};render();
+  const r=await api('google',{idToken:ID_TOKEN});
+  if(r.ok){applyBundle(r);view='home';gate={step:'start',email:'',err:'',pinErr:''};render();return}
+  if(r.status){gate={step:r.status==='unknown'?'request':r.status,email:r.email||'',err:'',pinErr:'',rq:{name:r.name||'',title:'',why:'',bad:[]}};
+    if(r.status==='rejected')DATA.requests[r.email]={email:r.email,state:'rejected',reason:r.reason||''};render();return}
+  gate={step:'start',email:'',err:errText(r.error),pinErr:''};render()}
+if(LIVE){
+  signInPin=async function(pin){const v=String(pin||'').trim();gate.pinErr='';gate.step='busy';render();
+    const r=await api('pin',{pin:v});
+    if(r.ok){applyBundle(r);view='home';gate={step:'start',email:'',err:'',pinErr:''};render();return}
+    gate.step='pin';gate.pinErr=errText(r.error);render()};
+  sendRequest=async function(f){
+    const name=f.name.value.trim(),title=f.title.value.trim(),why=f.why.value.trim();
+    gate.rq={name:f.name.value,title:f.title.value,why:f.why.value,bad:[!name&&'name',!why&&'why'].filter(Boolean)};
+    if(!name||!why){gate.err=t('need');render();return}
+    const r=await api('request',{idToken:ID_TOKEN,name,title,why});
+    if(r.ok){gate.step='waiting';gate.err='';gate.rq=null;render();return}
+    gate.err=errText(r.error);render()};
+  signOut=function(){api('signout');sessionGone('')};
+  savePerson=async function(){
+    const d=readDraft();const id=modal.id,fromReq=modal.fromReq;
+    const errs=[];if(!String(d.name||'').trim())errs.push('name');if(d.method==='google'&&!validEmail(key(d.email)))errs.push('email');
+    if(errs.length)return modalErr(t('need'),errs);
+    const r=await api('savePerson',{id:id||'',fromReq:fromReq||'',person:{email:key(d.email),name:d.name,title:d.title,level:d.level,status:d.status,apps:d.apps,sides:d.sides,method:d.method,pinNew:d.pinNew||''}});
+    if(r.ok){applyBundle(r);modal=null;toast(t('saved'));render();return}
+    if(r.error==='session')return sessionGone(t('sessionEnd'));
+    modalErr(errText(r.error),r.error==='need'?(r.fields||[]):r.error==='dupe'?['email']:/^pin/.test(r.error)?['pinNew']:[])};
+  setStatus=async function(id,st){const r=await api('setStatus',{id,status:st});
+    if(r.ok){applyBundle(r);render();return}if(r.error==='session')return sessionGone(t('sessionEnd'));toast(errText(r.error))};
+  rejectReq=async function(id,reason){const r=await api('reject',{id,reason});
+    if(r.ok){applyBundle(r);modal=null;render();return}if(r.error==='session')return sessionGone(t('sessionEnd'));toast(errText(r.error))};
+  openApp=function(a){const p=person(me);if(!canOpen(a,p))return;try{window.open(a.url,'_blank','noopener')}catch(_){}api('open',{app:a.id})};
+}
+(async()=>{
+  if(LIVE){
+    let tok='';try{tok=localStorage.getItem('fa-token')||''}catch(_){}
+    if(tok){TOKEN=tok;gate.step='busy';render();const r=await api('me');if(r.ok){applyBundle(r);view='home';gate.step='start';render()}else sessionGone('')}
+    else render();
+    setInterval(async()=>{if(!me||document.hidden||modal)return;const ae=document.activeElement;if(ae&&(ae.tagName==='INPUT'||ae.tagName==='TEXTAREA'))return;
+      const r=await api('me');if(r.ok){applyBundle(r);render()}else if(r.error==='session')sessionGone(t('sessionEnd'))},60000);
+    return}
+  render();
+  try{
+    let C=window.claude;for(let i=0;i<20&&!(C&&C.use);i++){await new Promise(r=>setTimeout(r,100));C=window.claude}
+    db=C&&C.use?await C.use('db'):null}catch(_){db=null}
+  if(!db){seed();render();return}
+  let first=true;
+  ['people','requests','activity'].forEach(c=>db.collection(c).onSnapshot(sn=>{
+    const o={};sn.docs.forEach(d=>{if(d.exists)o[d.id]=d.data()});DATA[c]=o;
+    if(c==='people'&&first&&!sn.metadata.fromCache){first=false;if(!Object.keys(o).length)seed()}
+    const ae=document.activeElement;if(ae&&(ae.tagName==='INPUT'||ae.tagName==='TEXTAREA')&&!modal)return;
+    if(modal)return;render()},()=>{}));
+})();
+</script>
+</body>
+</html>

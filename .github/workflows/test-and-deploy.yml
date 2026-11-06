@@ -1,0 +1,51 @@
+name: Test and deploy erp.forka.com
+# Every change is checked first. If any check fails, the site is NOT updated
+# and erp.forka.com stays on the last version that passed.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: false
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: Install browser for tests
+        run: |
+          pip install playwright==1.48.0
+          python -m playwright install --with-deps chromium
+      - name: Server checks (accounts, sign-in, clearance)
+        run: node tests/server_test.js
+      - name: Page checks (preview mode, desktop, phone, Arabic)
+        run: python tests/ci_test.py
+      - name: Live sign-in checks
+        run: python tests/live_test.py
+      - name: No secrets in the site
+        run: |
+          ! grep -RInE "GOCSPX-|AIza[0-9A-Za-z_-]{30}|\"pin\"[[:space:]]*:[[:space:]]*\"[0-9]{4,}\"" index.html config.js
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build site (only the public files)
+        run: mkdir _site && cp index.html config.js CNAME _site/
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with: { path: _site }
+      - id: deployment
+        uses: actions/deploy-pages@v4
