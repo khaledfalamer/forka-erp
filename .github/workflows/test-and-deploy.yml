@@ -44,7 +44,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Build site (only the public files)
         run: |
-          mkdir _site && cp index.html config.js privacy.html CNAME _site/
+          mkdir _site && cp index.html config.js privacy.html about.html CNAME _site/
           # new address for the settings file on every publish, so browsers never use an old copy
           sed -i "s#<script src=\"config.js\"></script>#<script src=\"config.js?v=${GITHUB_SHA::7}\"></script>#" _site/index.html
           grep -q "config.js?v=" _site/index.html
