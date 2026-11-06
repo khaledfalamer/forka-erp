@@ -12,7 +12,7 @@
  */
 /* Not secret: the Sheet is private to its owner, and the sign-in client id is public by design (it is also in config.js). */
 const ACCOUNTS_SHEET_ID = '1YkqcYwtKcm4mOz-wJGLvSPAeEYGzPxqLep_SzRGOCCA';
-const GOOGLE_CLIENT_ID = '';   // filled in once the Google sign-in client exists
+const GOOGLE_CLIENT_ID = '443945615318-21aveveme3c8n41fepp4gmof3vnrs8if.apps.googleusercontent.com';
 const TABS = { people: 'People', req: 'Requests', act: 'Activity' };
 const P_HEAD = ['Email', 'Name', 'Job title', 'Clearance', 'Status', 'Procurement', 'Procurement sections', 'Hiring', 'Branch Check', 'Sign-in', 'PIN hash', 'Added by', 'Updated', 'Updated by'];
 const R_HEAD = ['Email', 'Name', 'Job title', 'Reason', 'Requested', 'State', 'Decided by', 'Decided', 'Note'];

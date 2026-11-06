@@ -61,5 +61,5 @@ call({action:'open',token:ceo,app:'proc'});
 const acts=call({action:'me',token:ceo}).activity.map(a=>a.verb);
 ck('Activity has sign-ins, confirm, allow, reject, add, edit, block, open',['signin','confirm','allow','reject','add','edit','block','open','req'].every(v=>acts.includes(v)),acts);
 ck('Sign out ends the session',call({action:'signout',token:ceo}).ok&&call({action:'me',token:ceo}).error==='session');
-ck('Missing client id gives a clear error',(delete props.GOOGLE_CLIENT_ID,call({action:'google',idToken:'tok-ceo'}).error==='noclient'));
+ck('Without a script property the client id in the code is used (other ids refused)',(delete props.GOOGLE_CLIENT_ID,call({action:'google',idToken:'tok-ceo'}).error==='token'));
 console.log(`${res.filter(Boolean).length}/${res.length} server checks passed`);process.exit(res.every(Boolean)?0:1);
