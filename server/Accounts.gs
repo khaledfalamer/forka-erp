@@ -5,12 +5,14 @@
  *
  * INSTALL (standalone Apps Script project):
  *  1. Paste this file -> Save.
- *  2. Project Settings -> Script properties: SHEET_ID = id of the "Forka Apps - Accounts" Sheet,
- *     GOOGLE_CLIENT_ID = the OAuth client id (ends with .apps.googleusercontent.com)
+ *  2. Set ACCOUNTS_SHEET_ID and GOOGLE_CLIENT_ID below (or the same names as Script properties).
  *  3. Run  setup  once and approve the permissions. It creates the People / Requests / Activity tabs.
  *  4. Deploy -> New deployment -> Web app -> Execute as: Me, Who has access: Anyone -> copy the /exec URL into config.js.
  * Nothing secret goes to GitHub: PINs are stored here only as salted hashes, sessions live in the script cache.
  */
+/* Not secret: the Sheet is private to its owner, and the sign-in client id is public by design (it is also in config.js). */
+const ACCOUNTS_SHEET_ID = '1YkqcYwtKcm4mOz-wJGLvSPAeEYGzPxqLep_SzRGOCCA';
+const GOOGLE_CLIENT_ID = '';   // filled in once the Google sign-in client exists
 const TABS = { people: 'People', req: 'Requests', act: 'Activity' };
 const P_HEAD = ['Email', 'Name', 'Job title', 'Clearance', 'Status', 'Procurement', 'Procurement sections', 'Hiring', 'Branch Check', 'Sign-in', 'PIN hash', 'Added by', 'Updated', 'Updated by'];
 const R_HEAD = ['Email', 'Name', 'Job title', 'Reason', 'Requested', 'State', 'Decided by', 'Decided', 'Note'];
@@ -34,7 +36,7 @@ const SEED = [
 ];
 
 function props_() { return PropertiesService.getScriptProperties(); }
-function ss_() { const id = props_().getProperty('SHEET_ID'); return id ? SpreadsheetApp.openById(id) : SpreadsheetApp.getActive(); }
+function ss_() { const id = props_().getProperty('SHEET_ID') || ACCOUNTS_SHEET_ID; return id ? SpreadsheetApp.openById(id) : SpreadsheetApp.getActive(); }
 function out_(o) { return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON); }
 function key_(e) { return String(e || '').trim().toLowerCase(); }
 function now_() { return new Date(); }
@@ -116,7 +118,7 @@ function lastRequest_(email) { const e = key_(email); return requests_().filter(
 
 /* ---------------- Google sign-in ---------------- */
 function verifyGoogle_(idToken) {
-  const clientId = props_().getProperty('GOOGLE_CLIENT_ID');
+  const clientId = props_().getProperty('GOOGLE_CLIENT_ID') || GOOGLE_CLIENT_ID;
   if (!clientId) return { error: 'noclient' };
   if (!idToken || String(idToken).length > 5000) return { error: 'token' };
   const r = UrlFetchApp.fetch('https://oauth2.googleapis.com/tokeninfo?id_token=' + encodeURIComponent(idToken), { muteHttpExceptions: true });

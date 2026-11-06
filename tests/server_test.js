@@ -9,7 +9,7 @@ class Sheet{constructor(n){this.n=n;this.d=[]}getName(){return this.n}getLastRow
 const sheets={};const ss={getSheetByName:n=>sheets[n]||null,insertSheet:n=>(sheets[n]=new Sheet(n))};
 const props={GOOGLE_CLIENT_ID:'CID.apps.googleusercontent.com'};const cache={};
 const tokens={'tok-ceo':{email:'ceo@forka.com'},'tok-hamim':{email:'store@kuwaitikitchen.com'},'tok-new':{email:'new.person@forka.com',name:'Sara'},'tok-other':{email:'other@forka.com'},'tok-badaud':{email:'ceo@forka.com',aud:'X'},'tok-unver':{email:'ceo@forka.com',ev:'false'}};
-const ctx={SpreadsheetApp:{getActive:()=>ss},PropertiesService:{getScriptProperties:()=>({getProperty:k=>props[k]??null,setProperty:(k,v)=>{props[k]=v}})},
+const ctx={SpreadsheetApp:{getActive:()=>ss,openById:()=>ss},PropertiesService:{getScriptProperties:()=>({getProperty:k=>props[k]??null,setProperty:(k,v)=>{props[k]=v}})},
  CacheService:{getScriptCache:()=>({put:(k,v)=>cache[k]=v,get:k=>cache[k]??null,remove:k=>delete cache[k]})},
  LockService:{getScriptLock:()=>({waitLock(){},releaseLock(){}})},
  ContentService:{createTextOutput:t=>({setMimeType(){return this},t}),MimeType:{JSON:1}},
