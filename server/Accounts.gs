@@ -3,9 +3,10 @@
  * Google sign-in (company emails) + PIN for staff without email, access requests,
  * CEO-only people & clearance, activity log.
  *
- * INSTALL (bound to the "Forka Apps - Accounts" Google Sheet):
- *  1. Extensions -> Apps Script -> paste this file -> Save.
- *  2. Project Settings -> Script properties: GOOGLE_CLIENT_ID = the OAuth client id (ends with .apps.googleusercontent.com)
+ * INSTALL (standalone Apps Script project):
+ *  1. Paste this file -> Save.
+ *  2. Project Settings -> Script properties: SHEET_ID = id of the "Forka Apps - Accounts" Sheet,
+ *     GOOGLE_CLIENT_ID = the OAuth client id (ends with .apps.googleusercontent.com)
  *  3. Run  setup  once and approve the permissions. It creates the People / Requests / Activity tabs.
  *  4. Deploy -> New deployment -> Web app -> Execute as: Me, Who has access: Anyone -> copy the /exec URL into config.js.
  * Nothing secret goes to GitHub: PINs are stored here only as salted hashes, sessions live in the script cache.
@@ -33,7 +34,7 @@ const SEED = [
 ];
 
 function props_() { return PropertiesService.getScriptProperties(); }
-function ss_() { return SpreadsheetApp.getActive(); }
+function ss_() { const id = props_().getProperty('SHEET_ID'); return id ? SpreadsheetApp.openById(id) : SpreadsheetApp.getActive(); }
 function out_(o) { return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON); }
 function key_(e) { return String(e || '').trim().toLowerCase(); }
 function now_() { return new Date(); }
