@@ -52,6 +52,7 @@ label.f{display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--fk
 .gcard p{margin:0;color:var(--fk-text-2)}
 .gbtn{display:flex;align-items:center;justify-content:center;gap:10px;border:1px solid #dadce0;background:#fff;border-radius:10px;padding:11px;font-weight:600;cursor:pointer;min-height:46px;color:#3c4043}
 .gbtn:hover{background:#f8f9fa}
+.plink{margin-top:18px;color:#cbbfae;font-size:12px;text-decoration:underline}
 .gbox{min-height:44px;display:flex;justify-content:center}
 .gbtn svg{width:18px;height:18px}
 .or{display:flex;align-items:center;gap:10px;color:var(--fk-muted);font-size:12px}
@@ -262,7 +263,7 @@ const T={en:{
   act:'Activity',everyone:'Everyone',noAct:'Nothing yet.',
   v_signin:'signed in',v_signout:'signed out',v_open:'opened',v_req:'requested access',v_allow:'allowed access for',v_reject:'rejected the request from',
   v_add:'added',v_edit:'changed access for',v_confirm:'confirmed access for',v_block:'blocked',v_unblock:'allowed again',
-  reset:'Reset preview data',busy:'Signing in...',setupT:'Almost ready',setupTxt:'Forka Apps is being set up. Please check back shortly.',sessionEnd:'Please sign in again.',netErr:'Could not reach the server. Check the internet and try again.',noClient:'Google sign-in is not set up yet.',gWait:'Loading Google sign-in...',resetQ:'Reset all preview data back to the start?',yes:'Yes, reset'
+  reset:'Reset preview data',busy:'Signing in...',privacy:'Privacy policy',setupT:'Almost ready',setupTxt:'Forka Apps is being set up. Please check back shortly.',sessionEnd:'Please sign in again.',netErr:'Could not reach the server. Check the internet and try again.',noClient:'Google sign-in is not set up yet.',gWait:'Loading Google sign-in...',resetQ:'Reset all preview data back to the start?',yes:'Yes, reset'
 },ar:{
   apps:'التطبيقات',sub:'فوركا للاستثمار الجماعي',signin:'تسجيل الدخول',signinTxt:'استخدم حساب Google الخاص بالشركة لفتح تطبيقاتك.',
   google:'الدخول بحساب Google',or:'أو',usePin:'لا يوجد بريد للشركة؟ ادخل بالرقم السري',pin:'الرقم السري',pinGo:'الدخول بالرقم السري',back:'رجوع',
@@ -299,7 +300,7 @@ const T={en:{
   act:'سجل النشاط',everyone:'الجميع',noAct:'لا يوجد شيء بعد.',
   v_signin:'سجل الدخول',v_signout:'سجل الخروج',v_open:'فتح',v_req:'طلب صلاحية دخول',v_allow:'وافق على دخول',v_reject:'رفض طلب',
   v_add:'أضاف',v_edit:'غير صلاحيات',v_confirm:'أكد صلاحية',v_block:'حظر',v_unblock:'سمح مرة أخرى لـ',
-  reset:'إعادة بيانات المعاينة',busy:'جاري تسجيل الدخول...',setupT:'قريبا',setupTxt:'يتم الآن تجهيز تطبيقات فوركا. يرجى المحاولة بعد قليل.',sessionEnd:'يرجى تسجيل الدخول مرة أخرى.',netErr:'تعذر الوصول إلى الخادم. تحقق من الإنترنت وحاول مرة أخرى.',noClient:'تسجيل الدخول عبر Google غير مفعل بعد.',gWait:'جاري تحميل تسجيل الدخول من Google...',resetQ:'إعادة كل بيانات المعاينة إلى البداية؟',yes:'نعم، إعادة'
+  reset:'إعادة بيانات المعاينة',busy:'جاري تسجيل الدخول...',privacy:'سياسة الخصوصية',setupT:'قريبا',setupTxt:'يتم الآن تجهيز تطبيقات فوركا. يرجى المحاولة بعد قليل.',sessionEnd:'يرجى تسجيل الدخول مرة أخرى.',netErr:'تعذر الوصول إلى الخادم. تحقق من الإنترنت وحاول مرة أخرى.',noClient:'تسجيل الدخول عبر Google غير مفعل بعد.',gWait:'جاري تحميل تسجيل الدخول من Google...',resetQ:'إعادة كل بيانات المعاينة إلى البداية؟',yes:'نعم، إعادة'
 }};
 let lang='en';try{lang=localStorage.getItem('fa-lang')||'en'}catch(_){}
 const t=k=>(T[lang]&&T[lang][k])||T.en[k]||k;
@@ -450,7 +451,7 @@ function vGate(){
   else{const m={waiting:['waitT','waitTxt','ok'],pending:['pendT','pendTxt','ok'],blocked:['blockT','blockTxt','err'],rejected:['rejT','blockTxt','err']}[g.step];
     const r=DATA.requests[g.email];
     body='<h2>'+t(m[0])+'</h2><div class="'+m[2]+'">'+t(m[1])+(g.step==='rejected'&&r&&r.reason?'<br><b>'+esc(r.reason)+'</b>':'')+'</div><div class="note">'+esc(g.email)+'</div><button class="lnk" data-a="g-start">'+t('back')+'</button>'}
-  return '<div class="gate">'+langSw()+'<div class="brand">Forka</div><div class="brand-sub">'+t('apps')+'</div><div class="gcard">'+body+'</div></div>'}
+  return '<div class="gate">'+langSw()+'<div class="brand">Forka</div><div class="brand-sub">'+t('apps')+'</div><div class="gcard">'+body+'</div><a class="plink" href="privacy.html">'+t('privacy')+'</a></div>'}
 
 function vTop(){const p=person(me);
   return '<div class="top"><div class="logo" data-a="home">Forka</div><div class="sub">'+t('apps')+'</div><div class="sp"></div>'+
