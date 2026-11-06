@@ -16,7 +16,7 @@ async def fresh(browser, w=1280, h=900):
     await pg.route('**/config.js', lambda r: r.fulfill(body='', content_type='application/javascript'))  # preview mode
     await pg.route('**/fonts.googleapis.com/**', lambda r: r.fulfill(body='', content_type='text/css'))
     await ctx.route('**/claude.ai/**', lambda r: r.fulfill(body='<html><title>x</title></html>', content_type='text/html'))
-    await ctx.route('**/khaledfalamer.github.io/**', lambda r: r.fulfill(body='<html><title>Procurement</title></html>', content_type='text/html'))
+    await ctx.route('**/procurement.forka.com/**', lambda r: r.fulfill(body='<html><title>Procurement</title></html>', content_type='text/html'))
     await pg.goto(URL); await pg.wait_for_timeout(2300)
     return ctx, pg, errs
 
@@ -152,7 +152,7 @@ async def main():
         async with ctx.expect_page() as np:
             await pg.click('[data-app=proc]')
         newp = await np.value
-        check('Procurement tile opens the current procurement app', 'khaledfalamer.github.io/Forka-Procurment' in newp.url, newp.url)
+        check('Procurement tile opens the current procurement app', 'procurement.forka.com' in newp.url, newp.url)
         await newp.close()
         # 12 Arabic
         await pg.wait_for_timeout(2000)

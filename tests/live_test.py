@@ -5,7 +5,7 @@ from playwright.async_api import async_playwright
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 URL = 'file://' + str(ROOT / 'index.html')
-CFG = "window.FORKA_APPS={MODE:'live',ACCOUNTS_URL:'https://accounts.test/exec',GOOGLE_CLIENT_ID:'CID.apps.googleusercontent.com',PROCUREMENT_URL:'https://khaledfalamer.github.io/Forka-Procurment/'};"
+CFG = "window.FORKA_APPS={MODE:'live',ACCOUNTS_URL:'https://accounts.test/exec',GOOGLE_CLIENT_ID:'CID.apps.googleusercontent.com',PROCUREMENT_URL:'https://procurement.forka.com/'};"
 GIS = """window.google={accounts:{id:{_cb:null,initialize(o){this._cb=o.callback;window.__cid=o.client_id},
  renderButton(el){el.innerHTML='<button id="gsi" type="button">Google</button>';el.querySelector('#gsi').onclick=()=>this._cb({credential:'tok:'+(window.__as||'')})}}}};"""
 
@@ -78,7 +78,7 @@ async def main():
         await ctx.route('**/accounts.google.com/gsi/client', lambda r: r.fulfill(body=GIS, content_type='application/javascript'))
         await ctx.route('**/fonts.googleapis.com/**', lambda r: r.fulfill(body='', content_type='text/css'))
         await ctx.route('https://accounts.test/**', lambda r: r.fulfill(json=handle(json.loads(r.request.post_data or '{}'))))
-        await ctx.route('**/khaledfalamer.github.io/**', lambda r: r.fulfill(body='<title>p</title>', content_type='text/html'))
+        await ctx.route('**/procurement.forka.com/**', lambda r: r.fulfill(body='<title>p</title>', content_type='text/html'))
         await ctx.route('**/claude.ai/**', lambda r: r.fulfill(body='<title>x</title>', content_type='text/html'))
         pg = await ctx.new_page(); errs = []
         pg.on('pageerror', lambda e: errs.append(str(e)))
@@ -106,7 +106,7 @@ async def main():
         async with ctx.expect_page() as np:
             await pg.click('[data-app=proc]')
         newp = await np.value
-        check('Procurement opens with the Forka Apps sign-in handed over, visit logged', 'Forka-Procurment' in newp.url and '#erp=S' in newp.url and any(a['verb'] == 'open' for a in ACT), newp.url)
+        check('Procurement opens with the Forka Apps sign-in handed over, visit logged', 'procurement.forka.com' in newp.url and '#erp=S' in newp.url and any(a['verb'] == 'open' for a in ACT), newp.url)
         await newp.close()
         await pg.click('[data-a=out]'); await pg.wait_for_selector('#gsi')
         await as_('new.person@forka.com')
