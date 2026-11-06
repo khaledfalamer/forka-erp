@@ -652,7 +652,7 @@ if(LIVE){
     if(r.ok){applyBundle(r);render();return}if(r.error==='session')return sessionGone(t('sessionEnd'));toast(errText(r.error))};
   rejectReq=async function(id,reason){const r=await api('reject',{id,reason});
     if(r.ok){applyBundle(r);modal=null;render();return}if(r.error==='session')return sessionGone(t('sessionEnd'));toast(errText(r.error))};
-  openApp=function(a){const p=person(me);if(!canOpen(a,p))return;try{window.open(a.url,'_blank','noopener')}catch(_){}api('open',{app:a.id})};
+  openApp=function(a){const p=person(me);if(!canOpen(a,p))return;const u=a.id==='proc'?a.url+'#erp='+encodeURIComponent(TOKEN):a.url;try{window.open(u,'_blank','noopener')}catch(_){}api('open',{app:a.id})};
 }
 (async()=>{
   if(LIVE){

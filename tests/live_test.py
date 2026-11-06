@@ -106,7 +106,7 @@ async def main():
         async with ctx.expect_page() as np:
             await pg.click('[data-app=proc]')
         newp = await np.value
-        check('Procurement opens and the visit is logged', 'Forka-Procurment' in newp.url and any(a['verb'] == 'open' for a in ACT))
+        check('Procurement opens with the Forka Apps sign-in handed over, visit logged', 'Forka-Procurment' in newp.url and '#erp=S' in newp.url and any(a['verb'] == 'open' for a in ACT), newp.url)
         await newp.close()
         await pg.click('[data-a=out]'); await pg.wait_for_selector('#gsi')
         await as_('new.person@forka.com')
