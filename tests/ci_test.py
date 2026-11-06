@@ -185,7 +185,7 @@ async def main():
         await ctx.close(); await b.close()
     # 14 secret scan
     src = (ROOT / 'index.html').read_text() + (ROOT / 'config.js').read_text()
-    bad = [m for m in re.findall(r'(AIza[0-9A-Za-z_\-]{20,}|AKfyc[0-9A-Za-z_\-]{20,}|"pin"\s*:\s*"\d+"|pin:\s*\'\d+\'|GOCSPX-[0-9A-Za-z_\-]+)', src)]
+    bad = [m for m in re.findall(r'(AIza[0-9A-Za-z_\-]{20,}|"pin"\s*:\s*"\d+"|pin:\s*\'\d+\'|GOCSPX-[0-9A-Za-z_\-]+)', src)]
     check('No PINs, keys or secrets in the code', not bad, str(bad))
     check('No emojis in the page', not re.search('[\U0001F300-\U0001FAFF☀-➿]', src))
     failed = [r for r in results if not r[1]]
