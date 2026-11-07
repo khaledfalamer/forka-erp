@@ -36,7 +36,7 @@ const ctx = {
       return { getName: () => f.blob.name, getBlob: () => ({ getContentType: () => f.blob.type, getBytes: () => f.blob.bytes }), getParents: () => ({ hasNext: () => !done, next: () => { done = true; return { getId: () => f.parent }; } }) }; } },
   MailApp: { sendEmail: m => mails.push(m) },
   Utilities: { base64Decode: s => [...Buffer.from(s, 'base64')], base64Encode: b => Buffer.from(b).toString('base64'), formatDate: () => '20261107-0900',
-    newBlob: (bytes, type, name) => ({ bytes, type, name }) },
+    newBlob: (bytes, type, name) => ({ bytes, type, name }), getUuid: () => crypto.randomUUID() },
   console, Date, JSON, Math
 };
 vm.createContext(ctx);
@@ -127,6 +127,59 @@ ck('Head cannot open a Service CV', !call({ action: 'cv', token: CHEF, id: 'file
   k2.list[ka].status = 'shortlist';
   ck('Head updates the stage shown to a Kitchen applicant', call({ action: 'put', token: CHEF, col: 'apps', id: kid, data: k2 }).ok);
   k2.list[ka].salary = 1; ck('...but cannot change anything else in it', call({ action: 'put', token: CHEF, col: 'apps', id: kid, data: k2 }).error === 'role'); }
+
+/* ---------- interview scorecards: blind, each person's own ---------- */
+call({ action: 'put', token: CEO, col: 'reqs', id: 'rk2', data: { title: 'Grill Cook', dept: 'Kitchen', status: 'open', testQs: ['Grill'] } });
+call({ action: 'put', token: JEN, col: 'pipe', id: 'iv1', data: { req: 'rk2', name: 'Omar Cook', email: 'omar@mail.com', jobTitle: 'Grill Cook', stage: 'interview', lang: 'ar' } });
+call({ action: 'put', token: CHEF, col: 'pipe', id: 'iv1', data: { req: 'rk2', name: 'Omar Cook', email: 'omar@mail.com', jobTitle: 'Grill Cook', stage: 'interview', lang: 'ar', iv: { 'chef@kuwaitikitchen.com': { tech: [4], comp: [4, 4], rec: 'Hire', n: { 'tech.0': 'clean grill work' } } } } });
+{ const h = call({ action: 'load', token: JEN }).data.pipe.iv1;
+  ck('HR cannot see the head\'s scores before submitting their own', h.iv['chef@kuwaitikitchen.com'].hidden && !h.iv['chef@kuwaitikitchen.com'].tech && !JSON.stringify(h).includes('clean grill'), h.iv);
+  const c = call({ action: 'load', token: CEO }).data.pipe.iv1;
+  ck('CEO (not on this panel) sees every scorecard', c.iv['chef@kuwaitikitchen.com'].tech[0] === 4, c.iv);
+  // HR saves the record it received (with the hidden stub) plus its own card
+  h.iv['jennifer@forka.com'] = { tech: [], comp: [2, 3], hr: [3], rec: 'No hire', n: { 'comp.0': 'vague answers' } };
+  call({ action: 'put', token: JEN, col: 'pipe', id: 'iv1', data: h });
+  const s1 = call({ action: 'load', token: CEO }).data.pipe.iv1.iv;
+  ck('Saving with a hidden card does not wipe the other interviewer\'s scores', s1['chef@kuwaitikitchen.com'].tech[0] === 4 && s1['jennifer@forka.com'].comp[0] === 2 && s1['jennifer@forka.com'].who === 'hr' && s1['chef@kuwaitikitchen.com'].who === 'head', s1);
+  const h2 = JSON.parse(JSON.stringify(h)); h2.iv['chef@kuwaitikitchen.com'] = { tech: [1], comp: [1, 1], done: true };
+  call({ action: 'put', token: JEN, col: 'pipe', id: 'iv1', data: h2 });
+  ck('Nobody can change another interviewer\'s scorecard', call({ action: 'load', token: CEO }).data.pipe.iv1.iv['chef@kuwaitikitchen.com'].tech[0] === 4); }
+{ const c = call({ action: 'load', token: CHEF }).data.pipe.iv1; c.iv['chef@kuwaitikitchen.com'].done = true;
+  call({ action: 'put', token: CHEF, col: 'pipe', id: 'iv1', data: c });
+  const after = call({ action: 'load', token: CHEF }).data.pipe.iv1;
+  ck('After submitting, the head sees HR\'s scores and notes', after.iv['jennifer@forka.com'].comp[0] === 2 && after.iv['jennifer@forka.com'].n['comp.0'] === 'vague answers', after.iv);
+  after.iv['chef@kuwaitikitchen.com'].tech = [1];
+  call({ action: 'put', token: CHEF, col: 'pipe', id: 'iv1', data: after });
+  ck('A submitted scorecard is locked', call({ action: 'load', token: CEO }).data.pipe.iv1.iv['chef@kuwaitikitchen.com'].tech[0] === 4); }
+
+/* ---------- booking links ---------- */
+const DAY = 864e5, T0 = Date.now(), s1 = T0 + 2 * DAY, s2 = T0 + 3 * DAY, s3 = T0 + 4 * DAY;
+mails.length = 0;
+ck('A head cannot book an HR call', call({ action: 'invite', token: CHEF, id: 'iv1', kind: 'call', slots: [s1] }).error === 'role');
+ck('No times = refused', call({ action: 'invite', token: JEN, id: 'iv1', kind: 'interview', slots: [T0 - DAY] }).error === 'slots');
+let inv = call({ action: 'invite', token: CHEF, id: 'iv1', kind: 'interview', slots: [s1, s2, s3], mins: 45, mode: 'In person', place: 'Sharjah branch' });
+ck('Head sends an interview booking link', inv.ok && /^https:\/\/apply\.forka\.com\/#book=[\w-]{20,}$/.test(inv.link) && inv.mailed, inv);
+ck('Candidate gets the link by email, in Arabic when they applied in Arabic', mails.length === 1 && mails[0].to === 'omar@mail.com' && mails[0].body.includes(inv.link) && /مقابلة/.test(mails[0].body), mails[0]);
+const tok = inv.link.split('#book=')[1];
+let si = call({ action: 'slot', token: tok });
+ck('Booking page shows the times, job and place, nothing private', si.ok && si.slots.length === 3 && si.slots.every(x => x.free) && si.place === 'Sharjah branch' && si.name === 'Omar' && !JSON.stringify(si).match(/chef@|jennifer|iv|tech/), si);
+ck('A made-up link shows nothing', call({ action: 'slot', token: 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee' }).error === 'missing');
+ck('A time that was not offered is refused', call({ action: 'book', token: tok, t: s1 + 60000 }).error === 'slot');
+mails.length = 0;
+let bk = call({ action: 'book', token: tok, t: s2 });
+ck('Candidate picks a time', bk.ok && bk.pick === s2, bk);
+ck('Candidate and interviewer both get a confirmation with a calendar file', mails.length === 2 && mails.every(m => m.attachments && /BEGIN:VEVENT/.test(m.attachments[0].bytes || m.attachments[0].data || '')) && mails[1].to.includes('chef@kuwaitikitchen.com') && mails[1].to.includes('hr@forka.com') && /calendar\.google\.com/.test(mails[1].body), mails.map(m => [m.to, m.subject]));
+{ const p = call({ action: 'load', token: CEO }).data.pipe.iv1;
+  ck('The pick shows in Hiring with a history line', p.books.interview.pick === s2 && /Interview booked for/.test(p.history.slice(-1)[0].m), p.books);
+  p.books.interview.pick = s3; call({ action: 'put', token: CEO, col: 'pipe', id: 'iv1', data: p });
+  ck('A normal save cannot change a booking', call({ action: 'load', token: CEO }).data.pipe.iv1.books.interview.pick === s2); }
+call({ action: 'put', token: JEN, col: 'pipe', id: 'iv2', data: { req: 'rk2', name: 'Second Cook', email: 'two@mail.com', jobTitle: 'Grill Cook', stage: 'interview' } });
+const inv2 = call({ action: 'invite', token: CHEF, id: 'iv2', kind: 'interview', slots: [s1, s2] }), tok2 = inv2.link.split('#book=')[1];
+ck('A time another candidate already booked with the same interviewer shows as taken', (x => x.slots.find(y => y.t === s2).free === false && x.slots.find(y => y.t === s1).free)(call({ action: 'slot', token: tok2 })));
+ck('...and cannot be booked twice', call({ action: 'book', token: tok2, t: s2 }).error === 'taken');
+ck('Candidate can move to another free time', call({ action: 'book', token: tok, t: s3 }).ok && call({ action: 'book', token: tok2, t: s2 }).ok);
+{ const p = call({ action: 'load', token: CEO }).data.pipe.iv1; p.stage = 'rejected'; call({ action: 'put', token: CEO, col: 'pipe', id: 'iv1', data: p });
+  ck('Once rejected, the booking link closes', call({ action: 'slot', token: tok }).error === 'closed' && call({ action: 'book', token: tok, t: s1 }).error === 'closed'); }
 const n0 = accountsCalls; call({ action: 'load', token: JEN }); call({ action: 'load', token: JEN });
 ck('Forka Apps asked at most once per 5 minutes per sign-in', accountsCalls === n0);
 console.log(`${res.filter(Boolean).length}/${res.length} hiring server checks passed`); process.exit(res.every(Boolean) ? 0 : 1);

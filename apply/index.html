@@ -61,6 +61,11 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--bronze);outline-
 .err{background:var(--badbg);color:var(--bad);border-radius:8px;padding:10px 12px;margin-top:16px;font-size:14px}
 .done{text-align:center;padding:40px 24px}
 .done .ref{display:inline-block;margin-top:10px;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:6px 14px;font-weight:600;letter-spacing:1px}
+.days{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-top:16px}
+.dayc{border:1px solid var(--line);border-radius:10px;padding:12px;background:#fff}.dayc b{display:block;margin-bottom:8px}
+.dayc div{display:flex;flex-wrap:wrap;gap:6px}.tm{border:1px solid var(--line);background:#fff;border-radius:8px;padding:7px 10px;font:inherit;font-size:14px;cursor:pointer}
+.tm.on{background:var(--ink);color:#fff;border-color:var(--ink)}.tm:disabled{color:var(--mute);text-decoration:line-through;cursor:default;background:var(--bg)}
+.okbox{background:#e9f3ec;color:var(--ok);border-radius:8px;padding:10px 12px;margin-top:12px;font-weight:600}
 .pv{background:#f8eedc;color:#7a5410;text-align:center;font-size:13px;padding:6px}
 .hp{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;opacity:0;pointer-events:none}
 footer{max-width:980px;margin:0 auto;padding:0 20px 40px;color:var(--mute);font-size:13px}
@@ -84,7 +89,12 @@ const T={en:{lang:"عربي",kick:"FORKA COLLECTIVE · CAREERS",h1:"Build the re
   need:"Please fill in the fields marked in red.",again:"You already applied for this job in the last hour. We have it.",closed:"This job is no longer open.",
   cvbig:"The CV file is over 5 MB. Please send a smaller file or paste the text.",cvtype:"Please upload a PDF, Word file or a photo.",busy:"Too many applications right now. Please try again later.",
   thanks:"Thank you, your application was sent.",thanksTxt:"Our HR team reviews every application and replies to everyone. Keep this reference:",more:"See other jobs",
-  preview:"Preview: sample jobs only. Nothing is sent.",privacy:"Your details are used only for hiring at Forka and kept private.",posted:"Posted"},
+  preview:"Preview: sample jobs only. Nothing is sent.",privacy:"Your details are used only for hiring at Forka and kept private.",posted:"Posted",
+  bkHi:"Hello",bkCall:"Pick a time for your HR call",bkIv:"Pick a time for your interview",bkFor:"for the role of",bkTz:"Times are UAE time (same as Oman).",bkMins:"minutes",
+  bkConfirm:"Confirm this time",bkPick:"Choose a time above",bkDone:"You're booked",bkDoneTxt:"We emailed you a confirmation with a calendar invite. See you then.",
+  bkHave:"You're booked for",bkChange:"Need to change it? Pick another time below.",bkTaken:"Sorry, that time was just taken. Please pick another.",bkLate:"It's too close to your time to change it online. Please reply to our email.",
+  bkMissing:"This booking link is not valid. Please check the link in your email.",bkClosed:"This booking is closed. Our HR team will contact you.",bkNone:"No times are left. Please reply to our email and we'll send new ones.",
+  modes:{"In person":"In person","Phone":"Phone call","Video call":"Video call"},taken:"taken",bkLoading:"Loading your times…"},
  ar:{lang:"English",kick:"فوركا · الوظائف",h1:"ابنِ معنا أفضل مطاعم المنطقة",
   open:"الوظائف المتاحة",none:"لا توجد وظائف متاحة الآن. يرجى المحاولة لاحقاً.",loading:"جاري تحميل الوظائف...",netErr:"تعذّر تحميل الوظائف. تحقق من الاتصال وحاول مرة أخرى.",
   view:"التفاصيل والتقديم",back:"كل الوظائف",apply:"قدّم على هذه الوظيفة",name:"الاسم الكامل",email:"البريد الإلكتروني",phone:"الهاتف / واتساب",loc:"مكان إقامتك الحالي",
@@ -95,12 +105,18 @@ const T={en:{lang:"عربي",kick:"FORKA COLLECTIVE · CAREERS",h1:"Build the re
   need:"يرجى تعبئة الحقول المظللة بالأحمر.",again:"قدّمت على هذه الوظيفة خلال الساعة الماضية. طلبك وصلنا.",closed:"هذه الوظيفة لم تعد متاحة.",
   cvbig:"ملف السيرة الذاتية أكبر من 5 ميغابايت. أرسل ملفاً أصغر أو الصق النص.",cvtype:"يرجى رفع ملف PDF أو Word أو صورة.",busy:"عدد كبير من الطلبات الآن. يرجى المحاولة لاحقاً.",
   thanks:"شكراً لك، تم إرسال طلبك.",thanksTxt:"فريق الموارد البشرية يراجع كل الطلبات ويرد على الجميع. احتفظ بهذا الرقم المرجعي:",more:"شاهد وظائف أخرى",
-  preview:"معاينة: وظائف تجريبية فقط. لا يتم إرسال أي شيء.",privacy:"تُستخدم بياناتك للتوظيف في فوركا فقط وتبقى سرية.",posted:"نُشرت"}};
+  preview:"معاينة: وظائف تجريبية فقط. لا يتم إرسال أي شيء.",privacy:"تُستخدم بياناتك للتوظيف في فوركا فقط وتبقى سرية.",posted:"نُشرت",
+  bkHi:"مرحباً",bkCall:"اختر موعد المكالمة مع الموارد البشرية",bkIv:"اختر موعد المقابلة",bkFor:"لوظيفة",bkTz:"المواعيد بتوقيت الإمارات (نفس توقيت عُمان).",bkMins:"دقيقة",
+  bkConfirm:"تأكيد هذا الموعد",bkPick:"اختر موعداً من الأعلى",bkDone:"تم تأكيد موعدك",bkDoneTxt:"أرسلنا لك رسالة تأكيد بالبريد مع دعوة تقويم. نراك قريباً.",
+  bkHave:"موعدك الحالي:",bkChange:"تريد تغييره؟ اختر موعداً آخر من الأسفل.",bkTaken:"عذراً، تم حجز هذا الموعد للتو. اختر موعداً آخر.",bkLate:"الموعد قريب جداً ولا يمكن تغييره عبر الإنترنت. يرجى الرد على رسالتنا.",
+  bkMissing:"رابط الحجز غير صالح. يرجى التحقق من الرابط في بريدك.",bkClosed:"هذا الحجز مغلق. سيتواصل معك فريق الموارد البشرية.",bkNone:"لا توجد مواعيد متبقية. يرجى الرد على رسالتنا وسنرسل مواعيد جديدة.",
+  modes:{"In person":"حضورياً","Phone":"مكالمة هاتفية","Video call":"مكالمة فيديو"},taken:"محجوز",bkLoading:"جاري تحميل المواعيد..."}};
 let lang=(()=>{try{const s=localStorage.getItem("fc-lang");if(s)return s}catch(e){}return /^ar/i.test(navigator.language||"")?"ar":"en"})();
 const t=k=>T[lang][k];
 const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const SAMPLE={jobs:[{id:"demo1",title:"Line Cook",dept:"Kitchen",branch:"Sharjah",ad:"Join the kitchen team at Al Matbakh Al Kuwaiti, Sharjah. Prepare Kuwaiti dishes to our standards, keep your station clean and work as one team at rush hour.",adAr:"انضم إلى فريق المطبخ في المطبخ الكويتي بالشارقة. تحضير الأطباق الكويتية حسب معاييرنا، والحفاظ على نظافة المحطة، والعمل كفريق واحد وقت الذروة.",knockout:["Do you have at least 2 years of kitchen experience?","Can you work evening shifts?"],postedAt:Date.now()-864e5},
   {id:"demo2",title:"Barista",dept:"Service",branch:"Mayar Cafe",ad:"Specialty coffee bar. Dial in espresso, serve guests with care, and help run tastings.",adAr:"مقهى قهوة مختصة. ضبط الإسبريسو وخدمة الضيوف باهتمام والمساعدة في جلسات التذوق.",knockout:["Have you worked on an espresso machine before?"],postedAt:Date.now()-3*864e5}],brand:null};
+let BK=null,bkTok="",bkSel=null,bkMsg="",bkBusy=false;
 let D=null,err="",job=null,form={ans:[],bad:[]},state="list",ref="",sending=false,fileSel=null;
 const BRAND_AR={intro:"ندير مطاعم في الإمارات وعُمان، منها المطبخ الكويتي ومقهى ميار، ونحن في توسّع مستمر. نرد على كل متقدّم.",values:["الطعام أولاً","معايير واضحة تُقاس","تطوّر مع المجموعة","نرد على كل متقدّم"]};
 const brand=()=>Object.assign({intro:"We run restaurants across the UAE and Oman, including Al Matbakh Al Kuwaiti and Mayar Cafe, and we are growing. Every candidate gets a reply.",values:["Food first","Standards you can measure","Grow with the group","Every candidate gets a reply"]},(D&&D.brand)||{});
@@ -120,6 +136,7 @@ function render(){
   document.getElementById("ft").textContent=t("privacy");
   const A=document.getElementById("app"),b=brand();
   const hero=`<section class="hero"><div class="kick">${t("kick")}</div><h1>${t("h1")}</h1><p>${esc(introOf(b))}</p><div class="vals">${valuesOf(b).map(v=>`<span>${esc(v)}</span>`).join("")}</div></section>`;
+  if(state==="book"){A.innerHTML=`<main style="padding-top:30px">${bookHtml()}</main>`;return}
   if(state==="done"){A.innerHTML=`<main style="padding-top:30px"><div class="panel done"><h2>${t("thanks")}</h2><p>${t("thanksTxt")}</p><div class="ref">${esc(ref)}</div><div><button class="btn" data-a="more">${t("more")}</button></div></div></main>`;return}
   if(state==="job"&&job){A.innerHTML=`<main style="padding-top:30px">${jobHtml()}</main>`;return}
   let list;
@@ -142,6 +159,38 @@ function jobHtml(){const j=job,f=form,m=k=>f.bad.includes(k)?"miss":"";
   <label>${t("cvText")} <span class="hint">${t("opt")}</span></label><textarea name="cvText"></textarea>
   <label class="chk ${m("consent")}" style="font-weight:400"><input type="checkbox" name="consent"><span>${t("consent")}</span></label>
   <div id="ferr"></div><button class="btn" type="submit" ${sending?"disabled":""}>${sending?t("sending"):t("send")}</button></form></div>`}
+// ---------- booking: candidate picks an interview / HR call time ----------
+const DAYN={en:["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],ar:["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"]};
+const MONN={en:["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],ar:["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"]};
+const uae=t=>{const d=new Date(t+4*3600000);return{wd:d.getUTCDay(),d:d.getUTCDate(),m:d.getUTCMonth(),h:d.getUTCHours(),mi:d.getUTCMinutes()}};
+const dayTxt=t=>{const p=uae(t);return DAYN[lang][p.wd]+" "+p.d+" "+MONN[lang][p.m]};
+const hourTxt=t=>{const p=uae(t),am=p.h<12;return ((p.h+11)%12+1)+":"+String(p.mi).padStart(2,"0")+" "+(lang==="ar"?(am?"ص":"م"):(am?"AM":"PM"))};
+function bookHtml(){
+  if(bkMsg&&!BK)return `<div class="panel">${esc(t(bkMsg))}</div>`;
+  if(!BK)return `<div class="panel">${t("bkLoading")}</div>`;
+  const b=BK,job=lang==="ar"&&b.jobAr?b.jobAr:b.job;
+  if(state==="book"&&b.done)return `<div class="panel done"><h2>${t("bkDone")}</h2><p style="font-size:18px;margin:12px 0"><b>${esc(dayTxt(b.pick))} · ${esc(hourTxt(b.pick))}</b></p><p>${esc(t("modes")[b.mode]||b.mode)}${b.place?" · "+esc(b.place):""}</p><p class="meta">${t("bkDoneTxt")}</p></div>`;
+  const groups={};b.slots.forEach(x=>{const k=dayTxt(x.t);(groups[k]=groups[k]||[]).push(x)});
+  const anyFree=b.slots.some(x=>x.free&&x.t!==b.pick);
+  return `<div class="panel"><div class="meta">${t("bkHi")} ${esc(b.name)}</div><h1 style="font-size:30px">${b.kind==="call"?t("bkCall"):t("bkIv")}</h1>
+  <p>${t("bkFor")} <b dir="auto">${esc(job)}</b> · ${esc(t("modes")[b.mode]||b.mode)}${b.place?` · <bdi>${esc(b.place)}</bdi>`:""} · ${b.mins} ${t("bkMins")}</p>${b.note?`<p class="ad" dir="auto">${esc(b.note)}</p>`:""}
+  ${b.pick?`<div class="okbox">${t("bkHave")} ${esc(dayTxt(b.pick))} · ${esc(hourTxt(b.pick))}</div><p class="meta">${t("bkChange")}</p>`:""}
+  <p class="meta">${t("bkTz")}</p>
+  ${anyFree?`<div class="days">${Object.keys(groups).map(k=>`<div class="dayc"><b>${esc(k)}</b><div>${groups[k].map(x=>`<button class="tm ${bkSel===x.t?"on":""}" data-tm="${x.t}" ${x.free&&x.t!==b.pick?"":"disabled"}>${esc(hourTxt(x.t))}${x.free||x.t===b.pick?"":" · "+t("taken")}</button>`).join("")}</div></div>`).join("")}</div>`:`<div class="err">${t("bkNone")}</div>`}
+  <div id="ferr">${bkMsg?`<div class="err">${esc(t(bkMsg))}</div>`:""}</div>
+  ${anyFree?`<button class="btn" data-a="book" ${bkSel&&!bkBusy?"":"disabled"}>${bkSel?t("bkConfirm")+" — "+esc(dayTxt(bkSel))+" · "+esc(hourTxt(bkSel)):t("bkPick")}</button>`:""}</div>`}
+async function bookLoad(){ state="book";render();
+  if(!HURL){const n=Date.now(),D1=864e5,base=Math.floor(n/D1)*D1+6*3600000;BK={ok:true,kind:"interview",name:"Omar",job:"Line Cook",jobAr:"طباخ خط",mins:45,mode:"In person",place:"Sharjah branch",note:"",pick:null,slots:[1,2,3].flatMap(d=>[0,3600000*2].map((h,i)=>({t:base+d*D1+h,free:!(d===2&&i===1)})))};render();return}
+  let r;try{r=await (await fetch(HURL,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({action:"slot",token:bkTok})})).json()}catch(x){r={ok:false,error:"net"}}
+  if(r.ok){BK=r;bkMsg="";if(r.lang==="ar"&&(()=>{try{return !localStorage.getItem("fc-lang")}catch(e){return true}})())lang="ar"}else{BK=null;bkMsg=r.error==="closed"?"bkClosed":r.error==="missing"?"bkMissing":"netErr"}
+  render()}
+async function bookGo(){ if(!bkSel||bkBusy)return;bkBusy=true;bkMsg="";render();
+  let r;if(!HURL)r={ok:true,pick:bkSel};else{try{r=await (await fetch(HURL,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({action:"book",token:bkTok,t:bkSel})})).json()}catch(x){r={ok:false,error:"net"}}}
+  bkBusy=false;
+  if(r.ok){BK.pick=r.pick;BK.done=true;bkSel=null;render();window.scrollTo(0,0);return}
+  bkMsg=r.error==="taken"?"bkTaken":r.error==="late"?"bkLate":r.error==="closed"?"bkClosed":"netErr";
+  if(r.error==="taken"){const x=BK.slots.find(y=>y.t===bkSel);if(x)x.free=false;bkSel=null}
+  render()}
 function keepForm(){const F=document.getElementById("f");if(!F)return null;const o={};[...F.elements].forEach(e=>{if(e.name&&e.type!=="file")o[e.name]=e.type==="checkbox"?e.checked:e.value});return o}
 function restoreForm(o){const F=document.getElementById("f");if(!F||!o)return;[...F.elements].forEach(e=>{if(e.name&&o[e.name]!==undefined&&e.type!=="file"){if(e.type==="checkbox")e.checked=o[e.name];else e.value=o[e.name]}})}
 async function load(){
@@ -174,11 +223,12 @@ async function submit(e){e.preventDefault();if(sending)return;
 document.addEventListener("click",e=>{
   const l=e.target.closest("#lang");if(l){const kept=keepForm();lang=lang==="ar"?"en":"ar";try{localStorage.setItem("fc-lang",lang)}catch(x){}render();restoreForm(kept);return}
   const j=e.target.closest("[data-job]");if(j){job=D.jobs.find(x=>x.id===j.dataset.job);form={ans:[],bad:[]};fileSel=null;state="job";history.replaceState(null,"","#job="+job.id);render();window.scrollTo(0,0);return}
-  const a=e.target.closest("[data-a]");if(a){if(a.dataset.a==="back"||a.dataset.a==="more"){state="list";job=null;history.replaceState(null,"",location.pathname);render();window.scrollTo(0,0)}return}
+  const a=e.target.closest("[data-a]");if(a){if(a.dataset.a==="book"){bookGo();return}if(a.dataset.a==="back"||a.dataset.a==="more"){state="list";job=null;history.replaceState(null,"",location.pathname);render();window.scrollTo(0,0)}return}
+  const tm=e.target.closest("[data-tm]");if(tm){bkSel=+tm.dataset.tm;bkMsg="";render();return}
   const y=e.target.closest("[data-yn]");if(y){const kept=keepForm();form.ans[+y.dataset.yn]=y.dataset.v;form.bad=form.bad.filter(b=>b!=="q"+y.dataset.yn);render();restoreForm(kept)}});
 document.addEventListener("submit",e=>{if(e.target.id==="f")submit(e)});
 document.addEventListener("change",e=>{if(e.target.name==="cv"){fileSel=e.target.files[0]||null}});
-render();load();
+{const m=location.hash.match(/book=([A-Za-z0-9-]{20,60})/);if(m){bkTok=m[1];bookLoad()}else{render();load()}}
 </script>
 </body>
 </html>

@@ -15,10 +15,26 @@ DATA['reqs']['r1'] = {'id': 'r1', 'reqId': 'REQ-2611-01', 'title': 'Line Cook', 
 DATA['jobs']['r1'] = {'id': 'r1', 'title': 'Line Cook', 'dept': 'Kitchen', 'branch': 'Sharjah', 'knockout': ['2 years in a kitchen?'], 'open': True, 'postedAt': 1793624734240}
 DATA['apps']['wabc'] = {'web': True, 'list': {'wabc': {'req': 'r1', 'jobTitle': 'Line Cook', 'name': 'Sara Ali', 'email': 'sara@mail.com', 'phone': '+971501234567', 'years': 3, 'answers': [['2 years in a kitchen?', 'Yes']], 'knockout': [], 'consent': True, 'cvFile': {'id': 'fileCV1234567890', 'drive': True, 'name': 'sara.pdf', 'size': 2048, 'type': 'application/pdf'}, 'source': 'Careers page', 'createdAt': 1793700000000, 'status': 'applied'}}}
 
+NOW = int(time.time() * 1000); DAYMS = 864e5
+DATA['pipe']['civ'] = {'id': 'civ', 'req': 'r1', 'name': 'Joseph Mensah', 'email': 'joseph@mail.com', 'phone': '050 123 4567', 'stage': 'interview', 'stageAt': NOW, 'history': [],
+  'personality': {'qs': 'Walk me through your closing checklist.'},
+  'iv': {'chef@kuwaitikitchen.com': {'who': 'head', 'tech': [4], 'comp': [4, 4, 2, 4, 5, 3], 'prac': [4], 'n': {'comp.2': 'Blamed the kitchen'}, 'rec': 'Hire', 'strengths': 'Fast and clean', 'concerns': 'Owning mistakes', 'done': True, 'at': NOW},
+         'jennifer@forka.com': {'who': 'hr', 'comp': [4, 3, 5, 4, 5, 3], 'hr': [4, 3, 5, 4], 'n': {'comp.2': 'Owned a past mistake well'}, 'rec': 'No hire', 'strengths': 'Honest', 'concerns': 'Salary at top of range', 'done': True, 'at': NOW}}}
+DATA['pipe']['chid'] = {'id': 'chid', 'req': 'r1', 'name': 'Hidden Case', 'email': 'h@mail.com', 'stage': 'interview', 'stageAt': NOW, 'history': [],
+  'iv': {'jennifer@forka.com': {'who': 'hr', 'done': True, 'at': NOW, 'hidden': True}}}
+DATA['pipe']['csl'] = {'id': 'csl', 'req': 'r1', 'name': 'Rami Haddad', 'email': 'rami@mail.com', 'phone': '0501112233', 'lang': 'ar', 'stage': 'shortlist', 'stageAt': NOW, 'history': []}
+BOOK = {'token': 'tok-1234567890abcdef1234', 'kind': 'interview', 'name': 'Rami', 'job': 'Line Cook', 'jobAr': 'طباخ خط', 'lang': 'ar', 'mins': 45, 'mode': 'In person', 'place': 'Sharjah branch', 'note': 'Bring your passport copy', 'pick': None,
+  'slots': [{'t': NOW + 2 * DAYMS, 'free': True}, {'t': NOW + 2 * DAYMS + 3600000, 'free': False}, {'t': NOW + 3 * DAYMS, 'free': True}]}
+
 def handle(b):
     CALLS.append(b); a = b.get('action')
     if a == 'jobs':
         return {'ok': True, 'jobs': [dict(j, ad=DATA['reqs'].get(k, {}).get('ad', ''), adAr=DATA['reqs'].get(k, {}).get('adAr', ''), titleAr=DATA['reqs'].get(k, {}).get('titleAr', ''), knockoutAr=DATA['reqs'].get(k, {}).get('knockoutAr', [])) for k, j in DATA['jobs'].items() if j.get('open')], 'brand': None}
+    if a == 'slot':
+        return dict(BOOK, ok=True) if b.get('token') == BOOK['token'] else {'ok': False, 'error': 'missing'}
+    if a == 'book':
+        ok = any(x['t'] == b.get('t') and x['free'] for x in BOOK['slots'])
+        return {'ok': True, 'pick': b['t']} if ok else {'ok': False, 'error': 'taken'}
     if a == 'apply':
         if not b.get('name'): return {'ok': False, 'error': 'need', 'fields': ['name']}
         return {'ok': True, 'ref': 'AB12CD'}
@@ -30,6 +46,10 @@ def handle(b):
     if a == 'put':
         if b['col'] == 'config' and b['id'] == 'team' and not me['ceo']: return {'ok': False, 'error': 'role'}
         DATA[b['col']][b['id']] = b['data']; VER[0] += 1; return {'ok': True, 'ver': 'v%d' % VER[0]}
+    if a == 'invite':
+        bk = {'token': 'tok-new-0000000000000000', 'kind': b['kind'], 'slots': b['slots'], 'mins': b['mins'], 'mode': b['mode'], 'place': b['place'], 'by': me['email'], 'byName': me['name'], 'at': NOW, 'pick': None}
+        DATA['pipe'][b['id']].setdefault('books', {})[b['kind']] = bk; VER[0] += 1
+        return {'ok': True, 'ver': 'v%d' % VER[0], 'link': 'https://apply.forka.com/#book=' + bk['token'], 'mailed': True, 'book': bk}
     if a == 'cv': return {'ok': True, 'name': 'sara.txt', 'type': 'text/plain', 'data': 'Q1YgdGV4dA=='}  # headless Chrome downloads PDFs instead of showing them, so a text file stands in
     return {'ok': False, 'error': 'action'}
 
@@ -87,12 +107,46 @@ async def main():
             await newp.close()
             n = len(CALLS); await pg.reload(); await pg.wait_for_timeout(150)
             check('Reload shows the last data at once (before the server answers)', 'Sara Ali' in await pg.evaluate("JSON.stringify(allCands())"))
+            # --- interview comparison ---
+            await pg.evaluate("go('pipeline')"); await pg.evaluate("openCand('civ')"); await pg.wait_for_timeout(300)
+            cmp = await pg.inner_text('.cmp')
+            check('Comparison: both interviewers side by side with their notes', 'chef' in cmp.lower() and 'jennifer' in cmp.lower() and 'Blamed the kitchen' in cmp and 'Owned a past mistake well' in cmp, cmp[:300])
+            check('Comparison: questions only one side asked say "not asked"', 'not asked' in cmp)
+            check('Comparison: a 3-point gap on one question is flagged', await pg.locator('.cmp tr.gap').count() >= 1)
+            check('Comparison: split hire / no hire is called out', 'disagree on hiring' in await pg.inner_text('#dlg'))
+            await pg.locator('.cmp').scroll_into_view_if_needed(); await pg.locator('.card.sec', has=pg.locator('.cmp')).screenshot(path=str(ROOT / 'tests' / 'shots' / 'hiring_compare.png'))
+            # --- booking link ---
+            await pg.evaluate("closeModal();DRAFT=null;openCand('csl')"); await pg.wait_for_timeout(200)
+            await pg.click('text=Invite to interview'); await pg.wait_for_timeout(400)
+            check('Invite to interview opens the time picker', 'Send interview times' in await pg.inner_text('#dlg'))
+            await pg.locator('.slots button').nth(1).click(); await pg.locator('.slots button').nth(12).click(); await pg.wait_for_timeout(100)
+            await pg.screenshot(path=str(ROOT / 'tests' / 'shots' / 'hiring_schedule.png'))
+            await pg.click('#schGo'); await pg.wait_for_timeout(500)
+            inv = [c for c in CALLS if c.get('action') == 'invite']
+            check('Booking link sent with the picked times and the branch', inv and len(inv[-1]['slots']) == 2 and inv[-1]['place'] == 'Sharjah branch' and inv[-1]['mode'] == 'In person', inv[-1:])
+            wa = await pg.get_attribute('#dlg a[href^="https://wa.me/"]', 'href')
+            check('One-click WhatsApp with a UAE number and the link (Arabic for an Arabic applicant)', wa and wa.startswith('https://wa.me/971501112233?text=') and 'apply.forka.com' in wa and '%D9%85' in wa, wa)
+            await pg.screenshot(path=str(ROOT / 'tests' / 'shots' / 'hiring_schedule_sent.png'))
+            await pg.click('#dlg .btn.br'); await pg.wait_for_timeout(200)
+            check('Candidate page shows "waiting for the candidate to pick"', 'waiting for the candidate' in await pg.inner_text('#dlg'))
             check('No page errors (CEO)', not errs, errs[:2])
             await ctx.close()
             ctx, pg, errs = await ctx_for(b, CFG, token='TOKCHEF-000000000000000000')
             await pg.goto(BASE + '/hiring/'); await pg.wait_for_timeout(1000)
             nav = await pg.inner_text('#nav')
             check('Department head sees the head menu only', 'Team' not in nav and 'approvals' not in nav and 'Candidates' in nav, nav)
+            await pg.evaluate("openCand('chid')"); await pg.wait_for_timeout(200)
+            t = await pg.inner_text('#dlg')
+            check('Head: HR card stays hidden until the head submits', 'open here once you submit' in t and 'class="cmp"' not in await pg.inner_html('#dlg'), t[:600])
+            check('Head: own questions are technical + competency + practical with a prompt for each', 'Technical' in t and 'tell me about a time' in t.lower() and 'HR questions' not in t)
+            await pg.click('text=Submit my scorecard'); await pg.wait_for_timeout(150)
+            check('Head: cannot submit with questions unscored', not any(c.get('action') == 'put' and c.get('id') == 'chid' for c in CALLS))
+            await pg.evaluate("ivSheet('head',reqOf(DRAFT),DRAFT).forEach(s=>s.L.forEach((x,i)=>setScore('iv.'+s.k+'.'+i,4)));ivNote('comp.0','Led a team of 8');ivSet('rec','Hire')")
+            await pg.click('text=Submit my scorecard'); await pg.wait_for_timeout(300)
+            put = [c for c in CALLS if c.get('action') == 'put' and c.get('id') == 'chid']
+            mine = put and put[-1]['data']['iv'].get('chef@kuwaitikitchen.com', {})
+            check('Head: scorecard submitted with scores, a note per question and a recommendation', mine and mine.get('done') and mine.get('rec') == 'Hire' and mine['n']['comp.0'] == 'Led a team of 8' and mine['who'] == 'head', mine)
+            await pg.locator('.card.sec', has=pg.locator('details')).screenshot(path=str(ROOT / 'tests' / 'shots' / 'hiring_head_card.png'))
             check('No page errors (head)', not errs, errs[:2])
             await ctx.close()
             ctx, pg, errs = await ctx_for(b, CFG_PREVIEW, token='TOKCEO-0000000000000000000')
@@ -141,6 +195,21 @@ async def main():
             await pg.click('#lang'); await pg.wait_for_timeout(200)
             check('Phone in Arabic: no sideways scrolling', await pg.evaluate('document.documentElement.scrollWidth<=window.innerWidth+1'), await pg.evaluate('document.documentElement.scrollWidth'))
             await pg.screenshot(path=str(ROOT / 'tests' / 'shots' / 'apply_phone.png'), full_page=True)
+            await ctx.close()
+            ctx, pg, errs = await ctx_for(b, CFG, 390, 844)
+            await pg.goto(BASE + '/apply/#book=' + BOOK['token']); await pg.wait_for_timeout(800)
+            body = await pg.inner_text('body')
+            check('Booking page opens in Arabic for an Arabic applicant', await pg.get_attribute('html', 'dir') == 'rtl' and 'اختر موعد المقابلة' in body and 'طباخ خط' in body, body[:200])
+            check('Booking page: a taken time cannot be picked', await pg.locator('.tm:disabled').count() == 1)
+            check('Booking page (phone): no sideways scrolling', await pg.evaluate('document.documentElement.scrollWidth<=window.innerWidth+1'))
+            await pg.locator('.tm:not([disabled])').first.click(); await pg.wait_for_timeout(100)
+            await pg.screenshot(path=str(ROOT / 'tests' / 'shots' / 'apply_book_ar.png'), full_page=True)
+            await pg.click('[data-a=book]'); await pg.wait_for_timeout(400)
+            bk = [c for c in CALLS if c.get('action') == 'book']
+            check('Candidate confirms a time', bk and bk[-1]['t'] == BOOK['slots'][0]['t'] and 'تم تأكيد موعدك' in await pg.inner_text('body'))
+            await pg.goto(BASE + '/apply/#book=tok-bad-00000000000000000000'); await pg.reload(); await pg.wait_for_timeout(600)
+            check('A wrong booking link says so', 'غير صالح' in await pg.inner_text('body') or 'not valid' in await pg.inner_text('body'))
+            check('No page errors (booking)', not errs, errs[:2])
             await ctx.close()
             ctx, pg, errs = await ctx_for(b, CFG_PREVIEW)
             await pg.goto(BASE + '/apply/'); await pg.wait_for_timeout(500)

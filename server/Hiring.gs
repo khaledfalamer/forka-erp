@@ -144,6 +144,146 @@ function cvAllowed_(id, data) {
   if (Object.keys(data.pipe).some(k => has(data.pipe[k]))) return true;
   return Object.keys(data.apps).some(k => Object.keys(data.apps[k].list || {}).some(a => has(data.apps[k].list[a])));
 }
+/* ---------------- interview scorecards: blind until you submit, nobody edits anyone else's ---------------- */
+const IV_STAGES = ['applied', 'screening', 'personality', 'shortlist', 'interview'];
+function ivOpen_(c) { return IV_STAGES.indexOf(c.stage) >= 0; }     // still at or before the interview
+// What a person may see of the panel's scorecards on one candidate.
+function blindOne_(c, who) {
+  if (!c || !c.iv) return c;
+  const mine = c.iv[who.email];
+  const seeAll = !ivOpen_(c) || (mine && mine.done) || (who.ceo && !mine);
+  if (seeAll) return c;
+  const iv = {};
+  Object.keys(c.iv).forEach(k => {
+    const s = c.iv[k] || {};
+    iv[k] = k === who.email ? s : { who: s.who || '', done: !!s.done, at: s.at || null, hidden: true };
+  });
+  return Object.assign({}, c, { iv: iv });
+}
+function blind_(pipe, who) { const o = {}; Object.keys(pipe).forEach(id => { o[id] = blindOne_(pipe[id], who); }); return o; }
+// On save: keep everyone else's scorecard as stored; your own is locked once submitted or after the interview stage.
+// Booking links are written only by the server (invite / book), never by a save.
+function mergePipe_(id, d, who) {
+  const old = readOne_('pipe', id);
+  const iv = Object.assign({}, (old && old.iv) || {});
+  const mine = (d.iv || {})[who.email], had = iv[who.email];
+  if (mine && !(had && had.done) && (!old || ivOpen_(old))) {
+    const m = Object.assign({}, mine); delete m.hidden;
+    m.who = who.role === 'head' ? 'head' : 'hr';
+    if (m.done) m.at = m.at || Date.now();
+    iv[who.email] = m;
+  }
+  const out = Object.assign({}, d, { iv: iv });
+  if (!Object.keys(iv).length) delete out.iv;
+  if (old && old.books) out.books = old.books; else delete out.books;
+  return out;
+}
+
+/* ---------------- booking: candidate picks an interview or HR-call time ---------------- */
+const BOOK_KINDS = { call: { en: 'HR call', ar: 'مكالمة مع الموارد البشرية' }, interview: { en: 'Interview', ar: 'مقابلة' } };
+function applyBase_() { return String(props_().getProperty('APPLY_URL') || 'https://apply.forka.com/').replace(/\/?$/, '/'); }
+function findBook_(token) {
+  token = String(token || '');
+  if (!/^[A-Za-z0-9-]{20,60}$/.test(token)) return null;
+  const pipe = readAll_('pipe');
+  for (const id of Object.keys(pipe)) {
+    const B = pipe[id].books || {};
+    for (const k of Object.keys(B)) if (B[k] && B[k].token === token) return { id: id, c: pipe[id], kind: k, b: B[k], pipe: pipe };
+  }
+  return null;
+}
+// A time is taken if the same interviewer already has another candidate booked at it.
+function takenBy_(pipe, b, t, selfId) {
+  return Object.keys(pipe).some(id => id !== selfId && Object.keys(pipe[id].books || {}).some(k => { const x = pipe[id].books[k]; return x && x.by === b.by && x.pick === t; }));
+}
+function when_(t, lang) {
+  const d = new Date(t + 4 * 3600000);                     // UAE and Oman: UTC+4 all year
+  const DAYS = { en: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'], ar: ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'] };
+  const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const h = d.getUTCHours(), m = ('0' + d.getUTCMinutes()).slice(-2);
+  return DAYS[lang === 'ar' ? 'ar' : 'en'][d.getUTCDay()] + ' ' + d.getUTCDate() + ' ' + MON[d.getUTCMonth()] + ', ' + ((h + 11) % 12 + 1) + ':' + m + (h < 12 ? ' AM' : ' PM') + ' (UAE time)';
+}
+function icsStamp_(t) { return new Date(t).toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, ''); }
+function ics_(b, c, uidv) {
+  const e = s => String(s || '').replace(/([,;\\])/g, '\\$1').replace(/\n/g, '\\n');
+  return ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Forka//Hiring//EN', 'METHOD:PUBLISH', 'BEGIN:VEVENT', 'UID:' + uidv + '@forka.com', 'DTSTAMP:' + icsStamp_(Date.now()),
+    'DTSTART:' + icsStamp_(b.pick), 'DTEND:' + icsStamp_(b.pick + (b.mins || 30) * 60000),
+    'SUMMARY:' + e(BOOK_KINDS[b.kind].en + ' - ' + c.name + ' - ' + (c.jobTitle || '')), 'LOCATION:' + e(b.mode + (b.place ? ' - ' + b.place : '')),
+    'DESCRIPTION:' + e(b.note || ''), 'END:VEVENT', 'END:VCALENDAR'].join('\r\n');
+}
+function gcal_(b, c) {
+  return 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + encodeURIComponent(BOOK_KINDS[b.kind].en + ' - ' + c.name) +
+    '&dates=' + icsStamp_(b.pick) + '/' + icsStamp_(b.pick + (b.mins || 30) * 60000) + '&location=' + encodeURIComponent(b.mode + (b.place ? ' - ' + b.place : ''));
+}
+function invite_(b, who) {
+  const id = String(b.id || ''), kind = String(b.kind || '');
+  if (!BOOK_KINDS[kind] || !/^[A-Za-z0-9_\-.:@]{1,80}$/.test(id)) return { ok: false, error: 'bad' };
+  const c = readOne_('pipe', id); if (!c) return { ok: false, error: 'missing' };
+  if (kind === 'call' && who.role !== 'hr') return { ok: false, error: 'role' };
+  if (who.role === 'head' && !reqMine_(readOne_('reqs', c.req), who)) return { ok: false, error: 'role' };
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(c.email || '')) return { ok: false, error: 'email' };
+  const soon = Date.now() + 3600000;
+  const slots = (Array.isArray(b.slots) ? b.slots : []).map(Number).filter(t => isFinite(t) && t > soon && t < Date.now() + 90 * 864e5)
+    .filter((t, i, a) => a.indexOf(t) === i).sort((x, y) => x - y).slice(0, 30);
+  if (!slots.length) return { ok: false, error: 'slots' };
+  const MODES = ['In person', 'Phone', 'Video call'];
+  const bk = { token: Utilities.getUuid(), kind: kind, slots: slots, mins: Math.max(15, Math.min(180, +b.mins || 30)), mode: MODES.indexOf(b.mode) >= 0 ? b.mode : 'In person',
+    place: clean_(b.place, 160), note: clean_(b.note, 400), by: who.email, byName: who.name || who.email, at: Date.now(), pick: null };
+  const lang = c.lang === 'ar' ? 'ar' : 'en', link = applyBase_() + '#book=' + bk.token, job = c.jobTitle || (readOne_('reqs', c.req) || {}).title || '';
+  const lock = LockService.getScriptLock(); lock.waitLock(15000);
+  try {
+    const cur = readOne_('pipe', id);
+    cur.books = Object.assign({}, cur.books || {}, { [kind]: bk });
+    (cur.history = cur.history || []).push({ t: Date.now(), by: who.email, m: BOOK_KINDS[kind].en + ' booking link sent (' + slots.length + ' times)' });
+    write_('pipe', id, cur, who.email); bump_();
+  } finally { lock.releaseLock(); }
+  let mailed = false;
+  if (b.email !== false) {
+    const first = String(c.name || '').split(' ')[0];
+    const body = lang === 'ar'
+      ? 'مرحباً ' + first + '،\n\nشكراً لاهتمامك بوظيفة ' + job + ' في فوركا. نود ترتيب ' + BOOK_KINDS[kind].ar + ' معك.\nاختر الوقت المناسب لك من هذا الرابط:\n' + link + '\n\n' + (bk.note ? bk.note + '\n\n' : '') + 'فريق التوظيف - فوركا'
+      : 'Hello ' + first + ',\n\nThank you for your interest in the ' + job + ' role at Forka. We would like to arrange an ' + BOOK_KINDS[kind].en.toLowerCase() + ' with you.\nPlease pick a time that suits you here:\n' + link + '\n\n' + (bk.note ? bk.note + '\n\n' : '') + 'Forka Hiring team';
+    try { MailApp.sendEmail({ to: c.email, subject: (lang === 'ar' ? 'اختر موعد ' + BOOK_KINDS[kind].ar + ' - ' : 'Pick a time for your ' + BOOK_KINDS[kind].en.toLowerCase() + ' - ') + job, name: 'Forka Hiring', replyTo: who.email, body: body }); mailed = true; } catch (e) {}
+  }
+  return { ok: true, ver: stamp_(), link: link, mailed: mailed, book: bk };
+}
+function slotInfo_(b) {
+  const f = findBook_(b.token); if (!f) return { ok: false, error: 'missing' };
+  const c = f.c, k = f.b, now = Date.now();
+  if (['rejected', 'pool', 'hired'].indexOf(c.stage) >= 0) return { ok: false, error: 'closed' };
+  const req = readOne_('reqs', c.req) || {};
+  return { ok: true, kind: f.kind, name: String(c.name || '').split(' ')[0], job: c.jobTitle || req.title || '', jobAr: req.titleAr || '', lang: c.lang || 'en',
+    mins: k.mins, mode: k.mode, place: k.place, note: k.note, pick: k.pick,
+    slots: k.slots.map(t => ({ t: t, free: t > now + 3600000 && (t === k.pick || !takenBy_(f.pipe, k, t, f.id)) })) };
+}
+function book_(b) {
+  const lock = LockService.getScriptLock(); lock.waitLock(15000);
+  let f, t;
+  try {
+    f = findBook_(b.token); if (!f) return { ok: false, error: 'missing' };
+    if (['rejected', 'pool', 'hired'].indexOf(f.c.stage) >= 0) return { ok: false, error: 'closed' };
+    t = Number(b.t);
+    if (f.b.slots.indexOf(t) < 0 || t <= Date.now() + 3600000) return { ok: false, error: 'slot' };
+    if (f.b.pick && f.b.pick < Date.now() + 2 * 3600000) return { ok: false, error: 'late' };
+    if (takenBy_(f.pipe, f.b, t, f.id)) return { ok: false, error: 'taken' };
+    const c = f.c; c.books[f.kind] = Object.assign({}, f.b, { pick: t, pickedAt: Date.now() });
+    (c.history = c.history || []).push({ t: Date.now(), by: 'candidate', m: BOOK_KINDS[f.kind].en + (f.b.pick ? ' moved to ' : ' booked for ') + when_(t, 'en') });
+    write_('pipe', f.id, c, 'apply.forka.com'); bump_();
+    f.b = c.books[f.kind];
+  } finally { lock.releaseLock(); }
+  const c = f.c, k = f.b, lang = c.lang === 'ar' ? 'ar' : 'en', job = c.jobTitle || '';
+  const file = () => Utilities.newBlob(ics_(k, c, k.token), 'text/calendar', 'forka-' + k.kind + '.ics');
+  const where = k.mode + (k.place ? ' - ' + k.place : '');
+  try { MailApp.sendEmail({ to: c.email, name: 'Forka Hiring', replyTo: k.by, attachments: [file()],
+    subject: (lang === 'ar' ? 'تم تأكيد ' + BOOK_KINDS[k.kind].ar + ' - ' : 'Confirmed: your ' + BOOK_KINDS[k.kind].en.toLowerCase() + ' - ') + job,
+    body: (lang === 'ar' ? 'تم تأكيد موعدك: ' : 'You are booked for ') + when_(t, lang) + '\n' + where + '\n\n' + (k.note ? k.note + '\n\n' : '') +
+      (lang === 'ar' ? 'لتغيير الموعد استخدم نفس الرابط: ' : 'Need to change it? Use the same link: ') + applyBase_() + '#book=' + k.token + '\n\nForka Hiring' }); } catch (e) {}
+  const to = [k.by].concat(String(props_().getProperty('HR_EMAILS') || '').split(/[,\s]+/)).filter((x, i, a) => x && a.indexOf(x) === i);
+  try { MailApp.sendEmail({ to: to.join(','), name: 'Forka Hiring', attachments: [file()],
+    subject: BOOK_KINDS[k.kind].en + ' booked: ' + c.name + ' - ' + when_(t, 'en'),
+    body: c.name + ' (' + job + ') picked ' + when_(t, 'en') + '.\n' + where + '\n\nAdd to Google Calendar: ' + gcal_(k, c) + '\nOpen Hiring: https://erp.forka.com/hiring/' }); } catch (e) {}
+  return { ok: true, pick: t, when: when_(t, lang) };
+}
 function allData_() { const d = {}; Object.keys(COLS).forEach(c => { d[c] = readAll_(c); }); return d; }
 
 /* ---------------- public: apply.forka.com ---------------- */
@@ -220,6 +360,8 @@ function handle_(b) {
   const a = String(b.action || '');
   if (a === 'jobs') return publicJobs_();
   if (a === 'apply') return apply_(b);
+  if (a === 'slot') return slotInfo_(b);
+  if (a === 'book') return book_(b);
 
   /* team only */
   const me = erpWho_(b.token);
@@ -231,7 +373,9 @@ function handle_(b) {
   if (a === 'load') {
     if (b.ver && b.ver === stamp_()) return { ok: true, same: true, ver: b.ver, me: who };
     const data = allData_();
-    return { ok: true, ver: stamp_(), me: who, data: r.role === 'head' ? headView_(data, who) : data };
+    const view = r.role === 'head' ? headView_(data, who) : data;
+    view.pipe = blind_(view.pipe, who);
+    return { ok: true, ver: stamp_(), me: who, data: view };
   }
   if (a === 'put' || a === 'del') {
     const col = String(b.col || ''), id = String(b.id || '');
@@ -243,11 +387,12 @@ function handle_(b) {
     const lock = LockService.getScriptLock(); lock.waitLock(15000);
     try {
       if (a === 'del') { remove_(col, id); bump_(); return { ok: true, ver: stamp_() }; }
-      const w = write_(col, id, b.data || {}, me.email);
+      const w = write_(col, id, col === 'pipe' ? mergePipe_(id, b.data || {}, who) : (b.data || {}), me.email);
       if (!w.ok) return w;
       bump_(); return { ok: true, ver: stamp_() };
     } finally { lock.releaseLock(); }
   }
+  if (a === 'invite') return invite_(b, who);
   if (a === 'upload') {
     const u = b.file || {}, type = String(u.type || '');
     if (!CV_TYPES.test(type) || !u.data) return { ok: false, error: 'cvtype' };
