@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Forka Hiring</title>
+<meta name="google" content="notranslate">
+<link rel="preconnect" href="https://script.google.com">
+<link rel="preconnect" href="https://script.googleusercontent.com" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@500;600&family=Inter+Tight:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<script src="../config.js"></script>
+<style>
+:root{--ink:#23211F;--ink2:#4a4642;--mute:#8a847c;--line:#e4ded4;--bg:#F5F2EC;--card:#fffdf9;--bronze:#A57C52;--bronze2:#8a6440;--soft:#efe7dc;--ok:#3f7a52;--okbg:#e6f0e8;--warn:#a8741a;--warnbg:#f8eedb;--bad:#a5432f;--badbg:#f6e3de;--blue:#3c5d84;--bluebg:#e5ecf4}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Inter Tight",system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:14px;line-height:1.45}
+h1,h2,h3{font-family:"EB Garamond",Georgia,serif;font-weight:600;margin:0;letter-spacing:.1px}
+h1{font-size:28px}h2{font-size:22px}h3{font-size:17px}
+button,input,select,textarea{font:inherit;color:inherit}
+input,select,textarea{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:#fff}
+textarea{min-height:70px;resize:vertical}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--bronze);outline-offset:-1px;border-color:var(--bronze)}
+label{display:block;font-size:12px;font-weight:600;color:var(--ink2);margin:10px 0 4px}
+label .hint{font-weight:400;color:var(--mute)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:4px;height:36px;margin:0;border:1px solid var(--ink);background:var(--ink);color:#fff;border-radius:8px;padding:0 14px;cursor:pointer;font-weight:600;font-size:13px;line-height:1;white-space:nowrap;vertical-align:middle}
+.btn:hover{background:#000}.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn.sec{background:#fff;color:var(--ink);border-color:var(--line)}.btn.sec:hover{border-color:var(--ink)}
+.btn.br{background:var(--bronze);border-color:var(--bronze)}.btn.br:hover{background:var(--bronze2)}
+.btn.ok{background:var(--ok);border-color:var(--ok)}.btn.bad{background:#fff;color:var(--bad);border-color:#e7c3ba}
+.btn{text-decoration:none}.btn.sm{height:30px;padding:0 10px;font-size:12px}
+.btn.ai{background:#fff;color:var(--bronze2);border-color:#dcc5a9}
+header{background:var(--ink);color:#fff;padding:0 22px;display:flex;align-items:center;gap:18px;height:58px;position:sticky;top:0;z-index:20}
+.logo{font-family:"EB Garamond",serif;font-size:22px;letter-spacing:.5px}.logo b{color:#d7b48a;font-weight:600}
+nav{display:flex;gap:4px;flex:1;overflow-x:auto}
+nav a{color:#cfc8bf;text-decoration:none;padding:7px 12px;border-radius:7px;font-weight:500;cursor:pointer;white-space:nowrap;font-size:13px}
+nav a.on,nav a:hover{background:#3a3633;color:#fff}
+nav a .n{background:var(--bronze);color:#fff;border-radius:9px;padding:0 6px;font-size:11px;margin-inline-start:5px}
+.who{display:flex;align-items:center;gap:8px;font-size:12px;color:#cfc8bf}
+.who select{width:auto;background:#3a3633;color:#fff;border:0;padding:6px 8px}
+.role{background:var(--bronze);color:#fff;border-radius:20px;padding:3px 10px;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.6px}
+main{max-width:1240px;margin:0 auto;padding:24px 22px 80px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px;flex-wrap:wrap}
+.top p{margin:4px 0 0;color:var(--mute)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px}
+.grid{display:grid;gap:14px}.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:860px){.g2,.g3,.g4{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.g2,.g3,.g4{grid-template-columns:1fr}}
+.kpi .v{font-size:28px;font-weight:700;font-family:"EB Garamond",serif}.kpi .l{color:var(--mute);font-size:12px;font-weight:500}
+.tag{display:inline-block;border-radius:20px;padding:2px 9px;font-size:11px;font-weight:600;background:var(--soft);color:var(--ink2);white-space:nowrap}
+.tag.ok{background:var(--okbg);color:var(--ok)}.tag.warn{background:var(--warnbg);color:var(--warn)}.tag.bad{background:var(--badbg);color:var(--bad)}.tag.blue{background:var(--bluebg);color:var(--blue)}.tag.br{background:#f3e6d6;color:var(--bronze2)}
+table{width:100%;border-collapse:collapse}
+th{text-align:start;font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--mute);font-weight:600;padding:8px 10px;border-bottom:1px solid var(--line)}
+td{padding:10px;border-bottom:1px solid var(--line);vertical-align:top}
+tr.click{cursor:pointer}tr.click:hover td{background:#faf6ef}
+.muted{color:var(--mute)}.small{font-size:12px}.right{text-align:end}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.sp{flex:1}
+.empty{text-align:center;color:var(--mute);padding:34px 10px}
+.kanban{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(200px,1fr);gap:10px;overflow-x:auto;padding-bottom:6px}
+.col{background:#ebe5db;border-radius:10px;padding:8px;min-height:120px}
+.col h4{margin:2px 4px 8px;font-size:12px;display:flex;justify-content:space-between;color:var(--ink2)}
+.cc{background:#fff;border:1px solid var(--line);border-radius:8px;padding:9px;margin-bottom:7px;cursor:pointer}
+.cc:hover{border-color:var(--bronze)}.cc b{display:block;font-size:13px}.cc .small{margin-top:3px}
+.bar{height:8px;background:var(--soft);border-radius:4px;overflow:hidden}.bar i{display:block;height:100%;background:var(--bronze)}
+.funnel .r{display:grid;grid-template-columns:150px 1fr 40px;gap:10px;align-items:center;margin:6px 0;font-size:12px}
+#modal{position:fixed;inset:0;background:rgba(35,33,31,.45);display:none;z-index:50;align-items:flex-start;justify-content:center;overflow:auto;padding:30px 12px}
+#modal.on{display:flex}
+.dlg{background:var(--bg);border-radius:14px;width:min(860px,100%);box-shadow:0 20px 60px rgba(0,0,0,.25)}
+.dlg .hd{padding:18px 20px;border-bottom:1px solid var(--line);display:flex;gap:10px;align-items:flex-start;background:var(--card);border-radius:14px 14px 0 0}
+.dlg .bd{padding:18px 20px}.dlg .ft{padding:14px 20px;border-top:1px solid var(--line);display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;background:var(--card);border-radius:0 0 14px 14px}
+.x{background:none;border:0;font-size:22px;cursor:pointer;color:var(--mute);margin-inline-start:auto}
+.steps{display:flex;gap:3px;margin:12px 0 4px;flex-wrap:wrap}
+.steps span{flex:1;min-width:62px;font-size:10px;text-align:center;padding:5px 2px;border-radius:5px;background:var(--soft);color:var(--mute);font-weight:600}
+.steps span.done{background:#e4d3bd;color:var(--bronze2)}.steps span.cur{background:var(--ink);color:#fff}
+.score{display:flex;gap:4px}.score button{width:30px;height:30px;border-radius:6px;border:1px solid var(--line);background:#fff;cursor:pointer;font-weight:600}
+.score button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.crit{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:8px 0;border-bottom:1px dashed var(--line)}
+div.sec{margin-top:14px}div.sec>h3{margin-bottom:6px}
+.note{background:var(--warnbg);color:#6d4d12;border-radius:8px;padding:9px 12px;font-size:12px}
+.note.info{background:var(--bluebg);color:var(--blue)}.note.ok{background:var(--okbg);color:var(--ok)}
+.hist{font-size:12px;color:var(--mute);border-inline-start:2px solid var(--line);padding-inline-start:10px;margin-top:6px}
+.hist div{margin:3px 0}
+.chk{display:flex;gap:8px;align-items:center;margin:6px 0;font-size:13px}.chk input{width:auto}
+.hero{background:var(--ink);color:#fff;border-radius:14px;padding:28px;margin-bottom:18px}
+.hero h1{font-size:34px}.hero p{color:#d8d1c7;max-width:640px}
+.vals{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.vals span{border:1px solid #6b635b;border-radius:20px;padding:4px 12px;font-size:12px;color:#eadfce}
+.job{display:flex;gap:14px;align-items:center}
+.pills{display:flex;gap:6px;flex-wrap:wrap}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 16px;border-radius:9px;z-index:80;font-weight:500;display:none}
+.track{display:flex;gap:0;margin:12px 0}.track div{flex:1;text-align:center;font-size:11px;color:var(--mute);position:relative;padding-top:18px}
+.track div:before{content:"";position:absolute;top:5px;left:50%;width:10px;height:10px;border-radius:50%;background:var(--line);transform:translateX(-50%)}
+.track div.done:before{background:var(--bronze)}.track div.cur{color:var(--ink);font-weight:700}.track div.cur:before{background:var(--ink);box-shadow:0 0 0 4px #e4d3bd}
+pre.out{white-space:pre-wrap;background:#fff;border:1px solid var(--line);border-radius:8px;padding:12px;font-family:inherit;font-size:13px;max-height:340px;overflow:auto}
+.banner{background:#3a3633;color:#e9e1d6;font-size:12px;padding:6px 22px}
+
+#langSw{display:flex;border:1px solid #4a4541;border-radius:8px;overflow:hidden;flex:none}
+#langSw button{background:none;border:0;color:#cfc8bf;font:inherit;font-size:12px;font-weight:600;padding:5px 10px;cursor:pointer}
+#langSw button.on{background:var(--bronze);color:#fff}
+[dir=rtl] body{font-family:"IBM Plex Sans Arabic","Inter Tight",system-ui,sans-serif}
+[dir=rtl] h1,[dir=rtl] h2,[dir=rtl] h3,[dir=rtl] .logo{font-family:"IBM Plex Sans Arabic","EB Garamond",serif}
+[dir=rtl] th,[dir=rtl] .role,[dir=rtl] .steps span{letter-spacing:0;text-transform:none}
+[dir=rtl] nav a{padding:7px 9px}
+[dir=rtl] pre.out,[dir=rtl] .crit>*:first-child,[dir=rtl] .cc,[dir=rtl] td{unicode-bidi:plaintext}
+[dir=rtl] input[type=email],[dir=rtl] input[type=tel],[dir=rtl] input[type=url]{direction:ltr;text-align:right}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">Forka <b>Hire</b></div>
+  <nav id="nav"></nav>
+  <div id="langSw" data-noi18n><button data-l="en" onclick="setLang('en')">EN</button><button data-l="ar" onclick="setLang('ar')">عربي</button></div>
+  <div class="who" id="who"></div>
+</header>
+<div class="banner" id="banner" style="display:none"></div>
+<main id="main"><div class="empty">Loading…</div></main>
+<div id="modal"><div class="dlg" id="dlg"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============ Language layer: English / العربية (display only — stored data and logic stay in English) ============ */
+let LANG=(()=>{try{return localStorage.getItem("forkaHireLang")==="ar"?"ar":"en"}catch(e){return "en"}})();
+const AR={
+// nav, roles, header
+"Dashboard":"الرئيسية","CEO approvals":"موافقات الرئيس","Hiring requests":"طلبات التوظيف","Candidates":"المرشحون","Talent pool & compliance":"بنك المواهب","Careers page":"صفحة الوظائف","Team & access":"الفريق","Open roles":"الوظائف المتاحة","My applications":"طلباتي",
+"CEO · HR":"الرئيس التنفيذي","HR":"الموارد البشرية","Dept head":"رئيس القسم","Candidate":"مرشح","Department head":"رئيس القسم","CEO":"الرئيس التنفيذي","Dept head + HR":"رئيس القسم + الموارد البشرية",
+"View as: CEO · HR":"عرض بصفة: الرئيس التنفيذي · الموارد البشرية","View as: Candidate":"عرض بصفة: مرشح","Sara (candidate)":"سارة (مرشحة)","Head Chef":"رئيس الطهاة",
+"Loading…":"جارٍ التحميل…",
+// stages / statuses
+"Applied":"تقدّم","Screening":"الفرز","Personality":"تقييم الشخصية","Shortlist":"القائمة المختصرة","Interview":"المقابلة","References":"المراجع","Final evaluation":"التقييم النهائي","CEO approval":"موافقة الرئيس التنفيذي","Offer & documents":"العرض والمستندات","Hired":"تم التعيين","Rejected":"مرفوض","Talent pool":"بنك المواهب",
+"Received":"تم الاستلام","Under review":"قيد المراجعة","Final checks":"التحقق النهائي","Offer":"العرض","Welcome to Forka":"مرحبًا بك في فوركا","Not selected this time":"لم يتم الاختيار هذه المرة","Kept in our talent pool":"محفوظ في بنك المواهب",
+"Waiting for CEO":"بانتظار الرئيس التنفيذي","Scorecard being built":"جارٍ إعداد بطاقة التقييم","Head to approve scorecard":"بانتظار موافقة رئيس القسم على بطاقة التقييم","Ready to post":"جاهزة للنشر","Open":"مفتوحة","Filled":"تم شغلها","Closed":"مغلقة","Declined":"مرفوضة",
+// constants
+"Operations":"العمليات","Kitchen":"المطبخ","Service":"الخدمة","Marketing":"التسويق","Finance":"المالية","Procurement & Store":"المشتريات والمخزن","Administration":"الإدارة",
+"Sharjah":"الشارقة","Fujairah":"الفجيرة","Umm Al Quwain":"أم القيوين","Mayar Cafe":"مقهى ميار","Oman":"عُمان","Ajman Central Store":"المخزن المركزي - عجمان","Head Office":"المكتب الرئيسي",
+"Trial shift":"مناوبة تجريبية","Cooking test":"اختبار طبخ","Barista test":"اختبار باريستا","Case study":"دراسة حالة","Presentation":"عرض تقديمي","Excel exercise":"تمرين إكسل","Operations scenario":"سيناريو تشغيلي",
+"Reliability and discipline":"الالتزام والانضباط","Follows SOPs, on time, finishes tasks":"يتبع الإجراءات، ملتزم بالوقت، ينجز مهامه","Calm under pressure":"الهدوء تحت الضغط","Steady in a rush, a complaint or an audit":"ثابت وقت الذروة أو الشكوى أو التدقيق","Team cooperation":"التعاون مع الفريق","Helps others, handles conflict well":"يساعد الآخرين ويتعامل مع الخلافات بحكمة","Energy with people":"الحيوية مع الناس","Warm, confident with guests and staff":"ودود وواثق مع الضيوف والموظفين","Openness to change":"الانفتاح على التغيير","Learns fast, adapts, takes on new tasks":"يتعلم بسرعة ويتأقلم ويتولى مهامًا جديدة",
+"Leadership":"القيادة","Problem solving":"حل المشكلات","Accountability":"تحمّل المسؤولية","Communication":"التواصل","Teamwork":"العمل الجماعي","Commercial awareness":"الحس التجاري",
+"Relevant experience":"الخبرة ذات الصلة","Reason for leaving":"سبب ترك العمل","Salary fit":"ملاءمة الراتب","Career motivation":"الدافع المهني",
+"Passport copy":"نسخة جواز السفر","Visa / residency":"التأشيرة / الإقامة","Certificates":"الشهادات","Photos":"صور شخصية","Bank details":"بيانات الحساب البنكي","Signed offer letter":"خطاب العرض موقّع",
+"Food first":"الطعام أولًا","Standards you can measure":"معايير قابلة للقياس","Grow with the group":"انمُ مع المجموعة","Multi-skilled teams":"فرق متعددة المهارات","Every candidate gets a reply":"كل مرشح يحصل على رد",
+"We operate restaurants across the UAE and Oman — Kuwaiti Kitchen, Mayar Cafe and more — and we're building the biggest F&B group in the region. Owners should own; operators should operate. We're looking for operators.":"نشغّل مطاعم في الإمارات وعُمان — المطبخ الكويتي ومقهى ميار وغيرها — ونبني أكبر مجموعة أغذية ومشروبات في المنطقة. المُلّاك يملكون، والمشغّلون يشغّلون. ونحن نبحث عن مشغّلين.",
+"Clear career paths across five businesses · training through the Forka Learning Library · a fair, scored hiring process":"مسارات مهنية واضحة عبر خمسة أعمال · تدريب من خلال مكتبة فوركا للتعلّم · عملية توظيف عادلة ومُقيّمة بالدرجات",
+// generic
+"OK":"موافق","Yes":"نعم","No":"لا","Add":"إضافة","Done":"تم","Save":"حفظ","Cancel":"إلغاء","Remove":"إزالة","Apply":"تقدّم الآن","Approve":"موافقة","Decline":"رفض","Request":"طلب","Reopen":"إعادة فتح","Close role":"إغلاق الوظيفة","Role":"الوظيفة","Name":"الاسم","Email":"البريد الإلكتروني","Phone":"الهاتف","Stage":"المرحلة","Status":"الحالة","Source":"المصدر","Notes":"الملاحظات","Range":"النطاق","Saved":"تم الحفظ","Copied":"تم النسخ","Added":"تمت الإضافة","Deleted":"تم الحذف","Other":"أخرى","Choose…":"اختر…","Other (write it)":"أخرى (اكتبها)","Someone":"شخص ما","Overdue":"متأخر","Waiting":"بانتظار","Intro":"المقدمة","Values":"القيم","Access":"الصلاحيات","Person":"الشخص","Editor":"محرر","Contributor":"مساهم","Scores":"الدرجات","Profile":"الملف","Location":"الموقع","Package":"الباقة","Currency":"العملة","Headcount":"العدد المطلوب","Department":"القسم","Experience":"الخبرة","Questions":"الأسئلة","Concern":"ملاحظة سلبية","Verified":"تم التحقق","Joining":"الالتحاق","Raised":"تاريخ الطلب","Posted":"تاريخ النشر","Notice":"فترة الإشعار","Consent":"الموافقة","Match":"التطابق","Screen":"فرز","Agency":"وكالة","Indeed":"Indeed","Referral":"ترشيح","Post job":"نشر الوظيفة","Duplicate":"نسخة مكررة","Confirmed":"مؤكد","Technical":"فني","Competency":"الكفاءات","Recommendation":"التوصية","Next actions":"الإجراءات التالية","Working…":"جارٍ العمل…","Uploading CV…":"جارٍ رفع السيرة الذاتية…","Result…":"النتيجة…","Very low":"منخفض جدًا","Critical":"حرج","critical":"حرج","not now":"ليس الآن","Not recorded":"غير مسجّل","not recorded":"غير مسجّل","to be chosen":"سيتم اختياره","working days":"أيام عمل","days":"أيام","yrs":"سنوات","avg":"متوسط","Req ID":"رقم الطلب","CV":"السيرة الذاتية","CV text":"نص السيرة الذاتية","CV file":"ملف السيرة الذاتية","No CV yet.":"لا توجد سيرة ذاتية بعد.","Open CV ·":"فتح السيرة الذاتية ·","(owner)":"(المالك)",
+// dashboard / pages
+"Good to see you":"أهلًا بك","Waiting on you":"بانتظارك","Nothing waiting.":"لا يوجد شيء بانتظارك.","Pipeline funnel":"مسار المرشحين","Where candidates come from":"مصادر المرشحين","Candidates in process":"مرشحون قيد الإجراءات","Overdue (2-day SLA)":"متأخر (مهلة يومين)","Your department's hiring at a glance.":"توظيف قسمك بلمحة سريعة.","Every Forka hire, request to offer, on one standard flow.":"كل تعيين في فوركا، من الطلب إلى العرض، في مسار واحد موحّد.","approvals and shortlist replies":"الموافقات والردود على القوائم المختصرة","request → hire (target 21–28)":"من الطلب إلى التعيين (الهدف ٢١–٢٨)","Dept head: reply on shortlist":"رئيس القسم: الرد على القائمة المختصرة",
+"Two working days on each — vacancies and final candidates.":"يوما عمل لكلٍّ منهما — الشواغر والمرشحون النهائيون.","Vacancies to approve (step 2)":"شواغر بانتظار الموافقة (الخطوة ٢)","Final candidates to approve (step 14)":"مرشحون نهائيون بانتظار الموافقة (الخطوة ١٤)","No vacancies waiting.":"لا توجد شواغر بانتظار الموافقة.","No candidates waiting.":"لا يوجد مرشحون بانتظار الموافقة.","Approve vacancy":"الموافقة على الشاغر","Why is this vacancy declined?":"لماذا تم رفض هذا الشاغر؟","CEO declined:":"رفض الرئيس التنفيذي:","Renegotiate":"إعادة التفاوض",
+"Department heads raise them; CEO approves; HR builds the scorecard; head approves; HR posts.":"يرفعها رؤساء الأقسام، ويوافق الرئيس التنفيذي، وتُعدّ الموارد البشرية بطاقة التقييم، ويعتمدها رئيس القسم، ثم تنشرها الموارد البشرية.","+ New hiring request":"+ طلب توظيف جديد","New hiring request":"طلب توظيف جديد","No hiring requests yet.":"لا توجد طلبات توظيف بعد.","Raise the first one.":"ارفع أول طلب.","Hiring request raised":"تم رفع طلب التوظيف","Sent to Khaled for approval":"أُرسل إلى خالد للموافقة",
+"Every move is logged the same day. Every rejection names the criterion it failed.":"كل خطوة تُسجّل في اليوم نفسه، وكل رفض يذكر المعيار الذي لم يُستوفَ.","Shortlisted candidates for your roles. Score each interview on your own before discussing.":"المرشحون في القائمة المختصرة لوظائف قسمك. قيّم كل مقابلة بنفسك قبل النقاش.","Search name, email, CV text…":"ابحث بالاسم أو البريد أو نص السيرة الذاتية…","All roles":"كل الوظائف","Board view":"عرض اللوحة","List view":"عرض القائمة","No candidates.":"لا يوجد مرشحون.","No candidates yet":"لا يوجد مرشحون بعد","+ Add applicant":"+ إضافة متقدّم","Add applicant":"إضافة متقدّم","Bulk move to":"نقل جماعي إلى","Reason for all selected (criterion failed)":"السبب لجميع المحدَّدين (المعيار غير المستوفى)","rejected or in talent pool — see the list view":"مرفوضون أو في بنك المواهب — راجع عرض القائمة","new online":"جديد عبر الإنترنت","above range":"أعلى من النطاق","Applied online":"تقدّم عبر الإنترنت","Added by HR (":"أضافته الموارد البشرية (",
+"Rejected candidates get a reply. Strong \"not now\" candidates stay searchable for the next opening.":"المرشحون المرفوضون يتلقون ردًا، والمرشحون الأقوياء غير المناسبين حاليًا يبقون متاحين للبحث في الفرص القادمة.","In talent pool":"في بنك المواهب","Consider for a role":"ترشيح لوظيفة","Reason on file":"السبب المسجّل","Retention check: no personality reports older than 6 months for unsuccessful candidates.":"فحص الاحتفاظ بالبيانات: لا تقارير شخصية أقدم من ٦ أشهر للمرشحين غير المقبولين.","personality report(s) past 6 months":"تقرير/تقارير شخصية تجاوزت ٦ أشهر","for unsuccessful candidates — the Hiring Guide says delete them.":"لمرشحين غير مقبولين — دليل التوظيف ينص على حذفها.","Delete those reports":"حذف هذه التقارير","Reconsidered from talent pool for":"أُعيد النظر فيه من بنك المواهب لوظيفة","Which open role?":"أي وظيفة متاحة؟","No open roles":"لا توجد وظائف متاحة",
+"FORKA COLLECTIVE · CAREERS":"فوركا كولكتيف · الوظائف","Build the region's best restaurants with us":"ابنِ معنا أفضل مطاعم المنطقة","What we offer":"ما نقدّمه","Preview as candidate":"معاينة كمرشح","Careers page saved":"تم حفظ صفحة الوظائف",
+"Three access levels. Anyone not listed here sees the candidate view.":"ثلاثة مستويات صلاحية. أي شخص غير مدرج هنا يرى واجهة المرشح.","+ Add HR or department head":"+ إضافة موارد بشرية أو رئيس قسم","Add HR or department head":"إضافة موارد بشرية أو رئيس قسم","Find person":"البحث عن شخص","Type a name":"اكتب اسمًا","Pick a person":"اختر شخصًا","No matches — share the app with them first.":"لا نتائج — شارك التطبيق معهم أولًا.","Search unavailable.":"البحث غير متاح.","Nobody here yet.":"لا يوجد أحد بعد.",
+"Also share the app with each HR person and department head as":"شارك التطبيق أيضًا مع كل موظف موارد بشرية ورئيس قسم بصلاحية","(Share button on this page), so they can save scorecards. Staff applying internally need":"(زر المشاركة في هذه الصفحة) حتى يتمكنوا من حفظ بطاقات التقييم. الموظفون الذين يتقدمون داخليًا يحتاجون صلاحية",
+"Public candidates without a Forka account apply through hr@forka.com (position in the subject). HR logs them with":"المرشحون من خارج فوركا يتقدمون عبر hr@forka.com (مع اسم الوظيفة في الموضوع)، وتسجّلهم الموارد البشرية عبر","— paste the CV and the AI fills the form. Staff and invited candidates apply right here.":"— الصق السيرة الذاتية ويملأ الذكاء الاصطناعي النموذج. الموظفون والمرشحون المدعوون يتقدمون هنا مباشرة.",
+"Raises hiring requests, approves the scorecard, picks from the shortlist, scores interviews and practical tests. Sees only their department, from shortlist onwards — never salary negotiation or raw personality reports.":"يرفع طلبات التوظيف، ويعتمد بطاقة التقييم، ويختار من القائمة المختصرة، ويقيّم المقابلات والاختبارات العملية. يرى قسمه فقط ابتداءً من القائمة المختصرة — دون مفاوضات الرواتب أو تقارير الشخصية الأصلية.",
+"Sees open roles and the careers page, applies with pre-screening questions, and tracks their own application status. Never sees scores or notes.":"يرى الوظائف المتاحة وصفحة الوظائف، ويتقدم مع أسئلة الفرز المبدئي، ويتابع حالة طلبه. لا يرى الدرجات أو الملاحظات أبدًا.",
+"No open roles right now — check back soon.":"لا توجد وظائف متاحة حاليًا — عُد قريبًا.","View & apply":"عرض وتقدّم","Browse open roles":"تصفّح الوظائف المتاحة","See open roles":"عرض الوظائف المتاحة","You haven't applied yet.":"لم تتقدم بعد.","We reply to every applicant. You'll see each step here.":"نردّ على كل متقدّم، وسترى كل مرحلة هنا.",
+"You've been invited to interview. HR will contact you with the time and the practical test (":"تمت دعوتك للمقابلة. ستتواصل معك الموارد البشرية بالموعد والاختبار العملي (","Congratulations — HR will send the offer letter and the list of documents to bring.":"مبروك — سترسل لك الموارد البشرية خطاب العرض وقائمة المستندات المطلوبة.",
+"Thank you for applying. This time we've gone with candidates whose experience matched the role more closely. We'll keep your details for future roles if you agreed to that.":"شكرًا لتقدّمك. اخترنا هذه المرة مرشحين تتطابق خبراتهم مع الوظيفة بشكل أكبر، وسنحتفظ ببياناتك لفرص مستقبلية إن كنت قد وافقت على ذلك.",
+// request form
+"One form, about 10 minutes. From the second hire of the same role, start from the last request.":"نموذج واحد، حوالي ١٠ دقائق. من التعيين الثاني لنفس الوظيفة، ابدأ من آخر طلب.","Step 1 of the Hiring Guide · about 10 minutes · CEO approves within 2 working days":"الخطوة ١ من دليل التوظيف · حوالي ١٠ دقائق · يوافق الرئيس التنفيذي خلال يومي عمل","Start from a previous request…":"ابدأ من طلب سابق…","Role title":"المسمى الوظيفي","Dept / branch":"القسم / الفرع","Dept · branch":"القسم · الفرع","Branch / location":"الفرع / الموقع","New or replacement":"جديد أو بديل","New position":"وظيفة جديدة","Replacement":"بديل","Same role as before?":"نفس الوظيفة السابقة؟","Role purpose":"هدف الوظيفة","one or two lines":"سطر أو سطران","Key duties":"المهام الرئيسية","Top 3 must-haves":"أهم ٣ متطلبات أساسية","3 must-haves":"٣ متطلبات أساسية","one per line":"واحد في كل سطر","Practical test":"الاختبار العملي","Practical test(s)":"الاختبار/الاختبارات العملية","practical test":"الاختبار العملي","choose one or more":"اختر واحدًا أو أكثر","Other practical test (optional)":"اختبار عملي آخر (اختياري)","2–3 personality traits that matter most":"٢–٣ سمات شخصية هي الأهم","2–3 traits":"٢–٣ سمات","tick \"Critical\" on any trait where a very low result must be cleared in interview — as many as you need":"ضع علامة \"حرج\" على أي سمة يجب توضيح نتيجتها المنخفضة جدًا في المقابلة — بالعدد الذي تحتاجه","critical traits must also be ticked as traits":"السمات الحرجة يجب تحديدها كسمات أيضًا","Salary range — min (total package)":"نطاق الراتب — الحد الأدنى (الباقة الإجمالية)","Salary range — max":"نطاق الراتب — الحد الأعلى","Salary range":"نطاق الراتب","salary range":"نطاق الراتب","Salary range:":"نطاق الراتب:","Target joining date":"تاريخ الالتحاق المستهدف","Joining date":"تاريخ الالتحاق","Send to CEO for approval":"إرسال للرئيس التنفيذي للموافقة","Send for CEO approval":"إرسال لموافقة الرئيس التنفيذي","Not yet approved":"لم تتم الموافقة بعد","Waiting for CEO approval ·":"بانتظار موافقة الرئيس التنفيذي ·","Head asked for changes:":"طلب رئيس القسم تعديلات:","What should HR change?":"ما الذي يجب على الموارد البشرية تعديله؟","Ask HR for changes":"اطلب تعديلات من الموارد البشرية","Approve scorecard":"اعتماد بطاقة التقييم","Department head approved the scorecard":"اعتمد رئيس القسم بطاقة التقييم","Scorecard + JD sent to head for approval":"أُرسلت بطاقة التقييم والوصف الوظيفي لرئيس القسم للاعتماد","Send scorecard to":"إرسال بطاقة التقييم إلى","Scorecard inputs":"مدخلات بطاقة التقييم","Job description, ad & pre-screening":"الوصف الوظيفي والإعلان والفرز المبدئي","Job description":"الوصف الوظيفي","Job ad — English":"إعلان الوظيفة — بالإنجليزية","Job ad — Arabic":"إعلان الوظيفة — بالعربية","Copy English ad":"نسخ الإعلان الإنجليزي","Draft JD + ads with AI":"صياغة الوصف والإعلانات بالذكاء الاصطناعي","Write the JD first":"اكتب الوصف الوظيفي أولًا","Pre-screening knock-out questions":"أسئلة الفرز المبدئي الإقصائية","one per line — candidate must answer Yes, or is auto-rejected with the reason logged":"سؤال في كل سطر — يجب أن يجيب المرشح بنعم، وإلا يُرفض تلقائيًا مع تسجيل السبب","Knock-out questions:":"الأسئلة الإقصائية:","Job posted":"تم نشر الوظيفة","Position filled":"تم شغل الوظيفة","Role closed":"تم إغلاق الوظيفة","Filled — check it":"تم الشغل — تحقّق","Post a role first — no open roles yet":"انشر وظيفة أولًا — لا توجد وظائف متاحة بعد","Raised by":"رفعه","· raised by":"· رفعه","Applied for":"تقدّم لوظيفة",
+"Duties:":"المهام:","Must-haves:":"المتطلبات الأساسية:","Traits:":"السمات:",
+// application
+"Answer the quick questions":"أجب عن الأسئلة السريعة","Quick questions":"أسئلة سريعة","Full name":"الاسم الكامل","Phone / WhatsApp":"الهاتف / واتساب","Current location":"الموقع الحالي","Years experience":"سنوات الخبرة","Years of relevant experience":"سنوات الخبرة ذات الصلة","Expected salary":"الراتب المتوقع","Expected monthly salary (total)":"الراتب الشهري المتوقع (إجمالي)","Expected salary:":"الراتب المتوقع:","Notice period (days)":"فترة الإشعار (أيام)","Visa status":"حالة التأشيرة","Own visa / residency":"إقامة / تأشيرة خاصة","Employer visa — transferable":"تأشيرة صاحب عمل — قابلة للتحويل","Visit visa":"تأشيرة زيارة","Needs visa":"يحتاج تأشيرة","Upload your CV":"ارفع سيرتك الذاتية","PDF or a photo of it · max 20 MB · Word files: please save as PDF first":"ملف PDF أو صورة منها · الحد الأقصى ٢٠ ميغابايت · ملفات Word: احفظها بصيغة PDF أولًا","Or paste your CV / LinkedIn link":"أو الصق سيرتك الذاتية / رابط لينكدإن","optional if you uploaded a file":"اختياري إذا رفعت ملفًا","I agree Forka may use my details for this role and keep them up to 6 months for future roles.":"أوافق على أن تستخدم فوركا بياناتي لهذه الوظيفة وتحتفظ بها حتى ٦ أشهر لفرص مستقبلية.","Submit application":"إرسال الطلب","Application sent — track it under My applications":"تم إرسال الطلب — تابعه من قسم طلباتي","Please tick the consent box":"يرجى وضع علامة على خانة الموافقة","Please upload your CV (or paste it)":"يرجى رفع سيرتك الذاتية (أو لصقها)","Name and email are needed":"الاسم والبريد الإلكتروني مطلوبان","Name needed":"الاسم مطلوب","That file is over 20 MB":"حجم الملف يتجاوز ٢٠ ميغابايت","Please upload a PDF or a photo (save Word files as PDF)":"يرجى رفع ملف PDF أو صورة (احفظ ملفات Word بصيغة PDF)","Upload failed — try again or paste the text":"فشل الرفع — حاول مجددًا أو الصق النص","File upload isn't available for your access level — paste your CV text instead":"رفع الملفات غير متاح لصلاحيتك — الصق نص سيرتك الذاتية بدلًا من ذلك","(demo: file too big to keep)":"(تجريبي: الملف كبير جدًا للاحتفاظ به)",
+// add applicant
+"Source":"المصدر","From hr@forka.com, LinkedIn, Indeed, referral or walk-in":"من hr@forka.com أو لينكدإن أو Indeed أو ترشيح أو حضور مباشر","LinkedIn / Indeed":"لينكدإن / Indeed","Email (hr@forka.com)":"البريد (hr@forka.com)","Walk-in":"حضور مباشر","Internal":"داخلي","PDF or photo, from the email":"PDF أو صورة، من البريد الإلكتروني","AI can fill the fields below":"يمكن للذكاء الاصطناعي تعبئة الحقول أدناه","then fill the fields":"ثم املأ الحقول","Fill fields from CV":"تعبئة الحقول من السيرة الذاتية","Candidate consented to Forka holding their data (stated in the application email or form)":"وافق المرشح على احتفاظ فوركا ببياناته (مذكور في بريد التقديم أو النموذج)","Add to pipeline":"إضافة إلى المسار",
+// candidate modal
+"Move to next stage":"الانتقال للمرحلة التالية","Reject with reason":"رفض مع ذكر السبب","Which criterion did they fail? (required — no rejections on feeling)":"ما المعيار الذي لم يستوفه؟ (إلزامي — لا رفض بناءً على الانطباع)","Why keep them in the talent pool?":"لماذا يُحفظ في بنك المواهب؟","Talent pool note":"ملاحظة بنك المواهب","Talent pool —":"بنك المواهب —","Rejected —":"مرفوض —","Salary above range":"الراتب أعلى من النطاق","Screening score below pass mark":"درجة الفرز أقل من درجة النجاح","Interview score below pass mark":"درجة المقابلة أقل من درجة النجاح","Candidate withdrew":"انسحب المرشح","Missing must-have experience":"تنقصه خبرة أساسية","Screening scorecard":"بطاقة تقييم الفرز","Screening score":"درجة الفرز","Part 1 — CV against the must-haves (1 does not meet · 3 meets with gaps · 5 exceeds)":"الجزء ١ — السيرة الذاتية مقابل المتطلبات الأساسية (١ لا يستوفي · ٣ يستوفي مع فجوات · ٥ يتجاوز)","Part 2 — HR call, 15–30 minutes":"الجزء ٢ — مكالمة الموارد البشرية، ١٥–٣٠ دقيقة","Suggest CV scores":"اقتراح درجات السيرة الذاتية","Suggested — check each score":"مقترحة — راجع كل درجة","Call notes":"ملاحظات المكالمة","HR call:":"مكالمة الموارد البشرية:","Start screening":"بدء الفرز","Pass → personality assessment":"نجح ← تقييم الشخصية","Personality assessment":"تقييم الشخصية","mandatory · input, not pass/fail":"إلزامي · مُدخل للتقييم وليس نجاحًا/رسوبًا","Candidate consented and completed the assessment (tool:":"وافق المرشح وأكمل التقييم (الأداة:","Summary for the panel":"ملخص للجنة","3 lines — the head sees this, never the raw report":"٣ أسطر — يراها رئيس القسم، وليس التقرير الأصلي","Personality summary:":"ملخص الشخصية:","Personality follow-up":"متابعة الشخصية","Follow-up questions:":"أسئلة المتابعة:","2 follow-up questions for the interview":"سؤالا متابعة للمقابلة","A critical trait came out very low — the panel must clear it in the interview.":"ظهرت سمة حرجة بدرجة منخفضة جدًا — يجب على اللجنة توضيحها في المقابلة.","Shortlist pack":"ملف القائمة المختصرة","Send to":"إرسال إلى","head's shortlist":"القائمة المختصرة لرئيس القسم","Pick for interview or decline":"اختر للمقابلة أو ارفض","Invite to interview":"دعوة للمقابلة","Interview + practical (panel)":"المقابلة + الاختبار العملي (اللجنة)","Score the interview":"تقييم المقابلة","Interview scorecard — yours":"بطاقة تقييم المقابلة — الخاصة بك","Score on your own before discussing.":"قيّم بنفسك قبل النقاش.","Other scores stay hidden until you submit yours.":"تبقى الدرجات الأخرى مخفية حتى ترسل درجاتك.","Other panel scores:":"درجات بقية اللجنة:","Submit my scores":"إرسال درجاتي","Scores submitted":"تم إرسال الدرجات","Score every line first":"قيّم كل البنود أولًا","Interview scored by":"قيّم المقابلة","Interview questions":"أسئلة المقابلة","Test in interview:":"يُختبر في المقابلة:","Top 3 things to test in interview":"أهم ٣ أمور تُختبر في المقابلة","Opinions go here; scores stay numbers":"الآراء هنا؛ والدرجات تبقى أرقامًا","Passed → references":"نجح ← المراجع","Reference checks":"التحقق من المراجع","Referee name":"اسم المرجع","Company · relation":"الشركة · صلة المعرفة","Verified — positive":"تم التحقق — إيجابي","Verified — concerns":"تم التحقق — توجد ملاحظات","Could not reach":"تعذّر التواصل","Candidate consents to contacting the current employer (if not: check previous employers, offer conditional)":"يوافق المرشح على التواصل مع جهة عمله الحالية (وإلا: تحقق من جهات العمل السابقة، ويكون العرض مشروطًا)","References clear → final evaluation":"المراجع سليمة ← التقييم النهائي","Final evaluation report":"تقرير التقييم النهائي","Proposed total package (":"الباقة الإجمالية المقترحة (","Basic salary (30%)":"الراتب الأساسي (٣٠٪)","One more negotiation round done (HR only — the department head is not involved in salary)":"تمت جولة تفاوض إضافية (الموارد البشرية فقط — رئيس القسم لا يتدخل في الراتب)","Send to CEO for approval ":"إرسال للرئيس التنفيذي للموافقة","Offer letter signed and accepted":"تم توقيع خطاب العرض وقبوله","No one starts work without complete documentation (control approved 23 Jul).":"لا يبدأ أحد العمل دون اكتمال المستندات (ضابط معتمد في ٢٣ يوليو).","Mark hired → onboarding":"تسجيل كمعيّن ← التهيئة","Moved to":"نُقل إلى","Add note":"إضافة ملاحظة","Note":"ملاحظة","History":"السجل","Save draft":"حفظ المسودة","Close":"إغلاق","Open the file above.":"افتح الملف أعلاه.","Personality report deleted (6-month retention)":"تم حذف تقرير الشخصية (الاحتفاظ ٦ أشهر)","Reject":"رفض","Next":"التالي",
+// toasts / errors / banners
+"Score on your own before discussing. Other scores stay hidden until you submit yours.":"قيّم بنفسك قبل النقاش. تبقى الدرجات الأخرى مخفية حتى ترسل درجاتك.","\"tell me about a time…\"":"\"أخبرني عن موقف…\"","positive":"إيجابي","concerns":"توجد ملاحظات","Waiting for CEO approval":"بانتظار موافقة الرئيس التنفيذي",
+"CEO approves":"يوافق الرئيس التنفيذي","HR scorecard":"بطاقة تقييم الموارد البشرية","Head approves":"يعتمد رئيس القسم","The role":"الوظيفة","Purpose":"الهدف","Practical":"العملي","CV screening scores against these":"تُقيّم السيرة الذاتية مقابل هذه البنود","paste it":"الصقها","then fill the fields":"ثم املأ الحقول","basic = 30%":"الأساسي = ٣٠٪","see the list view or Talent pool.":"راجع عرض القائمة أو بنك المواهب.","see the list view.":"راجع عرض القائمة.","hr":"الموارد البشرية","head":"رئيس قسم","candidate":"مرشح","Your employer brand: what every candidate sees first. Edit the words here; open roles appear automatically when HR posts them.":"علامتك كجهة عمل: أول ما يراه كل مرشح. عدّل النصوص هنا، وتظهر الوظائف المتاحة تلقائيًا عندما تنشرها الموارد البشرية.","Everything: requests, scorecards, screening, personality, references, final evaluation, offers, talent pool, careers page. Khaled (owner) also gets CEO approvals.":"كل شيء: الطلبات، بطاقات التقييم، الفرز، تقييم الشخصية، المراجع، التقييم النهائي، العروض، بنك المواهب، صفحة الوظائف. ويتولى خالد (المالك) أيضًا موافقات الرئيس التنفيذي.","CEO asked to renegotiate":"طلب الرئيس التنفيذي إعادة التفاوض","CEO approved candidate and package":"وافق الرئيس التنفيذي على المرشح والباقة","Interview":"المقابلة","Email (hr@forka.com)":"البريد (hr@forka.com)","LinkedIn":"لينكدإن",
+"You don't have permission to change this. Ask Khaled for Editor access.":"ليست لديك صلاحية لتعديل هذا. اطلب من خالد صلاحية محرر.","Storage is full — archive old candidates.":"المساحة ممتلئة — أرشف المرشحين القدامى.","Couldn't save — try again.":"تعذّر الحفظ — حاول مرة أخرى.","Can't reach the shared data yet — showing what has loaded.":"تعذّر الوصول إلى البيانات المشتركة بعد — يتم عرض ما تم تحميله.","Access changed — reload to continue.":"تغيّرت الصلاحيات — أعد تحميل الصفحة للمتابعة.","Demo mode — sample data, stored only in this browser. Use the switcher (top right) to see each access level.":"وضع تجريبي — بيانات نموذجية محفوظة في هذا المتصفح فقط. استخدم المبدّل (أعلى الصفحة) لرؤية كل مستوى صلاحية.","Select the text and copy it":"حدّد النص وانسخه","AI is busy — try in a minute":"الذكاء الاصطناعي مشغول — حاول بعد دقيقة","AI not allowed on this page":"الذكاء الاصطناعي غير مسموح في هذه الصفحة","AI couldn't do that — try again":"تعذّر على الذكاء الاصطناعي تنفيذ ذلك — حاول مرة أخرى","AI scoring needs CV text — this candidate sent a file only, so score from the file by hand":"التقييم بالذكاء الاصطناعي يحتاج نص السيرة الذاتية — هذا المرشح أرسل ملفًا فقط، فقيّمه يدويًا من الملف",
+};
+const AR_RX=[
+ [/^Data connection stopped \((.+)\)\.?$/,"توقف الاتصال بالبيانات ($1)."],
+ [/^View as: (.+) head$/,(m,d)=>"عرض بصفة: رئيس قسم "+trText(d)],
+ [/^Dept head · (.+)$/,(m,d)=>"رئيس القسم · "+trText(d)],
+ [/^(\d+)d waiting$/,"بانتظار منذ $1 يوم"],
+ [/^(\d+) days? waiting$/,"بانتظار منذ $1 يوم"],
+ [/^Candidates \((\d+)\)$/,"المرشحون ($1)"],
+ [/^(\d+) selected$/,"تم تحديد $1"],
+ [/^CEO: approve vacancy (.+)$/,"الرئيس التنفيذي: الموافقة على شاغر $1"],
+ [/^CEO: final approval (.+)$/,"الرئيس التنفيذي: الموافقة النهائية على $1"],
+ [/^(.+) head: approve scorecard (.+)$/,(m,d,t)=>"رئيس "+trText(d)+": اعتماد بطاقة تقييم "+t],
+ [/^Dept head: reply on shortlist (.+)$/,"رئيس القسم: الرد على القائمة المختصرة لـ $1"],
+ [/^Pre-screen: (.+)$/,"الفرز المبدئي: $1"],
+ [/^Talent pool — (.+)$/,"بنك المواهب — $1"],
+ [/^Rejected — (.+)$/,"مرفوض — $1"],
+ [/^Moved to (.+)$/,(m,s)=>"نُقل إلى "+trText(s)],
+ [/^Showing (\d+) of (\d+)$/,"عرض $1 من $2"],
+ [/^Good to see you, (.+)$/,"أهلًا بك يا $1"],
+ [/^(\d+) in preparation$/,"$1 قيد الإعداد"],[/^(\d+) new to screen$/,"$1 بانتظار الفرز"],[/^(\d+) hired$/,"تم تعيين $1"],
+ [/^(\d+) rejected or in talent pool$/,"$1 مرفوض أو في بنك المواهب"],
+ [/^avg (.*)request → hire \(target 21–28\)$/,"المتوسط $1من الطلب إلى التعيين (الهدف ٢١–٢٨)"],
+ [/^panel avg (.+)$/,"متوسط اللجنة $1"],[/^avg (.+)$/,"المتوسط $1"],[/^Screen ([\d.–]+)$/,"الفرز $1"],[/^Interview ([\d.–]+)$/,"المقابلة $1"],[/^pass ([\d.]+)$/,"النجاح $1"],
+ [/^(\d+) yrs$/,"$1 سنوات"],[/^notice (\S+) days$/,"الإشعار $1 يوم"],[/^consent recorded$/,"الموافقة مسجّلة"],[/^consent not recorded$/,"الموافقة غير مسجّلة"],
+ [/^Added by HR \((.+)\)$/,"أضافته الموارد البشرية ($1)"],
+ [/^Proposed total package \((.+)\/month\)$/,"الباقة الإجمالية المقترحة ($1/شهريًا)"],
+ [/^(\d+) of 2 working days$/,"$1 من يومي عمل"],[/^(.+) total package$/,"$1 الباقة الإجمالية"],
+ [/^raised by (.+)$/,"رفعه $1"],[/^join by (.+)$/,"الالتحاق قبل $1"],[/^posted (.+)$/,"نُشرت $1"],[/^applied (.+)$/,"تقدّم في $1"],[/^\(basic (.+)\)$/,"(الأساسي $1)"],
+ [/^CEO approved vacancy$/,"وافق الرئيس التنفيذي على الشاغر"],[/^Head asked for changes: (.+)$/,"طلب رئيس القسم تعديلات: $1"],[/^CEO declined: (.+)$/,"رفض الرئيس التنفيذي: $1"],
+
+ [/^(\d+) \/ 2 days$/,"$1 / يومان"],[/^Candidate consented and completed the assessment \(tool: (.+)\)$/,"وافق المرشح وأكمل التقييم (الأداة: $1)"],
+];
+const AR_SUB=[ // last-resort fragments inside mixed text
+ [" working days"," أيام عمل"],["/month)","/شهريًا)"],["(basic ","(الأساسي "],["Source: ","المصدر: "],
+];
+const AR_SUB_SORTED=AR_SUB.sort((a,b)=>b[0].length-a[0].length);
+const DOTS=/(\s*[·—×]\s*)/, COMMA=/(,\s+)/;
+function trCore(c){
+  if(AR[c]!==undefined) return AR[c];
+  for(const [rx,rep] of AR_RX){ if(rx.test(c)) return c.replace(rx,rep) }
+  const m=c.match(/^(.+?)\s*([:…])$/); if(m&&AR[m[1]]!==undefined) return AR[m[1]]+m[2];
+  return null;
+}
+function trText(s){
+  if(LANG!=="ar"||!s) return s;
+  const lead=s.match(/^\s*/)[0], trail=s.match(/\s*$/)[0], core=s.trim();
+  if(!core||!/[A-Za-z]/.test(core)) return s;
+  let r=trCore(core); if(r!=null) return lead+r+trail;
+  let hit=false;
+  const seg=(str,rx)=>str.split(rx).map((x,i)=>{ if(i%2||!x.trim()) return x; const l=x.match(/^\s*/)[0],r=x.match(/\s*$/)[0],c=x.trim(); const t=trCore(c); if(t!=null){hit=true;return l+t+r} if(rx!==COMMA&&/,\s/.test(c)) return l+seg(c,COMMA)+r; return x }).join("");
+  const res=seg(core,DOTS); if(hit) return lead+res+trail;
+  let out=core; for(const [en,ar] of AR_SUB_SORTED){ if(out.includes(en)){ out=out.split(en).join(ar); hit=true } }
+  return hit? lead+out+trail : s;
+}
+const SKIP={SCRIPT:1,STYLE:1,TEXTAREA:1,PRE:1,CODE:1};
+function trNode(root){
+  if(LANG!=="ar"||!root) return;
+  if(root.nodeType===3){ trTextNode(root); return }
+  if(root.nodeType!==1||SKIP[root.tagName]||root.closest&&root.closest("[data-noi18n]")) return;
+  trAttrs(root);
+  const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT|NodeFilter.SHOW_ELEMENT,{acceptNode:n=>n.nodeType===1?(SKIP[n.tagName]||n.hasAttribute("data-noi18n")?NodeFilter.FILTER_REJECT:NodeFilter.FILTER_SKIP):NodeFilter.FILTER_ACCEPT});
+  root.querySelectorAll("[placeholder],[title],[aria-label]").forEach(trAttrs);
+  let n; while((n=w.nextNode())) trTextNode(n);
+}
+function trTextNode(n){
+  const p=n.parentNode; if(!p||SKIP[p.nodeName]||(p.closest&&p.closest("[data-noi18n]"))) return;
+  const v=n.nodeValue, t=trText(v); if(t===v) return;
+  if(p.nodeName==="OPTION"&&!p.hasAttribute("value")) p.setAttribute("value",v.trim()); // keep the stored value in English
+  n.nodeValue=t;
+}
+function trAttrs(el){ for(const a of ["placeholder","title","aria-label"]){ const v=el.getAttribute&&el.getAttribute(a); if(v){ const t=trText(v); if(t!==v) el.setAttribute(a,t) } } }
+const _i18nObs=new MutationObserver(ms=>{ if(LANG!=="ar")return; for(const m of ms){ if(m.type==="characterData") trTextNode(m.target); else m.addedNodes.forEach(trNode) } });
+function applyLang(){
+  document.documentElement.lang=LANG; document.documentElement.dir=LANG==="ar"?"rtl":"ltr";
+  document.querySelectorAll("#langSw button").forEach(b=>b.classList.toggle("on",b.dataset.l===LANG));
+}
+function setLang(l){ LANG=l; try{localStorage.setItem("forkaHireLang",l)}catch(e){} applyLang(); if(l==="en") restoreEn(); closeModal(); const ab=document.getElementById("askbox"); if(ab) ab.remove(); render(); trNode(document.body) }
+// keep originals so switching back to English restores fixed text (banner, header) too
+(function(){ const _t=trTextNode; trTextNode=function(n){ const v=n.nodeValue; _t(n); if(n.nodeValue!==v&&n.__en===undefined) n.__en=v } })();
+(function(){ const _a=trAttrs; trAttrs=function(el){ for(const a of ["placeholder","title","aria-label"]){ const v=el.getAttribute&&el.getAttribute(a); if(v&&!el.hasAttribute("data-en-"+a)) el.setAttribute("data-en-"+a,v) } _a(el) } })();
+function restoreEn(){ const w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT); let n; while((n=w.nextNode())) if(n.__en!==undefined){ n.nodeValue=n.__en; delete n.__en }
+  document.querySelectorAll("[data-en-placeholder],[data-en-title],[data-en-aria-label]").forEach(el=>{ for(const a of ["placeholder","title","aria-label"]) if(el.hasAttribute("data-en-"+a)){ el.setAttribute(a,el.getAttribute("data-en-"+a)); el.removeAttribute("data-en-"+a) } }) }
+
+</script>
+<script>
+/* ============ Forka Hiring — built on the Recruitment Flow SOP (6 Oct 2026) and the Hiring Guide (15 steps) ============ */
+const PASS = 3.5;               // proposed pass mark (1–5 scale)
+const DEPTS = ["Operations","Kitchen","Service","Marketing","Finance","HR","Procurement & Store","Administration"];
+const BRANCHES = ["Sharjah","Fujairah","Umm Al Quwain","Mayar Cafe","Oman","Ajman Central Store","Head Office"];
+const PRACTICAL = ["Trial shift","Cooking test","Barista test","Case study","Presentation","Excel exercise","Operations scenario"];
+const TRAITS = [["Reliability and discipline","Follows SOPs, on time, finishes tasks"],["Calm under pressure","Steady in a rush, a complaint or an audit"],["Team cooperation","Helps others, handles conflict well"],["Energy with people","Warm, confident with guests and staff"],["Openness to change","Learns fast, adapts, takes on new tasks"]];
+const COMPETENCY = ["Leadership","Problem solving","Accountability","Communication","Teamwork","Commercial awareness"];
+const CALL = ["Relevant experience","Reason for leaving","Salary fit","Communication","Career motivation"];
+const DOCS = ["Passport copy","Visa / residency","Certificates","Photos","Bank details","Signed offer letter"];
+const STAGES = [
+ ["applied","Applied","HR"],["screening","Screening","HR"],["personality","Personality","HR"],["shortlist","Shortlist","Dept head"],
+ ["interview","Interview","Dept head + HR"],["references","References","HR"],["final","Final evaluation","HR"],
+ ["approval","CEO approval","CEO"],["offer","Offer & documents","HR"],["hired","Hired","—"]];
+const SI = Object.fromEntries(STAGES.map((s,i)=>[s[0],i]));
+const PUBLIC = {applied:"Received",screening:"Under review",personality:"Under review",shortlist:"Under review",interview:"Interview",references:"Final checks",final:"Final checks",approval:"Final checks",offer:"Offer",hired:"Welcome to Forka",rejected:"Not selected this time",pool:"Kept in our talent pool"};
+const PUB_TRACK = ["Received","Under review","Interview","Final checks","Offer"];
+const REQ_STATUS = {requested:["Waiting for CEO","warn"],approved:["Scorecard being built","blue"],review:["Head to approve scorecard","warn"],ready:["Ready to post","blue"],open:["Open","ok"],filled:["Filled","br"],closed:["Closed",""],declined:["Declined","bad"]};
+
+/* ---------------- state ---------------- */
+let DB=null, USER=null, ME=null, OWNER=false, DEMO=false, CANWRITE=true, SAMPLE=null, ASSETS=null;
+const S={reqs:{},pipe:{},apps:{},jobs:{},team:{members:{}},brand:null};
+const V={role:"candidate",page:null,ceo:false,dept:null,viewAs:null,filter:{q:"",req:"",stage:""},sel:new Set(),pv:"board"};
+const NAMES={};
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const $=s=>document.querySelector(s);
+const uid=()=>Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4);
+const now=()=>Date.now();
+const fmtD=t=>t?new Date(t).toLocaleDateString(LANG==="ar"?"ar-u-nu-latn":"en-GB",{day:"numeric",month:"short"}):"–";
+const fmtN=n=>n==null||n===""?"–":Number(n).toLocaleString("en-US");
+const avg=a=>{a=a.filter(x=>typeof x==="number");return a.length?a.reduce((p,c)=>p+c,0)/a.length:null};
+const f1=x=>x==null?"–":x.toFixed(1);
+function workDaysSince(t){ if(!t) return 0; let d=new Date(t),n=0;const e=new Date(); d.setHours(0,0,0,0); while(d<e){d.setDate(d.getDate()+1); if(d>e)break; const w=d.getDay(); if(w!==5&&w!==6)n++;} return n; } // Gulf week: Fri/Sat off
+function toast(m){const t=$("#toast");t.textContent=m;t.style.display="block";clearTimeout(t._t);t._t=setTimeout(()=>t.style.display="none",2600)}
+const nm=id=>NAMES[id]||(DEMO_PEOPLE[id]?.name)||(/@/.test(id||"")?String(id).split("@")[0]:"Someone");
+
+/* ---------------- storage layer (shared db, or local demo) ---------------- */
+const DEMO_PEOPLE={u_khaled:{name:"Khaled Alamer",role:"hr",ceo:true},u_jen:{name:"Jennifer Tudara",role:"hr"},u_abuali:{name:"Abu Ali",role:"head",dept:"Operations"},u_chef:{name:"Head Chef",role:"head",dept:"Kitchen"},u_sara:{name:"Sara (candidate)",role:"candidate"}};
+const local={data:null,subs:[],
+  load(){try{this.data=JSON.parse(localStorage.getItem("forkaHiringDemo")||"null")}catch(e){} if(!this.data){this.data=demoSeed()} },
+  save(){try{localStorage.setItem("forkaHiringDemo",JSON.stringify(this.data))}catch(e){} this.subs.forEach(f=>f())},
+  watch(col,cb){const f=()=>cb(JSON.parse(JSON.stringify(this.data[col]||{})));this.subs.push(f);f()},
+  async put(col,id,obj){(this.data[col]=this.data[col]||{})[id]=obj;this.save()},
+  async del(col,id){if(this.data[col])delete this.data[col][id];this.save()}};
+/* ---------------- live mode: Google Sheet behind erp.forka.com sign-in ---------------- */
+const CFG=window.FORKA_APPS||{};const HURL=CFG.HIRING_URL||"";
+let TOKEN="",RVER="",SME=null;const RCB={};const RDATA={reqs:{},pipe:{},jobs:{},apps:{},config:{}};
+async function api(action,payload){try{const r=await fetch(HURL,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(Object.assign({action,token:TOKEN},payload||{}))});return await r.json()}catch(e){return{ok:false,error:"net"}}}
+function keepData(){try{localStorage.setItem("fh-cache",JSON.stringify({ver:RVER,me:SME,data:RDATA}))}catch(e){}}
+function fire(col){(RCB[col]||[]).forEach(cb=>cb(JSON.parse(JSON.stringify(RDATA[col]||{}))))}
+function applyRemote(r,fromCache){if(r.me)SME=r.me;if(r.ver)RVER=r.ver;if(r.data){Object.keys(RDATA).forEach(c=>{RDATA[c]=r.data[c]||{}});if(!fromCache)keepData();Object.keys(RDATA).forEach(fire)}}
+async function pull(light){const r=await api("load",{ver:light?RVER:""});
+  if(r.ok){if(r.same){if(r.me)SME=r.me;return}const typing=document.activeElement&&["INPUT","TEXTAREA","SELECT"].includes(document.activeElement.tagName)&&$("#modal").classList.contains("on");
+    if(typing&&light)return;applyRemote(r);banner("");return}
+  if(r.error==="session")return gone("signin");if(r.error==="noaccess")return gone("noaccess");
+  if(!light)banner("Can't reach the hiring data right now — showing what was saved on this device.")}
+function gone(kind){try{localStorage.removeItem("fh-cache")}catch(e){}
+  document.body.innerHTML=`<div style="max-width:460px;margin:12vh auto;padding:28px;background:#fffdf9;border:1px solid #e4ded4;border-radius:12px;font-family:'Inter Tight',system-ui,sans-serif;text-align:center"><div style="font-family:'EB Garamond',serif;font-size:26px;margin-bottom:8px">Forka Hiring</div><p style="color:#4a4642">${kind==="noaccess"?"You are signed in, but you are not on the hiring team yet. Ask Khaled to add you (Hiring &gt; Team).":"Please sign in at Forka Apps first."}</p><a href="${esc(CFG.ERP_HOME||"/")}" style="display:inline-block;margin-top:10px;background:#23211F;color:#fff;padding:9px 16px;border-radius:8px;text-decoration:none">Open Forka Apps</a></div>`}
+const store={
+  watch(col,cb){ if(DEMO) return local.watch(col,cb);
+    if(HURL){(RCB[col]=RCB[col]||[]).push(cb);cb(JSON.parse(JSON.stringify(RDATA[col]||{})));return}
+    const tm=setTimeout(()=>banner("Can't reach the shared data yet — showing what has loaded."),10000);
+    DB.collection(col).onSnapshot(snap=>{ if(!snap.metadata.fromCache){clearTimeout(tm);banner("")} const o={}; snap.docs.forEach(d=>{o[d.id]=d.data()}); cb(o) },
+      e=>{clearTimeout(tm); banner(e.code==="revoked"?"Access changed — reload to continue.":"Data connection stopped ("+e.code+").")}); },
+  async put(col,id,obj){ if(DEMO) return local.put(col,id,obj);
+    if(HURL){const was=RDATA[col][id];RDATA[col][id]=JSON.parse(JSON.stringify(obj));fire(col);
+      const r=await api("put",{col,id,data:obj});if(r.ok){RVER=r.ver||RVER;keepData();return}
+      if(was===undefined)delete RDATA[col][id];else RDATA[col][id]=was;fire(col);
+      if(r.error==="session"){gone("signin")}toast(r.error==="role"?"Only HR or the CEO can change this.":r.error==="big"?"This record is too long to save — shorten the notes or CV text.":"Couldn't save — check the connection and try again.");throw new Error(r.error)}
+    try{ await DB.doc(col+"/"+id).set(JSON.parse(JSON.stringify(obj))) }catch(e){ handleWriteErr(e); throw e } },
+  async del(col,id){ if(DEMO) return local.del(col,id);
+    if(HURL){const was=RDATA[col][id];delete RDATA[col][id];fire(col);const r=await api("del",{col,id});if(r.ok){RVER=r.ver||RVER;keepData();return}RDATA[col][id]=was;fire(col);toast("Couldn't delete — try again.");throw new Error(r.error)}
+    try{await DB.doc(col+"/"+id).delete()}catch(e){handleWriteErr(e);throw e} }
+};
+function handleWriteErr(e){ if(e&&e.code==="invalid_argument"){CANWRITE=false;toast("You don't have permission to change this. Ask Khaled for Editor access.")} else if(e&&e.code==="quota_exceeded"){toast("Storage is full — archive old candidates.")} else toast("Couldn't save — try again.") }
+function banner(m){const b=$("#banner");b.textContent=m;b.style.display=m?"block":"none"}
+
+/* ---------------- boot ---------------- */
+(async function boot(){
+  render();
+  try{ [DB,USER]=await Promise.all([window.claude?claude.use("db"):null, window.claude?claude.use("user"):null]); }catch(e){}
+  try{ SAMPLE = window.claude? await claude.use("sample") : null }catch(e){ SAMPLE=null }
+  try{ ASSETS = window.claude? await claude.use("assets") : null }catch(e){ ASSETS=null }
+  if(!HURL&&CFG.MODE==="live"){document.body.innerHTML=`<div style="max-width:460px;margin:12vh auto;padding:28px;background:#fffdf9;border:1px solid #e4ded4;border-radius:12px;font-family:'Inter Tight',system-ui,sans-serif;text-align:center"><div style="font-family:'EB Garamond',serif;font-size:26px;margin-bottom:8px">Forka Hiring</div><p>Hiring is being set up. Please try again soon.</p></div>`;return}
+  if(HURL){
+    try{TOKEN=localStorage.getItem("fa-token")||""}catch(e){}
+    if(!TOKEN){gone("signin");return}
+    let c=null;try{c=JSON.parse(localStorage.getItem("fh-cache")||"null")}catch(e){}
+    if(c&&c.me&&c.data){applyRemote(c,true)}            // open at once from the last visit
+    ["reqs","pipe","jobs"].forEach(k=>store.watch(k,o=>{S[k]=o;afterData()}));
+    store.watch("apps",o=>{S.apps=o;afterData()});
+    store.watch("config",o=>{S.team=o.team||{members:{}};S.brand=o.brand||null;afterData()});
+    await pull(false);if(!SME)return;
+    setInterval(()=>{if(!document.hidden)pull(true)},30000);
+    document.addEventListener("visibilitychange",()=>{if(!document.hidden)pull(true)});
+    return}
+  if(!DB){ DEMO=true; local.load(); ME="u_khaled"; V.viewAs="u_khaled"; banner("Demo mode — sample data, stored only in this browser. Use the switcher (top right) to see each access level."); }
+  else { ME=await USER.id(); OWNER=!!USER.isOwner(); }
+  ["reqs","pipe","jobs"].forEach(c=>store.watch(c,o=>{S[c]=o;afterData()}));
+  store.watch("apps",o=>{S.apps=o;afterData()});
+  store.watch("config",o=>{S.team=o.team||{members:{}};S.brand=o.brand||null;afterData()});
+})();
+let resolving=false;
+async function afterData(){ resolveRole(); render(); if(!DEMO&&!HURL&&USER&&!resolving){resolving=true; const ids=new Set(Object.keys(S.team.members||{})); Object.values(S.pipe).forEach(p=>{p.ownerUid&&ids.add(p.ownerUid);(p.history||[]).forEach(h=>h.by&&ids.add(h.by))}); Object.values(S.reqs).forEach(r=>r.createdBy&&ids.add(r.createdBy)); try{const ps=await USER.profiles([...ids]);for(const k in ps)NAMES[k]=ps[k].name||NAMES[k]||""}catch(e){} resolving=false; render();} }
+function resolveRole(){
+  let id = DEMO? V.viewAs : ME, p;
+  if(DEMO){ p=DEMO_PEOPLE[id]; V.role=p.role; V.ceo=!!p.ceo; V.dept=p.dept||null; V.me=id; }
+  else if(HURL){
+    if(!SME)return; ME=SME.email; OWNER=!!SME.ceo; NAMES[ME]=SME.name||ME;
+    Object.entries(S.team.members||{}).forEach(([k,m])=>{if(m&&m.name)NAMES[k]=m.name});
+    if(OWNER){ V.role=V.viewAs&&V.viewAs!=="candidate"?V.viewAs:"hr"; V.ceo=V.role==="hr"; V.dept=V.role==="head"?(V.viewDept||"Operations"):null; }
+    else { V.role=SME.role; V.ceo=false; V.dept=SME.dept||null; }
+    V.me=ME;
+  }
+  else {
+    const m=(S.team.members||{})[ME];
+    if(OWNER){ V.role=V.viewAs||"hr"; V.ceo=V.role==="hr"; V.dept=V.role==="head"?(V.viewDept||"Operations"):null; }
+    else if(m){ V.role=m.role; V.ceo=false; V.dept=m.dept||null; }
+    else { V.role="candidate"; V.ceo=false; }
+    V.me=ME;
+  }
+  const pages = {hr:["dash","approvals","reqs","pipeline","pool","careers","team"],head:["dash","reqs","pipeline"],candidate:["jobs","mine"]}[V.role];
+  if(!V.ceo) pages.splice(pages.indexOf("approvals"),pages.indexOf("approvals")>=0?1:0);
+  V.pages=pages; if(!pages.includes(V.page)) V.page=pages[0];
+}
+const PAGE_LABEL={dash:"Dashboard",approvals:"CEO approvals",reqs:"Hiring requests",pipeline:"Candidates",pool:"Talent pool & compliance",careers:"Careers page",team:"Team & access",jobs:"Open roles",mine:"My applications"};
+
+/* ---------------- derived ---------------- */
+function allCands(){ // pipeline records + online applications not yet picked up by HR
+  const out={...S.pipe};
+  for(const [u,doc] of Object.entries(S.apps)){ for(const [aid,a] of Object.entries(doc.list||{})){ if(!out[aid]) out[aid]={...a,id:aid,ownerUid:u,stage:a.knockout&&a.knockout.length?"rejected":"applied",reject:a.knockout&&a.knockout.length?{reason:"Pre-screen: "+a.knockout.join("; "),at:a.createdAt,auto:true}:null,online:true,unsaved:true,history:[{t:a.createdAt,by:u,m:"Applied online"}]} } }
+  return out;
+}
+function reqOf(c){return S.reqs[c.req]||{}}
+function headSees(r){return V.role!=="head"||r.dept===V.dept||r.createdBy===V.me}
+function scr(c,r){ // screening average: CV must-haves + HR call
+  const a=[]; (r.mustHaves||[]).forEach((m,i)=>a.push(c.cv?.[i])); CALL.forEach((m,i)=>a.push(c.call?.[i])); return avg(a);
+}
+const PR=r=>r.practicals||(r.practical?[r.practical]:[]);
+const CR=r=>r.criticals||(r.critical?[r.critical]:[]);
+const PV=s=>Array.isArray(s.prac)?s.prac:(s.prac!=null?[s.prac]:[]);
+function ivAvg(c){ const per=Object.values(c.iv||{}).map(s=>avg([...(s.tech||[]),...(s.comp||[]),...PV(s)])); return avg(per) }
+function overdue(){ const L=[]; const C=allCands();
+  Object.values(S.reqs).forEach(r=>{ if(r.status==="requested"&&workDaysSince(r.createdAt)>2) L.push(["CEO: approve vacancy "+r.title,workDaysSince(r.createdAt),{t:"req",id:r.id}]);
+    if(r.status==="review"&&workDaysSince(r.scorecardAt)>2) L.push([r.dept+" head: approve scorecard "+r.title,workDaysSince(r.scorecardAt),{t:"req",id:r.id}]) });
+  Object.values(C).forEach(c=>{ if(c.stage==="approval"&&workDaysSince(c.stageAt)>2) L.push(["CEO: final approval "+c.name,workDaysSince(c.stageAt),{t:"c",id:c.id}]);
+    if(c.stage==="shortlist"&&workDaysSince(c.stageAt)>2) L.push(["Dept head: reply on shortlist "+c.name,workDaysSince(c.stageAt),{t:"c",id:c.id}]) });
+  return L; }
+
+/* ---------------- render shell ---------------- */
+function render(){
+  if(!V.pages){ return }
+  const C=allCands();
+  const badge={approvals: Object.values(S.reqs).filter(r=>r.status==="requested").length+Object.values(C).filter(c=>c.stage==="approval").length,
+    reqs: V.role==="head"?Object.values(S.reqs).filter(r=>r.status==="review"&&headSees(r)).length:Object.values(S.reqs).filter(r=>r.status==="approved"||r.status==="ready").length,
+    pipeline: V.role==="head"?Object.values(C).filter(c=>headSees(reqOf(c))&&(c.stage==="shortlist"||(c.stage==="interview"&&!(c.iv||{})[V.me]))).length:Object.values(C).filter(c=>c.stage==="applied").length};
+  $("#nav").innerHTML=V.pages.map(p=>`<a class="${p===V.page?"on":""}" onclick="go('${p}')">${PAGE_LABEL[p]}${badge[p]?`<span class="n">${badge[p]}</span>`:""}</a>`).join("");
+  const roleName={hr:V.ceo?"CEO · HR":"HR",head:"Dept head"+(V.dept?" · "+V.dept:""),candidate:"Candidate"}[V.role];
+  let sw="";
+  if(DEMO) sw=`<select onchange="V.viewAs=this.value;V.page=null;afterData()">${Object.entries(DEMO_PEOPLE).map(([k,p])=>`<option value="${k}" ${k===V.viewAs?"selected":""}>${p.name}</option>`).join("")}</select>`;
+  else if(OWNER) sw=`<select onchange="V.viewAs=this.value.split(':')[0];V.viewDept=this.value.split(':')[1]||null;V.page=null;afterData()"><option value="hr">View as: CEO · HR</option>${DEPTS.map(d=>`<option value="head:${d}" ${V.role==="head"&&V.dept===d?"selected":""}>View as: ${d} head</option>`).join("")}${HURL?"":`<option value="candidate" ${V.role==="candidate"?"selected":""}>View as: Candidate</option>`}</select>`;
+  $("#who").innerHTML=`<span class="role">${roleName}</span>${sw}${HURL?`<a class="btn sm sec" style="margin-left:8px" href="${esc(CFG.ERP_HOME||"/")}">Forka Apps</a>`:""}`;
+  const fn={dash:pDash,approvals:pApprovals,reqs:pReqs,pipeline:pPipeline,pool:pPool,careers:pCareers,team:pTeam,jobs:pJobs,mine:pMine}[V.page];
+  $("#main").innerHTML=fn(C);
+}
+function go(p){V.page=p;V.sel.clear();render();window.scrollTo(0,0)}
+function openModal(html){$("#dlg").innerHTML=html;$("#modal").classList.add("on")}
+function closeModal(){$("#modal").classList.remove("on");$("#dlg").innerHTML=""}
+$("#modal").addEventListener("mousedown",e=>{if(e.target.id==="modal")closeModal()});
+
+/* ---------------- pages ---------------- */
+function pDash(C){
+  const reqs=Object.values(S.reqs).filter(headSees), cands=Object.values(C).filter(c=>headSees(reqOf(c)));
+  const active=cands.filter(c=>!["rejected","pool","hired"].includes(c.stage));
+  const hired=cands.filter(c=>c.stage==="hired"&&c.hiredAt);
+  const tth=avg(hired.map(c=>(c.hiredAt-c.createdAt)/864e5));
+  const od=overdue().filter(o=>V.role!=="head"||o[0].startsWith("Dept head")||o[0].includes(V.dept));
+  const funnel=STAGES.map(s=>[s[1],cands.filter(c=>c.stage!=="rejected"&&c.stage!=="pool"&&SI[c.stage]>=SI[s[0]]).length]);
+  const max=Math.max(1,...funnel.map(f=>f[1]));
+  const src={}; cands.forEach(c=>src[c.source||"Other"]=(src[c.source||"Other"]||0)+1);
+  const mine = V.role==="head"
+    ? cands.filter(c=>c.stage==="shortlist"||(c.stage==="interview"&&!(c.iv||{})[V.me])).map(c=>[c.name,c.stage==="shortlist"?"Pick for interview or decline":"Score the interview",c.id])
+    : cands.filter(c=>["applied","screening","personality","references","final","offer"].includes(c.stage)).slice(0,8).map(c=>[c.name,STAGES[SI[c.stage]][1]+" · "+(reqOf(c).title||""),c.id]);
+  return `<div class="top"><div><h1>Good to see you${DEMO||NAMES[V.me]?", "+esc(nm(V.me).split(" ")[0]):""}</h1><p>${V.role==="head"?"Your department's hiring at a glance.":"Every Forka hire, request to offer, on one standard flow."}</p></div>
+   ${V.role==="head"?`<button class="btn br" onclick="reqForm()">+ New hiring request</button>`:`<div class="row"><button class="btn sec" onclick="addApplicant()">+ Add applicant</button><button class="btn br" onclick="reqForm()">+ New hiring request</button></div>`}</div>
+  <div class="grid g4">
+    <div class="card kpi"><div class="l">Open roles</div><div class="v">${reqs.filter(r=>r.status==="open").length}</div><div class="small muted">${reqs.filter(r=>["requested","approved","review","ready"].includes(r.status)).length} in preparation</div></div>
+    <div class="card kpi"><div class="l">Candidates in process</div><div class="v">${active.length}</div><div class="small muted">${cands.filter(c=>c.stage==="applied").length} new to screen</div></div>
+    <div class="card kpi"><div class="l">Hired</div><div class="v">${hired.length}</div><div class="small muted">avg ${tth?Math.round(tth)+" days":"–"} request → hire (target 21–28)</div></div>
+    <div class="card kpi"><div class="l">Overdue (2-day SLA)</div><div class="v" style="color:${od.length?"var(--bad)":"inherit"}">${od.length}</div><div class="small muted">approvals and shortlist replies</div></div>
+  </div>
+  <div class="grid g2" style="margin-top:14px">
+    <div class="card"><h3>${V.role==="head"?"Waiting on you":"Next actions"}</h3>${mine.length?`<table>${mine.map(m=>`<tr class="click" onclick="openCand('${m[2]}')"><td><b>${esc(m[0])}</b></td><td class="muted small">${esc(m[1])}</td></tr>`).join("")}</table>`:`<div class="empty">Nothing waiting. </div>`}
+      ${od.length?`<div class="sec"><h3 style="color:var(--bad)">Overdue</h3><table>${od.map(o=>`<tr class="click" onclick="${o[2].t==="req"?`openReq('${o[2].id}')`:`openCand('${o[2].id}')`}"><td>${esc(o[0])}</td><td class="right"><span class="tag bad">${o[1]} working days</span></td></tr>`).join("")}</table></div>`:""}</div>
+    <div class="card"><h3>Pipeline funnel</h3><div class="funnel">${funnel.map(f=>`<div class="r"><span>${f[0]}</span><div class="bar"><i style="width:${f[1]/max*100}%"></i></div><b>${f[1]}</b></div>`).join("")}</div>
+      <div class="sec"><h3>Where candidates come from</h3><div class="pills">${Object.entries(src).map(([k,v])=>`<span class="tag">${esc(k)} · ${v}</span>`).join("")||'<span class="muted small">No candidates yet</span>'}</div></div></div>
+  </div>`;
+}
+function pApprovals(C){
+  const rq=Object.values(S.reqs).filter(r=>r.status==="requested"), fc=Object.values(C).filter(c=>c.stage==="approval");
+  return `<div class="top"><div><h1>CEO approvals</h1><p>Two working days on each — vacancies and final candidates.</p></div></div>
+  <div class="card"><h3>Vacancies to approve (step 2)</h3>${rq.length?`<table><tr><th>Role</th><th>Dept / branch</th><th>Salary range</th><th>Raised</th><th></th></tr>${rq.map(r=>`<tr class="click" onclick="openReq('${r.id}')"><td><b>${esc(r.title)}</b> × ${r.headcount||1}<div class="small muted">${esc(r.reason)}</div></td><td>${esc(r.dept)} · ${esc(r.branch)}</td><td>${fmtN(r.salMin)}–${fmtN(r.salMax)}</td><td>${sla(r.createdAt)}</td><td class="right"><button class="btn sm ok" onclick="event.stopPropagation();reqAct('${r.id}','approve')">Approve</button></td></tr>`).join("")}</table>`:`<div class="empty">No vacancies waiting.</div>`}</div>
+  <div class="card" style="margin-top:14px"><h3>Final candidates to approve (step 14)</h3>${fc.length?`<table><tr><th>Candidate</th><th>Role</th><th>Scores</th><th>Package</th><th>Waiting</th></tr>${fc.map(c=>{const r=reqOf(c);return `<tr class="click" onclick="openCand('${c.id}')"><td><b>${esc(c.name)}</b></td><td>${esc(r.title)}</td><td>Screen ${f1(scr(c,r))} · Interview ${f1(ivAvg(c))}</td><td>${fmtN(c.fin?.total)} <span class="muted small">(basic ${fmtN(c.fin?.basic)})</span></td><td>${sla(c.stageAt)}</td></tr>`}).join("")}</table>`:`<div class="empty">No candidates waiting.</div>`}</div>`;
+}
+const sla=t=>{const d=workDaysSince(t);return `<span class="tag ${d>2?"bad":d>1?"warn":"ok"}">${d} / 2 days</span>`};
+function pReqs(){
+  const L=Object.values(S.reqs).filter(headSees).sort((a,b)=>b.createdAt-a.createdAt);
+  return `<div class="top"><div><h1>Hiring requests</h1><p>${V.role==="head"?"One form, about 10 minutes. From the second hire of the same role, start from the last request.":"Department heads raise them; CEO approves; HR builds the scorecard; head approves; HR posts."}</p></div><button class="btn br" onclick="reqForm()">+ New hiring request</button></div>
+  <div class="card">${L.length?`<table><tr><th>Req ID</th><th>Role</th><th>Dept · branch</th><th>Joining</th><th>Candidates</th><th>Status</th></tr>${L.map(r=>{const n=Object.values(allCands()).filter(c=>c.req===r.id);const s=REQ_STATUS[r.status]||[r.status,""];return `<tr class="click" onclick="openReq('${r.id}')"><td class="muted">${esc(r.reqId||"—")}</td><td><b>${esc(r.title)}</b> × ${r.headcount||1}</td><td>${esc(r.dept)} · ${esc(r.branch)}</td><td>${fmtD(r.joinBy)}</td><td>${n.length} <span class="muted small">${n.filter(c=>c.stage==="hired").length} hired</span></td><td><span class="tag ${s[1]}">${s[0]}</span></td></tr>`}).join("")}</table>`:`<div class="empty">No hiring requests yet. ${V.role!=="candidate"?"Raise the first one.":""}</div>`}</div>`;
+}
+function pPipeline(C){
+  let L=Object.values(C).filter(c=>headSees(reqOf(c)));
+  if(V.role==="head") L=L.filter(c=>SI[c.stage]>=SI.shortlist||c.stage==="hired");
+  const f=V.filter; if(f.req)L=L.filter(c=>c.req===f.req); if(f.q){const q=f.q.toLowerCase();L=L.filter(c=>(c.name+" "+c.email+" "+(c.cvText||"")).toLowerCase().includes(q))}
+  const reqs=Object.values(S.reqs).filter(headSees);
+  const head=`<div class="top"><div><h1>Candidates</h1><p>${V.role==="head"?"Shortlisted candidates for your roles. Score each interview on your own before discussing.":"Every move is logged the same day. Every rejection names the criterion it failed."}</p></div>
+   <div class="row">${V.role==="hr"?`<button class="btn sec" onclick="addApplicant()">+ Add applicant</button>`:""}<button class="btn sec sm" onclick="V.pv=V.pv==='board'?'list':'board';render()">${V.pv==="board"?"List view":"Board view"}</button></div></div>
+   <div class="row" style="margin-bottom:12px"><input style="max-width:280px" placeholder="Search name, email, CV text…" value="${esc(f.q)}" oninput="V.filter.q=this.value;clearTimeout(window._qt);window._qt=setTimeout(()=>{render();const i=document.querySelector('main input');i.focus();i.setSelectionRange(i.value.length,i.value.length)},250)">
+   <select style="max-width:260px" onchange="V.filter.req=this.value;render()"><option value="">All roles</option>${reqs.map(r=>`<option value="${r.id}" ${f.req===r.id?"selected":""}>${esc(r.title)} · ${esc(r.branch)}</option>`).join("")}</select></div>`;
+  const live=L.filter(c=>!["rejected","pool"].includes(c.stage));
+  if(V.pv==="board"){
+    const cols=STAGES.filter(s=>V.role!=="head"||SI[s[0]]>=SI.shortlist);
+    return head+`<div class="kanban">${cols.map(s=>{const cs=live.filter(c=>c.stage===s[0]);return `<div class="col"><h4><span>${s[1]}</span><span>${cs.length}</span></h4>${cs.map(card).join("")}</div>`}).join("")}</div>
+    <p class="small muted">${L.length-live.length} rejected or in talent pool — see the list view${V.role==="hr"?" or Talent pool":""}.</p>`;
+  }
+  const sel=V.sel;
+  return head+(V.role==="hr"?`<div class="row" style="margin-bottom:8px"><span class="small muted">${sel.size} selected</span><button class="btn sm sec" ${sel.size?"":"disabled"} onclick="bulk('advance')">Move to next stage</button><button class="btn sm sec" ${sel.size?"":"disabled"} onclick="bulk('pool')">Talent pool</button><button class="btn sm bad" ${sel.size?"":"disabled"} onclick="bulk('reject')">Reject with reason</button></div>`:"")+
+  `<div class="card"><table><tr>${V.role==="hr"?`<th><input type="checkbox" style="width:auto" onchange="L_all(this.checked)"></th>`:""}<th>Candidate</th><th>Role</th><th>Stage</th><th>Screen</th><th>Interview</th><th>Applied</th></tr>
+  ${L.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0)).map(c=>{const r=reqOf(c);return `<tr class="click" onclick="openCand('${c.id}')">${V.role==="hr"?`<td onclick="event.stopPropagation()"><input type="checkbox" style="width:auto" ${sel.has(c.id)?"checked":""} onchange="this.checked?V.sel.add('${c.id}'):V.sel.delete('${c.id}');render()"></td>`:""}<td><b>${esc(c.name)}</b><div class="small muted">${esc(c.source||"")}</div></td><td>${esc(r.title||"—")}</td><td>${stageTag(c)}</td><td>${f1(scr(c,r))}</td><td>${f1(ivAvg(c))}</td><td>${fmtD(c.createdAt)}</td></tr>`}).join("")||`<tr><td colspan="7" class="empty">No candidates.</td></tr>`}</table></div>`;
+}
+window.L_all=v=>{const C=allCands();Object.values(C).forEach(c=>v?V.sel.add(c.id):V.sel.delete(c.id));render()};
+function stageTag(c){ if(c.stage==="rejected")return `<span class="tag bad">Rejected</span>`; if(c.stage==="pool")return `<span class="tag blue">Talent pool</span>`; if(c.stage==="hired")return `<span class="tag ok">Hired</span>`; return `<span class="tag">${STAGES[SI[c.stage]][1]}</span>` }
+function card(c){const r=reqOf(c);const s=scr(c,r),iv=ivAvg(c);const wait=["shortlist","approval"].includes(c.stage)?workDaysSince(c.stageAt):0;
+  return `<div class="cc" onclick="openCand('${c.id}')"><b>${esc(c.name)}</b><div class="small muted">${esc(r.title||"")}${r.branch?" · "+esc(r.branch):""}</div><div class="row small" style="margin-top:5px;gap:5px">${s!=null?`<span class="tag ${s>=PASS?"ok":"warn"}">S ${f1(s)}</span>`:""}${iv!=null?`<span class="tag ${iv>=PASS?"ok":"warn"}">I ${f1(iv)}</span>`:""}${c.cvFile?`<span class="tag">CV</span>`:""}${c.online&&c.unsaved?`<span class="tag br">new online</span>`:""}${wait>2?`<span class="tag bad">${wait}d waiting</span>`:""}</div></div>`}
+function pPool(C){
+  const L=Object.values(C).filter(c=>["rejected","pool"].includes(c.stage));
+  const old=L.filter(c=>c.personality&&c.personality.summary&&workDaysSince(c.reject?.at||c.stageAt)>130);
+  return `<div class="top"><div><h1>Talent pool & compliance</h1><p>Rejected candidates get a reply. Strong "not now" candidates stay searchable for the next opening.</p></div></div>
+  ${old.length?`<div class="note" style="margin-bottom:12px"><b>${old.length} personality report(s) past 6 months</b> for unsuccessful candidates — the Hiring Guide says delete them. <button class="btn sm sec" onclick="purgeOld()">Delete those reports</button></div>`:`<div class="note ok" style="margin-bottom:12px">Retention check: no personality reports older than 6 months for unsuccessful candidates.</div>`}
+  <div class="card"><table><tr><th>Candidate</th><th>Applied for</th><th>Status</th><th>Reason on file</th><th>Consent</th><th></th></tr>${L.map(c=>`<tr class="click" onclick="openCand('${c.id}')"><td><b>${esc(c.name)}</b><div class="small muted">${esc(c.email||"")}</div></td><td>${esc(reqOf(c).title||"—")}</td><td>${stageTag(c)}</td><td class="small">${esc(c.reject?.reason||c.poolNote||"—")}</td><td>${c.consent?'<span class="tag ok">Yes</span>':'<span class="tag warn">Not recorded</span>'}</td><td class="right">${c.stage==="pool"?`<button class="btn sm sec" onclick="event.stopPropagation();reconsider('${c.id}')">Consider for a role</button>`:""}</td></tr>`).join("")||`<tr><td colspan="6" class="empty">Nobody here yet.</td></tr>`}</table></div>`;
+}
+function brand(){return S.brand||{intro:"We operate restaurants across the UAE and Oman — Kuwaiti Kitchen, Mayar Cafe and more — and we're building the biggest F&B group in the region. Owners should own; operators should operate. We're looking for operators.",values:["Food first","Standards you can measure","Grow with the group","Multi-skilled teams","Every candidate gets a reply"],benefits:"Clear career paths across five businesses · training through the Forka Learning Library · a fair, scored hiring process"}}
+function pCareers(){const b=brand();
+  return `<div class="top"><div><h1>Careers page</h1><p>Your employer brand: what every candidate sees first. Edit the words here; open roles appear automatically when HR posts them.</p></div>${HURL?`<a class="btn sec" href="${esc(CFG.APPLY_URL||"https://apply.forka.com/")}" target="_blank" rel="noopener">Open the careers page</a>`:`<button class="btn sec" onclick="V.viewAs='candidate';V.page=null;afterData()" ${DEMO?"disabled":""}>Preview as candidate</button>`}</div>
+  <div class="grid g2"><div class="card"><label>Intro</label><textarea id="b_intro" style="min-height:120px">${esc(b.intro)}</textarea><label>Values <span class="hint">one per line</span></label><textarea id="b_vals">${esc(b.values.join("\n"))}</textarea><label>What we offer</label><textarea id="b_ben">${esc(b.benefits)}</textarea><div class="row" style="margin-top:12px"><button class="btn" onclick="saveBrand()">Save</button></div></div>
+  <div>${heroHtml(b)}<div class="note info">${HURL?`Candidates apply at <b>apply.forka.com</b> with no account: posted jobs appear there in English and Arabic, and each application lands in Candidates with its CV. Walk-ins and email CVs: <b>+ Add applicant</b>.`:`Public candidates without a Forka account apply through hr@forka.com (position in the subject). HR logs them with <b>+ Add applicant</b> — paste the CV and the AI fills the form. Staff and invited candidates apply right here.`}</div></div></div>`}
+function heroHtml(b){return `<div class="hero"><div class="small" style="letter-spacing:2px;color:#d7b48a">FORKA COLLECTIVE · CAREERS</div><h1 style="margin:6px 0 8px">Build the region's best restaurants with us</h1><p>${esc(b.intro)}</p><div class="vals">${b.values.map(v=>`<span>${esc(v)}</span>`).join("")}</div><p class="small" style="margin-top:12px">${esc(b.benefits)}</p></div>`}
+function pTeam(){
+  const M=S.team.members||{};
+  return `<div class="top"><div><h1>Team & access</h1><p>Three access levels. Anyone not listed here sees the candidate view.</p></div>${!DEMO?`<button class="btn br" onclick="addMember()">+ Add HR or department head</button>`:""}</div>
+  <div class="grid g3" style="margin-bottom:14px">
+   <div class="card"><h3>HR</h3><p class="small muted">Everything: requests, scorecards, screening, personality, references, final evaluation, offers, talent pool, careers page. Khaled (owner) also gets CEO approvals.</p></div>
+   <div class="card"><h3>Department head</h3><p class="small muted">Raises hiring requests, approves the scorecard, picks from the shortlist, scores interviews and practical tests. Sees only their department, from shortlist onwards — never salary negotiation or raw personality reports.</p></div>
+   <div class="card"><h3>Candidate</h3><p class="small muted">Sees open roles and the careers page, applies with pre-screening questions, and tracks their own application status. Never sees scores or notes.</p></div></div>
+  <div class="card"><table><tr><th>Person</th><th>Access</th><th>Department</th><th></th></tr>
+   ${DEMO?Object.entries(DEMO_PEOPLE).map(([k,p])=>`<tr><td>${esc(p.name)}</td><td>${p.ceo?"CEO · HR":p.role}</td><td>${esc(p.dept||"—")}</td><td></td></tr>`).join(""):
+   `<tr><td><b>${esc(nm(ME))}</b> (owner)</td><td>CEO · HR</td><td>—</td><td></td></tr>`+Object.entries(M).map(([k,m])=>`<tr><td>${esc(nm(k))}</td><td>${m.role==="hr"?"HR":"Department head"}</td><td>${esc(m.dept||"—")}</td><td class="right"><button class="btn sm bad" onclick="removeMember('${k}')">Remove</button></td></tr>`).join("")}</table>
+   ${!DEMO?`<p class="small muted" style="margin-top:10px">Also share the app with each HR person and department head as <b>Editor</b> (Share button on this page), so they can save scorecards. Staff applying internally need <b>Contributor</b>.</p>`:""}</div>`;
+}
+function pJobs(){
+  const J=Object.values(S.jobs).filter(j=>j.open).sort((a,b)=>b.postedAt-a.postedAt);
+  return heroHtml(brand())+`<h2 style="margin-bottom:10px">Open roles</h2>${J.length?`<div class="grid">${J.map(j=>`<div class="card job"><div style="flex:1"><h3>${esc(j.title)}</h3><div class="small muted">${esc(j.branch)} · ${esc(j.dept)} · posted ${fmtD(j.postedAt)}</div><p class="small" style="margin:8px 0 0">${esc((j.summary||"").slice(0,220))}</p></div><button class="btn br" onclick="viewJob('${j.id}')">View & apply</button></div>`).join("")}</div>`:`<div class="card empty">No open roles right now — check back soon.</div>`}`;
+}
+function pMine(){
+  const mine=Object.entries((S.apps[V.me]||{}).list||{}).map(([id,a])=>({...a,id}));
+  const C=allCands();
+  return `<div class="top"><div><h1>My applications</h1><p>We reply to every applicant. You'll see each step here.</p></div><button class="btn sec" onclick="go('jobs')">Browse open roles</button></div>
+  ${mine.length?mine.sort((a,b)=>b.createdAt-a.createdAt).map(a=>{const c={stage:(C[a.id]&&!C[a.id].unsaved)?C[a.id].stage:(a.status||((a.knockout||[]).length?"rejected":"applied"))};const pub=PUBLIC[c.stage]||"Received";const idx=PUB_TRACK.indexOf(pub);const j=S.jobs[a.req]||{};
+   return `<div class="card" style="margin-bottom:12px"><div class="row"><div><h3>${esc(j.title||a.jobTitle||"Role")}</h3><div class="small muted">${esc(j.branch||"")} · applied ${fmtD(a.createdAt)}${a.cvFile?" · CV: "+esc(a.cvFile.name):""}</div></div><span class="sp"></span><span class="tag ${c.stage==="rejected"?"bad":c.stage==="hired"||c.stage==="offer"?"ok":"br"}">${pub}</span></div>
+   ${idx>=0?`<div class="track">${PUB_TRACK.map((p,i)=>`<div class="${i<idx?"done":i===idx?"cur":""}">${p}</div>`).join("")}</div>`:""}
+   ${c.stage==="rejected"?`<p class="small">Thank you for applying. This time we've gone with candidates whose experience matched the role more closely. We'll keep your details for future roles if you agreed to that.</p>`:""}
+   ${c.stage==="interview"?`<p class="small">You've been invited to interview. HR will contact you with the time and the practical test (${esc((S.reqs[a.req]||{}).practical||"practical test")}).</p>`:""}
+   ${c.stage==="offer"?`<p class="small">Congratulations — HR will send the offer letter and the list of documents to bring.</p>`:""}</div>`}).join(""):`<div class="card empty">You haven't applied yet. <a href="#" onclick="go('jobs');return false">See open roles</a></div>`}`;
+}
+
+/* ---------------- hiring request ---------------- */
+function reqForm(copyId){
+  const prev=Object.values(S.reqs).filter(headSees).sort((a,b)=>b.createdAt-a.createdAt);
+  const r=copyId?{...S.reqs[copyId]}:{dept:V.dept||"",mustHaves:["","",""],testQs:["","",""],traits:[]};
+  const sel=(id,opts,v)=>`<select id="${id}"><option value="">Choose…</option>${opts.map(o=>`<option ${o===v?"selected":""}>${esc(o)}</option>`).join("")}</select>`;
+  openModal(`<div class="hd"><div><h2>New hiring request</h2><div class="small muted">Step 1 of the Hiring Guide · about 10 minutes · CEO approves within 2 working days</div></div><button class="x" onclick="closeModal()">×</button></div>
+  <div class="bd">${prev.length?`<div class="note info">Same role as before? <select style="width:auto;margin-left:6px" onchange="this.value&&reqForm(this.value)"><option value="">Start from a previous request…</option>${prev.map(p=>`<option value="${p.id}">${esc(p.title)} · ${esc(p.branch)} · ${fmtD(p.createdAt)}</option>`).join("")}</select></div>`:""}
+  <div class="grid g3"><div><label>Role title</label><input id="f_title" value="${esc(r.title)}"></div><div><label>Department</label>${V.role==="head"&&V.dept?sel("f_dept",[V.dept],V.dept):sel("f_dept",DEPTS,r.dept)}</div><div><label>Branch / location</label>${sel("f_branch",BRANCHES,r.branch)}</div>
+  <div><label>Headcount</label><input id="f_hc" type="number" min="1" value="${r.headcount||1}"></div><div><label>New or replacement</label>${sel("f_reason",["New position","Replacement"],r.reason)}</div><div><label>Target joining date</label><input id="f_join" type="date" value="${r.joinBy?new Date(r.joinBy).toISOString().slice(0,10):""}"></div>
+  <div><label>Salary range — min (total package)</label><input id="f_smin" type="number" value="${r.salMin||""}"></div><div><label>Salary range — max</label><input id="f_smax" type="number" value="${r.salMax||""}"></div><div><label>Currency</label>${sel("f_cur",["AED","OMR"],r.cur||"AED")}</div></div>
+  <label>Role purpose <span class="hint">one or two lines</span></label><textarea id="f_purpose">${esc(r.purpose)}</textarea>
+  <label>Key duties</label><textarea id="f_duties">${esc(r.duties)}</textarea>
+  <div class="grid g2"><div><label>Top 3 must-haves <span class="hint">CV screening scores against these</span></label>${[0,1,2].map(i=>`<input id="f_mh${i}" style="margin-bottom:6px" value="${esc(r.mustHaves?.[i])}">`).join("")}</div>
+  <div><label>Top 3 things to test in interview</label>${[0,1,2].map(i=>`<input id="f_tq${i}" style="margin-bottom:6px" value="${esc(r.testQs?.[i])}">`).join("")}</div></div>
+  <label>Practical test(s) <span class="hint">choose one or more</span></label><div class="pills">${PRACTICAL.map(x=>`<label class="chk" style="margin:0 12px 0 0;font-weight:500"><input type="checkbox" class="f_pr" value="${x}" ${PR(r).includes(x)?"checked":""}>${x}</label>`).join("")}</div>
+  <input id="f_prother" placeholder="Other practical test (optional)" style="margin-top:6px" value="${esc(PR(r).filter(x=>!PRACTICAL.includes(x)).join(", "))}">
+  <label>2–3 personality traits that matter most <span class="hint">tick "Critical" on any trait where a very low result must be cleared in interview — as many as you need</span></label>${TRAITS.map(t=>`<div class="crit"><label class="chk" style="margin:0;font-weight:500"><input type="checkbox" class="f_tr" value="${t[0]}" ${(r.traits||[]).includes(t[0])?"checked":""}><span><b>${t[0]}</b> <span class="muted small">— ${t[1]}</span></span></label><label class="chk" style="margin:0;font-weight:500;color:var(--bad)"><input type="checkbox" class="f_cr" value="${t[0]}" ${CR(r).includes(t[0])?"checked":""} onchange="if(this.checked)document.querySelector('.f_tr[value=&quot;'+this.value+'&quot;]').checked=true">Critical</label></div>`).join("")}
+  </div><div class="ft"><button class="btn sec" onclick="closeModal()">Cancel</button><button class="btn br" onclick="saveReq()">Send for CEO approval</button></div>`);
+}
+async function saveReq(){
+  const v=id=>$("#"+id).value.trim();
+  const r={id:uid(),title:v("f_title"),dept:v("f_dept"),branch:v("f_branch"),headcount:+v("f_hc")||1,reason:v("f_reason"),joinBy:v("f_join")?new Date(v("f_join")).getTime():null,salMin:+v("f_smin")||null,salMax:+v("f_smax")||null,cur:v("f_cur")||"AED",purpose:v("f_purpose"),duties:v("f_duties"),
+    mustHaves:[0,1,2].map(i=>v("f_mh"+i)).filter(Boolean),testQs:[0,1,2].map(i=>v("f_tq"+i)).filter(Boolean),practicals:[...document.querySelectorAll(".f_pr:checked")].map(x=>x.value).concat(v("f_prother")?v("f_prother").split(",").map(x=>x.trim()).filter(Boolean):[]),criticals:[...document.querySelectorAll(".f_cr:checked")].map(x=>x.value),traits:[...document.querySelectorAll(".f_tr:checked")].map(x=>x.value),
+    status:"requested",createdBy:V.me,createdAt:now(),knockout:[],history:[{t:now(),by:V.me,m:"Hiring request raised"}]};
+  const miss=[!r.title&&"role title",!r.dept&&"department",!r.branch&&"branch",!r.salMax&&"salary range",r.mustHaves.length<3&&"3 must-haves",!r.practicals.length&&"practical test",r.criticals.some(c=>!r.traits.includes(c))&&"critical traits must also be ticked as traits",(r.traits.length<2||r.traits.length>3)&&"2–3 traits"].filter(Boolean);
+  r.practical=r.practicals.join(" + "); r.critical=r.criticals.join(", ");
+  if(miss.length) return toast("Missing: "+miss.join(", "));
+  await store.put("reqs",r.id,r); closeModal(); toast("Sent to Khaled for approval"); go("reqs");
+}
+function openReq(id){
+  const r=S.reqs[id]; if(!r) return; const s=REQ_STATUS[r.status]||[r.status,""];
+  const isHR=V.role==="hr", canHead=V.role==="head"||isHR;
+  const cands=Object.values(allCands()).filter(c=>c.req===id);
+  const steps=["requested","approved","review","ready","open"]; const si=steps.indexOf(r.status);
+  openModal(`<div class="hd"><div><div class="small muted">${esc(r.reqId||"Not yet approved")} · raised by ${esc(nm(r.createdBy))} ${fmtD(r.createdAt)}</div><h2>${esc(r.title)} × ${r.headcount}</h2><div class="small">${esc(r.dept)} · ${esc(r.branch)} · ${esc(r.reason)} · join by ${fmtD(r.joinBy)}</div></div><span class="tag ${s[1]}" style="margin-left:auto">${s[0]}</span><button class="x" onclick="closeModal()">×</button></div>
+  <div class="bd"><div class="steps">${["Request","CEO approves","HR scorecard","Head approves","Posted"].map((t,i)=>`<span class="${si>i||r.status==="filled"?"done":si===i?"cur":""}">${t}</span>`).join("")}</div>
+  <div class="grid g2" style="margin-top:12px"><div class="card"><h3>The role</h3><p class="small"><b>Purpose:</b> ${esc(r.purpose||"—")}</p><p class="small"><b>Duties:</b> ${esc(r.duties||"—")}</p>${isHR||V.ceo?`<p class="small"><b>Salary range:</b> ${fmtN(r.salMin)}–${fmtN(r.salMax)} ${r.cur} total package · basic = 30%</p>`:`<p class="small"><b>Salary range:</b> ${fmtN(r.salMin)}–${fmtN(r.salMax)} ${r.cur}</p>`}</div>
+  <div class="card"><h3>Scorecard inputs</h3><p class="small"><b>Must-haves:</b> ${r.mustHaves.map(esc).join(" · ")}</p><p class="small"><b>Test in interview:</b> ${r.testQs.map(esc).join(" · ")}</p><p class="small"><b>Practical:</b> ${esc(r.practical)} · <b>Traits:</b> ${r.traits.map(esc).join(", ")}${r.critical?` · <b>critical:</b> ${esc(r.critical)}`:""}</p></div></div>
+  ${(isHR&&["approved","review","ready","open"].includes(r.status))?`<div class="card sec"><div class="row"><h3>Job description, ad & pre-screening</h3><span class="sp"></span>${SAMPLE?`<button class="btn sm ai" onclick="aiJD('${id}')">Draft JD + ads with AI</button>`:""}</div>
+   <label>Job description</label><textarea id="r_jd" style="min-height:140px">${esc(r.jd||"")}</textarea>
+   <div class="grid g2"><div><label>Job ad — English <span class="hint">LinkedIn / Indeed</span></label><textarea id="r_ad" style="min-height:120px">${esc(r.ad||"")}</textarea></div><div><label>Job ad — Arabic</label><textarea id="r_adar" dir="rtl" style="min-height:120px">${esc(r.adAr||"")}</textarea></div></div>
+   <label>Pre-screening knock-out questions <span class="hint">one per line — candidate must answer Yes, or is auto-rejected with the reason logged</span></label><textarea id="r_ko">${esc((r.knockout||[]).join("\n"))}</textarea>
+   <div class="row" style="margin-top:10px"><button class="btn sec" onclick="saveJD('${id}')">Save</button>${r.status==="approved"?`<button class="btn br" onclick="saveJD('${id}','review')">Send scorecard to ${esc(r.dept)} head</button>`:""}${r.ad?`<button class="btn sm sec" onclick="copyTxt(document.getElementById('r_ad').value)">Copy English ad</button>`:""}</div></div>`:(r.jd?`<div class="card sec"><h3>Job description</h3><pre class="out">${esc(r.jd)}</pre>${r.knockout?.length?`<p class="small"><b>Knock-out questions:</b> ${r.knockout.map(esc).join(" · ")}</p>`:""}</div>`:"")}
+  ${cands.length?`<div class="card sec"><h3>Candidates (${cands.length})</h3><table>${cands.map(c=>`<tr class="click" onclick="openCand('${c.id}')"><td>${esc(c.name)}</td><td>${stageTag(c)}</td><td>${f1(scr(c,r))}</td></tr>`).join("")}</table></div>`:""}
+  <div class="hist">${(r.history||[]).map(h=>`<div>${fmtD(h.t)} · ${esc(nm(h.by))} — ${esc(h.m)}</div>`).join("")}</div></div>
+  <div class="ft">
+   ${r.status==="requested"&&V.ceo?`<button class="btn bad" onclick="reqAct('${id}','decline')">Decline</button><button class="btn ok" onclick="reqAct('${id}','approve')">Approve vacancy</button>`:""}
+   ${r.status==="review"&&canHead&&(V.role==="head"||V.ceo)?`<button class="btn sec" onclick="reqAct('${id}','changes')">Ask HR for changes</button><button class="btn ok" onclick="reqAct('${id}','headok')">Approve scorecard</button>`:""}
+   ${r.status==="ready"&&isHR?`<button class="btn br" onclick="reqAct('${id}','post')">Post job</button>`:""}
+   ${r.status==="open"&&isHR?`<button class="btn sec" onclick="reqAct('${id}','close')">Close role</button><button class="btn sec" onclick="addApplicant('${id}')">+ Add applicant</button>`:""}
+   ${V.role!=="candidate"?`<button class="btn sec" onclick="reqForm('${id}')">Duplicate</button>`:""}
+  </div>`);
+}
+async function reqAct(id,a){
+  const r=JSON.parse(JSON.stringify(S.reqs[id])); const log=m=>r.history.push({t:now(),by:V.me,m});
+  if(a==="approve"){ const d=new Date(), n=Object.values(S.reqs).filter(x=>x.reqId&&x.reqId.startsWith("REQ-"+String(d.getFullYear()).slice(2)+String(d.getMonth()+1).padStart(2,"0"))).length+1;
+    r.reqId="REQ-"+String(d.getFullYear()).slice(2)+String(d.getMonth()+1).padStart(2,"0")+"-"+String(n).padStart(2,"0"); r.status="approved"; log("CEO approved vacancy — "+r.reqId); }
+  if(a==="decline"){ const why=await ask("Why is this vacancy declined?"); if(!why)return; r.status="declined"; log("CEO declined: "+why) }
+  if(a==="headok"){ r.status="ready"; log("Department head approved the scorecard") }
+  if(a==="changes"){ const why=await ask("What should HR change?"); if(!why)return; r.status="approved"; log("Head asked for changes: "+why) }
+  if(a==="post"){ r.status="open"; r.postedAt=now(); log("Job posted");
+    await store.put("jobs",id,{id,title:r.title,dept:r.dept,branch:r.branch,summary:r.purpose,jd:r.jd||"",knockout:r.knockout||[],open:true,postedAt:r.postedAt}); }
+  if(a==="close"){ r.status=Object.values(allCands()).filter(c=>c.req===id&&c.stage==="hired").length>=r.headcount?"filled":"closed"; log("Role closed"); if(S.jobs[id]) await store.put("jobs",id,{...S.jobs[id],open:false}); }
+  await store.put("reqs",id,r); toast("Saved"); openReq(id);
+}
+async function saveJD(id,next){ const r=JSON.parse(JSON.stringify(S.reqs[id])); r.jd=$("#r_jd").value; r.ad=$("#r_ad").value; r.adAr=$("#r_adar").value; r.knockout=$("#r_ko").value.split("\n").map(s=>s.trim()).filter(Boolean);
+  if(next==="review"){ if(!r.jd) return toast("Write the JD first"); r.status="review"; r.scorecardAt=now(); r.history.push({t:now(),by:V.me,m:"Scorecard + JD sent to head for approval"}) }
+  await store.put("reqs",id,r); if(S.jobs[id]&&S.jobs[id].open) await store.put("jobs",id,{...S.jobs[id],jd:r.jd,knockout:r.knockout}); toast("Saved"); openReq(id) }
+
+/* ---------------- candidate apply ---------------- */
+function viewJob(id){ const j=S.jobs[id]; if(!j)return;
+  openModal(`<div class="hd"><div><div class="small muted">${esc(j.dept)} · ${esc(j.branch)}</div><h2>${esc(j.title)}</h2></div><button class="x" onclick="closeModal()">×</button></div>
+  <div class="bd"><pre class="out">${esc(j.jd||j.summary)}</pre>
+  <h3 style="margin-top:16px">Apply</h3><div class="grid g2"><div><label>Full name</label><input id="a_name"></div><div><label>Email</label><input id="a_email" type="email"></div><div><label>Phone / WhatsApp</label><input id="a_phone"></div><div><label>Current location</label><input id="a_loc"></div>
+  <div><label>Years of relevant experience</label><input id="a_yrs" type="number" min="0"></div><div><label>Notice period (days)</label><input id="a_notice" type="number" min="0"></div>
+  <div><label>Expected monthly salary (total)</label><input id="a_sal" type="number"></div><div><label>Visa status</label><select id="a_visa"><option>Own visa / residency</option><option>Employer visa — transferable</option><option>Visit visa</option><option>Needs visa</option></select></div></div>
+  ${(j.knockout||[]).length?`<label>Quick questions</label>${j.knockout.map((q,i)=>`<div class="crit"><span>${esc(q)}</span><select id="a_ko${i}" style="width:110px"><option value="">—</option><option>Yes</option><option>No</option></select></div>`).join("")}`:""}
+  <label>Upload your CV <span class="hint">PDF or a photo of it · max 20 MB · Word files: please save as PDF first</span></label><input type="file" id="a_file" accept=".pdf,application/pdf,image/*">
+  <label>Or paste your CV / LinkedIn link <span class="hint">optional if you uploaded a file</span></label><textarea id="a_cv" style="min-height:90px"></textarea>
+  <div class="chk"><input type="checkbox" id="a_cons"><span>I agree Forka may use my details for this role and keep them up to 6 months for future roles.</span></div>
+  </div><div class="ft"><button class="btn sec" onclick="closeModal()">Cancel</button><button class="btn br" onclick="submitApp('${id}')">Submit application</button></div>`);
+}
+async function submitApp(id){ const j=S.jobs[id]; const v=x=>$("#"+x).value.trim();
+  const file=$("#a_file").files[0];
+  if(!v("a_name")||!v("a_email")) return toast("Name and email are needed");
+  if(!file&&!v("a_cv")) return toast("Please upload your CV (or paste it)");
+  if(!$("#a_cons").checked) return toast("Please tick the consent box");
+  const ans=(j.knockout||[]).map((q,i)=>[q,v("a_ko"+i)]); if(ans.some(a=>!a[1])) return toast("Answer the quick questions");
+  const btn=document.querySelector(".ft .btn.br"); let cvFile=null;
+  if(file){ btn.disabled=true; btn.textContent="Uploading CV…"; cvFile=await uploadCV(file); btn.disabled=false; btn.textContent="Submit application"; if(!cvFile) return; }
+  const aid=uid(); const a={cvFile,req:id,jobTitle:j.title,name:v("a_name"),email:v("a_email"),phone:v("a_phone"),location:v("a_loc"),years:+v("a_yrs")||0,notice:+v("a_notice")||null,salary:+v("a_sal")||null,visa:v("a_visa"),cvText:v("a_cv"),answers:ans,knockout:ans.filter(a=>a[1]!=="Yes").map(a=>a[0]),consent:true,source:"Careers page",createdAt:now()};
+  const doc=JSON.parse(JSON.stringify(S.apps[V.me]||{list:{}})); doc.list[aid]=a;
+  try{ await store.put("apps",V.me,doc) }catch(e){ return }
+  closeModal(); toast("Application sent — track it under My applications"); go("mine");
+}
+
+/* ---------------- HR add applicant ---------------- */
+function addApplicant(reqId){
+  const R=Object.values(S.reqs).filter(r=>["open","ready"].includes(r.status));
+  if(!R.length) return toast("Post a role first — no open roles yet");
+  openModal(`<div class="hd"><div><h2>Add applicant</h2><div class="small muted">From hr@forka.com, LinkedIn, Indeed, referral or walk-in</div></div><button class="x" onclick="closeModal()">×</button></div>
+  <div class="bd"><div class="grid g2"><div><label>Role</label><select id="n_req">${R.map(r=>`<option value="${r.id}" ${r.id===reqId?"selected":""}>${esc(r.title)} · ${esc(r.branch)}</option>`).join("")}</select></div><div><label>Source</label><select id="n_src">${["Email (hr@forka.com)","LinkedIn","Indeed","Referral","Walk-in","Talent pool","Agency"].map(s=>`<option>${s}</option>`).join("")}</select></div></div>
+  <label>CV file <span class="hint">PDF or photo, from the email</span></label><input type="file" id="n_file" accept=".pdf,application/pdf,image/*">
+  <label>CV text <span class="hint">paste it — ${SAMPLE?"AI can fill the fields below":"then fill the fields"}</span></label><textarea id="n_cv" style="min-height:120px"></textarea>${SAMPLE?`<button class="btn sm ai" style="margin-top:6px" onclick="aiParse()">Fill fields from CV</button>`:""}
+  <div class="grid g3"><div><label>Name</label><input id="n_name"></div><div><label>Email</label><input id="n_email"></div><div><label>Phone</label><input id="n_phone"></div><div><label>Location</label><input id="n_loc"></div><div><label>Years experience</label><input id="n_yrs" type="number"></div><div><label>Expected salary</label><input id="n_sal" type="number"></div></div>
+  <div class="chk"><input type="checkbox" id="n_cons"><span>Candidate consented to Forka holding their data (stated in the application email or form)</span></div></div>
+  <div class="ft"><button class="btn sec" onclick="closeModal()">Cancel</button><button class="btn br" onclick="saveApplicant()">Add to pipeline</button></div>`);
+}
+async function saveApplicant(){ const v=x=>$("#"+x).value.trim(); if(!v("n_name")) return toast("Name needed");
+  const file=$("#n_file").files[0]; let cvFile=null; if(file){ toast("Uploading CV…"); cvFile=await uploadCV(file); if(!cvFile) return; }
+  const c={cvFile,id:uid(),req:v("n_req"),source:v("n_src"),cvText:v("n_cv"),name:v("n_name"),email:v("n_email"),phone:v("n_phone"),location:v("n_loc"),years:+v("n_yrs")||null,salary:+v("n_sal")||null,consent:$("#n_cons").checked,stage:"applied",stageAt:now(),createdAt:now(),history:[{t:now(),by:V.me,m:"Added by HR ("+v("n_src")+")"}]};
+  await store.put("pipe",c.id,c); closeModal(); toast("Added"); openCand(c.id) }
+
+/* ---------------- candidate drawer (HR / head) ---------------- */
+let DRAFT=null;
+function openCand(id){
+  const c=allCands()[id]; if(!c) return; const r=reqOf(c);
+  if(!DRAFT||DRAFT.id!==id) DRAFT=JSON.parse(JSON.stringify(c));
+  const d=DRAFT, isHR=V.role==="hr", isHead=V.role==="head", st=d.stage, si=SI[st]??-1;
+  const scoreBtns=(path,val,dis)=>`<div class="score">${[1,2,3,4,5].map(n=>`<button ${dis?"disabled":""} class="${val===n?"on":""}" onclick="setScore('${path}',${n})">${n}</button>`).join("")}</div>`;
+  const sAvg=scr(d,r), iAvg=ivAvg(d);
+  const myIv=(d.iv||{})[V.me]||{tech:[],comp:[]};
+  let body="";
+  body+=`<div class="steps">${STAGES.map((s,i)=>`<span class="${si>i?"done":si===i?"cur":""}" title="${s[2]}">${s[1]}</span>`).join("")}</div>`;
+  if(st==="rejected"||st==="pool") body+=`<div class="note ${st==="pool"?"info":""}" style="margin:10px 0">${st==="pool"?"In talent pool":"Rejected"}${d.reject?.reason?" — "+esc(d.reject.reason):""}${d.reject?.auto?" (automatic, pre-screen)":""}</div>`;
+  // profile
+  body+=`<div class="grid g2" style="margin-top:10px"><div class="card"><h3>Profile</h3><p class="small">${esc(d.email||"")} ${d.phone?" · "+esc(d.phone):""}<br>${esc(d.location||"")} · ${d.years??"–"} yrs · notice ${d.notice??"–"} days · ${esc(d.visa||"")}</p>${isHR?`<p class="small"><b>Expected salary:</b> ${fmtN(d.salary)} ${r.cur||""} ${d.salary&&r.salMax&&d.salary>r.salMax?'<span class="tag warn">above range</span>':""}</p>`:""}
+   ${(d.answers||[]).length?`<p class="small"><b>Pre-screen:</b> ${d.answers.map(a=>`${esc(a[0])} — <b>${esc(a[1])}</b>`).join("<br>")}</p>`:""}<p class="small muted">Source: ${esc(d.source||"")} · consent ${d.consent?"recorded":"not recorded"}</p></div>
+   <div class="card"><div class="row"><h3>CV</h3><span class="sp"></span>${cvLink(d.cvFile)}</div>${d.cvText?`<pre class="out" style="max-height:170px;margin-top:8px">${esc(d.cvText)}</pre>`:`<p class="small muted">${d.cvFile?"Open the file above.":"No CV yet."}</p>`}</div></div>`;
+  // screening (HR only)
+  if(isHR&&si>=SI.screening){ const lock=si>SI.screening;
+    body+=`<div class="card sec"><div class="row"><h3>Screening scorecard</h3><span class="tag ${sAvg>=PASS?"ok":"warn"}">avg ${f1(sAvg)} · pass ${PASS}</span><span class="sp"></span>${SAMPLE&&!lock?`<button class="btn sm ai" onclick="aiScreen()">Suggest CV scores</button>`:""}</div>
+    <p class="small muted">Part 1 — CV against the must-haves (1 does not meet · 3 meets with gaps · 5 exceeds)</p>${(r.mustHaves||[]).map((m,i)=>`<div class="crit"><span>${esc(m)}${d.aiWhy?.[i]?`<div class="small muted">AI: ${esc(d.aiWhy[i])}</div>`:""}</span>${scoreBtns("cv."+i,d.cv?.[i],lock)}</div>`).join("")}
+    <p class="small muted" style="margin-top:10px">Part 2 — HR call, 15–30 minutes</p>${CALL.map((m,i)=>`<div class="crit"><span>${m}</span>${scoreBtns("call."+i,d.call?.[i],lock)}</div>`).join("")}
+    <label>Call notes</label><textarea ${lock?"disabled":""} oninput="DRAFT.callNotes=this.value">${esc(d.callNotes||"")}</textarea></div>`; }
+  // personality
+  if(isHR&&si>=SI.personality){ const lock=si>SI.personality, P=d.personality||{};
+    body+=`<div class="card sec"><h3>Personality assessment <span class="tag br">mandatory · input, not pass/fail</span></h3>
+    <div class="chk"><input type="checkbox" ${P.consent?"checked":""} ${lock?"disabled":""} onchange="DRAFT.personality={...(DRAFT.personality||{}),consent:this.checked}"><span>Candidate consented and completed the assessment (tool: ${esc(P.tool||"to be chosen")})</span></div>
+    ${(r.traits||[]).map((t,i)=>`<div class="crit"><span>${esc(t)}${CR(r).includes(t)?' <span class="tag bad">critical</span>':""}</span><select style="width:150px" ${lock?"disabled":""} onchange="DRAFT.personality={...(DRAFT.personality||{}),tr:{...((DRAFT.personality||{}).tr||{}),[${i}]:this.value}}"><option value="">—</option>${["Match","Watch-out","Very low"].map(o=>`<option ${(P.tr||{})[i]===o?"selected":""}>${o}</option>`).join("")}</select></div>`).join("")}
+    <label>Summary for the panel <span class="hint">3 lines — the head sees this, never the raw report</span></label><textarea ${lock?"disabled":""} oninput="DRAFT.personality={...(DRAFT.personality||{}),summary:this.value}">${esc(P.summary||"")}</textarea>
+    <label>2 follow-up questions for the interview</label><textarea ${lock?"disabled":""} oninput="DRAFT.personality={...(DRAFT.personality||{}),qs:this.value}">${esc(P.qs||"")}</textarea></div>`; }
+  // shortlist pack (head sees)
+  if(si>=SI.shortlist&&st!=="rejected"||(isHead&&si>=SI.shortlist)){ const P=d.personality||{};
+    body+=`<div class="card sec"><h3>Shortlist pack</h3><div class="grid g3"><div class="kpi"><div class="l">Screening score</div><div class="v">${f1(sAvg)}</div></div><div class="kpi"><div class="l">Experience</div><div class="v">${d.years??"–"}<span class="small"> yrs</span></div></div><div class="kpi"><div class="l">Notice</div><div class="v">${d.notice??"–"}<span class="small"> days</span></div></div></div>
+    <p class="small"><b>Personality summary:</b> ${esc(P.summary||"—")}</p>${Object.values(P.tr||{}).includes("Very low")?`<div class="note">A critical trait came out very low — the panel must clear it in the interview.</div>`:""}<p class="small"><b>Follow-up questions:</b> ${esc(P.qs||"—")}</p>${d.callNotes&&isHR?`<p class="small"><b>HR call:</b> ${esc(d.callNotes)}</p>`:""}</div>`; }
+  // interview
+  if(si>=SI.interview&&(isHR||isHead)){ const lock=si>SI.interview;
+    const others=Object.entries(d.iv||{}).filter(([k])=>k!==V.me);
+    body+=`<div class="card sec"><div class="row"><h3>Interview scorecard — yours</h3><span class="tag ${iAvg>=PASS?"ok":"warn"}">panel avg ${f1(iAvg)}</span><span class="sp"></span>${SAMPLE&&!lock?`<button class="btn sm ai" onclick="aiQs()">Interview questions</button>`:""}</div>
+    <p class="small muted">Score on your own before discussing. ${others.length&&!myIv.done?"Other scores stay hidden until you submit yours.":""}</p>
+    <div id="aiqs"></div>
+    <p class="small"><b>Technical</b></p>${(r.testQs||[]).map((m,i)=>`<div class="crit"><span>${esc(m)}</span>${scoreBtns("iv.tech."+i,myIv.tech?.[i],lock)}</div>`).join("")}
+    <p class="small" style="margin-top:8px"><b>Competency</b> — "tell me about a time…"</p>${COMPETENCY.map((m,i)=>`<div class="crit"><span>${m}</span>${scoreBtns("iv.comp."+i,myIv.comp?.[i],lock)}</div>`).join("")}
+    ${PR(r).map((x,i)=>`<div class="crit"><span><b>Practical:</b> ${esc(x)}</span>${scoreBtns("iv.prac."+i,PV(myIv)[i],lock)}</div>`).join("")}
+    <div class="crit"><span>Personality follow-up</span><select style="width:150px" ${lock?"disabled":""} onchange="ivSet('pf',this.value)"><option value="">—</option>${["Confirmed","Concern"].map(o=>`<option ${myIv.pf===o?"selected":""}>${o}</option>`).join("")}</select></div>
+    <label>Notes</label><textarea ${lock?"disabled":""} oninput="ivSet('notes',this.value,true)">${esc(myIv.notes||"")}</textarea>
+    ${(myIv.done||lock)&&others.length?`<p class="small" style="margin-top:8px"><b>Other panel scores:</b> ${others.map(([k,s])=>`${esc(nm(k))} ${f1(avg([...(s.tech||[]),...(s.comp||[]),...PV(s)]))}${s.notes?` — <i>${esc(s.notes)}</i>`:""}`).join(" · ")}</p>`:""}</div>`; }
+  // references
+  if(isHR&&si>=SI.references){ const lock=si>SI.references, R2=d.refs||[{},{}];
+    body+=`<div class="card sec"><h3>Reference checks</h3><div class="chk"><input type="checkbox" ${d.refConsent?"checked":""} ${lock?"disabled":""} onchange="DRAFT.refConsent=this.checked"><span>Candidate consents to contacting the current employer (if not: check previous employers, offer conditional)</span></div>
+    ${[0,1].map(i=>`<div class="grid g4" style="margin-top:6px"><input ${lock?"disabled":""} placeholder="Referee name" value="${esc(R2[i]?.name)}" oninput="refSet(${i},'name',this.value)"><input ${lock?"disabled":""} placeholder="Company · relation" value="${esc(R2[i]?.co)}" oninput="refSet(${i},'co',this.value)"><select ${lock?"disabled":""} onchange="refSet(${i},'ok',this.value)"><option value="">Result…</option>${["Verified — positive","Verified — concerns","Could not reach"].map(o=>`<option ${R2[i]?.ok===o?"selected":""}>${o}</option>`).join("")}</select><input ${lock?"disabled":""} placeholder="Notes" value="${esc(R2[i]?.notes)}" oninput="refSet(${i},'notes',this.value)"></div>`).join("")}</div>`; }
+  // final evaluation
+  if((isHR||V.ceo)&&si>=SI.final){ const lock=si>SI.final||!isHR, F=d.fin||{};
+    body+=`<div class="card sec"><h3>Final evaluation report</h3><table><tr><td>Screening</td><td>${f1(sAvg)}</td></tr><tr><td>Interview + practical (panel)</td><td>${f1(iAvg)}</td></tr><tr><td>Personality</td><td>${esc((d.personality||{}).summary||"—")}</td></tr><tr><td>References</td><td>${(d.refs||[]).map(x=>esc(x.ok||"")).filter(Boolean).join(" · ")||"—"}</td></tr></table>
+    <div class="grid g3"><div><label>Proposed total package (${r.cur||"AED"}/month)</label><input type="number" ${lock?"disabled":""} value="${F.total||""}" oninput="finSet(this.value)"></div><div><label>Basic salary (30%)</label><input disabled id="basicOut" value="${F.basic?fmtN(F.basic):""}"></div><div><label>Range</label><input disabled value="${fmtN(r.salMin)}–${fmtN(r.salMax)}"></div></div>
+    <div class="chk"><input type="checkbox" ${F.nego?"checked":""} ${lock?"disabled":""} onchange="DRAFT.fin={...(DRAFT.fin||{}),nego:this.checked}"><span>One more negotiation round done (HR only — the department head is not involved in salary)</span></div>
+    <label>Recommendation</label><textarea ${lock?"disabled":""} oninput="DRAFT.fin={...(DRAFT.fin||{}),rec:this.value}">${esc(F.rec||"")}</textarea>
+    ${st==="approval"?`<div class="note" style="margin-top:8px">Waiting for CEO approval · ${workDaysSince(d.stageAt)} of 2 working days</div>`:""}</div>`; }
+  // offer
+  if(isHR&&si>=SI.offer){ const lock=si>SI.offer, O=d.offer||{};
+    body+=`<div class="card sec"><h3>Offer & documents</h3><div class="grid g2"><div><label>Joining date</label><input type="date" ${lock?"disabled":""} value="${O.join||""}" onchange="DRAFT.offer={...(DRAFT.offer||{}),join:this.value}"></div><div class="chk" style="margin-top:28px"><input type="checkbox" ${O.accepted?"checked":""} ${lock?"disabled":""} onchange="DRAFT.offer={...(DRAFT.offer||{}),accepted:this.checked}"><span>Offer letter signed and accepted</span></div></div>
+    ${DOCS.map((x,i)=>`<div class="chk"><input type="checkbox" ${(O.docs||{})[i]?"checked":""} ${lock?"disabled":""} onchange="DRAFT.offer={...(DRAFT.offer||{}),docs:{...((DRAFT.offer||{}).docs||{}),[${i}]:this.checked}}"><span>${x}</span></div>`).join("")}
+    <p class="small muted">No one starts work without complete documentation (control approved 23 Jul).</p></div>`; }
+  // notes + history
+  body+=`<div class="card sec"><h3>Notes</h3>${(d.notes||[]).map(n=>`<div class="small" style="margin:4px 0"><b>${esc(nm(n.by))}</b> <span class="muted">${fmtD(n.t)}</span> — ${esc(n.m)}</div>`).join("")}<div class="row" style="margin-top:6px"><input id="noteIn" placeholder="Opinions go here; scores stay numbers" style="flex:1"><button class="btn sm sec" onclick="addNote()">Add</button></div>
+  <div class="hist">${(d.history||[]).map(h=>`<div>${fmtD(h.t)} · ${esc(nm(h.by))} — ${esc(h.m)}</div>`).join("")}</div></div>`;
+  // actions
+  const A=[]; const can=(x)=>x;
+  if(isHR&&st==="applied") A.push(`<button class="btn br" onclick="move('screening')">Start screening</button>`);
+  if(isHR&&st==="screening") A.push(`<button class="btn br" ${sAvg!=null&&sAvg>=PASS&&d.cv&&d.call&&Object.keys(d.cv).length>=(r.mustHaves||[]).length&&Object.keys(d.call).length>=CALL.length?"":"disabled"} onclick="move('personality')">Pass → personality assessment</button>`);
+  if(isHR&&st==="personality") A.push(`<button class="btn br" ${(d.personality||{}).consent&&(d.personality||{}).summary?"":"disabled"} onclick="move('shortlist')">Send to ${esc(r.dept)} head's shortlist</button>`);
+  if((isHead||isHR)&&st==="shortlist") A.push(`<button class="btn br" onclick="move('interview')">Invite to interview</button>`);
+  if((isHead||isHR)&&st==="interview"&&!myIv.done) A.push(`<button class="btn sec" onclick="submitIv()">Submit my scores</button>`);
+  if((isHead||isHR)&&st==="interview") A.push(`<button class="btn br" ${iAvg!=null&&iAvg>=PASS?"":"disabled"} onclick="move('references')">Passed → references</button>`);
+  if(isHR&&st==="references") A.push(`<button class="btn br" ${(d.refs||[]).filter(x=>x&&x.ok&&x.ok.startsWith("Verified")).length>=2?"":"disabled"} onclick="move('final')">References clear → final evaluation</button>`);
+  if(isHR&&st==="final") A.push(`<button class="btn br" ${d.fin?.total&&d.fin?.nego&&d.fin?.rec?"":"disabled"} onclick="move('approval')">Send to CEO for approval</button>`);
+  if(V.ceo&&st==="approval") A.push(`<button class="btn sec" onclick="move('final','CEO asked to renegotiate')">Renegotiate</button><button class="btn ok" onclick="move('offer','CEO approved candidate and package')">Approve</button>`);
+  if(isHR&&st==="offer") A.push(`<button class="btn ok" ${d.offer?.accepted&&d.offer?.join&&DOCS.every((x,i)=>(d.offer?.docs||{})[i])?"":"disabled"} onclick="move('hired')">Mark hired → onboarding</button>`);
+  if(isHR&&(st==="rejected"||st==="pool")) A.push(`<button class="btn sec" onclick="move('applied','Reopened')">Reopen</button>`);
+  const rej=!["hired","rejected","pool"].includes(st)&&(isHR||(isHead&&["shortlist","interview"].includes(st)));
+  openModal(`<div class="hd"><div><div class="small muted">${esc(r.reqId||"")} · ${esc(r.title||"")} · ${esc(r.branch||"")}</div><h2>${esc(d.name)}</h2></div>${stageTag(d)}<button class="x" onclick="closeModal();DRAFT=null">×</button></div>
+  <div class="bd">${body}</div>
+  <div class="ft">${rej?`<button class="btn bad" onclick="rejectC()">Reject with reason</button>`:""}${isHR&&rej?`<button class="btn sec" onclick="toPool()">Talent pool</button>`:""}<span class="sp"></span>${(isHR||isHead)&&!["hired"].includes(st)?`<button class="btn sec" onclick="saveDraft()">Save</button>`:""}${A.join("")}</div>`);
+}
+function setScore(path,n){ const p=path.split("."); const d=DRAFT;
+  if(p[0]==="iv"){ d.iv=d.iv||{}; const m=d.iv[V.me]=d.iv[V.me]||{tech:[],comp:[]}; if(p[1]==="prac"){ m.prac=PV(m).slice(); m.prac[+(p[2]||0)]=n } else { m[p[1]]=m[p[1]]||[]; m[p[1]][+p[2]]=n } }
+  else { d[p[0]]=d[p[0]]||{}; d[p[0]][p[1]]=n }
+  openCand(d.id); }
+function ivSet(k,v,quiet){ const d=DRAFT; d.iv=d.iv||{}; const m=d.iv[V.me]=d.iv[V.me]||{tech:[],comp:[]}; m[k]=v; if(!quiet)openCand(d.id) }
+function refSet(i,k,v){ DRAFT.refs=DRAFT.refs||[{},{}]; DRAFT.refs[i]=DRAFT.refs[i]||{}; DRAFT.refs[i][k]=v }
+function finSet(v){ DRAFT.fin={...(DRAFT.fin||{}),total:+v||null,basic:v?Math.round(+v*0.3):null}; const b=$("#basicOut"); if(b) b.value=DRAFT.fin.basic?fmtN(DRAFT.fin.basic):"" }
+async function persist(d,msg){ d=JSON.parse(JSON.stringify(d)); delete d.unsaved; if(msg)(d.history=d.history||[]).push({t:now(),by:V.me,m:msg});
+  await store.put("pipe",d.id,d);
+  // mirror ONLY the stage name to the candidate's own application doc (they never see scores or notes)
+  if(d.ownerUid&&S.apps[d.ownerUid]&&(S.apps[d.ownerUid].list||{})[d.id]&&S.apps[d.ownerUid].list[d.id].status!==d.stage){ const a=JSON.parse(JSON.stringify(S.apps[d.ownerUid])); a.list[d.id].status=d.stage; try{await store.put("apps",d.ownerUid,a)}catch(e){} }
+  DRAFT=d; return d }
+async function saveDraft(){ await persist(DRAFT,null); toast("Saved"); openCand(DRAFT.id) }
+async function move(stage,msg){ const d=DRAFT; d.stage=stage; d.stageAt=now(); if(stage==="hired")d.hiredAt=now();
+  await persist(d,msg||("Moved to "+STAGES[SI[stage]][1])); toast(msg||"Moved to "+STAGES[SI[stage]][1]); openCand(d.id) }
+async function submitIv(){ const m=(DRAFT.iv||{})[V.me]; const r=reqOf(DRAFT);
+  if(!m||PV(m).filter(Boolean).length<PR(r).length||(m.tech||[]).filter(Boolean).length<(r.testQs||[]).length||(m.comp||[]).filter(Boolean).length<COMPETENCY.length) return toast("Score every line first");
+  m.done=true; await persist(DRAFT,"Interview scored by "+nm(V.me)); toast("Scores submitted"); openCand(DRAFT.id) }
+async function rejectC(){ const r=reqOf(DRAFT); const why=await ask("Which criterion did they fail? (required — no rejections on feeling)",[...(r.mustHaves||[]),"Salary above range","Screening score below pass mark","Interview score below pass mark","Practical test","References","Candidate withdrew"]); if(!why)return;
+  DRAFT.reject={reason:why,at:now(),by:V.me}; await move("rejected","Rejected — "+why) }
+async function toPool(){ const why=await ask("Why keep them in the talent pool?"); if(!why)return; DRAFT.poolNote=why; DRAFT.reject={reason:why,at:now()}; await move("pool","Talent pool — "+why) }
+async function addNote(){ const v=$("#noteIn").value.trim(); if(!v)return; (DRAFT.notes=DRAFT.notes||[]).push({t:now(),by:V.me,m:v}); await persist(DRAFT); openCand(DRAFT.id) }
+async function bulk(kind){ const C=allCands(); let why="";
+  if(kind==="reject"){ why=await ask("Reason for all selected (criterion failed)",["Screening score below pass mark","Missing must-have experience","Salary above range","Position filled"]); if(!why)return }
+  if(kind==="pool"){ why=await ask("Talent pool note"); if(!why)return }
+  for(const id of V.sel){ const d=JSON.parse(JSON.stringify(C[id])); if(!d||["hired"].includes(d.stage))continue;
+    if(kind==="advance"){ const i=SI[d.stage]; if(i==null||i>=SI.shortlist) continue; d.stage=STAGES[i+1][0]; d.stageAt=now(); await persist(d,"Bulk move to "+STAGES[i+1][1]) }
+    else { d.reject={reason:why,at:now(),by:V.me}; if(kind==="pool")d.poolNote=why; d.stage=kind==="pool"?"pool":"rejected"; d.stageAt=now(); await persist(d,(kind==="pool"?"Talent pool — ":"Rejected — ")+why) } }
+  V.sel.clear(); toast("Done"); render() }
+async function reconsider(id){ const R=Object.values(S.reqs).filter(r=>r.status==="open"); if(!R.length)return toast("No open roles");
+  const pick=await ask("Which open role?",R.map(r=>r.title+" · "+r.branch)); if(!pick)return; const r=R.find(x=>x.title+" · "+x.branch===pick);
+  const d=JSON.parse(JSON.stringify(allCands()[id])); d.req=r.id; d.stage="applied"; d.stageAt=now(); d.reject=null; d.source="Talent pool"; d.cv={}; d.call={}; d.iv={}; await persist(d,"Reconsidered from talent pool for "+r.title); toast("Moved to "+r.title) }
+async function purgeOld(){ const C=allCands(); for(const c of Object.values(C)){ if(["rejected","pool"].includes(c.stage)&&c.personality&&c.personality.summary&&workDaysSince(c.reject?.at||c.stageAt)>130){ const d=JSON.parse(JSON.stringify(c)); d.personality={deleted:true}; await persist(d,"Personality report deleted (6-month retention)") } } toast("Deleted"); render() }
+
+
+/* ---------------- CV files ---------------- */
+async function uploadCV(file){
+  if(file.size>20*1024*1024){ toast("That file is over 20 MB"); return null }
+  const ok=/pdf|image\//.test(file.type)||/\.pdf$/i.test(file.name); if(!ok){ toast("Please upload a PDF or a photo (save Word files as PDF)"); return null }
+  if(DEMO){ if(file.size>1.5*1024*1024) return {name:file.name,size:file.size,type:file.type,demoTooBig:true};
+    const data=await new Promise(r=>{const fr=new FileReader();fr.onload=()=>r(fr.result);fr.readAsDataURL(file)}); return {name:file.name,size:file.size,type:file.type,data} }
+  if(HURL){ if(file.size>5*1024*1024){ toast("CV files up to 5 MB"); return null }
+    const data=await new Promise(r=>{const fr=new FileReader();fr.onload=()=>r(String(fr.result).split(",")[1]);fr.readAsDataURL(file)});
+    const r=await api("upload",{file:{name:file.name,type:file.type||"application/pdf",data}}); if(r.ok) return r.file; toast("Upload failed — try again or paste the text"); return null }
+  if(!ASSETS){ toast("File upload isn't available for your access level — paste your CV text instead"); return null }
+  try{ const up=await ASSETS.upload(file); return {id:up.id,url:up.url,name:file.name,size:up.sizeBytes,type:up.contentType} }
+  catch(e){ toast("Upload failed — try again or paste the text"); return null }
+}
+async function openCV(id){ const w=window.open("","_blank"); if(w)w.document.write("<p style='font-family:sans-serif'>Opening CV…</p>");
+  const r=await api("cv",{id}); if(!r.ok){ if(w)w.close(); toast("Couldn't open the CV."); return }
+  const bin=atob(r.data),u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);
+  const url=URL.createObjectURL(new Blob([u],{type:r.type||"application/pdf"})); if(w)w.location=url; else location.href=url }
+function cvLink(f){ if(!f) return "";
+  if(f.drive) return `<button class="btn sm sec" onclick="openCV('${esc(f.id)}')">Open CV · ${esc(f.name)} ${f.size?Math.round(f.size/1024)+" KB":""}</button>`; const href=f.data||f.url||(f.id?"/_blob/"+f.id:""); const kb=f.size?Math.round(f.size/1024)+" KB":"";
+  return href?`<a class="btn sm sec" href="${esc(href)}" target="_blank" rel="noopener">Open CV · ${esc(f.name)} ${kb}</a>`:`<span class="small muted">${esc(f.name)} (demo: file too big to keep)</span>` }
+
+/* ---------------- team / brand ---------------- */
+async function addMember(){ if(HURL) return addMemberMail(); if(!USER) return;
+  openModal(`<div class="hd"><h2>Add HR or department head</h2><button class="x" onclick="closeModal()">×</button></div><div class="bd"><label>Find person</label><input id="m_q" placeholder="Type a name" oninput="memSearch(this.value)" onfocus="memSearch(this.value)"><div id="m_res"></div>
+  <div class="grid g2"><div><label>Access</label><select id="m_role" onchange="document.getElementById('m_deptw').style.display=this.value==='head'?'block':'none'"><option value="head">Department head</option><option value="hr">HR</option></select></div><div id="m_deptw"><label>Department</label><select id="m_dept">${DEPTS.map(d=>`<option>${d}</option>`).join("")}</select></div></div></div>
+  <div class="ft"><button class="btn sec" onclick="closeModal()">Cancel</button><button class="btn br" onclick="saveMember()">Add</button></div>`) }
+function addMemberMail(){
+  openModal(`<div class="hd"><h2>Add HR or department head</h2><button class="x" onclick="closeModal()">×</button></div><div class="bd"><p class="small muted">Use their company email, the same one they sign in with at Forka Apps. In Forka Apps, also tick Hiring for them.</p><div class="grid g2"><div><label>Name</label><input id="m_name"></div><div><label>Company email</label><input id="m_mail" type="email"></div></div>
+  <div class="grid g2"><div><label>Access</label><select id="m_role" onchange="document.getElementById('m_deptw').style.display=this.value==='head'?'block':'none'"><option value="head">Department head</option><option value="hr">HR</option></select></div><div id="m_deptw"><label>Department</label><select id="m_dept">${DEPTS.map(d=>`<option>${d}</option>`).join("")}</select></div></div></div>
+  <div class="ft"><button class="btn sec" onclick="closeModal()">Cancel</button><button class="btn br" onclick="saveMemberMail()">Add</button></div>`) }
+async function saveMemberMail(){ const n=$("#m_name").value.trim(), e=$("#m_mail").value.trim().toLowerCase();
+  if(!n||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)){ toast("Name and a company email are needed"); return }
+  const t=JSON.parse(JSON.stringify(S.team||{members:{}})); t.members=t.members||{}; t.members[e]={name:n,role:$("#m_role").value,dept:$("#m_role").value==="head"?$("#m_dept").value:null};
+  try{ await store.put("config","team",t) }catch(e){ return } closeModal(); toast("Added"); render() }
+let PICK=null;
+async function memSearch(q){ try{ const hits=await USER.search(q||""); $("#m_res").innerHTML=(hits||[]).slice(0,8).map(h=>`<div class="chk"><input type="radio" name="mp" value="${esc(h.id)}" onchange="PICK=this.value"><span>${esc(h.name||"Unnamed")}</span></div>`).join("")||'<p class="small muted">No matches — share the app with them first.</p>'; (hits||[]).forEach(h=>NAMES[h.id]=h.name) }catch(e){ $("#m_res").innerHTML='<p class="small muted">Search unavailable.</p>' } }
+async function saveMember(){ if(!PICK)return toast("Pick a person"); const t=JSON.parse(JSON.stringify(S.team||{members:{}})); t.members=t.members||{}; t.members[PICK]={role:$("#m_role").value,dept:$("#m_role").value==="head"?$("#m_dept").value:null};
+  await store.put("config","team",t); closeModal(); toast("Added"); render() }
+async function removeMember(k){ const t=JSON.parse(JSON.stringify(S.team)); delete t.members[k]; await store.put("config","team",t); render() }
+async function saveBrand(){ await store.put("config","brand",{intro:$("#b_intro").value,values:$("#b_vals").value.split("\n").map(s=>s.trim()).filter(Boolean),benefits:$("#b_ben").value}); toast("Careers page saved") }
+
+/* ---------------- small dialogs ---------------- */
+function ask(q,opts){ return new Promise(res=>{ const prev=$("#dlg").innerHTML, wasOn=$("#modal").classList.contains("on");
+  const box=document.createElement("div"); box.id="askbox"; box.style.cssText="position:fixed;inset:0;background:rgba(35,33,31,.5);z-index:70;display:flex;align-items:center;justify-content:center;padding:12px";
+  box.innerHTML=`<div class="dlg" style="width:min(460px,100%)"><div class="bd"><h3>${esc(q)}</h3>${opts?`<select id="askSel" style="margin-top:10px"><option value="">Choose…</option>${opts.map(o=>`<option>${esc(o)}</option>`).join("")}<option value="__other">Other (write it)</option></select>`:""}<textarea id="askIn" style="margin-top:10px;${opts?"display:none":""}"></textarea></div><div class="ft"><button class="btn sec" id="askNo">Cancel</button><button class="btn" id="askOk">OK</button></div></div>`;
+  document.body.appendChild(box); const sel=box.querySelector("#askSel"), inp=box.querySelector("#askIn");
+  if(sel) sel.onchange=()=>{inp.style.display=sel.value==="__other"?"block":"none"};
+  box.querySelector("#askNo").onclick=()=>{box.remove();res(null)};
+  box.querySelector("#askOk").onclick=()=>{const v=sel&&sel.value&&sel.value!=="__other"?sel.value:inp.value.trim(); if(!v)return; box.remove(); res(v)}; }) }
+async function copyTxt(t){ try{await navigator.clipboard.writeText(t);toast("Copied")}catch(e){toast("Select the text and copy it")} }
+
+/* ---------------- AI helpers (Claude) — suggestions only, people decide ---------------- */
+async function askJSON(prompt){ const r=await SAMPLE(prompt+"\n\nReply with JSON only, no prose, no code fences."); const t=r.text||""; const m=t.match(/[\[{][\s\S]*[\]}]/); return JSON.parse(m?m[0]:t) }
+async function aiBusy(btn,fn){ btn=btn||event?.target; const old=btn?.textContent; if(btn){btn.disabled=true;btn.textContent="Working…"} try{ await fn() }catch(e){ toast(e&&e.code==="rate_limited"?"AI is busy — try in a minute":e&&e.code==="not_granted"?"AI not allowed on this page":"AI couldn't do that — try again") } if(btn){btn.disabled=false;btn.textContent=old} }
+function aiJD(id){ const btn=event.target; aiBusy(btn,async()=>{ const r=S.reqs[id];
+  const o=await askJSON(`You write hiring material for Forka Collective, an F&B operating group running restaurants in the UAE and Oman (Kuwaiti Kitchen, Mayar Cafe). Plain English, many readers use English as a second language. No hype.
+Role: ${r.title} · ${r.dept} · ${r.branch}. Purpose: ${r.purpose}. Duties: ${r.duties}. Must-haves: ${r.mustHaves.join("; ")}. Practical test: ${r.practical}. Traits: ${r.traits.join(", ")}.
+Return {"jd": "job description with sections: About the role, What you'll do, What you need (must-haves), Nice to have, How we hire (CV screen, HR call, short online assessment, interview + ${r.practical}, references, offer). Include a line that the role may include other duties as assigned.", "ad":"LinkedIn post, max 120 words, tells people to email hr@forka.com with '${r.title}' in the subject", "adAr":"the same ad in natural Gulf-friendly Modern Standard Arabic", "knockout":["3 yes/no knock-out questions built from the must-haves, phrased so the right answer is Yes"]}`);
+  $("#r_jd").value=o.jd||""; $("#r_ad").value=o.ad||""; $("#r_adar").value=o.adAr||""; if(o.knockout) $("#r_ko").value=o.knockout.join("\n"); toast("Draft ready — review, then Save") }) }
+function aiScreen(){ const btn=event.target; if(!(DRAFT.cvText||"").trim()) return toast("AI scoring needs CV text — this candidate sent a file only, so score from the file by hand"); aiBusy(btn,async()=>{ const d=DRAFT, r=reqOf(d);
+  const o=await askJSON(`Score this CV against each must-have on 1–5 (1 does not meet, 3 meets with gaps, 5 exceeds). Judge only evidence in the CV; if it isn't there, score low and say so. Ignore name, age, gender, nationality, religion.
+Must-haves: ${JSON.stringify(r.mustHaves)}
+CV: """${(d.cvText||"").slice(0,6000)}"""
+Return {"scores":[n,...],"why":["one short reason per must-have",...]}`);
+  d.cv=d.cv||{}; (o.scores||[]).forEach((n,i)=>{ if(n>=1&&n<=5) d.cv[i]=Math.round(n) }); d.aiWhy=o.why||[]; toast("Suggested — check each score"); openCand(d.id) }) }
+function aiQs(){ const btn=event.target; aiBusy(btn,async()=>{ const d=DRAFT, r=reqOf(d);
+  const o=await askJSON(`Write interview questions for ${r.title} at a UAE restaurant group. For each item give one question. Technical items: ${JSON.stringify(r.testQs)}. Competencies (behavioural "tell me about a time"): ${JSON.stringify(COMPETENCY)}. Personality follow-ups to probe: ${(d.personality||{}).qs||r.traits.join(", ")}. Return {"technical":[...],"competency":[...],"followups":[...]}`);
+  $("#aiqs").innerHTML=`<div class="note info"><b>Questions</b><br>${[...(o.technical||[]),...(o.competency||[]),...(o.followups||[])].map(q=>"• "+esc(q)).join("<br>")}</div>` }) }
+function aiParse(){ const btn=event.target; aiBusy(btn,async()=>{ const o=await askJSON(`Extract from this CV: {"name":"","email":"","phone":"","location":"","years":number of years of relevant work experience}. CV: """${$("#n_cv").value.slice(0,6000)}"""`);
+  ["name","email","phone","location"].forEach(k=>{ if(o[k]) $("#n_"+k==="#n_location"?"#n_loc":"#n_"+k).value=o[k] }); if(o.location)$("#n_loc").value=o.location; if(o.years!=null)$("#n_yrs").value=o.years; toast("Filled — check it") }) }
+
+/* ---------------- demo data ---------------- */
+function demoSeed(){ const t=now(), D=864e5;
+  const r1={id:"r1",reqId:"REQ-2610-01",title:"Branch Supervisor",dept:"Operations",branch:"Sharjah",headcount:1,reason:"Replacement",joinBy:t+21*D,salMin:6000,salMax:8000,cur:"AED",purpose:"Run the floor and the shift team so every guest gets the same Kuwaiti Kitchen standard.",duties:"Open/close the branch, lead shift briefings, handle complaints, check wastage and overnight inventory, train new staff.",mustHaves:["3+ years supervising in a UAE restaurant","Runs SOP checklists and shift briefings","Arabic and English, spoken"],testQs:["Handling a guest complaint during peak","Controlling wastage and food cost","Scheduling a shift with two no-shows"],practical:"Trial shift",critical:"Reliability and discipline",traits:["Reliability and discipline","Calm under pressure","Energy with people"],status:"open",createdBy:"u_abuali",createdAt:t-12*D,postedAt:t-9*D,knockout:["Do you have at least 3 years of supervisor experience in UAE restaurants?","Can you work rotating shifts including weekends?"],
+    jd:"About the role\nYou run the floor and the shift team at our Sharjah branch.\n\nWhat you'll do\n• Open and close the branch on the SOP checklist\n• Lead the shift briefing every day\n• Handle guest complaints on the spot\n• Check wastage and overnight inventory\n• Train new team members\n• Other duties as assigned\n\nWhat you need\n• 3+ years supervising in a UAE restaurant\n• Comfortable with SOP checklists and briefings\n• Arabic and English, spoken\n\nHow we hire\nCV screen → HR call → short online assessment → interview + trial shift → references → offer. Every applicant gets a reply.",ad:"We're hiring a Branch Supervisor for Kuwaiti Kitchen, Sharjah…",adAr:"",history:[{t:t-12*D,by:"u_abuali",m:"Hiring request raised"},{t:t-11*D,by:"u_khaled",m:"CEO approved vacancy — REQ-2610-01"},{t:t-9*D,by:"u_jen",m:"Job posted"}]};
+  const r2={id:"r2",title:"Commis Chef",dept:"Kitchen",branch:"Fujairah",headcount:2,reason:"New position",joinBy:t+30*D,salMin:2500,salMax:3200,cur:"AED",purpose:"Prep and cook to recipe card for the Fujairah kitchen.",duties:"Prep, line cooking, labelling and FIFO, cleaning schedule.",mustHaves:["1+ year in a commercial kitchen","Food safety basics (HACCP awareness)","Follows recipe cards exactly"],testQs:["Knife skills and prep speed","Labelling and FIFO","Cooking two signature dishes to card"],practical:"Cooking test",traits:["Reliability and discipline","Team cooperation"],status:"requested",createdBy:"u_chef",createdAt:t-3*D,knockout:[],history:[{t:t-3*D,by:"u_chef",m:"Hiring request raised"}]};
+  const base=(id,name,stage,extra)=>({id,req:"r1",name,email:name.split(" ")[0].toLowerCase()+"@mail.com",phone:"+971 50 000 0000",location:"Sharjah",years:4,notice:30,salary:7000,visa:"Own visa / residency",source:"LinkedIn",consent:true,cvText:"Restaurant supervisor, 4 years in Dubai and Sharjah casual dining. Runs opening/closing checklists, daily briefings, rosters for 14 staff. Arabic and English.",stage,stageAt:t-3*D,createdAt:t-8*D,history:[{t:t-8*D,by:"u_jen",m:"Added by HR (LinkedIn)"}],...extra});
+  return {reqs:{r1,r2},jobs:{r1:{id:"r1",title:r1.title,dept:r1.dept,branch:r1.branch,summary:r1.purpose,jd:r1.jd,knockout:r1.knockout,open:true,postedAt:r1.postedAt}},apps:{},config:{},
+   pipe:{c1:base("c1","Ahmed Saleh","applied",{stageAt:t-D,createdAt:t-D,source:"Email (hr@forka.com)"}),
+     c2:base("c2","Maria Santos","screening",{cv:{0:4,1:4},call:{0:4,1:3}}),
+     c3:base("c3","Rami Haddad","shortlist",{cv:{0:5,1:4,2:5},call:{0:4,1:4,2:4,3:5,4:4},stageAt:t-4*D,personality:{consent:true,tool:"to be chosen",tr:{0:"Match",1:"Match",2:"Watch-out"},summary:"Steady and organised; a little reserved with guests at first.",qs:"How do you open up with regulars? Tell me about a loud complaint you turned around."}}),
+     c4:base("c4","Joseph Mensah","interview",{cv:{0:4,1:4,2:3},call:{0:4,1:4,2:3,3:4,4:5},personality:{consent:true,summary:"High energy with people; watch discipline on paperwork.",qs:"Walk me through your closing checklist."},iv:{u_jen:{tech:[4,4,3],comp:[4,4,4,4,5,3],prac:4,pf:"Confirmed",done:true,notes:"Strong on the floor."}}}),
+     c5:base("c5","Layla Nasser","approval",{cv:{0:5,1:5,2:5},call:{0:5,1:4,2:4,3:5,4:5},personality:{consent:true,summary:"Calm, structured, warm."},iv:{u_abuali:{tech:[5,4,5],comp:[5,4,5,5,4,4],prac:5,done:true}},refs:[{name:"K. Aziz",co:"Prev. GM",ok:"Verified — positive"},{name:"S. Omar",co:"Area manager",ok:"Verified — positive"}],fin:{total:7800,basic:2340,nego:true,rec:"Strongest candidate; ready in 30 days."},stageAt:t-3*D}),
+     c6:base("c6","Tom Riley","rejected",{reject:{reason:"Arabic and English, spoken",at:t-5*D}})}} }
+applyLang(); _i18nObs.observe(document.body,{childList:true,subtree:true,characterData:true}); trNode(document.body);
+</script>
+</body>
+</html>

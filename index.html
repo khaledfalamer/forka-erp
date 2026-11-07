@@ -5,8 +5,12 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="google" content="notranslate">
 <title>Forka Apps</title>
+<link rel="preconnect" href="https://script.google.com">
+<link rel="preconnect" href="https://script.googleusercontent.com" crossorigin>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@500;600&family=Inter+Tight:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- fonts load without holding up the page; the system font shows for a moment if they are slow -->
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@500;600&family=Inter+Tight:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 <style>
 :root{
   --fk-charcoal:#23211f;--fk-charcoal-dark:#171513;--fk-charcoal-soft:#3a3631;
@@ -602,17 +606,25 @@ function resetAll(){
 /* ---------- start ---------- */
 /* ---------- live mode: erp.forka.com talks to the accounts server ---------- */
 if(CFG.PROCUREMENT_URL)APPS[0].url=CFG.PROCUREMENT_URL;
+// Hiring moves from claude.ai to erp.forka.com/hiring as soon as its server address is in config.js
+if(CFG.HIRING_URL){const h=APPS.find(x=>x.id==='hire');h.url=new URL('hiring/',location.href).href;delete h.ceoOnlyUntilMoved}
 let TOKEN='',ID_TOKEN='',gReady=false;
 async function api(action,payload){
   try{const r=await fetch(CFG.ACCOUNTS_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(Object.assign({action,token:TOKEN},payload||{}))});return await r.json()}
   catch(e){return {ok:false,error:'net'}}}
+/* The last answer is kept in this browser so the page opens at once next time;
+   the server is asked in the background and only a change redraws the page. */
+let VER='';
+function keepBundle(b){try{const c=Object.assign({},b);delete c.token;delete c.same;localStorage.setItem('fa-cache',JSON.stringify(c))}catch(_){}}
+function cachedBundle(){try{const c=JSON.parse(localStorage.getItem('fa-cache')||'null');return c&&c.me&&c.me.email?c:null}catch(_){return null}}
 function applyBundle(b){
   if(b.token){TOKEN=b.token;try{localStorage.setItem('fa-token',TOKEN)}catch(_){}}
+  if(b.ver)VER=b.ver;if(!b.fromCache)keepBundle(b);
   const P0={};(b.people||[b.me]).forEach(p=>{P0[p.email]=p});P0[b.me.email]=b.me;DATA.people=P0;
   const R0={};(b.requests||[]).forEach(r=>{R0[r.email]=r});DATA.requests=R0;
   const A0={};(b.activity||[]).forEach((a,i)=>{A0['a'+i]=a});DATA.activity=A0;
   me=b.me.email}
-function sessionGone(msg){TOKEN='';try{localStorage.removeItem('fa-token')}catch(_){}me=null;view='gate';modal=null;gate={step:'start',email:'',err:msg||'',pinErr:''};render()}
+function sessionGone(msg){TOKEN='';VER='';try{localStorage.removeItem('fa-token');localStorage.removeItem('fa-cache')}catch(_){}me=null;view='gate';modal=null;gate={step:'start',email:'',err:msg||'',pinErr:''};render()}
 const errText=e=>e==='net'?t('netErr'):e==='noclient'?t('noClient'):e==='need'?t('need'):e==='dupe'?t('dupe'):e==='pinBad'?t('pinBad'):e==='pinDupe'?t('pinDupe'):e==='lastCeo'?t('lastCeo'):e==='pin'?t('badPin'):e==='locked'?t('badPin'):e==='session'?t('sessionEnd'):String(e||'');
 function drawGoogle(){
   const el=document.getElementById('gbtn');if(!el)return;
@@ -657,10 +669,22 @@ if(LIVE){
 (async()=>{
   if(LIVE){
     let tok='';try{tok=localStorage.getItem('fa-token')||''}catch(_){}
-    if(tok){TOKEN=tok;gate.step='busy';render();const r=await api('me');if(r.ok){applyBundle(r);view='home';gate.step='start';render()}else sessionGone('')}
-    else render();
-    setInterval(async()=>{if(!me||document.hidden||modal)return;const ae=document.activeElement;if(ae&&(ae.tagName==='INPUT'||ae.tagName==='TEXTAREA'))return;
-      const r=await api('me');if(r.ok){applyBundle(r);render()}else if(r.error==='session')sessionGone(t('sessionEnd'))},60000);
+    const refresh=async()=>{
+      const r=await api('me',{ver:VER});
+      if(r.ok){if(r.same){if(r.me&&me&&r.me.status!=='active')sessionGone('');return}
+        const ae=document.activeElement;applyBundle(r);if(view==='gate')view='home';gate.step='start';
+        if(modal||(ae&&(ae.tagName==='INPUT'||ae.tagName==='TEXTAREA')))return;render();return}
+      if(r.error==='session')sessionGone(view==='gate'?'':t('sessionEnd'));
+      else if(view==='gate'&&gate.step==='busy'){gate.step='start';gate.err=errText(r.error);render()}};
+    if(tok){TOKEN=tok;const c=cachedBundle();
+      if(c){applyBundle(Object.assign(c,{fromCache:true}));VER=c.ver||'';view='home';render()}   // open at once from the last visit
+      else{gate.step='busy';render()}
+      refresh()}
+    else{render();
+      // wake the accounts server while the person reaches for the Google button
+      try{fetch(CFG.ACCOUNTS_URL,{method:'GET'}).catch(()=>{})}catch(_){}}
+    setInterval(()=>{if(!me||document.hidden||modal)return;refresh()},60000);
+    document.addEventListener('visibilitychange',()=>{if(!document.hidden&&me&&!modal)refresh()});
     return}
   render();
   try{

@@ -31,9 +31,13 @@ jobs:
         run: python tests/ci_test.py
       - name: Live sign-in checks
         run: python tests/live_test.py
+      - name: Hiring server checks
+        run: node tests/hiring_server_test.js
+      - name: Hiring and careers page checks
+        run: python tests/hiring_test.py
       - name: No secrets in the site
         run: |
-          ! grep -RInE "GOCSPX-|AIza[0-9A-Za-z_-]{30}|\"pin\"[[:space:]]*:[[:space:]]*\"[0-9]{4,}\"" index.html config.js
+          ! grep -RInE "GOCSPX-|AIza[0-9A-Za-z_-]{30}|\"pin\"[[:space:]]*:[[:space:]]*\"[0-9]{4,}\"" index.html config.js hiring apply
   deploy:
     needs: test
     runs-on: ubuntu-latest
@@ -44,10 +48,11 @@ jobs:
       - uses: actions/checkout@v4
       - name: Build site (only the public files)
         run: |
-          mkdir _site && cp index.html config.js privacy.html about.html CNAME _site/
+          mkdir _site && cp index.html config.js privacy.html about.html CNAME _site/ && cp -r hiring apply _site/
           # new address for the settings file on every publish, so browsers never use an old copy
           sed -i "s#<script src=\"config.js\"></script>#<script src=\"config.js?v=${GITHUB_SHA::7}\"></script>#" _site/index.html
           grep -q "config.js?v=" _site/index.html
+          sed -i "s#<script src=\"../config.js\"></script>#<script src=\"../config.js?v=${GITHUB_SHA::7}\"></script>#" _site/hiring/index.html _site/apply/index.html
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with: { path: _site }
