@@ -835,7 +835,7 @@ function bookCard(d){ const B=d.books||{};
     <div class="row">${d.phone?`<a class="btn sm sec" target="_blank" rel="noopener" href="${esc(waLink(d,link,k))}">WhatsApp</a>`:""}<button class="btn sm sec" onclick="copyTxt('${esc(link)}')">Copy link</button><button class="btn sm sec" onclick="schedDlg('${k}')">New times</button></div></div>`}).join("")}</div>` }
 async function inviteIv(){ await move("interview"); schedDlg("interview") }
 function schedDlg(kind){ const d=DRAFT, r=reqOf(d);
-  if(!HURL){ toast("Booking links work on the live app (erp.forka.com/hiring)"); return }
+  if(!HURL&&!DEMO){ toast("Booking links work on the live app (erp.forka.com/hiring)"); return }
   if(!d.email){ toast("Add the candidate's email first"); return }
   SCH={kind,slots:new Set(),mins:kind==="call"?30:45,mode:kind==="call"?"Phone":"In person",place:kind==="call"?"":(r.branch?r.branch+" branch":""),note:"",sent:null};
   schedRender() }
@@ -858,7 +858,9 @@ function schedRender(){ const d=DRAFT, S2=SCH, days=[]; const t0=uaeParts(Date.n
 function schTog(t){ SCH.slots.has(t)?SCH.slots.delete(t):SCH.slots.add(t); schedRender() }
 async function schSend(){ const b=$("#schGo"); if(b){b.disabled=true;b.textContent="Sending…"}
   if(DRAFT.unsaved) await persist(DRAFT,null);
-  const r=await api("invite",{id:DRAFT.id,kind:SCH.kind,slots:[...SCH.slots],mins:SCH.mins,mode:SCH.mode,place:SCH.place,note:SCH.note});
+  const r=DEMO?{ok:true,mailed:true,link:String(CFG.APPLY_URL||"https://apply.forka.com/").replace(/\/?$/,"/")+"#book=demo-"+uid(),book:{token:"demo-"+uid(),kind:SCH.kind,slots:[...SCH.slots],mins:SCH.mins,mode:SCH.mode,place:SCH.place,by:V.me,byName:nm(V.me),at:now(),pick:null}}
+    :await api("invite",{id:DRAFT.id,kind:SCH.kind,slots:[...SCH.slots],mins:SCH.mins,mode:SCH.mode,place:SCH.place,note:SCH.note});
+  if(DEMO&&r.ok){ DRAFT.books=Object.assign({},DRAFT.books||{},{[SCH.kind]:r.book}); await persist(DRAFT,(SCH.kind==="call"?"HR call":"Interview")+" booking link sent (demo)"); SCH.sent=r; schedRender(); return }
   if(!r.ok){ toast(r.error==="email"?"The candidate has no valid email":r.error==="slots"?"Pick times at least an hour from now":r.error==="role"?"Only HR books the HR call":"Couldn't send — try again"); schedRender(); return }
   SCH.sent=r; const p=RDATA.pipe[DRAFT.id]; if(p){ p.books=Object.assign({},p.books||{},{[SCH.kind]:r.book}); fire("pipe") } DRAFT.books=Object.assign({},DRAFT.books||{},{[SCH.kind]:r.book}); schedRender() }
 function refSet(i,k,v){ DRAFT.refs=DRAFT.refs||[{},{}]; DRAFT.refs[i]=DRAFT.refs[i]||{}; DRAFT.refs[i][k]=v }
