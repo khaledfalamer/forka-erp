@@ -97,6 +97,8 @@ div.sec{margin-top:14px}div.sec>h3{margin-bottom:6px}
 .slots{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:8px}.slots .day{border:1px solid var(--line);border-radius:8px;padding:8px;background:#fff}
 .slots .day b{display:block;font-size:12px;margin-bottom:6px}.slots .day div{display:flex;flex-wrap:wrap;gap:4px}
 .slots button{border:1px solid var(--line);background:#fff;border-radius:6px;padding:3px 6px;font:inherit;font-size:12px;cursor:pointer}.slots button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.needbar{background:var(--warnbg);color:#6d4d12;border-radius:8px;padding:8px 12px;font-size:12.5px;margin:0 0 8px}.needbar b{color:var(--ink)}.needbar ul{margin:4px 0 0;padding-inline-start:18px}
+.btn.wait{opacity:.75}.crit.miss{background:var(--badbg);border-radius:6px;padding-inline:6px}.miss{outline:2px solid var(--bad);outline-offset:1px}
 .flag{display:inline-block;margin:2px 6px 2px 0;font-size:12px}
 .note{background:var(--warnbg);color:#6d4d12;border-radius:8px;padding:9px 12px;font-size:12px}
 .note.info{background:var(--bluebg);color:var(--blue)}.note.ok{background:var(--okbg);color:var(--ok)}
@@ -528,7 +530,7 @@ function pPipeline(C){
     <p class="small muted">${L.length-live.length} rejected or in talent pool — see the list view${V.role==="hr"?" or Talent pool":""}.</p>`;
   }
   const sel=V.sel;
-  return head+(V.role==="hr"?`<div class="row" style="margin-bottom:8px"><span class="small muted">${sel.size} selected</span><button class="btn sm sec" ${sel.size?"":"disabled"} onclick="bulk('advance')">Move to next stage</button><button class="btn sm sec" ${sel.size?"":"disabled"} onclick="bulk('pool')">Talent pool</button><button class="btn sm bad" ${sel.size?"":"disabled"} onclick="bulk('reject')">Reject with reason</button></div>`:"")+
+  return head+(V.role==="hr"?`<div class="row" style="margin-bottom:8px"><span class="small muted">${sel.size} selected</span><button class="btn sm sec" onclick="${sel.size?`bulk('advance')`:`toast('Tick the candidates in the list first')`}">Move to next stage</button><button class="btn sm sec" onclick="${sel.size?`bulk('pool')`:`toast('Tick the candidates in the list first')`}">Talent pool</button><button class="btn sm bad" onclick="${sel.size?`bulk('reject')`:`toast('Tick the candidates in the list first')`}">Reject with reason</button></div>`:"")+
   `<div class="card"><table><tr>${V.role==="hr"?`<th><input type="checkbox" style="width:auto" onchange="L_all(this.checked)"></th>`:""}<th>Candidate</th><th>Role</th><th>Stage</th><th>Screen</th><th>Interview</th><th>Applied</th></tr>
   ${L.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0)).map(c=>{const r=reqOf(c);return `<tr class="click" onclick="openCand('${c.id}')">${V.role==="hr"?`<td onclick="event.stopPropagation()"><input type="checkbox" style="width:auto" ${sel.has(c.id)?"checked":""} onchange="this.checked?V.sel.add('${c.id}'):V.sel.delete('${c.id}');render()"></td>`:""}<td><b>${esc(c.name)}</b><div class="small muted">${esc(c.source||"")}</div></td><td>${esc(r.title||"—")}</td><td>${stageTag(c)}</td><td>${f1(scr(c,r))}</td><td>${f1(ivAvg(c))}</td><td>${fmtD(c.createdAt)}</td></tr>`}).join("")||`<tr><td colspan="7" class="empty">No candidates.</td></tr>`}</table></div>`;
 }
@@ -604,9 +606,10 @@ async function saveReq(){
   const r={id:uid(),title:v("f_title"),dept:v("f_dept"),branch:v("f_branch"),headcount:+v("f_hc")||1,reason:v("f_reason"),joinBy:v("f_join")?new Date(v("f_join")).getTime():null,salMin:+v("f_smin")||null,salMax:+v("f_smax")||null,cur:v("f_cur")||"AED",purpose:v("f_purpose"),duties:v("f_duties"),
     mustHaves:[0,1,2].map(i=>v("f_mh"+i)).filter(Boolean),testQs:[0,1,2].map(i=>v("f_tq"+i)).filter(Boolean),practicals:[...document.querySelectorAll(".f_pr:checked")].map(x=>x.value).concat(v("f_prother")?v("f_prother").split(",").map(x=>x.trim()).filter(Boolean):[]),criticals:[...document.querySelectorAll(".f_cr:checked")].map(x=>x.value),traits:[...document.querySelectorAll(".f_tr:checked")].map(x=>x.value),
     status:"requested",createdBy:V.me,createdAt:now(),knockout:[],history:[{t:now(),by:V.me,m:"Hiring request raised"}]};
-  const miss=[!r.title&&"role title",!r.dept&&"department",!r.branch&&"branch",!r.salMax&&"salary range",r.mustHaves.length<3&&"3 must-haves",!r.practicals.length&&"practical test",r.criticals.some(c=>!r.traits.includes(c))&&"critical traits must also be ticked as traits",(r.traits.length<2||r.traits.length>3)&&"2–3 traits"].filter(Boolean);
+  const M=[[!r.title,"Role title","f_title"],[!r.dept,"Department","f_dept"],[!r.branch,"Branch","f_branch"],[!r.salMax,"Salary range (maximum)","f_smax"],[r.mustHaves.length<3,"3 must-haves ("+r.mustHaves.length+" written)",[0,1,2].map(i=>"f_mh"+i).filter(id=>!v(id))],[!r.practicals.length,"A practical test",[...document.querySelectorAll(".f_pr")].map(x=>x.closest(".chk")||x)],[r.criticals.some(c=>!r.traits.includes(c)),"Critical traits must also be ticked as traits",[]],[r.traits.length<2||r.traits.length>3,"2–3 personality traits ("+r.traits.length+" ticked)",[...document.querySelectorAll(".f_tr")].map(x=>x.closest(".crit")||x)]].filter(x=>x[0]);
+  const miss=M.map(x=>x[1]);
   r.practical=r.practicals.join(" + "); r.critical=r.criticals.join(", ");
-  if(miss.length) return toast("Missing: "+miss.join(", "));
+  if(miss.length) return needBox("To send this request you still need:",miss,M.flatMap(x=>Array.isArray(x[2])?x[2]:[x[2]]));
   await store.put("reqs",r.id,r); closeModal(); toast("Sent to Khaled for approval"); go("reqs");
 }
 function openReq(id){
@@ -636,7 +639,8 @@ function openReq(id){
   </div>`);
 }
 async function reqAct(id,a){
-  const r=JSON.parse(JSON.stringify(S.reqs[id])); const log=m=>r.history.push({t:now(),by:V.me,m});
+  const r=readJD(JSON.parse(JSON.stringify(S.reqs[id]))); const log=m=>r.history.push({t:now(),by:V.me,m});
+  if(a==="post"&&!String(r.jd||"").trim()){ toast("Write the job description first — it is what candidates read"); const j=$("#r_jd"); if(j){j.classList.add("miss");j.scrollIntoView({block:"center"})} return }
   if(a==="approve"){ const d=new Date(), n=Object.values(S.reqs).filter(x=>x.reqId&&x.reqId.startsWith("REQ-"+String(d.getFullYear()).slice(2)+String(d.getMonth()+1).padStart(2,"0"))).length+1;
     r.reqId="REQ-"+String(d.getFullYear()).slice(2)+String(d.getMonth()+1).padStart(2,"0")+"-"+String(n).padStart(2,"0"); r.status="approved"; log("CEO approved vacancy — "+r.reqId); }
   if(a==="decline"){ const why=await ask("Why is this vacancy declined?"); if(!why)return; r.status="declined"; log("CEO declined: "+why) }
@@ -644,11 +648,14 @@ async function reqAct(id,a){
   if(a==="changes"){ const why=await ask("What should HR change?"); if(!why)return; r.status="approved"; log("Head asked for changes: "+why) }
   if(a==="post"){ r.status="open"; r.postedAt=now(); log("Job posted");
     await store.put("jobs",id,{id,title:r.title,dept:r.dept,branch:r.branch,summary:r.purpose,jd:r.jd||"",knockout:r.knockout||[],open:true,postedAt:r.postedAt}); }
+  if(a!=="post"&&S.jobs[id]&&S.jobs[id].open&&$("#r_jd")) await store.put("jobs",id,{...S.jobs[id],jd:r.jd,knockout:r.knockout});
   if(a==="close"){ r.status=Object.values(allCands()).filter(c=>c.req===id&&c.stage==="hired").length>=r.headcount?"filled":"closed"; log("Role closed"); if(S.jobs[id]) await store.put("jobs",id,{...S.jobs[id],open:false}); }
   await store.put("reqs",id,r); toast("Saved"); openReq(id);
 }
+// the JD form is read by every button on the request, so typing then "Post job" or "Send scorecard" keeps what you typed
+function readJD(r){ if(!$("#r_jd")) return r; r.jd=$("#r_jd").value; r.ad=$("#r_ad").value; r.adAr=$("#r_adar").value; r.knockout=$("#r_ko").value.split("\n").map(s=>s.trim()).filter(Boolean); r.titleAr=($("#r_titlear")||{value:""}).value.trim(); r.knockoutAr=(($("#r_koar")||{value:""}).value).split("\n").map(s=>s.trim()).filter(Boolean); return r }
 async function saveJD(id,next){ const r=JSON.parse(JSON.stringify(S.reqs[id])); r.jd=$("#r_jd").value; r.ad=$("#r_ad").value; r.adAr=$("#r_adar").value; r.knockout=$("#r_ko").value.split("\n").map(s=>s.trim()).filter(Boolean); r.titleAr=($("#r_titlear")||{value:""}).value.trim(); r.knockoutAr=(($("#r_koar")||{value:""}).value).split("\n").map(s=>s.trim()).filter(Boolean);
-  if(next==="review"){ if(!r.jd) return toast("Write the JD first"); r.status="review"; r.scorecardAt=now(); r.history.push({t:now(),by:V.me,m:"Scorecard + JD sent to head for approval"}) }
+  if(next==="review"){ if(!String(r.jd||"").trim()){ const j=$("#r_jd"); if(j){j.classList.add("miss");j.scrollIntoView({block:"center"})} return toast("Write the job description first") } r.status="review"; r.scorecardAt=now(); r.history.push({t:now(),by:V.me,m:"Scorecard + JD sent to head for approval"}) }
   await store.put("reqs",id,r); if(S.jobs[id]&&S.jobs[id].open) await store.put("jobs",id,{...S.jobs[id],jd:r.jd,knockout:r.knockout}); toast("Saved"); openReq(id) }
 
 /* ---------------- candidate apply ---------------- */
@@ -666,10 +673,9 @@ function viewJob(id){ const j=S.jobs[id]; if(!j)return;
 }
 async function submitApp(id){ const j=S.jobs[id]; const v=x=>$("#"+x).value.trim();
   const file=$("#a_file").files[0];
-  if(!v("a_name")||!v("a_email")) return toast("Name and email are needed");
-  if(!file&&!v("a_cv")) return toast("Please upload your CV (or paste it)");
-  if(!$("#a_cons").checked) return toast("Please tick the consent box");
-  const ans=(j.knockout||[]).map((q,i)=>[q,v("a_ko"+i)]); if(ans.some(a=>!a[1])) return toast("Answer the quick questions");
+  { const M=[[!v("a_name"),"Name","a_name"],[!v("a_email"),"Email","a_email"],[!file&&!v("a_cv"),"CV — upload it or paste it","a_cv"],[!$("#a_cons").checked,"Tick the consent box","a_cons"],...(j.knockout||[]).map((q,i)=>[!v("a_ko"+i),"Answer: "+q,"a_ko"+i])].filter(x=>x[0]);
+    if(M.length) return needBox("Before sending, please fill in:",M.map(x=>x[1]),M.map(x=>x[2])) }
+  const ans=(j.knockout||[]).map((q,i)=>[q,v("a_ko"+i)]);
   const btn=document.querySelector(".ft .btn.br"); let cvFile=null;
   if(file){ btn.disabled=true; btn.textContent="Uploading CV…"; cvFile=await uploadCV(file); btn.disabled=false; btn.textContent="Submit application"; if(!cvFile) return; }
   const aid=uid(); const a={cvFile,req:id,jobTitle:j.title,name:v("a_name"),email:v("a_email"),phone:v("a_phone"),location:v("a_loc"),years:+v("a_yrs")||0,notice:+v("a_notice")||null,salary:+v("a_sal")||null,visa:v("a_visa"),cvText:v("a_cv"),answers:ans,knockout:ans.filter(a=>a[1]!=="Yes").map(a=>a[0]),consent:true,source:"Careers page",createdAt:now()};
@@ -690,7 +696,7 @@ function addApplicant(reqId){
   <div class="chk"><input type="checkbox" id="n_cons"><span>Candidate consented to Forka holding their data (stated in the application email or form)</span></div></div>
   <div class="ft"><button class="btn sec" onclick="closeModal()">Cancel</button><button class="btn br" onclick="saveApplicant()">Add to pipeline</button></div>`);
 }
-async function saveApplicant(){ const v=x=>$("#"+x).value.trim(); if(!v("n_name")) return toast("Name needed");
+async function saveApplicant(){ const v=x=>$("#"+x).value.trim(); if(!v("n_name")) return needBox("Before saving, please fill in:",["Name"],["n_name"]);
   const file=$("#n_file").files[0]; let cvFile=null; if(file){ toast("Uploading CV…"); cvFile=await uploadCV(file); if(!cvFile) return; }
   const c={cvFile,id:uid(),req:v("n_req"),source:v("n_src"),cvText:v("n_cv"),name:v("n_name"),email:v("n_email"),phone:v("n_phone"),location:v("n_loc"),years:+v("n_yrs")||null,salary:+v("n_sal")||null,consent:$("#n_cons").checked,stage:"applied",stageAt:now(),createdAt:now(),history:[{t:now(),by:V.me,m:"Added by HR ("+v("n_src")+")"}]};
   await store.put("pipe",c.id,c); closeModal(); toast("Added"); openCand(c.id) }
@@ -720,9 +726,9 @@ function openCand(id){
   // personality
   if(isHR&&si>=SI.personality){ const lock=si>SI.personality, P=d.personality||{};
     body+=`<div class="card sec"><h3>Personality assessment <span class="tag br">mandatory · input, not pass/fail</span></h3>
-    <div class="chk"><input type="checkbox" ${P.consent?"checked":""} ${lock?"disabled":""} onchange="DRAFT.personality={...(DRAFT.personality||{}),consent:this.checked}"><span>Candidate consented and completed the assessment (tool: ${esc(P.tool||"to be chosen")})</span></div>
+    <div class="chk"><input type="checkbox" data-req ${P.consent?"checked":""} ${lock?"disabled":""} onchange="DRAFT.personality={...(DRAFT.personality||{}),consent:this.checked}"><span>Candidate consented and completed the assessment (tool: ${esc(P.tool||"to be chosen")})</span></div>
     ${(r.traits||[]).map((t,i)=>`<div class="crit"><span>${esc(t)}${CR(r).includes(t)?' <span class="tag bad">critical</span>':""}</span><select style="width:150px" ${lock?"disabled":""} onchange="DRAFT.personality={...(DRAFT.personality||{}),tr:{...((DRAFT.personality||{}).tr||{}),[${i}]:this.value}}"><option value="">—</option>${["Match","Watch-out","Very low"].map(o=>`<option ${(P.tr||{})[i]===o?"selected":""}>${o}</option>`).join("")}</select></div>`).join("")}
-    <label>Summary for the panel <span class="hint">3 lines — the head sees this, never the raw report</span></label><textarea ${lock?"disabled":""} oninput="DRAFT.personality={...(DRAFT.personality||{}),summary:this.value}">${esc(P.summary||"")}</textarea>
+    <label>Summary for the panel <span class="hint">3 lines — the head sees this, never the raw report</span></label><textarea data-req ${lock?"disabled":""} oninput="DRAFT.personality={...(DRAFT.personality||{}),summary:this.value}">${esc(P.summary||"")}</textarea>
     <label>2 follow-up questions for the interview</label><textarea ${lock?"disabled":""} oninput="DRAFT.personality={...(DRAFT.personality||{}),qs:this.value}">${esc(P.qs||"")}</textarea></div>`; }
   // shortlist pack (head sees)
   if(si>=SI.shortlist&&st!=="rejected"||(isHead&&si>=SI.shortlist)){ const P=d.personality||{};
@@ -739,37 +745,71 @@ function openCand(id){
   // final evaluation
   if((isHR||V.ceo)&&si>=SI.final){ const lock=si>SI.final||!isHR, F=d.fin||{};
     body+=`<div class="card sec"><h3>Final evaluation report</h3><table><tr><td>Screening</td><td>${f1(sAvg)}</td></tr><tr><td>Interview + practical (panel)</td><td>${f1(iAvg)}</td></tr><tr><td>Personality</td><td>${esc((d.personality||{}).summary||"—")}</td></tr><tr><td>References</td><td>${(d.refs||[]).map(x=>esc(x.ok||"")).filter(Boolean).join(" · ")||"—"}</td></tr></table>
-    <div class="grid g3"><div><label>Proposed total package (${r.cur||"AED"}/month)</label><input type="number" ${lock?"disabled":""} value="${F.total||""}" oninput="finSet(this.value)"></div><div><label>Basic salary (30%)</label><input disabled id="basicOut" value="${F.basic?fmtN(F.basic):""}"></div><div><label>Range</label><input disabled value="${fmtN(r.salMin)}–${fmtN(r.salMax)}"></div></div>
-    <div class="chk"><input type="checkbox" ${F.nego?"checked":""} ${lock?"disabled":""} onchange="DRAFT.fin={...(DRAFT.fin||{}),nego:this.checked}"><span>One more negotiation round done (HR only — the department head is not involved in salary)</span></div>
-    <label>Recommendation</label><textarea ${lock?"disabled":""} oninput="DRAFT.fin={...(DRAFT.fin||{}),rec:this.value}">${esc(F.rec||"")}</textarea>
+    <div class="grid g3"><div><label>Proposed total package (${r.cur||"AED"}/month)</label><input type="number" data-req ${lock?"disabled":""} value="${F.total||""}" oninput="finSet(this.value)"></div><div><label>Basic salary (30%)</label><input disabled id="basicOut" value="${F.basic?fmtN(F.basic):""}"></div><div><label>Range</label><input disabled value="${fmtN(r.salMin)}–${fmtN(r.salMax)}"></div></div>
+    <div class="chk"><input type="checkbox" data-req ${F.nego?"checked":""} ${lock?"disabled":""} onchange="DRAFT.fin={...(DRAFT.fin||{}),nego:this.checked}"><span>One more negotiation round done (HR only — the department head is not involved in salary)</span></div>
+    <label>Recommendation</label><textarea data-req ${lock?"disabled":""} oninput="DRAFT.fin={...(DRAFT.fin||{}),rec:this.value}">${esc(F.rec||"")}</textarea>
     ${st==="approval"?`<div class="note" style="margin-top:8px">Waiting for CEO approval · ${workDaysSince(d.stageAt)} of 2 working days</div>`:""}</div>`; }
   // offer
   if(isHR&&si>=SI.offer){ const lock=si>SI.offer, O=d.offer||{};
-    body+=`<div class="card sec"><h3>Offer & documents</h3><div class="grid g2"><div><label>Joining date</label><input type="date" ${lock?"disabled":""} value="${O.join||""}" onchange="DRAFT.offer={...(DRAFT.offer||{}),join:this.value}"></div><div class="chk" style="margin-top:28px"><input type="checkbox" ${O.accepted?"checked":""} ${lock?"disabled":""} onchange="DRAFT.offer={...(DRAFT.offer||{}),accepted:this.checked}"><span>Offer letter signed and accepted</span></div></div>
-    ${DOCS.map((x,i)=>`<div class="chk"><input type="checkbox" ${(O.docs||{})[i]?"checked":""} ${lock?"disabled":""} onchange="DRAFT.offer={...(DRAFT.offer||{}),docs:{...((DRAFT.offer||{}).docs||{}),[${i}]:this.checked}}"><span>${x}</span></div>`).join("")}
+    body+=`<div class="card sec"><h3>Offer & documents</h3><div class="grid g2"><div><label>Joining date</label><input type="date" data-req ${lock?"disabled":""} value="${O.join||""}" onchange="DRAFT.offer={...(DRAFT.offer||{}),join:this.value}"></div><div class="chk" style="margin-top:28px"><input type="checkbox" data-req ${O.accepted?"checked":""} ${lock?"disabled":""} onchange="DRAFT.offer={...(DRAFT.offer||{}),accepted:this.checked}"><span>Offer letter signed and accepted</span></div></div>
+    ${DOCS.map((x,i)=>`<div class="chk"><input type="checkbox" data-req ${(O.docs||{})[i]?"checked":""} ${lock?"disabled":""} onchange="DRAFT.offer={...(DRAFT.offer||{}),docs:{...((DRAFT.offer||{}).docs||{}),[${i}]:this.checked}}"><span>${x}</span></div>`).join("")}
     <p class="small muted">No one starts work without complete documentation (control approved 23 Jul).</p></div>`; }
   // notes + history
   if(!isPanel) body+=`<div class="card sec"><h3>Notes</h3>${(d.notes||[]).map(n=>`<div class="small" style="margin:4px 0"><b>${esc(nm(n.by))}</b> <span class="muted">${fmtD(n.t)}</span> — ${esc(n.m)}</div>`).join("")}<div class="row" style="margin-top:6px"><input id="noteIn" placeholder="Opinions go here; scores stay numbers" style="flex:1"><button class="btn sm sec" onclick="addNote()">Add</button></div>
   <div class="hist">${(d.history||[]).map(h=>`<div>${fmtD(h.t)} · ${esc(nm(h.by))} — ${esc(h.m)}</div>`).join("")}</div></div>`;
   // actions
-  const A=[]; const can=(x)=>x;
-  if(isHR&&st==="applied") A.push(`<button class="btn br" onclick="move('screening')">Start screening</button>`);
-  if(isHR&&st==="screening") A.push(`<button class="btn br" ${sAvg!=null&&sAvg>=PASS&&d.cv&&d.call&&Object.keys(d.cv).length>=(r.mustHaves||[]).length&&Object.keys(d.call).length>=CALL.length?"":"disabled"} onclick="move('personality')">Pass → personality assessment</button>`);
-  if(isHR&&st==="personality") A.push(`<button class="btn br" ${(d.personality||{}).consent&&(d.personality||{}).summary?"":"disabled"} onclick="move('shortlist')">Send to ${esc(r.dept)} head's shortlist</button>`);
+  // every move button works the same way: if something is still needed it says exactly what, instead of greying out
+  const A=[], NEEDS=[]; NEED={};
+  const act=(label,cls,call,miss)=>{ miss=miss||[]; const k="n"+Object.keys(NEED).length; NEED[k]={label,miss}; if(miss.length) NEEDS.push(k);
+    return `<button class="btn ${cls}${miss.length?" wait":""}" onclick="${miss.length?`needShow('${k}')`:call}">${label}</button>` };
+  const nScr=[...(r.mustHaves||[]).filter((m,i)=>d.cv?.[i]==null).map(m=>"CV score: "+m),...CALL.filter((m,i)=>d.call?.[i]==null).map(m=>"HR call score: "+m)];
+  if(!nScr.length&&sAvg!=null&&sAvg<PASS) nScr.push(`Screening average ${f1(sAvg)} is below the pass mark ${PASS} — reject or move to the talent pool instead`);
+  const P0=d.personality||{}, nPer=[...(P0.consent?[]:["Tick: candidate consented and completed the assessment"]),...(String(P0.summary||"").trim()?[]:["Summary for the panel"])];
+  const wIv=["head","hr"].filter(w=>!Object.entries(d.iv||{}).some(([k,s])=>whoOf(k,s)===w&&s.done)).map(w=>"Scorecard from "+(w==="head"?(r.dept||"department")+" head":"HR")).concat(Object.entries(d.panel||{}).filter(([k])=>!((d.iv||{})[k]||{}).done).map(([k,p])=>"Scorecard from "+(p.name||nm(k))));
+  if(!wIv.length&&iAvg!=null&&iAvg<PASS) wIv.push(`Panel average ${f1(iAvg)} is below the pass mark ${PASS}`);
+  const nRef=(d.refs||[]).filter(x=>x&&x.ok&&x.ok.startsWith("Verified")).length, F0=d.fin||{}, O0=d.offer||{};
+  const nFin=[...(F0.total?[]:["Proposed total package"]),...(F0.nego?[]:["Tick: one more negotiation round done"]),...(String(F0.rec||"").trim()?[]:["Recommendation"])];
+  const nOff=[...(O0.join?[]:["Joining date"]),...(O0.accepted?[]:["Tick: offer letter signed and accepted"]),...DOCS.filter((x,i)=>!(O0.docs||{})[i]).map(x=>"Document: "+x)];
+  if(isHR&&st==="applied") A.push(act("Start screening","br","move('screening')"));
+  if(isHR&&st==="screening") A.push(act("Pass → personality assessment","br","move('personality')",nScr));
+  if(isHR&&st==="personality") A.push(act(`Send to ${esc(r.dept)} head's shortlist`,"br","move('shortlist')",nPer));
   if(isHR&&["screening","personality"].includes(st)&&!(d.books||{}).call) A.push(`<button class="btn sec" onclick="schedDlg('call')">Book the HR call</button>`);
   if((isHead||isHR)&&st==="shortlist") A.push(`<button class="btn br" onclick="inviteIv()">Invite to interview</button>`);
   if((isHead||isHR)&&st==="interview"&&!(d.books||{}).interview) A.push(`<button class="btn sec" onclick="schedDlg('interview')">Send interview times</button>`);
-  if((isHead||isHR)&&st==="interview") A.push(`<button class="btn br" ${panelDone(d)&&iAvg!=null&&iAvg>=PASS?"":"disabled"} title="Needs the head's and HR's submitted scorecards, panel average ${PASS}+" onclick="move('references')">Passed → references</button>`);
-  if(isHR&&st==="references") A.push(`<button class="btn br" ${(d.refs||[]).filter(x=>x&&x.ok&&x.ok.startsWith("Verified")).length>=2?"":"disabled"} onclick="move('final')">References clear → final evaluation</button>`);
-  if(isHR&&st==="final") A.push(`<button class="btn br" ${d.fin?.total&&d.fin?.nego&&d.fin?.rec?"":"disabled"} onclick="move('approval')">Send to CEO for approval</button>`);
+  if((isHead||isHR)&&st==="interview") A.push(act("Passed → references","br","move('references')",wIv));
+  if(isHR&&st==="references") A.push(act("References clear → final evaluation","br","move('final')",nRef>=2?[]:[`${2-nRef} more verified reference${2-nRef>1?"s":""} — set Result to "Verified — positive" or "Verified — concerns"`]));
+  if(isHR&&st==="final") A.push(act("Send to CEO for approval","br","move('approval')",nFin));
   if(V.ceo&&st==="approval") A.push(`<button class="btn sec" onclick="move('final','CEO asked to renegotiate')">Renegotiate</button><button class="btn ok" onclick="move('offer','CEO approved candidate and package')">Approve</button>`);
-  if(isHR&&st==="offer") A.push(`<button class="btn ok" ${d.offer?.accepted&&d.offer?.join&&DOCS.every((x,i)=>(d.offer?.docs||{})[i])?"":"disabled"} onclick="move('hired')">Mark hired → onboarding</button>`);
+  if(isHR&&st==="offer") A.push(act("Mark hired → onboarding","ok","move('hired')",nOff));
   if(isHR&&(st==="rejected"||st==="pool")) A.push(`<button class="btn sec" onclick="move('applied','Reopened')">Reopen</button>`);
+  const needBar=NEEDS.map(k=>`<div class="needbar">To <b>${NEED[k].label}</b> you still need:<ul>${NEED[k].miss.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`).join("");
   const rej=!["hired","rejected","pool"].includes(st)&&(isHR||(isHead&&["shortlist","interview"].includes(st)));
-  openModal(`<div class="hd"><div><div class="small muted">${esc(r.reqId||"")} · ${esc(r.title||"")} · ${esc(r.branch||"")}</div><h2>${esc(d.name)}</h2></div>${stageTag(d)}<button class="x" onclick="closeModal();DRAFT=null">×</button></div>
-  <div class="bd">${body}</div>
+  openModal(`<div class="hd"><div><div class="small muted">${esc(r.reqId||"")} · ${esc(r.title||"")} · ${esc(r.branch||"")}</div><h2>${esc(d.name)}</h2></div>${stageTag(d)}<button class="x" onclick="closeCand()">×</button></div>
+  <div class="bd">${body}</div>${needBar?`<div style="padding:0 20px">${needBar}</div>`:""}
   <div class="ft">${rej?`<button class="btn bad" onclick="rejectC()">Reject with reason</button>`:""}${isHR&&rej?`<button class="btn sec" onclick="toPool()">Talent pool</button>`:""}<span class="sp"></span>${(isHR||isHead)&&!["hired"].includes(st)?`<button class="btn sec" onclick="saveDraft()">Save</button>`:""}${A.join("")}</div>`);
 }
+let NEED={};
+// the standard "what is missing" box: stays on screen (not just a toast), lists each item, outlines the fields in red
+function needBox(title,list,els){ document.querySelectorAll("#dlg .miss").forEach(e=>e.classList.remove("miss"));
+  (els||[]).forEach(e=>{ e=typeof e==="string"?document.getElementById(e):e; if(e) e.classList.add("miss") });
+  let b=$("#nbx"); if(!b){ b=document.createElement("div"); b.id="nbx"; b.className="needbar"; b.style.margin="0 20px 10px"; const ft=$("#dlg .ft"); ft?ft.parentNode.insertBefore(b,ft):$("#dlg").appendChild(b) }
+  b.innerHTML=`${esc(title)}<ul>${list.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`;
+  toast(list.length===1?list[0]:list.length+" things still needed — see the list");
+  (document.querySelector("#dlg .miss")||b).scrollIntoView({block:"center",behavior:"smooth"}) }
+// fixing a field takes its red outline away
+document.addEventListener("input",e=>{ const t=e.target; if(t.classList) t.classList.remove("miss") });
+document.addEventListener("change",e=>{ const t=e.target; if(t.classList) t.classList.remove("miss"); const c=t.closest&&t.closest(".crit"); if(c) c.classList.remove("miss") });
+// show what is missing and mark it on the page (red outline), then scroll to the first one
+function needShow(k){ const n=NEED[k]; if(!n) return; toast(n.miss.length===1?n.miss[0]:n.miss.length+" things still needed — marked in red");
+  document.querySelectorAll("#dlg .miss").forEach(e=>e.classList.remove("miss"));
+  document.querySelectorAll("#dlg .crit").forEach(c=>{ const sc=c.querySelector(".score"); if(sc&&!sc.querySelector("button.on")&&!sc.querySelector("button[disabled]")) c.classList.add("miss") });
+  document.querySelectorAll("#dlg [data-req]").forEach(e=>{ const empty=e.type==="checkbox"?!e.checked:!String(e.value||"").trim(); if(empty&&!e.disabled) e.classList.add("miss") });
+  const f=document.querySelector("#dlg .miss")||document.querySelector("#dlg .needbar"); if(f) f.scrollIntoView({block:"center",behavior:"smooth"}) }
+// closing a candidate keeps what you typed: no separate Save step
+async function closeCand(){ const d=DRAFT; closeModal(); DRAFT=null;
+  if(!d||!["hr","head","panel"].includes(V.role)) return; const cur=allCands()[d.id];
+  const strip=o=>{ const x=JSON.parse(JSON.stringify(o||{})); delete x.unsaved; return JSON.stringify(x) };
+  if(cur&&strip(cur)!==strip(d)&&!(cur.unsaved&&d.stage===cur.stage&&strip({...cur,history:0})===strip({...d,history:0}))){ try{ await persist(d,null); toast("Saved") }catch(e){} } }
 function setScore(path,n){ const p=path.split("."); const d=DRAFT;
   if(p[0]==="iv"){ const m=myCard(); if(m.done) return; if(p[1]==="prac"){ m.prac=PV(m).slice(); m.prac[+(p[2]||0)]=n } else { m[p[1]]=m[p[1]]||[]; m[p[1]][+p[2]]=n } }
   else { d[p[0]]=d[p[0]]||{}; d[p[0]][p[1]]=n }
@@ -848,7 +888,7 @@ function panelDlg(){ const d=DRAFT, team=Object.entries(S.team.members||{}).filt
   <label>Their questions</label><select id="pn_sheet"><option value="head">Department questions — technical, competency, practical</option><option value="hr">HR questions — competency, motivation, fit</option><option value="both">All questions</option></select></div>
   <div class="ft"><span class="sp"></span><button class="btn sec" onclick="openCand(DRAFT.id)">Cancel</button><button class="btn br" id="pnGo" onclick="panelAdd()">Invite</button></div>`) }
 async function panelAdd(){ const email=$("#pn_mail").value.trim().toLowerCase(), name=$("#pn_name").value.trim(), sheet=$("#pn_sheet").value;
-  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return toast("Enter their work email");
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return needBox("To invite, please fill in:",["Their work email"],["pn_mail"]);
   if(email===V.me) return toast("You already have your own scorecard");
   const b=$("#pnGo"); b.disabled=true; b.textContent="Inviting…";
   if(DEMO){ DRAFT.panel=Object.assign({},DRAFT.panel||{},{[email]:{name:name||email.split("@")[0],sheet,by:V.me,at:now()}}); await persist(DRAFT,"Invited "+(name||email)+" to the interview panel"); toast("Invited (demo — no email sent)"); return openCand(DRAFT.id) }
@@ -880,9 +920,9 @@ function schedRender(){ const d=DRAFT, S2=SCH, days=[]; const t0=uaeParts(Date.n
   <div><label>Length (minutes)</label><input type="number" min="15" max="180" value="${S2.mins}" oninput="SCH.mins=+this.value||30"></div>
   <div><label>Where / link <span class="hint">address, phone or Meet link</span></label><input value="${esc(S2.place)}" oninput="SCH.place=this.value"></div></div>
   <label>Message to the candidate <span class="hint">optional — e.g. bring your passport copy</span></label><textarea oninput="SCH.note=this.value">${esc(S2.note)}</textarea></div>
-  <div class="ft"><span class="small muted">${S2.slots.size} time${S2.slots.size===1?"":"s"} picked</span><span class="sp"></span><button class="btn sec" onclick="SCH=null;openCand(DRAFT.id)">Cancel</button><button class="btn br" id="schGo" ${S2.slots.size?"":"disabled"} onclick="schSend()">Send booking link</button></div>`) }
+  <div class="ft"><span class="small muted">${S2.slots.size} time${S2.slots.size===1?"":"s"} picked</span><span class="sp"></span><button class="btn sec" onclick="SCH=null;openCand(DRAFT.id)">Cancel</button><button class="btn br" id="schGo" onclick="schSend()">Send booking link</button></div>`) }
 function schTog(t){ SCH.slots.has(t)?SCH.slots.delete(t):SCH.slots.add(t); schedRender() }
-async function schSend(){ const b=$("#schGo"); if(b){b.disabled=true;b.textContent="Sending…"}
+async function schSend(){ if(!SCH.slots.size){ toast("Tick at least one time first"); const g=document.querySelector(".slots"); if(g){g.classList.add("miss");g.scrollIntoView({block:"center"})} return } const b=$("#schGo"); if(b){b.disabled=true;b.textContent="Sending…"}
   if(DRAFT.unsaved) await persist(DRAFT,null);
   const r=DEMO?{ok:true,mailed:true,link:String(CFG.APPLY_URL||"https://apply.forka.com/").replace(/\/?$/,"/")+"#book=demo-"+uid(),book:{token:"demo-"+uid(),kind:SCH.kind,slots:[...SCH.slots],mins:SCH.mins,mode:SCH.mode,place:SCH.place,by:V.me,byName:nm(V.me),at:now(),pick:null}}
     :await api("invite",{id:DRAFT.id,kind:SCH.kind,slots:[...SCH.slots],mins:SCH.mins,mode:SCH.mode,place:SCH.place,note:SCH.note});
@@ -901,7 +941,9 @@ async function move(stage,msg){ const d=DRAFT; d.stage=stage; d.stageAt=now(); i
   await persist(d,msg||("Moved to "+STAGES[SI[stage]][1])); toast(msg||"Moved to "+STAGES[SI[stage]][1]); openCand(d.id) }
 async function submitIv(){ const m=myCard(), r=reqOf(DRAFT), sheet=ivSheet(sheetOf(DRAFT),r,DRAFT);
   const miss=sheet.some(sec=>sec.L.some((x,i)=>!(sec.k==="prac"?PV(m)[i]:(m[sec.k]||[])[i])));
-  if(miss) return toast("Score every question first"); if(!m.rec) return toast("Pick your recommendation");
+  if(miss||!m.rec){ const L=sheet.flatMap(sec=>sec.L.filter((x,i)=>!(sec.k==="prac"?PV(m)[i]:(m[sec.k]||[])[i])).map(x=>"Score: "+x[0])).concat(m.rec?[]:["Your recommendation"]);
+    const rows=[...document.querySelectorAll("#dlg details .crit")].filter(c=>{const sc=c.querySelector(".score");return sc&&!sc.querySelector("button.on")});
+    return needBox("To submit your scorecard you still need:",L,rows.concat(m.rec?[]:[document.querySelector('#dlg select[onchange*="\'rec\'"]')])) }
   m.done=true; m.at=now(); await persist(DRAFT,"Interview scorecard submitted by "+nm(V.me)+" — "+m.rec); toast("Scorecard submitted"); openCand(DRAFT.id) }
 async function rejectC(){ const r=reqOf(DRAFT); const why=await ask("Which criterion did they fail? (required — no rejections on feeling)",[...(r.mustHaves||[]),"Salary above range","Screening score below pass mark","Interview score below pass mark","Practical test","References","Candidate withdrew"]); if(!why)return;
   DRAFT.reject={reason:why,at:now(),by:V.me}; await move("rejected","Rejected — "+why) }

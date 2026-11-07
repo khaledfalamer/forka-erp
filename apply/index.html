@@ -209,7 +209,7 @@ async function submit(e){e.preventDefault();if(sending)return;
   if(!v("name"))bad.push("name");if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v("email")))bad.push("email");if(!/^[+\d][\d\s-]{6,}$/.test(v("phone")))bad.push("phone");
   (job.knockout||[]).forEach((q,i)=>{if(!form.ans[i])bad.push("q"+i)});if(!F.elements.consent.checked)bad.push("consent");
   const kept=keepForm();form.bad=bad;
-  if(bad.length){render();restoreForm(kept);document.getElementById("ferr").innerHTML=`<div class="err">${t("need")}</div>`;const x=document.querySelector(".miss");x&&x.scrollIntoView({block:"center"});return}
+  if(bad.length){render();restoreForm(kept);const L=bad.map(b=>b==="consent"?t("consent").split(/[،,.]/)[0]+"…":b[0]==="q"&&/^q\d+$/.test(b)?qOf(job,+b.slice(1)):t(b==="name"?"name":b==="email"?"email":"phone"));document.getElementById("ferr").innerHTML=`<div class="err">${t("need")}<ul style="margin:6px 0 0;padding-inline-start:18px">${L.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`;const x=document.querySelector(".miss");x&&x.scrollIntoView({block:"center"});return}
   let cv=null;try{cv=await readFile(F.elements.cv.files[0]||fileSel)}catch(k){document.getElementById("ferr").innerHTML=`<div class="err">${t(String(k))}</div>`;return}
   const body={action:"apply",job:job.id,name:v("name"),email:v("email"),phone:v("phone"),location:v("location"),years:v("years"),notice:v("notice"),salary:v("salary"),visa:F.elements.visa.value,
     cvText:v("cvText"),answers:form.ans,consent:true,website:F.elements.website.value,lang,source:"Careers page"+(document.referrer?"":""),cv};

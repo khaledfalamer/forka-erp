@@ -121,6 +121,18 @@ async def main():
             check('Comparison: a 3-point gap on one question is flagged', await pg.locator('.cmp tr.gap').count() >= 1)
             check('Comparison: split hire / no hire is called out', 'disagree on hiring' in await pg.inner_text('#dlg'))
             await pg.locator('.cmp').scroll_into_view_if_needed(); await pg.locator('.card.sec', has=pg.locator('.cmp')).screenshot(path=str(ROOT / 'tests' / 'shots' / 'hiring_compare.png'))
+            # --- the reason is always shown, and closing keeps what you typed ---
+            await pg.evaluate("closeModal();DRAFT=null;openCand('chid')"); await pg.wait_for_timeout(200)
+            t = await pg.inner_text('#dlg')
+            check('Blocked move says exactly what is missing (no grey button)', 'To Passed → references you still need' in t and 'Scorecard from Kitchen head' in t and await pg.locator('#dlg .ft button[disabled]').count() == 0, t[-500:])
+            await pg.click('text=Passed → references'); await pg.wait_for_timeout(200)
+            check('Clicking it does not move the candidate', DATA['pipe']['chid']['stage'] == 'interview')
+            await pg.evaluate("closeModal();DRAFT=null;openCand('civ')"); await pg.wait_for_timeout(200)
+            n = len([c for c in CALLS if c.get('action') == 'put' and c.get('id') == 'civ'])
+            await pg.fill('#noteIn', 'x'); await pg.evaluate("DRAFT.callNotes='Typed and closed without saving'")
+            await pg.click('#dlg .x'); await pg.wait_for_timeout(500)
+            check('Closing a candidate saves what was typed (no separate Save step)', DATA['pipe']['civ'].get('callNotes') == 'Typed and closed without saving')
+            await pg.evaluate("openCand('civ')"); await pg.wait_for_timeout(200)
             # --- invite any team member onto the panel ---
             await pg.click('text=+ Invite an interviewer'); await pg.wait_for_timeout(200)
             await pg.fill('#pn_mail', 'arman@kuwaitikitchen.com'); await pg.fill('#pn_name', 'Arman'); await pg.select_option('#pn_sheet', 'both')
@@ -156,6 +168,8 @@ async def main():
             check('Head: own questions (competency here; technical and practical when the job has them) with a prompt for each', 'tell me about a time' in t.lower() and 'HR questions' not in t)
             await pg.click('text=Submit my scorecard'); await pg.wait_for_timeout(150)
             check('Head: cannot submit with questions unscored', not any(c.get('action') == 'put' and c.get('id') == 'chid' for c in CALLS))
+            t = await pg.inner_text('#dlg')
+            check('Head: the scorecard lists each unscored question and marks it red', 'To submit your scorecard you still need' in t and 'Score: Leadership' in t and 'Your recommendation' in t and await pg.locator('#dlg .crit.miss').count() >= 6, t[-400:])
             await pg.evaluate("ivSheet('head',reqOf(DRAFT),DRAFT).forEach(s=>s.L.forEach((x,i)=>setScore('iv.'+s.k+'.'+i,4)));ivNote('comp.0','Led a team of 8');ivSet('rec','Hire')")
             await pg.click('text=Submit my scorecard'); await pg.wait_for_timeout(300)
             put = [c for c in CALLS if c.get('action') == 'put' and c.get('id') == 'chid']
