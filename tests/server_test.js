@@ -68,6 +68,8 @@ ck('Activity has sign-ins, confirm, allow, reject, add, edit, block, open',['sig
  ck('Reading and opening apps never wait in the queue',locks===0,locks);
  call({action:'setStatus',token:ceo,id:'arman@kuwaitikitchen.com',status:'active'});ck('Changes still wait in the queue',locks===1,locks);ctx.LockService.getScriptLock=L;
  sheets.People.d.forEach(r=>{if(r[0]==='arman@kuwaitikitchen.com')r[4]='blocked'});ck('People list is cached (Sheet read at most every 5 minutes)',call({action:'who',token:ceo}).ok);}
+{const r=call({action:'savePerson',token:ceo,id:'arman@kuwaitikitchen.com',person:{name:'Arman',email:'arman@kuwaitikitchen.com',level:'manager',status:'active',apps:{proc:1},sides:['oman'],method:'google'}});
+ ck('CEO can give someone the Oman store section in Procurement',r.ok&&r.people.find(p=>p.email==='arman@kuwaitikitchen.com').sides.join()==='oman',r.error);}
 ck('Sign out ends the session',call({action:'signout',token:ceo}).ok&&call({action:'me',token:ceo}).error==='session');
 ck('Without a script property the client id in the code is used (other ids refused)',(delete props.GOOGLE_CLIENT_ID,call({action:'google',idToken:'tok-ceo'}).error==='token'));
 console.log(`${res.filter(Boolean).length}/${res.length} server checks passed`);process.exit(res.every(Boolean)?0:1);
