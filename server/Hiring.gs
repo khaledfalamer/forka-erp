@@ -104,6 +104,48 @@ function role_(me) {
   return m && (m.role === 'hr' || m.role === 'head') ? { role: m.role, ceo: false, dept: m.dept || null } : null;
 }
 
+/* ---------------- department heads see and change only their own department ---------------- */
+// A hiring request belongs to a head if it is for their department, or they raised it.
+function reqMine_(req, who) { return !!req && (req.dept === who.dept || req.createdBy === who.email); }
+// Everything a head may see, built on the server: other departments' files never leave it.
+function headView_(data, who) {
+  const reqs = {}, ok = {};
+  Object.keys(data.reqs).forEach(id => { if (reqMine_(data.reqs[id], who)) { reqs[id] = data.reqs[id]; ok[id] = true; } });
+  const pick = o => { const r = {}; Object.keys(o).forEach(id => { if (ok[o[id].req]) r[id] = o[id]; }); return r; };
+  const jobs = {}; Object.keys(data.jobs).forEach(id => { if (ok[id]) jobs[id] = data.jobs[id]; });
+  const apps = {};
+  Object.keys(data.apps).forEach(id => {
+    const list = {}, L = data.apps[id].list || {};
+    Object.keys(L).forEach(a => { if (ok[L[a].req]) list[a] = L[a]; });
+    if (Object.keys(list).length) apps[id] = Object.assign({}, data.apps[id], { list: list });
+  });
+  const team = {}; const M = ((data.config.team || {}).members) || {};
+  Object.keys(M).forEach(k => { team[k] = { name: M[k].name || '', role: M[k].role, dept: M[k].dept || null }; });  // names for the history, nothing else
+  return { reqs: reqs, pipe: pick(data.pipe), jobs: jobs, apps: apps, config: { team: { members: team }, brand: data.config.brand || null } };
+}
+function headMayWrite_(col, id, d, who) {
+  if (col === 'reqs') {
+    const old = readOne_('reqs', id);
+    return (!old || reqMine_(old, who)) && (d.dept === who.dept || (old && old.createdBy === who.email));
+  }
+  if (col === 'pipe') {
+    const old = readOne_('pipe', id), req = readOne_('reqs', d.req);
+    return (!old || reqMine_(readOne_('reqs', old.req), who)) && reqMine_(req, who);
+  }
+  if (col === 'apps') {                         // only the stage shown back to the applicant, for their own department
+    const old = readOne_('apps', id); if (!old) return false;
+    return Object.keys(d.list || {}).every(a => { const o = (old.list || {})[a]; return o && reqMine_(readOne_('reqs', o.req), who) && JSON.stringify(Object.assign({}, o, { status: d.list[a].status })) === JSON.stringify(d.list[a]); })
+      && Object.keys(old.list || {}).length === Object.keys(d.list || {}).length;
+  }
+  return false;                                 // jobs, settings: HR / CEO only
+}
+function cvAllowed_(id, data) {
+  const has = o => o && o.cvFile && o.cvFile.id === id;
+  if (Object.keys(data.pipe).some(k => has(data.pipe[k]))) return true;
+  return Object.keys(data.apps).some(k => Object.keys(data.apps[k].list || {}).some(a => has(data.apps[k].list[a])));
+}
+function allData_() { const d = {}; Object.keys(COLS).forEach(c => { d[c] = readAll_(c); }); return d; }
+
 /* ---------------- public: apply.forka.com ---------------- */
 function publicJobs_() {
   const jobs = readAll_('jobs'), out = [];
@@ -188,9 +230,8 @@ function handle_(b) {
 
   if (a === 'load') {
     if (b.ver && b.ver === stamp_()) return { ok: true, same: true, ver: b.ver, me: who };
-    const data = {};
-    Object.keys(COLS).forEach(c => { data[c] = readAll_(c); });
-    return { ok: true, ver: stamp_(), me: who, data: data };
+    const data = allData_();
+    return { ok: true, ver: stamp_(), me: who, data: r.role === 'head' ? headView_(data, who) : data };
   }
   if (a === 'put' || a === 'del') {
     const col = String(b.col || ''), id = String(b.id || '');
@@ -198,6 +239,7 @@ function handle_(b) {
     if (col === 'config' && r.role !== 'hr') return { ok: false, error: 'role' };           // team list and careers words: HR / CEO
     if (col === 'jobs' && r.role !== 'hr') return { ok: false, error: 'role' };             // posting jobs: HR / CEO
     if (col === 'config' && id === 'team' && !r.ceo) return { ok: false, error: 'role' };   // who is on the team: CEO only
+    if (r.role === 'head' && (a === 'del' || !headMayWrite_(col, id, b.data || {}, who))) return { ok: false, error: 'role' };
     const lock = LockService.getScriptLock(); lock.waitLock(15000);
     try {
       if (a === 'del') { remove_(col, id); bump_(); return { ok: true, ver: stamp_() }; }
@@ -217,6 +259,7 @@ function handle_(b) {
   if (a === 'cv') {                                       // CVs stay private in Drive; the team gets the file through here
     const id = String(b.id || '');
     if (!/^[A-Za-z0-9_-]{10,100}$/.test(id)) return { ok: false, error: 'bad' };
+    if (r.role === 'head' && !cvAllowed_(id, headView_(allData_(), who))) return { ok: false, error: 'missing' };
     let f; try { f = DriveApp.getFileById(id); } catch (e) { return { ok: false, error: 'missing' }; }
     const parents = f.getParents(); let inFolder = false;
     while (parents.hasNext()) { if (parents.next().getId() === folder_().getId()) inFolder = true; }

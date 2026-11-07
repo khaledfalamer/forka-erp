@@ -59,7 +59,7 @@ ck('HR now opens Hiring as HR', call({ action: 'load', token: JEN }).me.role ===
 ck('Head opens Hiring as Kitchen head', (x => x.me.role === 'head' && x.me.dept === 'Kitchen')(call({ action: 'load', token: CHEF })));
 ck('Only the CEO changes the hiring team', call({ action: 'put', token: JEN, col: 'config', id: 'team', data: { members: {} } }).error === 'role');
 ck('A head cannot post jobs', call({ action: 'put', token: CHEF, col: 'jobs', id: 'r1', data: { open: true } }).error === 'role');
-ck('A head can raise a hiring request', call({ action: 'put', token: CHEF, col: 'reqs', id: 'r1', data: { title: 'Line Cook', status: 'requested' } }).ok);
+ck('A head can raise a hiring request', call({ action: 'put', token: CHEF, col: 'reqs', id: 'r1', data: { title: 'Line Cook', dept: 'Kitchen', status: 'requested' } }).ok);
 const ver1 = call({ action: 'load', token: JEN }).ver;
 ck('Refresh with the same stamp downloads nothing', (x => x.same && !x.data)(call({ action: 'load', token: JEN, ver: ver1 })));
 call({ action: 'put', token: CEO, col: 'reqs', id: 'r1', data: { title: 'Line Cook', status: 'open', ad: 'Cook with us', adAr: 'اطبخ معنا', knockout: ['2 years in a kitchen?'] } });
@@ -94,6 +94,39 @@ ck('HR uploads a walk-in CV', r.ok && r.file.drive && r.file.name === 'walkin.pd
 ck('Records too big for a Sheet cell are refused, not cut', call({ action: 'put', token: JEN, col: 'pipe', id: 'big', data: { cvText: 'x'.repeat(60000) } }).error === 'big');
 ck('Bad record ids refused', call({ action: 'put', token: JEN, col: 'pipe', id: '../x y', data: {} }).error === 'bad');
 ck('HR deletes a record', call({ action: 'del', token: JEN, col: 'reqs', id: 'r1' }).ok && !call({ action: 'load', token: JEN }).data.reqs.r1);
+// ---- department heads: only their own department leaves the server ----
+call({ action: 'put', token: CEO, col: 'reqs', id: 'rk', data: { title: 'Grill Cook', dept: 'Kitchen', status: 'open' } });
+call({ action: 'put', token: CEO, col: 'reqs', id: 'rs', data: { title: 'Waiter', dept: 'Service', status: 'open' } });
+call({ action: 'put', token: CEO, col: 'jobs', id: 'rs', data: { title: 'Waiter', open: true } });
+call({ action: 'put', token: CEO, col: 'pipe', id: 'ck', data: { req: 'rk', name: 'Kitchen Cand', salary: 3000, phone: '0501', cvFile: { id: 'fileKITCHEN00001', drive: true } } });
+call({ action: 'put', token: CEO, col: 'pipe', id: 'cs', data: { req: 'rs', name: 'Service Cand', salary: 4500, phone: '0502', cvFile: { id: 'fileSERVICE00001', drive: true } } });
+files.fileKITCHEN00001 = { blob: { name: 'k.pdf', type: 'application/pdf', bytes: [37] }, parent: 'FOLDER1' };
+files.fileSERVICE00001 = { blob: { name: 's.pdf', type: 'application/pdf', bytes: [37] }, parent: 'FOLDER1' };
+call({ action: 'apply', job: 'rs', name: 'Waiter Applicant', email: 'w@a.co', phone: '0501234567', consent: true });
+{ const h = call({ action: 'load', token: CHEF }), txt = JSON.stringify(h.data);
+  ck('Head receives only Kitchen requests and candidates', h.data.reqs.rk && !h.data.reqs.rs && h.data.pipe.ck && !h.data.pipe.cs, Object.keys(h.data.pipe));
+  ck('Other departments\' names, phones and salaries never reach the head', !/Service Cand|Waiter Applicant|4500|0502/.test(txt));
+  ck('Head does not receive the careers settings beyond names', !h.data.config.team.members['jennifer@forka.com'].email && h.data.config.team.members['jennifer@forka.com'].name === 'Jennifer');
+  const hr = call({ action: 'load', token: JEN }); ck('HR still receives every department', hr.data.pipe.cs && hr.data.pipe.ck); }
+ck('Head moves a Kitchen candidate', call({ action: 'put', token: CHEF, col: 'pipe', id: 'ck', data: { req: 'rk', name: 'Kitchen Cand', stage: 'interview', cvFile: { id: 'fileKITCHEN00001', drive: true } } }).ok);
+ck('Head cannot change a Service candidate', call({ action: 'put', token: CHEF, col: 'pipe', id: 'cs', data: { req: 'rs', name: 'x', stage: 'rejected' } }).error === 'role');
+ck('Head cannot move a Service candidate into Kitchen', call({ action: 'put', token: CHEF, col: 'pipe', id: 'cs', data: { req: 'rk', name: 'x' } }).error === 'role');
+ck('Head cannot delete anything', call({ action: 'del', token: CHEF, col: 'pipe', id: 'ck' }).error === 'role');
+ck('Head cannot raise a request for another department', call({ action: 'put', token: CHEF, col: 'reqs', id: 'rx', data: { title: 'Cashier', dept: 'Service' } }).error === 'role');
+ck('Head cannot change a Service request', call({ action: 'put', token: CHEF, col: 'reqs', id: 'rs', data: { title: 'Waiter', dept: 'Kitchen' } }).error === 'role');
+ck('Head opens a Kitchen CV', call({ action: 'cv', token: CHEF, id: 'fileKITCHEN00001' }).ok);
+ck('Head cannot open a Service CV', !call({ action: 'cv', token: CHEF, id: 'fileSERVICE00001' }).ok);
+{ const appId = Object.keys(call({ action: 'load', token: JEN }).data.apps).find(k => JSON.stringify(call({ action: 'load', token: JEN }).data.apps[k]).includes('Waiter Applicant'));
+  const doc = call({ action: 'load', token: JEN }).data.apps[appId]; const aid = Object.keys(doc.list)[0];
+  const d2 = JSON.parse(JSON.stringify(doc)); d2.list[aid].status = 'interview';
+  ck('Head cannot touch a Service application', call({ action: 'put', token: CHEF, col: 'apps', id: appId, data: d2 }).error === 'role');
+  call({ action: 'put', token: CEO, col: 'jobs', id: 'rk', data: { title: 'Grill Cook', open: true } });
+  call({ action: 'apply', job: 'rk', name: 'Grill Applicant', email: 'g@a.co', phone: '0501234567', consent: true });
+  const all = call({ action: 'load', token: JEN }).data.apps, kid = Object.keys(all).find(k => JSON.stringify(all[k]).includes('Grill Applicant'));
+  const k2 = JSON.parse(JSON.stringify(all[kid])), ka = Object.keys(k2.list)[0];
+  k2.list[ka].status = 'shortlist';
+  ck('Head updates the stage shown to a Kitchen applicant', call({ action: 'put', token: CHEF, col: 'apps', id: kid, data: k2 }).ok);
+  k2.list[ka].salary = 1; ck('...but cannot change anything else in it', call({ action: 'put', token: CHEF, col: 'apps', id: kid, data: k2 }).error === 'role'); }
 const n0 = accountsCalls; call({ action: 'load', token: JEN }); call({ action: 'load', token: JEN });
 ck('Forka Apps asked at most once per 5 minutes per sign-in', accountsCalls === n0);
 console.log(`${res.filter(Boolean).length}/${res.length} hiring server checks passed`); process.exit(res.every(Boolean) ? 0 : 1);
