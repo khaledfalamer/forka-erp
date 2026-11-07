@@ -8,7 +8,8 @@ BASE = f'http://127.0.0.1:{PORT}'
 CFG = "window.FORKA_APPS={MODE:'live',ACCOUNTS_URL:'https://accounts.test/exec',GOOGLE_CLIENT_ID:'x',PROCUREMENT_URL:'https://procurement.forka.com/',HIRING_URL:'https://hire.test/exec',APPLY_URL:'https://apply.forka.com/',ERP_HOME:'https://erp.forka.com/'};"
 CFG_PREVIEW = "window.FORKA_APPS={MODE:'live',ACCOUNTS_URL:'https://accounts.test/exec',GOOGLE_CLIENT_ID:'x',HIRING_URL:''};"
 SESS = {'TOKCEO-0000000000000000000': {'email': 'ceo@forka.com', 'name': 'Khaled Alamer', 'role': 'hr', 'ceo': True, 'dept': None},
-        'TOKCHEF-000000000000000000': {'email': 'chef@kuwaitikitchen.com', 'name': 'Head Chef', 'role': 'head', 'ceo': False, 'dept': 'Kitchen'}}
+        'TOKCHEF-000000000000000000': {'email': 'chef@kuwaitikitchen.com', 'name': 'Head Chef', 'role': 'head', 'ceo': False, 'dept': 'Kitchen'},
+        'TOKARM-0000000000000000000': {'email': 'arman@kuwaitikitchen.com', 'name': 'Arman', 'role': 'panel', 'ceo': False, 'dept': None}}
 DATA = {'reqs': {}, 'pipe': {}, 'jobs': {}, 'apps': {}, 'config': {}}
 VER = [1]; CALLS = []
 DATA['reqs']['r1'] = {'id': 'r1', 'reqId': 'REQ-2611-01', 'title': 'Line Cook', 'dept': 'Kitchen', 'branch': 'Sharjah', 'status': 'open', 'headcount': 1, 'history': [], 'mustHaves': ['Kuwaiti dishes', 'Hygiene', 'Speed'], 'traits': ['Team cooperation'], 'knockout': ['2 years in a kitchen?'], 'ad': 'Cook with us', 'adAr': 'اطبخ معنا', 'titleAr': 'طباخ خط', 'knockoutAr': ['سنتان في مطبخ؟'], 'createdAt': 1793624193162, 'createdBy': 'ceo@forka.com', 'postedAt': 1793624734240, 'salMin': 3000, 'salMax': 4000, 'cur': 'AED'}
@@ -46,6 +47,11 @@ def handle(b):
     if a == 'put':
         if b['col'] == 'config' and b['id'] == 'team' and not me['ceo']: return {'ok': False, 'error': 'role'}
         DATA[b['col']][b['id']] = b['data']; VER[0] += 1; return {'ok': True, 'ver': 'v%d' % VER[0]}
+    if a == 'panel':
+        c = DATA['pipe'][b['id']]; c.setdefault('panel', {})
+        if b.get('remove'): c['panel'].pop(b['email'], None)
+        else: c['panel'][b['email']] = {'name': b.get('name') or b['email'], 'sheet': b.get('sheet', 'head'), 'by': me['email'], 'at': NOW}
+        VER[0] += 1; return {'ok': True, 'ver': 'v%d' % VER[0], 'mailed': True}
     if a == 'invite':
         bk = {'token': 'tok-new-0000000000000000', 'kind': b['kind'], 'slots': b['slots'], 'mins': b['mins'], 'mode': b['mode'], 'place': b['place'], 'by': me['email'], 'byName': me['name'], 'at': NOW, 'pick': None}
         DATA['pipe'][b['id']].setdefault('books', {})[b['kind']] = bk; VER[0] += 1
@@ -115,6 +121,15 @@ async def main():
             check('Comparison: a 3-point gap on one question is flagged', await pg.locator('.cmp tr.gap').count() >= 1)
             check('Comparison: split hire / no hire is called out', 'disagree on hiring' in await pg.inner_text('#dlg'))
             await pg.locator('.cmp').scroll_into_view_if_needed(); await pg.locator('.card.sec', has=pg.locator('.cmp')).screenshot(path=str(ROOT / 'tests' / 'shots' / 'hiring_compare.png'))
+            # --- invite any team member onto the panel ---
+            await pg.click('text=+ Invite an interviewer'); await pg.wait_for_timeout(200)
+            await pg.fill('#pn_mail', 'arman@kuwaitikitchen.com'); await pg.fill('#pn_name', 'Arman'); await pg.select_option('#pn_sheet', 'both')
+            await pg.screenshot(path=str(ROOT / 'tests' / 'shots' / 'hiring_panel_invite.png'))
+            await pg.click('#pnGo'); await pg.wait_for_timeout(600)
+            pc = [c for c in CALLS if c.get('action') == 'panel']
+            check('CEO invites any team member onto the interview panel', pc and pc[-1]['email'] == 'arman@kuwaitikitchen.com' and pc[-1]['sheet'] == 'both' and pc[-1]['id'] == 'civ', pc[-1:])
+            t = await pg.inner_text('#dlg')
+            check('Panel shows the new interviewer, and the panel is no longer complete until they submit', 'Arman' in t and 'waiting for Arman' in t, t[:400])
             # --- booking link ---
             await pg.evaluate("closeModal();DRAFT=null;openCand('csl')"); await pg.wait_for_timeout(200)
             await pg.click('text=Invite to interview'); await pg.wait_for_timeout(400)
@@ -138,7 +153,7 @@ async def main():
             await pg.evaluate("openCand('chid')"); await pg.wait_for_timeout(200)
             t = await pg.inner_text('#dlg')
             check('Head: HR card stays hidden until the head submits', 'open here once you submit' in t and 'class="cmp"' not in await pg.inner_html('#dlg'), t[:600])
-            check('Head: own questions are technical + competency + practical with a prompt for each', 'Technical' in t and 'tell me about a time' in t.lower() and 'HR questions' not in t)
+            check('Head: own questions (competency here; technical and practical when the job has them) with a prompt for each', 'tell me about a time' in t.lower() and 'HR questions' not in t)
             await pg.click('text=Submit my scorecard'); await pg.wait_for_timeout(150)
             check('Head: cannot submit with questions unscored', not any(c.get('action') == 'put' and c.get('id') == 'chid' for c in CALLS))
             await pg.evaluate("ivSheet('head',reqOf(DRAFT),DRAFT).forEach(s=>s.L.forEach((x,i)=>setScore('iv.'+s.k+'.'+i,4)));ivNote('comp.0','Led a team of 8');ivSet('rec','Hire')")
@@ -148,6 +163,18 @@ async def main():
             check('Head: scorecard submitted with scores, a note per question and a recommendation', mine and mine.get('done') and mine.get('rec') == 'Hire' and mine['n']['comp.0'] == 'Led a team of 8' and mine['who'] == 'head', mine)
             await pg.locator('.card.sec', has=pg.locator('details')).screenshot(path=str(ROOT / 'tests' / 'shots' / 'hiring_head_card.png'))
             check('No page errors (head)', not errs, errs[:2])
+            await ctx.close()
+            ctx, pg, errs = await ctx_for(b, CFG, token='TOKARM-0000000000000000000')
+            await pg.goto(BASE + '/hiring/'); await pg.wait_for_timeout(1000)
+            nav = await pg.inner_text('#nav'); main = await pg.inner_text('#main')
+            check('Invited interviewer sees only "My interviews"', nav.strip() == 'My interviews' and 'Joseph Mensah' in main and 'Rami' not in main, [nav, main[:200]])
+            await pg.goto(BASE + '/hiring/#c=civ'); await pg.reload(); await pg.wait_for_timeout(1000)
+            t = await pg.inner_text('#dlg')
+            check('Email link opens the candidate straight away', 'Joseph Mensah' in t)
+            check('Interviewer gets their own scorecard with all questions', 'Your scorecard (all questions)' in t and 'HR questions' in t and 'Competency' in t, t[-800:])
+            check('Interviewer sees no salary, team notes, reject or move buttons', 'Expected salary' not in t and 'Notes\n' not in t and 'Reject' not in t and 'Passed' not in t and '+ Invite an interviewer' not in t)
+            await pg.locator('.card.sec', has=pg.locator('details')).screenshot(path=str(ROOT / 'tests' / 'shots' / 'hiring_panel_card.png'))
+            check('No page errors (panel)', not errs, errs[:2])
             await ctx.close()
             ctx, pg, errs = await ctx_for(b, CFG_PREVIEW, token='TOKCEO-0000000000000000000')
             await pg.goto(BASE + '/hiring/'); await pg.wait_for_timeout(600)

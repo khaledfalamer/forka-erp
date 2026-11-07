@@ -21,7 +21,8 @@ const folder = { getId: () => 'FOLDER1', createFile: blob => { const id = 'file'
 const SESS = { 'TOKCEO-0000000000000000000': { email: 'ceo@forka.com', name: 'Khaled', level: 'ceo', apps: { hire: 1 } },
   'TOKJEN-0000000000000000000': { email: 'jennifer@forka.com', name: 'Jennifer', level: 'manager', apps: { hire: 1 } },
   'TOKCHEF-000000000000000000': { email: 'chef@kuwaitikitchen.com', name: 'Head Chef', level: 'manager', apps: { hire: 1 } },
-  'TOKHAM-0000000000000000000': { email: 'store@kuwaitikitchen.com', name: 'Hamim', level: 'staff', apps: { hire: 0 } } };
+  'TOKHAM-0000000000000000000': { email: 'store@kuwaitikitchen.com', name: 'Hamim', level: 'staff', apps: { hire: 0 } },
+  'TOKARM-0000000000000000000': { email: 'arman@kuwaitikitchen.com', name: 'Arman', level: 'staff', apps: {} } };
 let accountsCalls = 0;
 const ctx = {
   SpreadsheetApp: { getActive: () => ss, openById: () => ss },
@@ -180,6 +181,40 @@ ck('...and cannot be booked twice', call({ action: 'book', token: tok2, t: s2 })
 ck('Candidate can move to another free time', call({ action: 'book', token: tok, t: s3 }).ok && call({ action: 'book', token: tok2, t: s2 }).ok);
 { const p = call({ action: 'load', token: CEO }).data.pipe.iv1; p.stage = 'rejected'; call({ action: 'put', token: CEO, col: 'pipe', id: 'iv1', data: p });
   ck('Once rejected, the booking link closes', call({ action: 'slot', token: tok }).error === 'closed' && call({ action: 'book', token: tok, t: s1 }).error === 'closed'); }
+
+/* ---------- invite any team member onto the interview panel ---------- */
+const ARM = 'TOKARM-0000000000000000000';
+call({ action: 'put', token: JEN, col: 'pipe', id: 'pn1', data: { req: 'rk2', name: 'Panel Cand', email: 'pc@mail.com', phone: '0501231231', salary: 9999, jobTitle: 'Grill Cook', stage: 'interview', callNotes: 'HR call secret', cv: { 0: 5 }, notes: [{ m: 'team note' }], personality: { summary: 'calm', qs: 'Q1', tr: { 0: 'Match' } }, cvFile: { id: 'fileKITCHEN00001', drive: true } } });
+call({ action: 'put', token: JEN, col: 'pipe', id: 'pn2', data: { req: 'rk2', name: 'Other Cand', email: 'oc@mail.com', jobTitle: 'Grill Cook', stage: 'interview' } });
+ck('Someone not on the hiring team and not on a panel has no access', call({ action: 'load', token: ARM }).error === 'noaccess');
+mails.length = 0;
+ck('An invited interviewer cannot be added by an outsider', call({ action: 'panel', token: ARM, id: 'pn1', email: 'arman@kuwaitikitchen.com' }).error === 'noaccess');
+let pr = call({ action: 'panel', token: CHEF, id: 'pn1', email: 'Arman@KuwaitiKitchen.com', name: 'Arman', sheet: 'both' });
+ck('Head invites any team member onto the panel', pr.ok && pr.panel.sheet === 'both' && pr.mailed, pr);
+ck('The invited person gets an email with a link to their scorecard', mails.length === 1 && mails[0].to === 'arman@kuwaitikitchen.com' && mails[0].body.includes('https://erp.forka.com/hiring/#c=pn1'), mails[0]);
+{ const v = call({ action: 'load', token: ARM });
+  ck('Invited interviewer opens Hiring as a panel member', v.ok && v.me.role === 'panel', v);
+  const t = JSON.stringify(v.data);
+  ck('...sees only the candidate they were invited to', v.data.pipe.pn1 && !v.data.pipe.pn2 && Object.keys(v.data.pipe).length === 1, Object.keys(v.data.pipe));
+  ck('...without salary, phone, HR call, screening scores or team notes', !/9999|0501231231|HR call secret|team note|"cv":/.test(t) && v.data.pipe.pn1.personality.summary === 'calm' && !v.data.pipe.pn1.personality.tr, t.slice(0, 300));
+  ck('...with the job questions to ask', v.data.reqs.rk2.testQs[0] === 'Grill' && !Object.keys(v.data.jobs).length);
+  ck('...and can open that candidate\'s CV', call({ action: 'cv', token: ARM, id: 'fileKITCHEN00001' }).ok);
+  ck('...but no other CV', !call({ action: 'cv', token: ARM, id: 'fileSERVICE00001' }).ok); }
+{ const c = call({ action: 'load', token: ARM }).data.pipe.pn1;
+  c.stage = 'hired'; c.name = 'Changed'; c.iv = { 'arman@kuwaitikitchen.com': { tech: [5], comp: [4], hr: [3], rec: 'Hire', done: true }, 'chef@kuwaitikitchen.com': { tech: [1], done: true } };
+  ck('Panel member saves their scorecard', call({ action: 'put', token: ARM, col: 'pipe', id: 'pn1', data: c }).ok);
+  const s2 = call({ action: 'load', token: CEO }).data.pipe.pn1;
+  ck('...only their own card changes (stage, name and others untouched)', s2.stage === 'interview' && s2.name === 'Panel Cand' && s2.iv['arman@kuwaitikitchen.com'].who === 'panel' && s2.iv['arman@kuwaitikitchen.com'].tech[0] === 5 && !s2.iv['chef@kuwaitikitchen.com'] && s2.salary === 9999, s2);
+  ck('Panel member cannot touch another candidate, delete or change settings', call({ action: 'put', token: ARM, col: 'pipe', id: 'pn2', data: {} }).error === 'role' && call({ action: 'del', token: ARM, col: 'pipe', id: 'pn1' }).error === 'role' && call({ action: 'put', token: ARM, col: 'reqs', id: 'rk2', data: {} }).error === 'role');
+  ck('Panel member cannot send booking links or invite others', call({ action: 'invite', token: ARM, id: 'pn1', kind: 'interview', slots: [T0 + 2 * DAY] }).error === 'role' && call({ action: 'panel', token: ARM, id: 'pn1', email: 'x@y.co' }).error === 'role'); }
+{ const c = call({ action: 'load', token: JEN }).data.pipe.pn1; delete c.panel;
+  call({ action: 'put', token: JEN, col: 'pipe', id: 'pn1', data: c });
+  ck('A normal save cannot remove the panel', !!call({ action: 'load', token: CEO }).data.pipe.pn1.panel['arman@kuwaitikitchen.com']); }
+{ const iv = call({ action: 'invite', token: CHEF, id: 'pn1', kind: 'interview', slots: [T0 + 5 * DAY] }); mails.length = 0;
+  call({ action: 'book', token: iv.link.split('#book=')[1], t: T0 + 5 * DAY });
+  ck('Panel members also get the booked time with a calendar invite', mails.some(m => m.to.includes('arman@kuwaitikitchen.com') && m.attachments)); }
+ck('Head cannot invite onto another department\'s candidate', call({ action: 'panel', token: CHEF, id: 'cs', email: 'x@y.co' }).error === 'role');
+ck('HR removes someone from the panel', call({ action: 'panel', token: JEN, id: 'pn1', email: 'arman@kuwaitikitchen.com', remove: true }).ok && call({ action: 'load', token: ARM }).error === 'noaccess');
 const n0 = accountsCalls; call({ action: 'load', token: JEN }); call({ action: 'load', token: JEN });
 ck('Forka Apps asked at most once per 5 minutes per sign-in', accountsCalls === n0);
 console.log(`${res.filter(Boolean).length}/${res.length} hiring server checks passed`); process.exit(res.every(Boolean) ? 0 : 1);

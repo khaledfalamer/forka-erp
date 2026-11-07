@@ -318,7 +318,7 @@ function toast(m){const t=$("#toast");t.textContent=m;t.style.display="block";cl
 const nm=id=>NAMES[id]||(DEMO_PEOPLE[id]?.name)||(/@/.test(id||"")?String(id).split("@")[0]:"Someone");
 
 /* ---------------- storage layer (shared db, or local demo) ---------------- */
-const DEMO_PEOPLE={u_khaled:{name:"Khaled Alamer",role:"hr",ceo:true},u_jen:{name:"Jennifer Tudara",role:"hr"},u_abuali:{name:"Abu Ali",role:"head",dept:"Operations"},u_chef:{name:"Head Chef",role:"head",dept:"Kitchen"},u_sara:{name:"Sara (candidate)",role:"candidate"}};
+const DEMO_PEOPLE={u_khaled:{name:"Khaled Alamer",role:"hr",ceo:true},u_jen:{name:"Jennifer Tudara",role:"hr"},u_abuali:{name:"Abu Ali",role:"head",dept:"Operations"},u_chef:{name:"Head Chef",role:"head",dept:"Kitchen"},u_arman:{name:"Arman (invited interviewer)",role:"panel"},u_sara:{name:"Sara (candidate)",role:"candidate"}};
 const local={data:null,subs:[],
   load(){try{this.data=JSON.parse(localStorage.getItem("forkaHiringDemo")||"null")}catch(e){} if(!this.data){this.data=demoSeed()} },
   save(){try{localStorage.setItem("forkaHiringDemo",JSON.stringify(this.data))}catch(e){} this.subs.forEach(f=>f())},
@@ -384,7 +384,7 @@ function banner(m){const b=$("#banner");b.textContent=m;b.style.display=m?"block
   store.watch("config",o=>{S.team=o.team||{members:{}};S.brand=o.brand||null;afterData()});
 })();
 let resolving=false;
-async function afterData(){ resolveRole(); render(); if(!DEMO&&!HURL&&USER&&!resolving){resolving=true; const ids=new Set(Object.keys(S.team.members||{})); Object.values(S.pipe).forEach(p=>{p.ownerUid&&ids.add(p.ownerUid);(p.history||[]).forEach(h=>h.by&&ids.add(h.by))}); Object.values(S.reqs).forEach(r=>r.createdBy&&ids.add(r.createdBy)); try{const ps=await USER.profiles([...ids]);for(const k in ps)NAMES[k]=ps[k].name||NAMES[k]||""}catch(e){} resolving=false; render();} }
+async function afterData(){ resolveRole(); render(); { const m=location.hash.match(/c=([\w-]+)/); if(m&&!V.hashDone&&allCands()[m[1]]){ V.hashDone=true; openCand(m[1]) } } if(!DEMO&&!HURL&&USER&&!resolving){resolving=true; const ids=new Set(Object.keys(S.team.members||{})); Object.values(S.pipe).forEach(p=>{p.ownerUid&&ids.add(p.ownerUid);(p.history||[]).forEach(h=>h.by&&ids.add(h.by))}); Object.values(S.reqs).forEach(r=>r.createdBy&&ids.add(r.createdBy)); try{const ps=await USER.profiles([...ids]);for(const k in ps)NAMES[k]=ps[k].name||NAMES[k]||""}catch(e){} resolving=false; render();} }
 function resolveRole(){
   let id = DEMO? V.viewAs : ME, p;
   if(DEMO){ p=DEMO_PEOPLE[id]; V.role=p.role; V.ceo=!!p.ceo; V.dept=p.dept||null; V.me=id; }
@@ -402,11 +402,11 @@ function resolveRole(){
     else { V.role="candidate"; V.ceo=false; }
     V.me=ME;
   }
-  const pages = {hr:["dash","approvals","reqs","pipeline","pool","careers","team"],head:["dash","reqs","pipeline"],candidate:["jobs","mine"]}[V.role];
+  const pages = {hr:["dash","approvals","reqs","pipeline","pool","careers","team"],head:["dash","reqs","pipeline"],panel:["ivs"],candidate:["jobs","mine"]}[V.role];
   if(!V.ceo) pages.splice(pages.indexOf("approvals"),pages.indexOf("approvals")>=0?1:0);
   V.pages=pages; if(!pages.includes(V.page)) V.page=pages[0];
 }
-const PAGE_LABEL={dash:"Dashboard",approvals:"CEO approvals",reqs:"Hiring requests",pipeline:"Candidates",pool:"Talent pool & compliance",careers:"Careers page",team:"Team & access",jobs:"Open roles",mine:"My applications"};
+const PAGE_LABEL={dash:"Dashboard",approvals:"CEO approvals",reqs:"Hiring requests",pipeline:"Candidates",pool:"Talent pool & compliance",careers:"Careers page",team:"Team & access",jobs:"Open roles",mine:"My applications",ivs:"My interviews"};
 
 /* ---------------- derived ---------------- */
 function allCands(){ // pipeline records + online applications not yet picked up by HR
@@ -424,15 +424,15 @@ const CR=r=>r.criticals||(r.critical?[r.critical]:[]);
 const PV=s=>Array.isArray(s.prac)?s.prac:(s.prac!=null?[s.prac]:[]);
 const ivScore=s=>avg([...(s.tech||[]),...(s.comp||[]),...PV(s),...(s.hr||[])]);
 function ivAvg(c){ return avg(Object.values(c.iv||{}).filter(s=>!s.hidden&&s.done).map(ivScore)) }
-function whoOf(k,s){ if(s&&s.who) return s.who; const m=(S.team.members||{})[k]||(DEMO&&typeof DEMO_PEOPLE!=="undefined"?DEMO_PEOPLE[k]:null); return m&&m.role==="head"?"head":"hr" }
+function whoOf(k,s){ if(s&&s.who) return s.who; if(DRAFT&&(DRAFT.panel||{})[k]) return "panel"; const m=(S.team.members||{})[k]||(DEMO&&typeof DEMO_PEOPLE!=="undefined"?DEMO_PEOPLE[k]:null); return m&&m.role==="head"?"head":"hr" }
 // panel is complete when the department head and HR have both submitted
-function panelDone(c){ const L=Object.entries(c.iv||{}).filter(([,s])=>s.done).map(([k,s])=>whoOf(k,s)); return L.includes("head")&&L.includes("hr") }
+function panelDone(c){ const L=Object.entries(c.iv||{}).filter(([,s])=>s.done).map(([k,s])=>whoOf(k,s)); return L.includes("head")&&L.includes("hr")&&Object.keys(c.panel||{}).every(k=>((c.iv||{})[k]||{}).done) }
 // each interviewer's own questions: the head asks technical + competency + practical; HR asks competency + its own + the personality follow-ups
 function ivSheet(role,r,d){
   const fq=String((d.personality||{}).qs||"").split(/\n+/).map(x=>x.replace(/^\s*[-•\d.)]+\s*/,"").trim()).filter(Boolean).slice(0,2);
   const comp={k:"comp",t:'Competency — "tell me about a time…"',L:COMPETENCY.map((m,i)=>[m,COMP_Q[i]])};
-  if(role==="head") return [{k:"tech",t:"Technical",L:(r.testQs||[]).map(m=>[m,"Ask them to talk you through it, or show you."])},comp,{k:"prac",t:"Practical test",L:PR(r).map(x=>[x,"Score what you saw them do."])}];
-  return [comp,{k:"hr",t:"HR questions",L:[...HR_Q,...fq.map(q=>["Personality follow-up",q])]}];
+  const tech={k:"tech",t:"Technical",L:(r.testQs||[]).map(m=>[m,"Ask them to talk you through it, or show you."])}, prac={k:"prac",t:"Practical test",L:PR(r).map(x=>[x,"Score what you saw them do."])}, hrq={k:"hr",t:"HR questions",L:[...HR_Q,...fq.map(q=>["Personality follow-up",q])]};
+  return (role==="head"?[tech,comp,prac]:role==="both"?[tech,comp,prac,hrq]:[comp,hrq]).filter(x=>x.L.length);
 }
 // rule-based checks on an application: free, instant, no data leaves Forka
 function autoCheck(c,r){ const F=[];
@@ -459,12 +459,12 @@ function render(){
     reqs: V.role==="head"?Object.values(S.reqs).filter(r=>r.status==="review"&&headSees(r)).length:Object.values(S.reqs).filter(r=>r.status==="approved"||r.status==="ready").length,
     pipeline: V.role==="head"?Object.values(C).filter(c=>headSees(reqOf(c))&&(c.stage==="shortlist"||(c.stage==="interview"&&!(c.iv||{})[V.me]))).length:Object.values(C).filter(c=>c.stage==="applied").length};
   $("#nav").innerHTML=V.pages.map(p=>`<a class="${p===V.page?"on":""}" onclick="go('${p}')">${PAGE_LABEL[p]}${badge[p]?`<span class="n">${badge[p]}</span>`:""}</a>`).join("");
-  const roleName={hr:V.ceo?"CEO · HR":"HR",head:"Dept head"+(V.dept?" · "+V.dept:""),candidate:"Candidate"}[V.role];
+  const roleName={hr:V.ceo?"CEO · HR":"HR",head:"Dept head"+(V.dept?" · "+V.dept:""),panel:"Interview panel",candidate:"Candidate"}[V.role];
   let sw="";
   if(DEMO) sw=`<select onchange="V.viewAs=this.value;V.page=null;afterData()">${Object.entries(DEMO_PEOPLE).map(([k,p])=>`<option value="${k}" ${k===V.viewAs?"selected":""}>${p.name}</option>`).join("")}</select>`;
   else if(OWNER) sw=`<select onchange="V.viewAs=this.value.split(':')[0];V.viewDept=this.value.split(':')[1]||null;V.page=null;afterData()"><option value="hr">View as: CEO · HR</option>${DEPTS.map(d=>`<option value="head:${d}" ${V.role==="head"&&V.dept===d?"selected":""}>View as: ${d} head</option>`).join("")}${HURL?"":`<option value="candidate" ${V.role==="candidate"?"selected":""}>View as: Candidate</option>`}</select>`;
   $("#who").innerHTML=`<span class="role">${roleName}</span>${sw}${HURL?`<a class="btn sm sec" style="margin-left:8px" href="${esc(CFG.ERP_HOME||"/")}">Forka Apps</a>`:""}`;
-  const fn={dash:pDash,approvals:pApprovals,reqs:pReqs,pipeline:pPipeline,pool:pPool,careers:pCareers,team:pTeam,jobs:pJobs,mine:pMine}[V.page];
+  const fn={dash:pDash,approvals:pApprovals,reqs:pReqs,pipeline:pPipeline,pool:pPool,careers:pCareers,team:pTeam,jobs:pJobs,mine:pMine,ivs:pIvs}[V.page];
   $("#main").innerHTML=fn(C);
 }
 function go(p){V.page=p;V.sel.clear();render();window.scrollTo(0,0)}
@@ -565,6 +565,9 @@ function pJobs(){
   const J=Object.values(S.jobs).filter(j=>j.open).sort((a,b)=>b.postedAt-a.postedAt);
   return heroHtml(brand())+`<h2 style="margin-bottom:10px">Open roles</h2>${J.length?`<div class="grid">${J.map(j=>`<div class="card job"><div style="flex:1"><h3>${esc(j.title)}</h3><div class="small muted">${esc(j.branch)} · ${esc(j.dept)} · posted ${fmtD(j.postedAt)}</div><p class="small" style="margin:8px 0 0">${esc((j.summary||"").slice(0,220))}</p></div><button class="btn br" onclick="viewJob('${j.id}')">View & apply</button></div>`).join("")}</div>`:`<div class="card empty">No open roles right now — check back soon.</div>`}`;
 }
+function pIvs(C){ const L=Object.values(C).filter(c=>(c.panel||{})[V.me]&&!["rejected","pool","hired"].includes(c.stage));
+  return `<div class="top"><div><h1>My interviews</h1><p>Candidates you were invited to interview. Score on your own and submit before talking to the other interviewers.</p></div></div>
+  ${L.length?`<div class="grid g2">${L.map(c=>{const r=reqOf(c),b=(c.books||{}).interview,m=(c.iv||{})[V.me]||{};return `<div class="card" style="cursor:pointer" onclick="openCand('${c.id}')"><div class="row"><h3>${esc(c.name)}</h3><span class="sp"></span><span class="tag ${m.done?"ok":"warn"}">${m.done?"Scorecard submitted":"Scorecard to do"}</span></div><p class="small">${esc(r.title||c.jobTitle||"")} · ${esc(r.branch||"")}</p><p class="small">${b&&b.pick?`<b>Interview:</b> ${whenTxt(b.pick)} · ${esc(b.mode)}${b.place?" · "+esc(b.place):""}`:`<span class="muted">Interview time not booked yet</span>`}</p></div>`}).join("")}</div>`:`<div class="card"><p class="muted">No interviews for you right now.</p></div>`}`}
 function pMine(){
   const mine=Object.entries((S.apps[V.me]||{}).list||{}).map(([id,a])=>({...a,id}));
   const C=allCands();
@@ -697,7 +700,7 @@ let DRAFT=null;
 function openCand(id){
   const c=allCands()[id]; if(!c) return; const r=reqOf(c);
   if(!DRAFT||DRAFT.id!==id) DRAFT=JSON.parse(JSON.stringify(c));
-  const d=DRAFT, isHR=V.role==="hr", isHead=V.role==="head", st=d.stage, si=SI[st]??-1;
+  const d=DRAFT, isHR=V.role==="hr", isHead=V.role==="head", isPanel=V.role==="panel", st=d.stage, si=SI[st]??-1;
   const scoreBtns=(path,val,dis)=>`<div class="score">${[1,2,3,4,5].map(n=>`<button ${dis?"disabled":""} class="${val===n?"on":""}" onclick="setScore('${path}',${n})">${n}</button>`).join("")}</div>`;
   const sAvg=scr(d,r), iAvg=ivAvg(d);
   const myIv=(d.iv||{})[V.me]||{tech:[],comp:[]};
@@ -726,9 +729,9 @@ function openCand(id){
     body+=`<div class="card sec"><h3>Shortlist pack</h3><div class="grid g3"><div class="kpi"><div class="l">Screening score</div><div class="v">${f1(sAvg)}</div></div><div class="kpi"><div class="l">Experience</div><div class="v">${d.years??"–"}<span class="small"> yrs</span></div></div><div class="kpi"><div class="l">Notice</div><div class="v">${d.notice??"–"}<span class="small"> days</span></div></div></div>
     <p class="small"><b>Personality summary:</b> ${esc(P.summary||"—")}</p>${Object.values(P.tr||{}).includes("Very low")?`<div class="note">A critical trait came out very low — the panel must clear it in the interview.</div>`:""}<p class="small"><b>Follow-up questions:</b> ${esc(P.qs||"—")}</p>${d.callNotes&&isHR?`<p class="small"><b>HR call:</b> ${esc(d.callNotes)}</p>`:""}</div>`; }
   // booking links (HR call / interview)
-  if((isHR||isHead)&&d.books&&Object.keys(d.books).length) body+=bookCard(d);
+  if((isHR||isHead||isPanel)&&d.books&&Object.keys(d.books).length) body+=bookCard(d);
   // interview
-  if(si>=SI.interview&&(isHR||isHead)){ body+=ivCard(d,r,lock_iv(si)); }
+  if(si>=SI.interview&&(isHR||isHead||isPanel)){ body+=ivCard(d,r,lock_iv(si)); }
   // references
   if(isHR&&si>=SI.references){ const lock=si>SI.references, R2=d.refs||[{},{}];
     body+=`<div class="card sec"><h3>Reference checks</h3><div class="chk"><input type="checkbox" ${d.refConsent?"checked":""} ${lock?"disabled":""} onchange="DRAFT.refConsent=this.checked"><span>Candidate consents to contacting the current employer (if not: check previous employers, offer conditional)</span></div>
@@ -746,7 +749,7 @@ function openCand(id){
     ${DOCS.map((x,i)=>`<div class="chk"><input type="checkbox" ${(O.docs||{})[i]?"checked":""} ${lock?"disabled":""} onchange="DRAFT.offer={...(DRAFT.offer||{}),docs:{...((DRAFT.offer||{}).docs||{}),[${i}]:this.checked}}"><span>${x}</span></div>`).join("")}
     <p class="small muted">No one starts work without complete documentation (control approved 23 Jul).</p></div>`; }
   // notes + history
-  body+=`<div class="card sec"><h3>Notes</h3>${(d.notes||[]).map(n=>`<div class="small" style="margin:4px 0"><b>${esc(nm(n.by))}</b> <span class="muted">${fmtD(n.t)}</span> — ${esc(n.m)}</div>`).join("")}<div class="row" style="margin-top:6px"><input id="noteIn" placeholder="Opinions go here; scores stay numbers" style="flex:1"><button class="btn sm sec" onclick="addNote()">Add</button></div>
+  if(!isPanel) body+=`<div class="card sec"><h3>Notes</h3>${(d.notes||[]).map(n=>`<div class="small" style="margin:4px 0"><b>${esc(nm(n.by))}</b> <span class="muted">${fmtD(n.t)}</span> — ${esc(n.m)}</div>`).join("")}<div class="row" style="margin-top:6px"><input id="noteIn" placeholder="Opinions go here; scores stay numbers" style="flex:1"><button class="btn sm sec" onclick="addNote()">Add</button></div>
   <div class="hist">${(d.history||[]).map(h=>`<div>${fmtD(h.t)} · ${esc(nm(h.by))} — ${esc(h.m)}</div>`).join("")}</div></div>`;
   // actions
   const A=[]; const can=(x)=>x;
@@ -771,7 +774,10 @@ function setScore(path,n){ const p=path.split("."); const d=DRAFT;
   if(p[0]==="iv"){ const m=myCard(); if(m.done) return; if(p[1]==="prac"){ m.prac=PV(m).slice(); m.prac[+(p[2]||0)]=n } else { m[p[1]]=m[p[1]]||[]; m[p[1]][+p[2]]=n } }
   else { d[p[0]]=d[p[0]]||{}; d[p[0]][p[1]]=n }
   openCand(d.id); }
-function myCard(){ const d=DRAFT; d.iv=d.iv||{}; const m=d.iv[V.me]=d.iv[V.me]||{tech:[],comp:[]}; m.who=V.role==="head"?"head":"hr"; return m }
+function myCard(){ const d=DRAFT; d.iv=d.iv||{}; const m=d.iv[V.me]=d.iv[V.me]||{tech:[],comp:[]}; m.who=V.role==="head"?"head":V.role==="panel"?"panel":"hr"; return m }
+// which questions this person asks: head = department questions, HR = HR questions, an invited interviewer = what they were invited for
+function sheetOf(d){ return V.role==="head"?"head":V.role==="panel"?(((d.panel||{})[V.me]||{}).sheet||"head"):"hr" }
+const SHEET_LABEL={head:"department questions",hr:"HR questions",both:"all questions"};
 function ivSet(k,v,quiet){ const m=myCard(); if(m.done) return; m[k]=v; if(!quiet)openCand(DRAFT.id) }
 function ivNote(path,v){ const m=myCard(); if(m.done) return; m.n=m.n||{}; m.n[path]=v }
 function lock_iv(si){ return si>SI.interview }
@@ -780,15 +786,16 @@ function ivCard(d,r,lock){
   const others=Object.entries(d.iv||{}).filter(([k])=>k!==V.me);
   const canSee=lock||myIv.done||(V.ceo&&!(d.iv||{})[V.me]);
   const hidden=others.filter(([,s])=>s.done&&(s.hidden||!canSee)), shown=canSee?Object.entries(d.iv||{}).filter(([,s])=>!s.hidden&&s.done):[];
-  const iAvg=ivAvg(d), sheet=ivSheet(V.role==="head"?"head":"hr",r,d);
+  const iAvg=ivAvg(d), sheet=ivSheet(sheetOf(d),r,d);
   const val=(k,i)=>k==="prac"?PV(myIv)[i]:(myIv[k]||[])[i];
   const sb=(path,v,dis)=>`<div class="score">${[1,2,3,4,5].map(n=>`<button ${dis?"disabled":""} class="${v===n?"on":""}" onclick="setScore('${path}',${n})">${n}</button>`).join("")}</div>`;
-  const waiting=["head","hr"].filter(w=>!Object.entries(d.iv||{}).some(([k,s])=>whoOf(k,s)===w&&s.done)).map(w=>w==="head"?esc(reqOf(d).dept||"Dept")+" head":"HR");
+  const waiting=["head","hr"].filter(w=>!Object.entries(d.iv||{}).some(([k,s])=>whoOf(k,s)===w&&s.done)).map(w=>w==="head"?esc(reqOf(d).dept||"Dept")+" head":"HR").concat(Object.entries(d.panel||{}).filter(([k])=>!((d.iv||{})[k]||{}).done).map(([k,p])=>esc(p.name||nm(k))));
   let h=`<div class="card sec"><div class="row"><h3>Interview scorecards</h3>${shown.length?`<span class="tag ${iAvg>=PASS?"ok":"warn"}">panel avg ${f1(iAvg)}</span>`:""}${waiting.length&&!lock?`<span class="tag warn">waiting for ${waiting.join(" + ")}</span>`:lock?"":`<span class="tag ok">panel complete</span>`}<span class="sp"></span>${SAMPLE&&!mine?`<button class="btn sm ai" onclick="aiQs()">Interview questions</button>`:""}</div>`;
+  if((V.role==="hr"||V.role==="head")&&!lock) h+=`<div class="row" style="margin:8px 0;flex-wrap:wrap;gap:6px"><span class="small"><b>Interview panel:</b></span>${Object.entries(d.panel||{}).map(([k,p])=>`<span class="tag ${((d.iv||{})[k]||{}).done?"ok":""}">${esc(p.name||k)} · ${SHEET_LABEL[p.sheet]||""}${((d.iv||{})[k]||{}).done?" · submitted":""} <a style="cursor:pointer" title="Remove" onclick="panelDel('${esc(k)}')">×</a></span>`).join("")||`<span class="small muted">the department head and HR</span>`}<button class="btn sm sec" onclick="panelDlg()">+ Invite an interviewer</button></div>`;
   if(shown.length) h+=ivCompare(d,r);
   else if(hidden.length) h+=`<p class="small muted">${hidden.map(([k])=>esc(nm(k))).join(", ")} submitted. Their scores and notes open here once you submit yours, so nobody is swayed by the other.</p>`;
   if(!lock){
-    h+=`<details ${!myIv.done&&((d.iv||{})[V.me]||!shown.length)?"open":""} style="margin-top:10px"><summary class="small"><b>Your scorecard</b> (${V.role==="head"?"department head questions":"HR questions"})${myIv.done?" — submitted "+fmtD(myIv.at):""}</summary><div id="aiqs"></div>
+    h+=`<details ${!myIv.done&&((d.iv||{})[V.me]||!shown.length)?"open":""} style="margin-top:10px"><summary class="small"><b>Your scorecard</b> (${SHEET_LABEL[sheetOf(d)]})${myIv.done?" — submitted "+fmtD(myIv.at):""}</summary><div id="aiqs"></div>
     <p class="small muted">Ask each question, score 1–5 (1 weak · 3 meets · 5 excellent) and write what they said. Score on your own before talking to the other interviewer.</p>
     ${sheet.map(sec=>`<p class="small" style="margin-top:8px"><b>${sec.t}</b></p>${sec.L.map(([lab,q],i)=>`<div class="crit"><span>${esc(lab)}<span class="pr">${esc(q)}</span></span>${sb("iv."+sec.k+"."+i,val(sec.k,i),mine)}<input class="ivn" ${mine?"disabled":""} placeholder="What they said / what you saw" value="${esc((myIv.n||{})[sec.k+"."+i]||"")}" oninput="ivNote('${sec.k}.${i}',this.value)"></div>`).join("")}`).join("")}
     <div class="grid g2" style="margin-top:8px"><div><label>Strengths</label><textarea ${mine?"disabled":""} oninput="ivSet('strengths',this.value,true)">${esc(myIv.strengths||"")}</textarea></div><div><label>Concerns</label><textarea ${mine?"disabled":""} oninput="ivSet('concerns',this.value,true)">${esc(myIv.concerns||myIv.notes||"")}</textarea></div></div>
@@ -800,7 +807,7 @@ function ivCard(d,r,lock){
 }
 // side by side: every question as a row, every interviewer as a column, with their notes
 function ivCompare(d,r){
-  const P=Object.entries(d.iv||{}).filter(([,s])=>!s.hidden&&s.done).sort((a,b)=>(whoOf(...a)==="head"?0:1)-(whoOf(...b)==="head"?0:1));
+  const P=Object.entries(d.iv||{}).filter(([,s])=>!s.hidden&&s.done).sort((a,b)=>({head:0,hr:1,panel:2}[whoOf(...a)]??3)-({head:0,hr:1,panel:2}[whoOf(...b)]??3));
   if(!P.length) return "";
   const fq=String((d.personality||{}).qs||"").split(/\n+/).map(x=>x.replace(/^\s*[-•\d.)]+\s*/,"").trim()).filter(Boolean).slice(0,2);
   const secs=[["tech","Technical",(r.testQs||[])],["comp","Competency",COMPETENCY],["prac","Practical",PR(r)],["hr","HR questions",[...HR_Q.map(x=>x[0]),...fq.map(q=>"Follow-up: "+q)]]];
@@ -815,7 +822,7 @@ function ivCompare(d,r){
   rows+=`<tr class="sec"><td colspan="${P.length+1}">Summary</td></tr>`+foot("Average",s=>`<span class="sc ${ivScore(s)>=PASS?"hi":"lo"}">${f1(ivScore(s))}</span>`)+foot("Recommendation",s=>`<b>${esc(s.rec||"—")}</b>`)
     +foot("Strengths",s=>`<span class="nt">${esc(s.strengths||"—")}</span>`)+foot("Concerns",s=>`<span class="nt">${esc(s.concerns||s.notes||"—")}</span>`)+foot("Personality follow-up",s=>esc(s.pf||"—"));
   const recs=P.map(([,s])=>s.rec).filter(Boolean), split=recs.some(x=>/hire/i.test(x)&&!/No/.test(x))&&recs.some(x=>/No hire/.test(x));
-  return `${split?`<div class="note" style="margin-top:8px">The interviewers disagree on hiring — talk it through before moving on.</div>`:""}<div class="cmp"><table><tr><th>Question</th>${P.map(([k,s])=>`<th>${esc(nm(k))}<br><span class="tag ${whoOf(k,s)==="head"?"blue":"br"}">${whoOf(k,s)==="head"?"Dept head":"HR"}</span> <span class="muted">${fmtD(s.at)}</span></th>`).join("")}</tr>${rows}</table></div>`;
+  return `${split?`<div class="note" style="margin-top:8px">The interviewers disagree on hiring — talk it through before moving on.</div>`:""}<div class="cmp"><table><tr><th>Question</th>${P.map(([k,s])=>`<th>${esc(((d.panel||{})[k]||{}).name||nm(k))}<br><span class="tag ${{head:"blue",hr:"br",panel:"ok"}[whoOf(k,s)]||""}">${{head:"Dept head",hr:"HR",panel:"Panel"}[whoOf(k,s)]||"HR"}</span> <span class="muted">${fmtD(s.at)}</span></th>`).join("")}</tr>${rows}</table></div>`;
 }
 
 /* ---------------- booking: candidate picks the time ---------------- */
@@ -832,7 +839,26 @@ function bookLink(b){return String(CFG.APPLY_URL||"https://apply.forka.com/").re
 function bookCard(d){ const B=d.books||{};
   return `<div class="card sec"><h3>Scheduling</h3>${["call","interview"].filter(k=>B[k]).map(k=>{const b=B[k],link=bookLink(b);
     return `<div class="crit"><span><b>${k==="call"?"HR call":"Interview"}</b> · ${esc(b.mode)}${b.place?" · "+esc(b.place):""} · ${b.mins} min<br>${b.pick?`<span class="tag ok">Booked: ${whenTxt(b.pick)}</span>`:`<span class="tag warn">Link sent ${fmtD(b.at)} — waiting for the candidate to pick (${b.slots.length} times offered)</span>`}<span class="small muted"> by ${esc(b.byName||nm(b.by))}</span></span>
-    <div class="row">${d.phone?`<a class="btn sm sec" target="_blank" rel="noopener" href="${esc(waLink(d,link,k))}">WhatsApp</a>`:""}<button class="btn sm sec" onclick="copyTxt('${esc(link)}')">Copy link</button><button class="btn sm sec" onclick="schedDlg('${k}')">New times</button></div></div>`}).join("")}</div>` }
+    ${V.role==="panel"?"":`<div class="row">${d.phone?`<a class="btn sm sec" target="_blank" rel="noopener" href="${esc(waLink(d,link,k))}">WhatsApp</a>`:""}<button class="btn sm sec" onclick="copyTxt('${esc(link)}')">Copy link</button><button class="btn sm sec" onclick="schedDlg('${k}')">New times</button></div>`}</div>`}).join("")}</div>` }
+/* ---------------- interview panel: invite any team member ---------------- */
+function panelDlg(){ const d=DRAFT, team=Object.entries(S.team.members||{}).filter(([k])=>k!==V.me&&!(d.panel||{})[k]);
+  openModal(`<div class="hd"><div><div class="small muted">${esc(d.name)} · ${esc(reqOf(d).title||"")}</div><h2>Invite an interviewer</h2></div><span class="sp"></span><button class="x" onclick="openCand(DRAFT.id)">×</button></div><div class="bd">
+  <p class="small muted">Anyone with a Forka Apps account. They get an email with a link to this candidate only: CV, the job's questions and their own scorecard — no salary, no other scores until they submit theirs.</p>
+  <div class="grid g2"><div><label>Work email</label><input id="pn_mail" list="pn_list" placeholder="name@forka.com" dir="ltr" oninput="const m=(S.team.members||{})[this.value.trim().toLowerCase()];if(m&&m.name)$('#pn_name').value=m.name"><datalist id="pn_list">${team.map(([k,m])=>`<option value="${esc(k)}">${esc(m.name||"")}</option>`).join("")}</datalist></div><div><label>Name</label><input id="pn_name"></div></div>
+  <label>Their questions</label><select id="pn_sheet"><option value="head">Department questions — technical, competency, practical</option><option value="hr">HR questions — competency, motivation, fit</option><option value="both">All questions</option></select></div>
+  <div class="ft"><span class="sp"></span><button class="btn sec" onclick="openCand(DRAFT.id)">Cancel</button><button class="btn br" id="pnGo" onclick="panelAdd()">Invite</button></div>`) }
+async function panelAdd(){ const email=$("#pn_mail").value.trim().toLowerCase(), name=$("#pn_name").value.trim(), sheet=$("#pn_sheet").value;
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return toast("Enter their work email");
+  if(email===V.me) return toast("You already have your own scorecard");
+  const b=$("#pnGo"); b.disabled=true; b.textContent="Inviting…";
+  if(DEMO){ DRAFT.panel=Object.assign({},DRAFT.panel||{},{[email]:{name:name||email.split("@")[0],sheet,by:V.me,at:now()}}); await persist(DRAFT,"Invited "+(name||email)+" to the interview panel"); toast("Invited (demo — no email sent)"); return openCand(DRAFT.id) }
+  const r=await api("panel",{id:DRAFT.id,email,name,sheet});
+  if(!r.ok){ b.disabled=false; b.textContent="Invite"; return toast(r.error==="role"?"You can only invite for your own department":r.error==="closed"?"This candidate is closed":"Couldn't invite — try again") }
+  const id=DRAFT.id; RVER=""; await pull(false); DRAFT=null; toast(r.mailed?"Invited — email sent to "+email:"Invited"); openCand(id) }
+async function panelDel(email){ const d=DRAFT, p=(d.panel||{})[email]; if(!p) return; const id=d.id;
+  if(DEMO){ delete d.panel[email]; await persist(d,"Removed "+(p.name||email)+" from the interview panel"); return openCand(id) }
+  const r=await api("panel",{id,email,remove:true}); if(!r.ok) return toast("Couldn't remove — try again");
+  RVER=""; await pull(false); DRAFT=null; toast("Removed "+(p.name||email)+(((d.iv||{})[email]||{}).done?" — their submitted scorecard is kept":"")); openCand(id) }
 async function inviteIv(){ await move("interview"); schedDlg("interview") }
 function schedDlg(kind){ const d=DRAFT, r=reqOf(d);
   if(!HURL&&!DEMO){ toast("Booking links work on the live app (erp.forka.com/hiring)"); return }
@@ -873,7 +899,7 @@ async function persist(d,msg){ d=JSON.parse(JSON.stringify(d)); delete d.unsaved
 async function saveDraft(){ await persist(DRAFT,null); toast("Saved"); openCand(DRAFT.id) }
 async function move(stage,msg){ const d=DRAFT; d.stage=stage; d.stageAt=now(); if(stage==="hired")d.hiredAt=now();
   await persist(d,msg||("Moved to "+STAGES[SI[stage]][1])); toast(msg||"Moved to "+STAGES[SI[stage]][1]); openCand(d.id) }
-async function submitIv(){ const m=myCard(), r=reqOf(DRAFT), sheet=ivSheet(m.who,r,DRAFT);
+async function submitIv(){ const m=myCard(), r=reqOf(DRAFT), sheet=ivSheet(sheetOf(DRAFT),r,DRAFT);
   const miss=sheet.some(sec=>sec.L.some((x,i)=>!(sec.k==="prac"?PV(m)[i]:(m[sec.k]||[])[i])));
   if(miss) return toast("Score every question first"); if(!m.rec) return toast("Pick your recommendation");
   m.done=true; m.at=now(); await persist(DRAFT,"Interview scorecard submitted by "+nm(V.me)+" — "+m.rec); toast("Scorecard submitted"); openCand(DRAFT.id) }
@@ -975,7 +1001,7 @@ function demoSeed(){ const t=now(), D=864e5;
    pipe:{c1:base("c1","Ahmed Saleh","applied",{stageAt:t-D,createdAt:t-D,source:"Email (hr@forka.com)"}),
      c2:base("c2","Maria Santos","screening",{cv:{0:4,1:4},call:{0:4,1:3}}),
      c3:base("c3","Rami Haddad","shortlist",{cv:{0:5,1:4,2:5},call:{0:4,1:4,2:4,3:5,4:4},stageAt:t-4*D,personality:{consent:true,tool:"to be chosen",tr:{0:"Match",1:"Match",2:"Watch-out"},summary:"Steady and organised; a little reserved with guests at first.",qs:"How do you open up with regulars? Tell me about a loud complaint you turned around."}}),
-     c4:base("c4","Joseph Mensah","interview",{cv:{0:4,1:4,2:3},call:{0:4,1:4,2:3,3:4,4:5},personality:{consent:true,summary:"High energy with people; watch discipline on paperwork.",qs:"Walk me through your closing checklist."},iv:{u_abuali:{who:"head",tech:[4,4,2],comp:[4,4,3,4,5,3],prac:[4],n:{"tech.0":"Calm, apologised first, offered a fix within 2 minutes","tech.2":"Did not think about calling the next shift early","comp.2":"Blamed the kitchen for a late order","prac.0":"Ran the floor well on the trial shift"},rec:"Hire",strengths:"Guests liked him on the trial shift; strong on complaints.",concerns:"Scheduling under pressure.",pf:"Confirmed",done:true,at:t-1*D},u_jen:{who:"hr",tech:[],comp:[4,3,5,4,5,3],hr:[4,3,5,4],n:{"comp.2":"Gave a clear example, owned the mistake","hr.1":"Hesitated on rule he disagreed with","hr.3":"Closing checklist clear and complete"},rec:"Hire",strengths:"Honest, owns mistakes, available from 1st Dec.",concerns:"Salary expectation at the top of the range.",pf:"Confirmed",done:true,at:t-1*D}}}),
+     c4:base("c4","Joseph Mensah","interview",{cv:{0:4,1:4,2:3},call:{0:4,1:4,2:3,3:4,4:5},personality:{consent:true,summary:"High energy with people; watch discipline on paperwork.",qs:"Walk me through your closing checklist."},panel:{u_arman:{name:"Arman",sheet:"both",by:"u_jen",at:t-2*D}},iv:{u_abuali:{who:"head",tech:[4,4,2],comp:[4,4,3,4,5,3],prac:[4],n:{"tech.0":"Calm, apologised first, offered a fix within 2 minutes","tech.2":"Did not think about calling the next shift early","comp.2":"Blamed the kitchen for a late order","prac.0":"Ran the floor well on the trial shift"},rec:"Hire",strengths:"Guests liked him on the trial shift; strong on complaints.",concerns:"Scheduling under pressure.",pf:"Confirmed",done:true,at:t-1*D},u_jen:{who:"hr",tech:[],comp:[4,3,5,4,5,3],hr:[4,3,5,4],n:{"comp.2":"Gave a clear example, owned the mistake","hr.1":"Hesitated on rule he disagreed with","hr.3":"Closing checklist clear and complete"},rec:"Hire",strengths:"Honest, owns mistakes, available from 1st Dec.",concerns:"Salary expectation at the top of the range.",pf:"Confirmed",done:true,at:t-1*D}}}),
      c5:base("c5","Layla Nasser","approval",{cv:{0:5,1:5,2:5},call:{0:5,1:4,2:4,3:5,4:5},personality:{consent:true,summary:"Calm, structured, warm."},iv:{u_abuali:{tech:[5,4,5],comp:[5,4,5,5,4,4],prac:5,done:true}},refs:[{name:"K. Aziz",co:"Prev. GM",ok:"Verified — positive"},{name:"S. Omar",co:"Area manager",ok:"Verified — positive"}],fin:{total:7800,basic:2340,nego:true,rec:"Strongest candidate; ready in 30 days."},stageAt:t-3*D}),
      c6:base("c6","Tom Riley","rejected",{reject:{reason:"Arabic and English, spoken",at:t-5*D}})}} }
 applyLang(); _i18nObs.observe(document.body,{childList:true,subtree:true,characterData:true}); trNode(document.body);

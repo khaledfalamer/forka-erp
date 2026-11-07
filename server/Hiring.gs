@@ -98,10 +98,29 @@ function erpWho_(tok) {
 function role_(me) {
   if (!me) return null;
   if (me.ceo) return { role: 'hr', ceo: true, dept: null };
-  if (!me.hire) return null;
   const team = (readOne_('config', 'team') || {}).members || {};
   const m = team[me.email];
-  return m && (m.role === 'hr' || m.role === 'head') ? { role: m.role, ceo: false, dept: m.dept || null } : null;
+  if (me.hire && m && (m.role === 'hr' || m.role === 'head')) return { role: m.role, ceo: false, dept: m.dept || null };
+  // anyone with a Forka Apps account who was invited onto an interview panel: sees only those candidates
+  return panelIds_(me.email).length ? { role: 'panel', ceo: false, dept: null } : null;
+}
+function panelIds_(email) { const pipe = readAll_('pipe'); return Object.keys(pipe).filter(id => (pipe[id].panel || {})[email] && ['rejected', 'pool', 'hired'].indexOf(pipe[id].stage) < 0); }
+// What an invited interviewer receives: their candidates (no salary, scores, notes or HR call), the job's questions, names for the history.
+function panelView_(data, who) {
+  const pipe = {}, reqs = {};
+  const KEEP = ['id', 'req', 'name', 'jobTitle', 'location', 'years', 'notice', 'visa', 'cvFile', 'cvText', 'answers', 'stage', 'stageAt', 'books', 'panel', 'iv', 'lang'];
+  Object.keys(data.pipe).forEach(id => {
+    const c = data.pipe[id];
+    if (!(c.panel || {})[who.email] || ['rejected', 'pool', 'hired'].indexOf(c.stage) >= 0) return;
+    const o = {}; KEEP.forEach(k => { if (c[k] !== undefined) o[k] = c[k]; });
+    if (c.personality) o.personality = { summary: c.personality.summary || '', qs: c.personality.qs || '' };
+    pipe[id] = o;
+    const r = data.reqs[c.req];
+    if (r) reqs[c.req] = { id: c.req, reqId: r.reqId || '', title: r.title || '', dept: r.dept || '', branch: r.branch || '', testQs: r.testQs || [], practical: r.practical || '', practicals: r.practicals || null, mustHaves: r.mustHaves || [], traits: r.traits || [], status: r.status || '' };
+  });
+  const team = {}; const M = ((data.config.team || {}).members) || {};
+  Object.keys(M).forEach(k => { team[k] = { name: M[k].name || '', role: M[k].role }; });
+  return { reqs: reqs, pipe: pipe, jobs: {}, apps: {}, config: { team: { members: team } } };
 }
 
 /* ---------------- department heads see and change only their own department ---------------- */
@@ -169,13 +188,14 @@ function mergePipe_(id, d, who) {
   const mine = (d.iv || {})[who.email], had = iv[who.email];
   if (mine && !(had && had.done) && (!old || ivOpen_(old))) {
     const m = Object.assign({}, mine); delete m.hidden;
-    m.who = who.role === 'head' ? 'head' : 'hr';
+    m.who = who.role === 'head' ? 'head' : who.role === 'panel' ? 'panel' : 'hr';
     if (m.done) m.at = m.at || Date.now();
     iv[who.email] = m;
   }
   const out = Object.assign({}, d, { iv: iv });
   if (!Object.keys(iv).length) delete out.iv;
   if (old && old.books) out.books = old.books; else delete out.books;
+  if (old && old.panel) out.panel = old.panel; else delete out.panel;
   return out;
 }
 
@@ -247,6 +267,38 @@ function invite_(b, who) {
   }
   return { ok: true, ver: stamp_(), link: link, mailed: mailed, book: bk };
 }
+const SHEETS = ['head', 'hr', 'both'];
+function panelSet_(b, who) {
+  const id = String(b.id || ''), email = key_(clean_(b.email, 120));
+  if (!/^[A-Za-z0-9_\-.:@]{1,80}$/.test(id) || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return { ok: false, error: 'bad' };
+  const c = readOne_('pipe', id); if (!c) return { ok: false, error: 'missing' };
+  if (who.role === 'head' && !reqMine_(readOne_('reqs', c.req), who)) return { ok: false, error: 'role' };
+  if (['rejected', 'pool', 'hired'].indexOf(c.stage) >= 0) return { ok: false, error: 'closed' };
+  const lock = LockService.getScriptLock(); lock.waitLock(15000); let added = false, entry = null;
+  try {
+    const cur = readOne_('pipe', id); cur.panel = Object.assign({}, cur.panel || {});
+    if (b.remove) {
+      if (!cur.panel[email]) return { ok: true, ver: stamp_() };
+      delete cur.panel[email];
+      (cur.history = cur.history || []).push({ t: Date.now(), by: who.email, m: 'Removed ' + email + ' from the interview panel' });
+    } else {
+      added = !cur.panel[email];
+      entry = cur.panel[email] = { name: clean_(b.name, 80) || email.split('@')[0], sheet: SHEETS.indexOf(b.sheet) >= 0 ? b.sheet : 'head', by: who.email, at: Date.now() };
+      if (added) (cur.history = cur.history || []).push({ t: Date.now(), by: who.email, m: 'Invited ' + entry.name + ' to the interview panel' });
+    }
+    if (!Object.keys(cur.panel).length) delete cur.panel;
+    write_('pipe', id, cur, who.email); bump_();
+    var bk = (cur.books || {}).interview, job = cur.jobTitle || (readOne_('reqs', cur.req) || {}).title || '';
+  } finally { lock.releaseLock(); }
+  let mailed = false;
+  if (added && b.email !== false) {
+    try { MailApp.sendEmail({ to: email, name: 'Forka Hiring', replyTo: who.email, subject: 'Interview panel: ' + c.name + ' - ' + job,
+      body: 'Hello ' + entry.name + ',\n\n' + (who.name || who.email) + ' added you to the interview panel for ' + c.name + ' (' + job + ').\n' +
+        (bk && bk.pick ? 'Interview: ' + when_(bk.pick, 'en') + ' - ' + bk.mode + (bk.place ? ' - ' + bk.place : '') + '\n' : 'The interview time will be sent to you once the candidate books it.\n') +
+        '\nYour scorecard (questions, scores and notes) is here - sign in with your Forka Apps account:\nhttps://erp.forka.com/hiring/#c=' + id + '\n\nPlease score on your own and submit before talking to the other interviewers.\n\nForka Hiring' }); mailed = true; } catch (e) {}
+  }
+  return { ok: true, ver: stamp_(), mailed: mailed, panel: entry };
+}
 function slotInfo_(b) {
   const f = findBook_(b.token); if (!f) return { ok: false, error: 'missing' };
   const c = f.c, k = f.b, now = Date.now();
@@ -278,7 +330,7 @@ function book_(b) {
     subject: (lang === 'ar' ? 'تم تأكيد ' + BOOK_KINDS[k.kind].ar + ' - ' : 'Confirmed: your ' + BOOK_KINDS[k.kind].en.toLowerCase() + ' - ') + job,
     body: (lang === 'ar' ? 'تم تأكيد موعدك: ' : 'You are booked for ') + when_(t, lang) + '\n' + where + '\n\n' + (k.note ? k.note + '\n\n' : '') +
       (lang === 'ar' ? 'لتغيير الموعد استخدم نفس الرابط: ' : 'Need to change it? Use the same link: ') + applyBase_() + '#book=' + k.token + '\n\nForka Hiring' }); } catch (e) {}
-  const to = [k.by].concat(String(props_().getProperty('HR_EMAILS') || '').split(/[,\s]+/)).filter((x, i, a) => x && a.indexOf(x) === i);
+  const to = [k.by].concat(k.kind === 'interview' ? Object.keys(c.panel || {}) : []).concat(String(props_().getProperty('HR_EMAILS') || '').split(/[,\s]+/)).filter((x, i, a) => x && a.indexOf(x) === i);
   try { MailApp.sendEmail({ to: to.join(','), name: 'Forka Hiring', attachments: [file()],
     subject: BOOK_KINDS[k.kind].en + ' booked: ' + c.name + ' - ' + when_(t, 'en'),
     body: c.name + ' (' + job + ') picked ' + when_(t, 'en') + '.\n' + where + '\n\nAdd to Google Calendar: ' + gcal_(k, c) + '\nOpen Hiring: https://erp.forka.com/hiring/' }); } catch (e) {}
@@ -373,7 +425,7 @@ function handle_(b) {
   if (a === 'load') {
     if (b.ver && b.ver === stamp_()) return { ok: true, same: true, ver: b.ver, me: who };
     const data = allData_();
-    const view = r.role === 'head' ? headView_(data, who) : data;
+    const view = r.role === 'head' ? headView_(data, who) : r.role === 'panel' ? panelView_(data, who) : data;
     view.pipe = blind_(view.pipe, who);
     return { ok: true, ver: stamp_(), me: who, data: view };
   }
@@ -384,6 +436,11 @@ function handle_(b) {
     if (col === 'jobs' && r.role !== 'hr') return { ok: false, error: 'role' };             // posting jobs: HR / CEO
     if (col === 'config' && id === 'team' && !r.ceo) return { ok: false, error: 'role' };   // who is on the team: CEO only
     if (r.role === 'head' && (a === 'del' || !headMayWrite_(col, id, b.data || {}, who))) return { ok: false, error: 'role' };
+    if (r.role === 'panel') {                     // an invited interviewer only fills in their own scorecard
+      if (a === 'del' || col !== 'pipe' || panelIds_(who.email).indexOf(id) < 0) return { ok: false, error: 'role' };
+      const old = readOne_('pipe', id);
+      b.data = Object.assign({}, old, { iv: (b.data || {}).iv || {} });
+    }
     const lock = LockService.getScriptLock(); lock.waitLock(15000);
     try {
       if (a === 'del') { remove_(col, id); bump_(); return { ok: true, ver: stamp_() }; }
@@ -392,7 +449,8 @@ function handle_(b) {
       bump_(); return { ok: true, ver: stamp_() };
     } finally { lock.releaseLock(); }
   }
-  if (a === 'invite') return invite_(b, who);
+  if (a === 'invite') return r.role === 'panel' ? { ok: false, error: 'role' } : invite_(b, who);
+  if (a === 'panel') return r.role === 'panel' ? { ok: false, error: 'role' } : panelSet_(b, who);
   if (a === 'upload') {
     const u = b.file || {}, type = String(u.type || '');
     if (!CV_TYPES.test(type) || !u.data) return { ok: false, error: 'cvtype' };
@@ -405,6 +463,7 @@ function handle_(b) {
     const id = String(b.id || '');
     if (!/^[A-Za-z0-9_-]{10,100}$/.test(id)) return { ok: false, error: 'bad' };
     if (r.role === 'head' && !cvAllowed_(id, headView_(allData_(), who))) return { ok: false, error: 'missing' };
+    if (r.role === 'panel' && !cvAllowed_(id, panelView_(allData_(), who))) return { ok: false, error: 'missing' };
     let f; try { f = DriveApp.getFileById(id); } catch (e) { return { ok: false, error: 'missing' }; }
     const parents = f.getParents(); let inFolder = false;
     while (parents.hasNext()) { if (parents.next().getId() === folder_().getId()) inFolder = true; }
