@@ -62,13 +62,13 @@ ck('A head cannot post jobs', call({ action: 'put', token: CHEF, col: 'jobs', id
 ck('A head can raise a hiring request', call({ action: 'put', token: CHEF, col: 'reqs', id: 'r1', data: { title: 'Line Cook', dept: 'Kitchen', status: 'requested' } }).ok);
 const ver1 = call({ action: 'load', token: JEN }).ver;
 ck('Refresh with the same stamp downloads nothing', (x => x.same && !x.data)(call({ action: 'load', token: JEN, ver: ver1 })));
-call({ action: 'put', token: CEO, col: 'reqs', id: 'r1', data: { title: 'Line Cook', status: 'open', ad: 'Cook with us', adAr: 'اطبخ معنا', knockout: ['2 years in a kitchen?'] } });
+call({ action: 'put', token: CEO, col: 'reqs', id: 'r1', data: { title: 'Line Cook', status: 'open', ad: 'Cook with us', adAr: 'اطبخ معنا', titleAr: 'طباخ', knockout: ['2 years in a kitchen?'], knockoutAr: ['سنتان في مطبخ؟'] } });
 ck('A change gives everyone the new data', (x => !x.same && x.data.reqs.r1.status === 'open')(call({ action: 'load', token: JEN, ver: ver1 })));
 ck('Sheet row shows title and status in plain columns', sheets['Hiring requests'].d[1][1] === 'Line Cook' && sheets['Hiring requests'].d[1][2] === 'open');
 call({ action: 'put', token: JEN, col: 'jobs', id: 'r1', data: { title: 'Line Cook', dept: 'Kitchen', branch: 'Sharjah', knockout: ['2 years in a kitchen?'], open: true, postedAt: 1 } });
 call({ action: 'put', token: JEN, col: 'jobs', id: 'r2', data: { title: 'Old job', open: false } });
 r = get({ jobs: '1' });
-ck('Careers page sees only open jobs, with English and Arabic ads', r.ok && r.jobs.length === 1 && r.jobs[0].adAr === 'اطبخ معنا', r);
+ck('Careers page sees only open jobs, with English and Arabic ads', r.ok && r.jobs.length === 1 && r.jobs[0].adAr === 'اطبخ معنا' && r.jobs[0].titleAr === 'طباخ' && r.jobs[0].knockoutAr[0] === 'سنتان في مطبخ؟', r);
 ck('Careers page sees no candidates, scores or team', !JSON.stringify(r).match(/members|pipe|jennifer/));
 const pdf = Buffer.from('%PDF-1.4 test').toString('base64');
 r = call({ action: 'apply', job: 'r1', name: '', email: 'x', phone: '1', consent: false });

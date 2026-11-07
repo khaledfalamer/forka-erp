@@ -570,7 +570,9 @@ function openReq(id){
   ${(isHR&&["approved","review","ready","open"].includes(r.status))?`<div class="card sec"><div class="row"><h3>Job description, ad & pre-screening</h3><span class="sp"></span>${SAMPLE?`<button class="btn sm ai" onclick="aiJD('${id}')">Draft JD + ads with AI</button>`:""}</div>
    <label>Job description</label><textarea id="r_jd" style="min-height:140px">${esc(r.jd||"")}</textarea>
    <div class="grid g2"><div><label>Job ad — English <span class="hint">LinkedIn / Indeed</span></label><textarea id="r_ad" style="min-height:120px">${esc(r.ad||"")}</textarea></div><div><label>Job ad — Arabic</label><textarea id="r_adar" dir="rtl" style="min-height:120px">${esc(r.adAr||"")}</textarea></div></div>
+   <label>Job title — Arabic <span class="hint">shown on the careers page in Arabic</span></label><input id="r_titlear" dir="rtl" value="${esc(r.titleAr||"")}">
    <label>Pre-screening knock-out questions <span class="hint">one per line — candidate must answer Yes, or is auto-rejected with the reason logged</span></label><textarea id="r_ko">${esc((r.knockout||[]).join("\n"))}</textarea>
+   <label>Knock-out questions — Arabic <span class="hint">same questions, same order, one per line</span></label><textarea id="r_koar" dir="rtl">${esc((r.knockoutAr||[]).join("\n"))}</textarea>
    <div class="row" style="margin-top:10px"><button class="btn sec" onclick="saveJD('${id}')">Save</button>${r.status==="approved"?`<button class="btn br" onclick="saveJD('${id}','review')">Send scorecard to ${esc(r.dept)} head</button>`:""}${r.ad?`<button class="btn sm sec" onclick="copyTxt(document.getElementById('r_ad').value)">Copy English ad</button>`:""}</div></div>`:(r.jd?`<div class="card sec"><h3>Job description</h3><pre class="out">${esc(r.jd)}</pre>${r.knockout?.length?`<p class="small"><b>Knock-out questions:</b> ${r.knockout.map(esc).join(" · ")}</p>`:""}</div>`:"")}
   ${cands.length?`<div class="card sec"><h3>Candidates (${cands.length})</h3><table>${cands.map(c=>`<tr class="click" onclick="openCand('${c.id}')"><td>${esc(c.name)}</td><td>${stageTag(c)}</td><td>${f1(scr(c,r))}</td></tr>`).join("")}</table></div>`:""}
   <div class="hist">${(r.history||[]).map(h=>`<div>${fmtD(h.t)} · ${esc(nm(h.by))} — ${esc(h.m)}</div>`).join("")}</div></div>
@@ -594,7 +596,7 @@ async function reqAct(id,a){
   if(a==="close"){ r.status=Object.values(allCands()).filter(c=>c.req===id&&c.stage==="hired").length>=r.headcount?"filled":"closed"; log("Role closed"); if(S.jobs[id]) await store.put("jobs",id,{...S.jobs[id],open:false}); }
   await store.put("reqs",id,r); toast("Saved"); openReq(id);
 }
-async function saveJD(id,next){ const r=JSON.parse(JSON.stringify(S.reqs[id])); r.jd=$("#r_jd").value; r.ad=$("#r_ad").value; r.adAr=$("#r_adar").value; r.knockout=$("#r_ko").value.split("\n").map(s=>s.trim()).filter(Boolean);
+async function saveJD(id,next){ const r=JSON.parse(JSON.stringify(S.reqs[id])); r.jd=$("#r_jd").value; r.ad=$("#r_ad").value; r.adAr=$("#r_adar").value; r.knockout=$("#r_ko").value.split("\n").map(s=>s.trim()).filter(Boolean); r.titleAr=($("#r_titlear")||{value:""}).value.trim(); r.knockoutAr=(($("#r_koar")||{value:""}).value).split("\n").map(s=>s.trim()).filter(Boolean);
   if(next==="review"){ if(!r.jd) return toast("Write the JD first"); r.status="review"; r.scorecardAt=now(); r.history.push({t:now(),by:V.me,m:"Scorecard + JD sent to head for approval"}) }
   await store.put("reqs",id,r); if(S.jobs[id]&&S.jobs[id].open) await store.put("jobs",id,{...S.jobs[id],jd:r.jd,knockout:r.knockout}); toast("Saved"); openReq(id) }
 

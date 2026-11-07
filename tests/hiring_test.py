@@ -11,14 +11,14 @@ SESS = {'TOKCEO-0000000000000000000': {'email': 'ceo@forka.com', 'name': 'Khaled
         'TOKCHEF-000000000000000000': {'email': 'chef@kuwaitikitchen.com', 'name': 'Head Chef', 'role': 'head', 'ceo': False, 'dept': 'Kitchen'}}
 DATA = {'reqs': {}, 'pipe': {}, 'jobs': {}, 'apps': {}, 'config': {}}
 VER = [1]; CALLS = []
-DATA['reqs']['r1'] = {'id': 'r1', 'reqId': 'REQ-2611-01', 'title': 'Line Cook', 'dept': 'Kitchen', 'branch': 'Sharjah', 'status': 'open', 'headcount': 1, 'history': [], 'mustHaves': ['Kuwaiti dishes', 'Hygiene', 'Speed'], 'traits': ['Team cooperation'], 'knockout': ['2 years in a kitchen?'], 'ad': 'Cook with us', 'adAr': 'اطبخ معنا', 'createdAt': 1793624193162, 'createdBy': 'ceo@forka.com', 'postedAt': 1793624734240, 'salMin': 3000, 'salMax': 4000, 'cur': 'AED'}
+DATA['reqs']['r1'] = {'id': 'r1', 'reqId': 'REQ-2611-01', 'title': 'Line Cook', 'dept': 'Kitchen', 'branch': 'Sharjah', 'status': 'open', 'headcount': 1, 'history': [], 'mustHaves': ['Kuwaiti dishes', 'Hygiene', 'Speed'], 'traits': ['Team cooperation'], 'knockout': ['2 years in a kitchen?'], 'ad': 'Cook with us', 'adAr': 'اطبخ معنا', 'titleAr': 'طباخ خط', 'knockoutAr': ['سنتان في مطبخ؟'], 'createdAt': 1793624193162, 'createdBy': 'ceo@forka.com', 'postedAt': 1793624734240, 'salMin': 3000, 'salMax': 4000, 'cur': 'AED'}
 DATA['jobs']['r1'] = {'id': 'r1', 'title': 'Line Cook', 'dept': 'Kitchen', 'branch': 'Sharjah', 'knockout': ['2 years in a kitchen?'], 'open': True, 'postedAt': 1793624734240}
 DATA['apps']['wabc'] = {'web': True, 'list': {'wabc': {'req': 'r1', 'jobTitle': 'Line Cook', 'name': 'Sara Ali', 'email': 'sara@mail.com', 'phone': '+971501234567', 'years': 3, 'answers': [['2 years in a kitchen?', 'Yes']], 'knockout': [], 'consent': True, 'cvFile': {'id': 'fileCV1234567890', 'drive': True, 'name': 'sara.pdf', 'size': 2048, 'type': 'application/pdf'}, 'source': 'Careers page', 'createdAt': 1793700000000, 'status': 'applied'}}}
 
 def handle(b):
     CALLS.append(b); a = b.get('action')
     if a == 'jobs':
-        return {'ok': True, 'jobs': [dict(j, ad=DATA['reqs'].get(k, {}).get('ad', ''), adAr=DATA['reqs'].get(k, {}).get('adAr', '')) for k, j in DATA['jobs'].items() if j.get('open')], 'brand': None}
+        return {'ok': True, 'jobs': [dict(j, ad=DATA['reqs'].get(k, {}).get('ad', ''), adAr=DATA['reqs'].get(k, {}).get('adAr', ''), titleAr=DATA['reqs'].get(k, {}).get('titleAr', ''), knockoutAr=DATA['reqs'].get(k, {}).get('knockoutAr', [])) for k, j in DATA['jobs'].items() if j.get('open')], 'brand': None}
     if a == 'apply':
         if not b.get('name'): return {'ok': False, 'error': 'need', 'fields': ['name']}
         return {'ok': True, 'ref': 'AB12CD'}
@@ -126,6 +126,12 @@ async def main():
             check('Arabic switches the page right-to-left', await pg.get_attribute('html', 'dir') == 'rtl')
             await pg.click('[data-a=more]'); await pg.click('[data-job=r1]'); await pg.wait_for_timeout(150)
             check('Arabic ad shown in Arabic', 'اطبخ معنا' in await pg.inner_text('body'))
+            body_ar = await pg.inner_text('body')
+            check('Arabic page: job title and questions in Arabic when HR wrote them', 'طباخ خط' in body_ar and 'سنتان في مطبخ؟' in body_ar and '2 years in a kitchen' not in body_ar)
+            check('Arabic page: department and branch in Arabic', 'المطبخ' in body_ar and 'الشارقة' in body_ar)
+            await pg.click('[data-a=back]'); await pg.wait_for_timeout(150)
+            body_ar = await pg.inner_text('body')
+            check('Arabic page: intro and values in Arabic, no English left', 'نرد على كل متقدّم' in body_ar and 'Every candidate' not in body_ar and 'Food first' not in body_ar)
             check('No page errors (careers)', not errs, errs[:2])
             await ctx.close()
             ctx, pg, errs = await ctx_for(b, CFG, 390, 844)

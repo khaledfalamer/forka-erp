@@ -102,7 +102,16 @@ const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;"
 const SAMPLE={jobs:[{id:"demo1",title:"Line Cook",dept:"Kitchen",branch:"Sharjah",ad:"Join the kitchen team at Al Matbakh Al Kuwaiti, Sharjah. Prepare Kuwaiti dishes to our standards, keep your station clean and work as one team at rush hour.",adAr:"انضم إلى فريق المطبخ في المطبخ الكويتي بالشارقة. تحضير الأطباق الكويتية حسب معاييرنا، والحفاظ على نظافة المحطة، والعمل كفريق واحد وقت الذروة.",knockout:["Do you have at least 2 years of kitchen experience?","Can you work evening shifts?"],postedAt:Date.now()-864e5},
   {id:"demo2",title:"Barista",dept:"Service",branch:"Mayar Cafe",ad:"Specialty coffee bar. Dial in espresso, serve guests with care, and help run tastings.",adAr:"مقهى قهوة مختصة. ضبط الإسبريسو وخدمة الضيوف باهتمام والمساعدة في جلسات التذوق.",knockout:["Have you worked on an espresso machine before?"],postedAt:Date.now()-3*864e5}],brand:null};
 let D=null,err="",job=null,form={ans:[],bad:[]},state="list",ref="",sending=false,fileSel=null;
+const BRAND_AR={intro:"ندير مطاعم في الإمارات وعُمان، منها المطبخ الكويتي ومقهى ميار، ونحن في توسّع مستمر. نرد على كل متقدّم.",values:["الطعام أولاً","معايير واضحة تُقاس","تطوّر مع المجموعة","نرد على كل متقدّم"]};
 const brand=()=>Object.assign({intro:"We run restaurants across the UAE and Oman, including Al Matbakh Al Kuwaiti and Mayar Cafe, and we are growing. Every candidate gets a reply.",values:["Food first","Standards you can measure","Grow with the group","Every candidate gets a reply"]},(D&&D.brand)||{});
+// Arabic page: Arabic intro and values (HR's own Arabic wording if they wrote it, otherwise the standard Arabic text)
+const introOf=b=>lang==="ar"?(b.introAr||BRAND_AR.intro):b.intro;
+const valuesOf=b=>lang==="ar"?(b.valuesAr&&b.valuesAr.length?b.valuesAr:BRAND_AR.values):(b.values||[]);
+const DEPT_AR={"Operations":"العمليات","Kitchen":"المطبخ","Service":"الخدمة","Marketing":"التسويق","Finance":"المالية","HR":"الموارد البشرية","Procurement & Store":"المشتريات والمخزن","Administration":"الإدارة"};
+const BRANCH_AR={"Sharjah":"الشارقة","Fujairah":"الفجيرة","Umm Al Quwain":"أم القيوين","Mayar Cafe":"مقهى ميار","Oman":"عُمان","Ajman Central Store":"مخزن عجمان المركزي","Head Office":"المكتب الرئيسي"};
+const where=j=>[lang==="ar"?(DEPT_AR[j.dept]||j.dept):j.dept,lang==="ar"?(BRANCH_AR[j.branch]||j.branch):j.branch].filter(Boolean).join(" · ");
+const titleOf=j=>lang==="ar"&&j.titleAr?j.titleAr:j.title;
+const qOf=(j,i)=>lang==="ar"&&j.knockoutAr&&j.knockoutAr[i]?j.knockoutAr[i]:j.knockout[i];
 function adOf(j){return lang==="ar"&&j.adAr?j.adAr:(j.ad||j.summary||j.jd||"")}
 function render(){
   document.documentElement.lang=lang;document.documentElement.dir=lang==="ar"?"rtl":"ltr";
@@ -110,25 +119,25 @@ function render(){
   document.getElementById("pv").innerHTML=HURL?"":`<div class="pv">${t("preview")}</div>`;
   document.getElementById("ft").textContent=t("privacy");
   const A=document.getElementById("app"),b=brand();
-  const hero=`<section class="hero"><div class="kick">${t("kick")}</div><h1>${t("h1")}</h1><p>${esc(lang==="ar"&&b.introAr?b.introAr:b.intro)}</p><div class="vals">${(b.values||[]).map(v=>`<span>${esc(v)}</span>`).join("")}</div></section>`;
+  const hero=`<section class="hero"><div class="kick">${t("kick")}</div><h1>${t("h1")}</h1><p>${esc(introOf(b))}</p><div class="vals">${valuesOf(b).map(v=>`<span>${esc(v)}</span>`).join("")}</div></section>`;
   if(state==="done"){A.innerHTML=`<main style="padding-top:30px"><div class="panel done"><h2>${t("thanks")}</h2><p>${t("thanksTxt")}</p><div class="ref">${esc(ref)}</div><div><button class="btn" data-a="more">${t("more")}</button></div></div></main>`;return}
   if(state==="job"&&job){A.innerHTML=`<main style="padding-top:30px">${jobHtml()}</main>`;return}
   let list;
   if(err)list=`<div class="empty">${t("netErr")}</div>`;
   else if(!D)list=`<div class="empty">${t("loading")}</div>`;
   else if(!D.jobs.length)list=`<div class="empty">${t("none")}</div>`;
-  else list=`<div class="jobs">${D.jobs.map(j=>`<button class="job" data-job="${esc(j.id)}"><div class="meta">${esc([j.dept,j.branch].filter(Boolean).join(" · "))}</div><h3 dir="auto">${esc(j.title)}</h3><div class="meta">${esc(adOf(j)).slice(0,140)}${adOf(j).length>140?"…":""}</div><span class="go">${t("view")} ${lang==="ar"?"←":"→"}</span></button>`).join("")}</div>`;
+  else list=`<div class="jobs">${D.jobs.map(j=>`<button class="job" data-job="${esc(j.id)}"><div class="meta">${esc(where(j))}</div><h3 dir="auto">${esc(titleOf(j))}</h3><div class="meta">${esc(adOf(j)).slice(0,140)}${adOf(j).length>140?"…":""}</div><span class="go">${t("view")} ${lang==="ar"?"←":"→"}</span></button>`).join("")}</div>`;
   A.innerHTML=hero+`<main><h2 style="margin-bottom:14px">${t("open")}</h2>${list}</main>`}
 function jobHtml(){const j=job,f=form,m=k=>f.bad.includes(k)?"miss":"";
   return `<button class="back" data-a="back">${lang==="ar"?"→":"←"} ${t("back")}</button><div class="panel">
-  <div class="meta">${esc([j.dept,j.branch].filter(Boolean).join(" · "))}</div><h1 style="font-size:32px" dir="auto">${esc(j.title)}</h1><div class="ad">${esc(adOf(j))}</div>
+  <div class="meta">${esc(where(j))}</div><h1 style="font-size:32px" dir="auto">${esc(titleOf(j))}</h1><div class="ad">${esc(adOf(j))}</div>
   <h2 style="margin-top:22px">${t("apply")}</h2><form id="f" novalidate>
   <div class="hp" aria-hidden="true"><input name="website" tabindex="-1" autocomplete="off"></div>
   <div class="grid"><div><label>${t("name")}</label><input name="name" class="${m("name")}" autocomplete="name"></div><div><label>${t("email")}</label><input name="email" type="email" class="${m("email")}" autocomplete="email" dir="ltr"></div>
   <div><label>${t("phone")}</label><input name="phone" type="tel" class="${m("phone")}" autocomplete="tel" dir="ltr"></div><div><label>${t("loc")}</label><input name="location"></div>
   <div><label>${t("yrs")}</label><input name="years" type="number" min="0" max="60" inputmode="numeric"></div><div><label>${t("notice")}</label><input name="notice" type="number" min="0" inputmode="numeric"></div>
   <div><label>${t("sal")}</label><input name="salary" type="number" min="0" inputmode="numeric"></div><div><label>${t("visa")}</label><select name="visa">${T.en.visas.map((v,i)=>`<option value="${esc(v)}">${esc(t("visas")[i])}</option>`).join("")}</select></div></div>
-  ${(j.knockout||[]).length?`<label>${t("qs")}</label>${j.knockout.map((q,i)=>`<div class="q ${f.bad.includes("q"+i)?"miss":""}"><span dir="auto">${esc(q)}</span><div class="yn"><button type="button" data-yn="${i}" data-v="Yes" class="${f.ans[i]==="Yes"?"on":""}">${t("yes")}</button><button type="button" data-yn="${i}" data-v="No" class="${f.ans[i]==="No"?"on":""}">${t("no")}</button></div></div>`).join("")}`:""}
+  ${(j.knockout||[]).length?`<label>${t("qs")}</label>${j.knockout.map((q,i)=>`<div class="q ${f.bad.includes("q"+i)?"miss":""}"><span dir="auto">${esc(qOf(j,i))}</span><div class="yn"><button type="button" data-yn="${i}" data-v="Yes" class="${f.ans[i]==="Yes"?"on":""}">${t("yes")}</button><button type="button" data-yn="${i}" data-v="No" class="${f.ans[i]==="No"?"on":""}">${t("no")}</button></div></div>`).join("")}`:""}
   <label>${t("cv")} <span class="hint">${t("cvHint")}</span></label>${fileSel?`<div class="meta" id="fsel">${esc(fileSel.name)}</div>`:""}<input type="file" name="cv" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/*">
   <label>${t("cvText")} <span class="hint">${t("opt")}</span></label><textarea name="cvText"></textarea>
   <label class="chk ${m("consent")}" style="font-weight:400"><input type="checkbox" name="consent"><span>${t("consent")}</span></label>
