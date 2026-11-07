@@ -60,6 +60,14 @@ ck('Blocked person session stops working',call({action:'me',token:ham}).error===
 call({action:'open',token:ceo,app:'proc'});
 const acts=call({action:'me',token:ceo}).activity.map(a=>a.verb);
 ck('Activity has sign-ins, confirm, allow, reject, add, edit, block, open',['signin','confirm','allow','reject','add','edit','block','open','req'].every(v=>acts.includes(v)),acts);
+{const r1=call({action:'me',token:ceo});ck('Refresh with the same stamp answers "same" without the lists',r1.ver&&(()=>{const r2=call({action:'me',token:ceo,ver:r1.ver});return r2.ok&&r2.same&&!r2.people&&!r2.activity})(),r1.ver);
+ call({action:'open',token:ceo,app:'hire'});const r3=call({action:'me',token:ceo,ver:r1.ver});ck('Any change gives a new stamp and the full lists again',r3.ok&&!r3.same&&Array.isArray(r3.people)&&r3.ver!==r1.ver);
+ const w=call({action:'who',token:ceo});ck('"who" answers with the person only (for Procurement and Hiring)',w.ok&&w.me.email==='ceo@forka.com'&&!w.people&&!w.activity&&!JSON.stringify(w).includes('pinHash'));
+ ck('"who" refuses an unknown session',call({action:'who',token:'nope'}).error==='session');
+ let locks=0;const L=ctx.LockService.getScriptLock;ctx.LockService.getScriptLock=()=>{locks++;return L()};call({action:'me',token:ceo});call({action:'who',token:ceo});call({action:'open',token:ceo,app:'proc'});
+ ck('Reading and opening apps never wait in the queue',locks===0,locks);
+ call({action:'setStatus',token:ceo,id:'arman@kuwaitikitchen.com',status:'active'});ck('Changes still wait in the queue',locks===1,locks);ctx.LockService.getScriptLock=L;
+ sheets.People.d.forEach(r=>{if(r[0]==='arman@kuwaitikitchen.com')r[4]='blocked'});ck('People list is cached (Sheet read at most every 5 minutes)',call({action:'who',token:ceo}).ok);}
 ck('Sign out ends the session',call({action:'signout',token:ceo}).ok&&call({action:'me',token:ceo}).error==='session');
 ck('Without a script property the client id in the code is used (other ids refused)',(delete props.GOOGLE_CLIENT_ID,call({action:'google',idToken:'tok-ceo'}).error==='token'));
 console.log(`${res.filter(Boolean).length}/${res.length} server checks passed`);process.exit(res.every(Boolean)?0:1);

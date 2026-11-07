@@ -71,11 +71,23 @@ function rowToPerson_(r) {
     addedBy: String(r[11]), updatedAt: r[12] instanceof Date ? r[12].toISOString() : String(r[12]), updatedBy: String(r[13])
   };
 }
+/* People are read from the Sheet at most once every 5 minutes; every change clears this copy at once.
+   Edits typed straight into the Sheet show within 5 minutes. */
+const PEOPLE_CACHE = 'people:v2';
 function people_() {
+  const c = CacheService.getScriptCache(), hit = c.get(PEOPLE_CACHE);
+  if (hit) { try { return JSON.parse(hit); } catch (e) {} }
   const sh = tab_(TABS.people, P_HEAD), n = sh.getLastRow() - 1;
   if (n < 1) return [];
-  return sh.getRange(2, 1, n, P_HEAD.length).getValues().map((r, i) => Object.assign(rowToPerson_(r), { _row: i + 2 })).filter(p => p.email);
+  const all = sh.getRange(2, 1, n, P_HEAD.length).getValues().map((r, i) => Object.assign(rowToPerson_(r), { _row: i + 2 })).filter(p => p.email);
+  try { c.put(PEOPLE_CACHE, JSON.stringify(all), 300); } catch (e) {}
+  return all;
 }
+function peopleChanged_() { CacheService.getScriptCache().remove(PEOPLE_CACHE); bump_(); }
+/* A stamp that changes whenever people, requests or activity change. The page sends back the stamp it has;
+   if nothing changed the server answers "same" without reading the Sheet. */
+function stamp_() { return props_().getProperty('VER') || '0'; }
+function bump_() { props_().setProperty('VER', Date.now().toString(36) + Math.random().toString(36).slice(2, 6)); }
 function findPerson_(email) { const e = key_(email); return people_().find(p => p.email === e) || null; }
 function publicPerson_(p) { const o = Object.assign({}, p); delete o.pinHash; delete o._row; return o; }
 function isCeo_(p) { return p && p.level === 'ceo' && p.status === 'active'; }
@@ -90,11 +102,13 @@ function writePerson_(p, by, isNew) {
   const sh = tab_(TABS.people, P_HEAD);
   const row = [p.email, p.name, p.title || '', p.level, p.status, !!p.apps.proc, (p.sides || []).join(','), !!p.apps.hire, !!p.apps.branch, p.method, p.pinHash || '', p.addedBy || by, now_(), by];
   if (isNew) sh.appendRow(row); else sh.getRange(p._row, 1, 1, row.length).setValues([row]);
+  peopleChanged_();
 }
 
 /* ---------------- activity ---------------- */
 function log_(who, action, about, details) {
   tab_(TABS.act, A_HEAD).appendRow([now_(), who || '', action, about || '', details || '']);
+  bump_();
 }
 function activity_(limit) {
   const sh = tab_(TABS.act, A_HEAD), n = sh.getLastRow() - 1;
@@ -147,12 +161,12 @@ function sessionPerson_(tok) {
 
 /* ---------------- what each person receives ---------------- */
 function bundle_(me, tok) {
-  const o = { ok: true, me: publicPerson_(me) };
+  const o = { ok: true, me: publicPerson_(me), ver: stamp_() };
   if (tok) o.token = tok;
   if (isCeo_(me)) {
     o.people = people_().map(publicPerson_);
     o.requests = requests_().map(r => { const x = Object.assign({}, r); delete x._row; return x; });
-    o.activity = activity_(500);
+    o.activity = activity_(300);
   }
   return o;
 }
@@ -163,11 +177,14 @@ function doGet() { return out_({ ok: true, service: 'forka-apps-accounts' }); }
 function doPost(e) {
   let b;
   try { b = JSON.parse(e.postData.contents); } catch (err) { return out_({ ok: false, error: 'bad' }); }
-  const lock = LockService.getScriptLock();
-  try { lock.waitLock(15000); } catch (err) { return out_({ ok: false, error: 'busy' }); }
+  /* Only actions that change people or requests wait in line. Sign-in, "who am I" and the
+     background refresh never queue behind someone else. */
+  const WRITES = ['request', 'savePerson', 'setStatus', 'reject'];
+  const lock = WRITES.indexOf(String(b.action || '')) >= 0 ? LockService.getScriptLock() : null;
+  if (lock) { try { lock.waitLock(15000); } catch (err) { return out_({ ok: false, error: 'busy' }); } }
   try { return out_(handle_(b)); }
   catch (err) { return out_({ ok: false, error: 'server', detail: String(err).slice(0, 200) }); }
-  finally { lock.releaseLock(); }
+  finally { if (lock) lock.releaseLock(); }
 }
 
 function handle_(b) {
@@ -209,6 +226,7 @@ function handle_(b) {
     const r = lastRequest_(g.email);
     if (r && r.state === 'waiting') return { ok: true, status: 'waiting' };
     tab_(TABS.req, R_HEAD).appendRow([g.email, name, String(b.title || '').slice(0, 80), why, now_(), 'waiting', '', '', '']);
+    bump_();
     log_(g.email, 'req', '', '');
     return { ok: true, status: 'waiting' };
   }
@@ -216,7 +234,12 @@ function handle_(b) {
   /* everything below needs a session */
   const me = sessionPerson_(b.token);
   if (!me) return { ok: false, error: 'session' };
-  if (a === 'me') return bundle_(me);
+  if (a === 'me') {
+    if (b.ver && b.ver === stamp_()) return { ok: true, same: true, ver: b.ver, me: publicPerson_(me) };
+    return bundle_(me);
+  }
+  // Light answer for other Forka apps (Procurement, Hiring): who is this and what may they open.
+  if (a === 'who') return { ok: true, me: publicPerson_(me) };
   if (a === 'signout') { CacheService.getScriptCache().remove('s:' + b.token); log_(me.email, 'signout'); return { ok: true }; }
   if (a === 'open') { log_(me.email, 'open', '', String(b.app || '').slice(0, 40)); return { ok: true }; }
 

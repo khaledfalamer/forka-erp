@@ -14,9 +14,11 @@ PEOPLE = {
   'store@kuwaitikitchen.com': dict(email='store@kuwaitikitchen.com', name='Hamim', title='Store', level='staff', status='pending', apps=dict(proc=1, hire=0, branch=0), sides=['plan'], method='google'),
 }
 REQ, ACT, SESS, CALLS = {}, [], {}, []
+SLOW = [0]   # seconds the fake server waits before answering
+STAMP = [0]
 
 def bundle(me, tok=None):
-    o = {'ok': True, 'me': PEOPLE[me]}
+    o = {'ok': True, 'me': PEOPLE[me], 'ver': 'v' + str(len(ACT)) + '-' + str(STAMP[0])}
     if tok: o['token'] = tok
     if PEOPLE[me]['level'] == 'ceo':
         o['people'] = list(PEOPLE.values()); o['requests'] = list(REQ.values()); o['activity'] = list(reversed(ACT))
@@ -44,7 +46,9 @@ def handle(b):
         log(email, 'req'); return {'ok': True, 'status': 'waiting'}
     me = SESS.get(b.get('token'))
     if not me or PEOPLE[me]['status'] != 'active': return {'ok': False, 'error': 'session'}
-    if a == 'me': return bundle(me)
+    if a == 'me':
+        if b.get('ver') and b['ver'] == 'v' + str(len(ACT)) + '-' + str(STAMP[0]): return {'ok': True, 'same': True, 'ver': b['ver'], 'me': PEOPLE[me]}
+        return bundle(me)
     if a == 'signout': SESS.pop(b['token'], None); return {'ok': True}
     if a == 'open': log(me, 'open', '', b.get('app', '')); return {'ok': True}
     if PEOPLE[me]['level'] != 'ceo': return {'ok': False, 'error': 'role'}
@@ -77,7 +81,10 @@ async def main():
         await ctx.route('**/config.js', lambda r: r.fulfill(body=CFG, content_type='application/javascript'))
         await ctx.route('**/accounts.google.com/gsi/client', lambda r: r.fulfill(body=GIS, content_type='application/javascript'))
         await ctx.route('**/fonts.googleapis.com/**', lambda r: r.fulfill(body='', content_type='text/css'))
-        await ctx.route('https://accounts.test/**', lambda r: r.fulfill(json=handle(json.loads(r.request.post_data or '{}'))))
+        async def acct(r):
+            if SLOW[0]: await asyncio.sleep(SLOW[0])
+            await r.fulfill(json=handle(json.loads(r.request.post_data or '{}')))
+        await ctx.route('https://accounts.test/**', acct)
         await ctx.route('**/procurement.forka.com/**', lambda r: r.fulfill(body='<title>p</title>', content_type='text/html'))
         await ctx.route('**/claude.ai/**', lambda r: r.fulfill(body='<title>x</title>', content_type='text/html'))
         pg = await ctx.new_page(); errs = []
@@ -92,6 +99,13 @@ async def main():
         check('Session kept in this browser', bool(await pg.evaluate("localStorage.getItem('fa-token')")))
         await pg.reload(); await pg.wait_for_timeout(600)
         check('Reload keeps you signed in', await pg.is_visible('#ceobox'))
+        SLOW[0] = 2; n0 = len(CALLS); await pg.reload(); await pg.wait_for_timeout(250)
+        check('Opens at once from the last visit, before the server answers', await pg.is_visible('#ceobox') and len(CALLS) == n0)
+        await pg.wait_for_timeout(2300); SLOW[0] = 0
+        check('Server checked in the background with the saved stamp', CALLS[-1] == 'me')
+        await pg.evaluate("window.__marker=document.querySelector('#ceobox')")
+        await pg.evaluate("document.dispatchEvent(new Event('visibilitychange'))"); await pg.wait_for_timeout(300)
+        check('Nothing changed -> page not redrawn', await pg.evaluate("window.__marker===document.querySelector('#ceobox')"))
         await pg.click('[data-a=v-people]')
         check('No "Reset preview data" on the live site', await pg.locator('[data-a=reset]').count() == 0)
         await pg.click('tr.row[data-pid="store@kuwaitikitchen.com"] [data-a=p-confirm]'); await pg.wait_for_timeout(300)
