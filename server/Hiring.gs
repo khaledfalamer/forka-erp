@@ -85,8 +85,10 @@ function erpWho_(tok) {
   if (!/^[A-Za-z0-9-]{20,120}$/.test(tok)) return null;
   const c = CacheService.getScriptCache(), k = 'erp:' + tok, hit = c.get(k);
   if (hit) return JSON.parse(hit);
-  const r = UrlFetchApp.fetch(ACCOUNTS_URL, { method: 'post', contentType: 'text/plain', payload: JSON.stringify({ action: 'who', token: tok }), muteHttpExceptions: true, followRedirects: true });
-  let j = {}; try { j = JSON.parse(r.getContentText()); } catch (e) { return null; }
+  const ask = action => { const r = UrlFetchApp.fetch(ACCOUNTS_URL, { method: 'post', contentType: 'text/plain', payload: JSON.stringify({ action: action, token: tok }), muteHttpExceptions: true, followRedirects: true });
+    try { return JSON.parse(r.getContentText()); } catch (e) { return { ok: false, error: 'bad' }; } };
+  let j = ask('who');                                                     // light answer; older accounts servers only know "me"
+  if (!j.ok && (j.error === 'action' || j.error === 'role' || j.error === 'bad')) j = ask('me');
   if (!j.ok || !j.me) return null;
   const me = { email: key_(j.me.email), name: j.me.name || '', ceo: j.me.level === 'ceo', hire: !!(j.me.apps && j.me.apps.hire) };
   c.put(k, JSON.stringify(me), 300);
