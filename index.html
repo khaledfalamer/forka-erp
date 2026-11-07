@@ -606,6 +606,8 @@ function resetAll(){
 /* ---------- start ---------- */
 /* ---------- live mode: erp.forka.com talks to the accounts server ---------- */
 if(CFG.PROCUREMENT_URL)APPS[0].url=CFG.PROCUREMENT_URL;
+// Hiring moves from claude.ai to erp.forka.com/hiring as soon as its server address is in config.js
+if(CFG.HIRING_URL){const h=APPS.find(x=>x.id==='hire');h.url=new URL('hiring/',location.href).href;delete h.ceoOnlyUntilMoved}
 let TOKEN='',ID_TOKEN='',gReady=false;
 async function api(action,payload){
   try{const r=await fetch(CFG.ACCOUNTS_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(Object.assign({action,token:TOKEN},payload||{}))});return await r.json()}
