@@ -17,7 +17,7 @@ const TABS = { people: 'People', req: 'Requests', act: 'Activity' };
 const P_HEAD = ['Email', 'Name', 'Job title', 'Clearance', 'Status', 'Procurement', 'Procurement sections', 'Hiring', 'Branch Check', 'Sign-in', 'PIN hash', 'Added by', 'Updated', 'Updated by'];
 const R_HEAD = ['Email', 'Name', 'Job title', 'Reason', 'Requested', 'State', 'Decided by', 'Decided', 'Note'];
 const A_HEAD = ['When', 'Who', 'Action', 'About', 'Details'];
-const SIDES = ['plan', 'ops', 'fin', 'dept', 'ceo'];
+const SIDES = ['plan', 'ops', 'fin', 'dept', 'ceo', 'oman'];   // Procurement sections; oman = the Oman store
 const LEVELS = ['staff', 'manager', 'ceo'];
 const STATUSES = ['active', 'pending', 'blocked'];
 const SESSION_SECONDS = 6 * 60 * 60;
