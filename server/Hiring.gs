@@ -19,6 +19,10 @@ const HEAD = ['Id', 'Title / name', 'Status', 'Updated', 'Updated by', 'data (do
 const MAX_CELL = 48000;                  // a Google Sheet cell holds 50,000 characters
 const CV_TYPES = /^(application\/pdf|image\/(jpeg|png|webp)|application\/msword|application\/vnd\.openxmlformats-officedocument\.wordprocessingml\.document)$/;
 const CV_MAX = 5 * 1024 * 1024;
+/* Many applications at once (a big job ad): */
+const APPLY_HOUR_MAX = 3000;             // more than this in one hour = robots, not people
+const HR_MAIL_GAP = 900;                 // HR gets at most one "new applications" email every 15 minutes
+const MAIL_KEEP = 50;                    // emails kept back each day for candidates (booking links, confirmations)
 
 function props_() { return PropertiesService.getScriptProperties(); }
 function out_(o) { return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON); }
@@ -46,14 +50,21 @@ function setup() {
   Object.keys(COLS).forEach(tab_);
   folder_();
   UrlFetchApp.fetch(ACCOUNTS_URL, { muteHttpExceptions: true });   // asks for the "connect to Forka Apps" permission now
+  // Every 15 minutes: send HR the applications that arrived since their last email.
+  if (!ScriptApp.getProjectTriggers().some(t => t.getHandlerFunction() === 'hrDigest')) ScriptApp.newTrigger('hrDigest').timeBased().everyMinutes(15).create();
   return 'Done. Now Deploy -> New deployment -> Web app (Execute as: Me, Who has access: Anyone).';
 }
 
 /* ---------------- records ---------------- */
-function readAll_(col) {
+// times (optional) receives when each record was last saved, so a refresh can send only what changed.
+function readAll_(col, times) {
   const sh = tab_(col), n = sh.getLastRow() - 1, o = {};
   if (n < 1) return o;
-  sh.getRange(2, 1, n, HEAD.length).getValues().forEach(r => { if (!r[0]) return; try { o[r[0]] = JSON.parse(r[5] || '{}'); } catch (e) {} });
+  sh.getRange(2, 1, n, HEAD.length).getValues().forEach(r => {
+    if (!r[0]) return;
+    try { o[r[0]] = JSON.parse(r[5] || '{}'); } catch (e) { return; }
+    if (times) { const t = r[3] instanceof Date ? r[3].getTime() : Date.parse(r[3]); times[r[0]] = isFinite(t) ? t : Infinity; }
+  });
   return o;
 }
 function readOne_(col, id) {
@@ -71,6 +82,14 @@ function write_(col, id, d, by) {
   const sh = tab_(col), f = sh.getRange('A:A').createTextFinder(String(id)).matchEntireCell(true).findNext();
   const lb = label_(col, d), row = [String(id), lb[0], lb[1], new Date(), by || '', json];
   if (f && f.getRow() > 1) sh.getRange(f.getRow(), 1, 1, HEAD.length).setValues([row]); else sh.appendRow(row);
+  return { ok: true };
+}
+// A brand-new record with a fresh id: added at the end, no search and no waiting for other saves.
+function appendNew_(col, id, d, by) {
+  const json = JSON.stringify(d);
+  if (json.length > MAX_CELL) return { ok: false, error: 'big' };
+  const lb = label_(col, d);
+  tab_(col).appendRow([String(id), lb[0], lb[1], new Date(), by || '', json]);
   return { ok: true };
 }
 function remove_(col, id) {
@@ -284,10 +303,46 @@ function book_(b) {
     body: c.name + ' (' + job + ') picked ' + when_(t, 'en') + '.\n' + where + '\n\nAdd to Google Calendar: ' + gcal_(k, c) + '\nOpen Hiring: https://erp.forka.com/hiring/' }); } catch (e) {}
   return { ok: true, pick: t, when: when_(t, lang) };
 }
-function allData_() { const d = {}; Object.keys(COLS).forEach(c => { d[c] = readAll_(c); }); return d; }
+function allData_(T) { const d = {}; Object.keys(COLS).forEach(c => { if (T) T[c] = {}; d[c] = readAll_(c, T && T[c]); }); return d; }
+const changedSince_ = (times, since) => Object.keys(times || {}).some(id => !(times[id] <= since));
+
+/* ---------------- HR emails about new applications ---------------- */
+// The first application is emailed at once; the rest are gathered into one email every 15 minutes,
+// so a big job ad does not use up the day's emails that candidates need (booking links, confirmations).
+function hrTo_() { return String(props_().getProperty('HR_EMAILS') || '').split(/[,\s]+/).filter(Boolean); }
+function hrNotify_(line) {
+  if (!hrTo_().length) return;
+  const c = CacheService.getScriptCache();
+  let w = { n: 0, lines: [] }; try { w = JSON.parse(c.get('hrmail:wait') || '') || w; } catch (e) {}
+  w.n++; w.lines.push(line); w.lines = w.lines.slice(-100);
+  c.put('hrmail:wait', JSON.stringify(w), 21600);
+  if (!c.get('hrmail:sent')) hrDigest();
+}
+function hrDigest() {
+  const to = hrTo_(), c = CacheService.getScriptCache();
+  if (!to.length) return;
+  const lock = LockService.getScriptLock();
+  if (!lock.tryLock(3000)) return;                                        // another one is sending right now
+  try {
+    let w = null; try { w = JSON.parse(c.get('hrmail:wait') || ''); } catch (e) {}
+    if (!w || !w.n) return;
+    if (MailApp.getRemainingDailyQuota() <= MAIL_KEEP) return;           // keep the rest of today's emails for candidates
+    c.remove('hrmail:wait'); c.put('hrmail:sent', '1', HR_MAIL_GAP);
+    const one = w.n === 1 ? w.lines[0] : null;
+    MailApp.sendEmail({ to: to.join(','), name: 'Forka Hiring',
+      subject: one ? 'New application: ' + one.job + ' - ' + one.name : w.n + ' new applications - Forka Hiring',
+      body: one ? one.text + '\n\nOpen Hiring: https://erp.forka.com/hiring/'
+        : w.n + ' people applied in the last few minutes.\n\n' + w.lines.map(l => '- ' + l.name + ' - ' + l.job + (l.ko ? ' (did not meet: ' + l.ko + ')' : '')).join('\n') +
+          (w.n > w.lines.length ? '\n...and ' + (w.n - w.lines.length) + ' more.' : '') + '\n\nOpen Hiring: https://erp.forka.com/hiring/' });
+  } catch (e) {} finally { lock.releaseLock(); }
+}
 
 /* ---------------- public: apply.forka.com ---------------- */
+// Kept for 1 minute, so thousands of people opening the careers page do not each read the Sheet.
+// Any change to jobs, requests or settings clears it at once.
 function publicJobs_() {
+  const c = CacheService.getScriptCache(), hit = c.get('pubjobs');
+  if (hit) { try { return JSON.parse(hit); } catch (e) {} }
   const jobs = readAll_('jobs'), out = [];
   Object.keys(jobs).forEach(id => {
     const j = jobs[id]; if (!j.open) return;
@@ -297,7 +352,9 @@ function publicJobs_() {
   });
   out.sort((a, b) => (b.postedAt || 0) - (a.postedAt || 0));
   const brand = (readOne_('config', 'brand')) || null;
-  return { ok: true, jobs: out, brand: brand };
+  const o = { ok: true, jobs: out, brand: brand }, s = JSON.stringify(o);
+  if (s.length < 90000) c.put('pubjobs', s, 60);
+  return o;
 }
 function clean_(v, n) { return String(v == null ? '' : v).replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, '').trim().slice(0, n); }
 function apply_(b) {
@@ -314,7 +371,7 @@ function apply_(b) {
   const c = CacheService.getScriptCache(), rk = 'apply:' + email + ':' + b.job;
   if (c.get(rk)) return { ok: false, error: 'again' };                    // same person, same job: once per hour
   const n = +(c.get('apply:count') || 0);
-  if (n > 300) return { ok: false, error: 'busy' };                       // more than 300 an hour = something is wrong
+  if (n > APPLY_HOUR_MAX) return { ok: false, error: 'busy' };            // far more than people send in an hour = robots
   let cvFile = null;
   if (b.cv && b.cv.data) {
     const type = String(b.cv.type || '');
@@ -333,12 +390,13 @@ function apply_(b) {
     salary: b.salary === '' || b.salary == null ? null : Math.max(0, +b.salary || 0), visa: clean_(b.visa, 60), cvText: clean_(b.cvText, 8000),
     answers: answers, knockout: answers.filter(x => x[1] === 'No').map(x => x[0]), consent: true, cvFile: cvFile,
     source: clean_(b.source, 40) || 'Careers page', lang: b.lang === 'ar' ? 'ar' : 'en', createdAt: Date.now(), status: 'applied' };
-  const lock = LockService.getScriptLock(); lock.waitLock(15000);
-  try { write_('apps', aid, { web: true, list: { [aid]: a } }, 'apply.forka.com'); bump_(); } finally { lock.releaseLock(); }
+  // A new row with its own fresh id: no lock, so hundreds of people can apply at the same moment.
+  const w = appendNew_('apps', aid, { web: true, list: { [aid]: a } }, 'apply.forka.com');
+  if (!w.ok) return w;
+  bump_();
   c.put(rk, '1', 3600); c.put('apply:count', String(n + 1), 3600);
-  const to = String(props_().getProperty('HR_EMAILS') || '').split(/[,\s]+/).filter(Boolean);
-  if (to.length) { try { MailApp.sendEmail({ to: to.join(','), subject: 'New application: ' + a.jobTitle + ' - ' + name, name: 'Forka Hiring',
-    body: name + ' applied for ' + a.jobTitle + (job.branch ? ' (' + job.branch + ')' : '') + '.\n' + (a.knockout.length ? 'Did not meet: ' + a.knockout.join('; ') + '\n' : '') + '\nOpen Hiring: https://erp.forka.com/hiring/' }); } catch (e) {} }
+  try { hrNotify_({ name: name, job: a.jobTitle, ko: a.knockout.join('; '),
+    text: name + ' applied for ' + a.jobTitle + (job.branch ? ' (' + job.branch + ')' : '') + '.' + (a.knockout.length ? '\nDid not meet: ' + a.knockout.join('; ') : '') }); } catch (e) {}
   return { ok: true, ref: aid.slice(-6).toUpperCase() };
 }
 
@@ -372,10 +430,18 @@ function handle_(b) {
 
   if (a === 'load') {
     if (b.ver && b.ver === stamp_()) return { ok: true, same: true, ver: b.ver, me: who };
-    const data = allData_();
+    const now = Date.now(), ver = stamp_(), T = {}, data = allData_(T);
     const view = r.role === 'head' ? headView_(data, who) : data;
     view.pipe = blind_(view.pipe, who);
-    return { ok: true, ver: stamp_(), me: who, data: view };
+    // vk: what this person may see. If it changed, or a head's departments may have changed, send everything again.
+    const vk = [who.email, who.role, who.ceo ? 1 : 0, who.dept || ''].join('|'), since = +b.since || 0;
+    if (since && b.ver && b.vk === vk && !(r.role === 'head' && (changedSince_(T.reqs, since) || changedSince_(T.config, since)))) {
+      const out = {}, ids = {};                                           // only what changed, plus the list of ids (to drop deleted records)
+      Object.keys(COLS).forEach(col => { const V = view[col] || {}; ids[col] = Object.keys(V); out[col] = {};
+        ids[col].forEach(id => { if (!(T[col][id] <= since)) out[col][id] = V[id]; }); });
+      return { ok: true, ver: ver, me: who, now: now, vk: vk, delta: true, data: out, ids: ids };
+    }
+    return { ok: true, ver: ver, me: who, now: now, vk: vk, data: view };
   }
   if (a === 'put' || a === 'del') {
     const col = String(b.col || ''), id = String(b.id || '');
@@ -384,6 +450,7 @@ function handle_(b) {
     if (col === 'jobs' && r.role !== 'hr') return { ok: false, error: 'role' };             // posting jobs: HR / CEO
     if (col === 'config' && id === 'team' && !r.ceo) return { ok: false, error: 'role' };   // who is on the team: CEO only
     if (r.role === 'head' && (a === 'del' || !headMayWrite_(col, id, b.data || {}, who))) return { ok: false, error: 'role' };
+    if (col === 'jobs' || col === 'reqs' || col === 'config') CacheService.getScriptCache().remove('pubjobs');   // careers page shows the change at once
     const lock = LockService.getScriptLock(); lock.waitLock(15000);
     try {
       if (a === 'del') { remove_(col, id); bump_(); return { ok: true, ver: stamp_() }; }

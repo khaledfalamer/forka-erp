@@ -15,7 +15,7 @@ class Sheet {
   appendRow(r) { this.d.push(r.slice()); } setFrozenRows() {} deleteRow(n) { this.d.splice(n - 1, 1); }
 }
 const sheets = {}; const ss = { getSheetByName: n => sheets[n] || null, insertSheet: n => (sheets[n] = new Sheet(n)) };
-const props = {}, cache = {}, files = {}, mails = [];
+const props = {}, cache = {}, files = {}, mails = [], triggers = []; let mailQuota = 1500;
 const folder = { getId: () => 'FOLDER1', createFile: blob => { const id = 'file' + crypto.randomBytes(8).toString('hex'); files[id] = { blob, parent: 'FOLDER1' }; return { getId: () => id }; } };
 // fake Forka Apps accounts server
 const SESS = { 'TOKCEO-0000000000000000000': { email: 'ceo@forka.com', name: 'Khaled', level: 'ceo', apps: { hire: 1 } },
@@ -27,27 +27,29 @@ const ctx = {
   SpreadsheetApp: { getActive: () => ss, openById: () => ss },
   PropertiesService: { getScriptProperties: () => ({ getProperty: k => props[k] ?? null, setProperty: (k, v) => { props[k] = v; } }) },
   CacheService: { getScriptCache: () => ({ put: (k, v) => cache[k] = v, get: k => cache[k] ?? null, remove: k => delete cache[k] }) },
-  LockService: { getScriptLock: () => ({ waitLock() {}, releaseLock() {} }) },
+  LockService: { getScriptLock: () => ({ waitLock() {}, tryLock() { return true; }, releaseLock() {} }) },
+  ScriptApp: { getProjectTriggers: () => triggers, newTrigger: fn => ({ timeBased: () => ({ everyMinutes: m => ({ create: () => triggers.push({ fn, m, getHandlerFunction: () => fn }) }) }) }) },
   ContentService: { createTextOutput: t => ({ setMimeType() { return this; }, t }), MimeType: { JSON: 1 } },
   UrlFetchApp: { fetch: (u, o) => { accountsCalls++; const b = o && o.payload ? JSON.parse(o.payload) : {}; const me = SESS[b.token];
     return { getContentText: () => JSON.stringify(me && b.action === 'who' ? { ok: true, me } : { ok: false, error: 'session' }) }; } },
   DriveApp: { createFolder: () => folder, getFolderById: () => folder,
     getFileById: id => { const f = files[id]; if (!f) throw new Error('no'); let done = false;
       return { getName: () => f.blob.name, getBlob: () => ({ getContentType: () => f.blob.type, getBytes: () => f.blob.bytes }), getParents: () => ({ hasNext: () => !done, next: () => { done = true; return { getId: () => f.parent }; } }) }; } },
-  MailApp: { sendEmail: m => mails.push(m) },
+  MailApp: { sendEmail: m => mails.push(m), getRemainingDailyQuota: () => mailQuota },
   Utilities: { base64Decode: s => [...Buffer.from(s, 'base64')], base64Encode: b => Buffer.from(b).toString('base64'), formatDate: () => '20261107-0900',
     newBlob: (bytes, type, name) => ({ bytes, type, name }), getUuid: () => crypto.randomUUID() },
   console, Date, JSON, Math
 };
 vm.createContext(ctx);
-vm.runInContext(fs.readFileSync(path.join(__dirname, '../server/Hiring.gs'), 'utf8') + ';this.setup=setup;this.doPost=doPost;this.doGet=doGet;', ctx);
+vm.runInContext(fs.readFileSync(path.join(__dirname, '../server/Hiring.gs'), 'utf8') + ';this.setup=setup;this.doPost=doPost;this.doGet=doGet;this.hrDigest=hrDigest;', ctx);
 const call = o => JSON.parse(ctx.doPost({ postData: { contents: JSON.stringify(o) } }).t);
 const get = p => JSON.parse(ctx.doGet({ parameter: p }).t);
 const res = []; const ck = (n, ok, i) => { res.push(!!ok); console.log((ok ? 'PASS ' : 'FAIL ') + n + (ok ? '' : ' - ' + JSON.stringify(i))); };
 const CEO = 'TOKCEO-0000000000000000000', JEN = 'TOKJEN-0000000000000000000', CHEF = 'TOKCHEF-000000000000000000', HAM = 'TOKHAM-0000000000000000000';
 
-ctx.setup();
+ctx.setup(); ctx.setup();
 ck('Setup creates the five tabs', ['Hiring requests', 'Posted jobs', 'Candidates', 'Applications', 'Settings'].every(n => sheets[n] && sheets[n].d.length === 1));
+ck('Setup adds the 15-minute HR email round once (running it again adds no second one)', triggers.length === 1 && triggers[0].fn === 'hrDigest' && triggers[0].m === 15, triggers);
 let r = call({ action: 'load', token: CEO });
 ck('CEO opens Hiring as HR + CEO', r.ok && r.me.role === 'hr' && r.me.ceo === true && r.data && r.data.reqs, r);
 ck('Someone not signed in at Forka Apps is refused', call({ action: 'load', token: 'nope-00000000000000000000' }).error === 'session');
@@ -182,4 +184,42 @@ ck('Candidate can move to another free time', call({ action: 'book', token: tok,
   ck('Once rejected, the booking link closes', call({ action: 'slot', token: tok }).error === 'closed' && call({ action: 'book', token: tok, t: s1 }).error === 'closed'); }
 const n0 = accountsCalls; call({ action: 'load', token: JEN }); call({ action: 'load', token: JEN });
 ck('Forka Apps asked at most once per 5 minutes per sign-in', accountsCalls === n0);
+/* ---------------- a big job ad: hundreds of applications ---------------- */
+call({ action: 'put', token: JEN, col: 'jobs', id: 'rbig', data: { title: 'Waiter', open: true, branch: 'Sharjah' } });
+Object.keys(cache).forEach(k => { if (k.startsWith('hrmail:')) delete cache[k]; });
+mails.length = 0; cache['apply:count'] = '400';                         // the old limit was 300 an hour
+const rows0 = sheets.Applications.d.length;
+let okN = 0; for (let i = 0; i < 250; i++) if (call({ action: 'apply', job: 'rbig', name: 'Applicant ' + i, email: 'a' + i + '@mail.com', phone: '+97150000' + String(i).padStart(4, '0'), consent: true }).ok) okN++;
+ck('250 applications in a row are all saved (past the old 300-an-hour limit)', okN === 250 && sheets.Applications.d.length === rows0 + 250, okN);
+ck('HR gets one email for the first, not 250 emails', mails.length === 1 && /Applicant 0/.test(mails[0].subject), mails.length);
+delete cache['hrmail:sent']; ctx.hrDigest();
+ck('15 minutes later one summary email lists the rest', mails.length === 2 && /249 new applications/.test(mails[1].subject) && mails[1].body.includes('Applicant 249') && mails[1].body.includes('more'), mails[1] && mails[1].subject);
+ctx.hrDigest(); ck('Nothing new = no extra email', mails.length === 2);
+mailQuota = 40; delete cache['hrmail:sent'];
+call({ action: 'apply', job: 'rbig', name: 'Late Applicant', email: 'late@mail.com', phone: '+971500009999', consent: true });
+ck('When few emails are left today, HR emails wait so candidates still get theirs', mails.length === 2);
+mailQuota = 1500; ctx.hrDigest(); ck('...and are sent once emails are available', mails.length === 3 && /Late Applicant/.test(mails[2].subject));
+cache['apply:count'] = '3001';
+ck('Far more than people can send in an hour is refused (robots)', call({ action: 'apply', job: 'rbig', name: 'Bot', email: 'bot@mail.com', phone: '+971500001111', consent: true }).error === 'busy');
+delete cache['apply:count'];
+
+{ const n = get({ jobs: 1 }).jobs.length;
+  ck('The careers job list is kept for a minute (thousands of visitors do not each read the Sheet)', !!cache.pubjobs && get({ jobs: 1 }).jobs.length === n);
+  call({ action: 'put', token: JEN, col: 'jobs', id: 'rnew', data: { title: 'Barista', open: true } });
+  ck('...and a new or changed job shows on the careers page at once', get({ jobs: 1 }).jobs.some(j => j.id === 'rnew')); }
+
+/* ---------------- a refresh downloads only what changed ---------------- */
+{ const full = call({ action: 'load', token: JEN }), nApps = Object.keys(full.data.apps).length;
+  ck('A full load gives the time and the viewer key for later refreshes', full.now > 0 && full.vk && !full.delta && nApps > 250, nApps);
+  const t0 = Date.now(); while (Date.now() <= full.now + 1) {}
+  call({ action: 'put', token: JEN, col: 'pipe', id: 'dz1', data: { req: 'rbig', name: 'Delta Person', stage: 'applied' } });
+  const d = call({ action: 'load', token: JEN, ver: full.ver, since: full.now, vk: full.vk });
+  ck('After one change the refresh sends just that record, not every application', d.delta && Object.keys(d.data.pipe).join() === 'dz1' && !Object.keys(d.data.apps).length && d.ids.apps.length === nApps, d.delta && Object.keys(d.data.apps).length);
+  call({ action: 'del', token: JEN, col: 'pipe', id: 'dz1' });
+  const d2 = call({ action: 'load', token: JEN, ver: d.ver, since: d.now, vk: d.vk });
+  ck('A deleted record drops out of the id list', d2.delta && !d2.ids.pipe.includes('dz1'));
+  ck('Another person\'s viewer key never gets a partial refresh', !call({ action: 'load', token: CEO, ver: d2.ver + 'x', since: d2.now, vk: d2.vk }).delta);
+  const h = call({ action: 'load', token: CHEF }); while (Date.now() <= h.now + 1) {}
+  call({ action: 'put', token: JEN, col: 'reqs', id: 'rz', data: { title: 'New role', dept: 'Kitchen', status: 'open' } });
+  ck('A department head gets everything again when hiring requests change', (x => !x.delta && x.data.reqs.rz)(call({ action: 'load', token: CHEF, ver: h.ver, since: h.now, vk: h.vk }))); }
 console.log(`${res.filter(Boolean).length}/${res.length} hiring server checks passed`); process.exit(res.every(Boolean) ? 0 : 1);

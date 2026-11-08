@@ -5,7 +5,8 @@ from playwright.async_api import async_playwright
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 URL = 'file://' + str(ROOT / 'index.html')
-CFG = "window.FORKA_APPS={MODE:'live',ACCOUNTS_URL:'https://accounts.test/exec',GOOGLE_CLIENT_ID:'CID.apps.googleusercontent.com',PROCUREMENT_URL:'https://procurement.forka.com/'};"
+CFG = "window.FORKA_APPS={MODE:'live',ACCOUNTS_URL:'https://accounts.test/exec',GOOGLE_CLIENT_ID:'CID.apps.googleusercontent.com',PROCUREMENT_URL:'https://procurement.forka.com/',HIRING_URL:'https://hire.test/exec',PROCUREMENT_SERVER:'https://procserver.test/exec'};"
+WOKEN = []
 GIS = """window.google={accounts:{id:{_cb:null,initialize(o){this._cb=o.callback;window.__cid=o.client_id},
  renderButton(el){el.innerHTML='<button id="gsi" type="button">Google</button>';el.querySelector('#gsi').onclick=()=>this._cb({credential:'tok:'+(window.__as||'')})}}}};"""
 
@@ -87,6 +88,8 @@ async def main():
         await ctx.route('https://accounts.test/**', acct)
         await ctx.route('**/procurement.forka.com/**', lambda r: r.fulfill(body='<title>p</title>', content_type='text/html'))
         await ctx.route('**/claude.ai/**', lambda r: r.fulfill(body='<title>x</title>', content_type='text/html'))
+        async def wake(r): WOKEN.append(r.request.url.split('/')[2]); await r.fulfill(json={'ok': True})
+        await ctx.route('https://hire.test/**', wake); await ctx.route('https://procserver.test/**', wake)
         pg = await ctx.new_page(); errs = []
         pg.on('pageerror', lambda e: errs.append(str(e)))
         await pg.goto(URL); await pg.wait_for_selector('#gsi', timeout=5000)
@@ -96,6 +99,7 @@ async def main():
         check('Google button uses the configured client id', await pg.evaluate('window.__cid') == 'CID.apps.googleusercontent.com')
         await as_('ceo@forka.com')
         check('CEO signs in through the server', await pg.is_visible('#ceobox'))
+        check('After sign-in the Hiring and Procurement servers are woken in the background', 'hire.test' in WOKEN and 'procserver.test' in WOKEN, WOKEN)
         check('Session kept in this browser', bool(await pg.evaluate("localStorage.getItem('fa-token')")))
         await pg.reload(); await pg.wait_for_timeout(600)
         check('Reload keeps you signed in', await pg.is_visible('#ceobox'))

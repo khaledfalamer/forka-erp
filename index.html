@@ -619,9 +619,13 @@ async function api(action,payload){
 let VER='';
 function keepBundle(b){try{const c=Object.assign({},b);delete c.token;delete c.same;localStorage.setItem('fa-cache',JSON.stringify(c))}catch(_){}}
 function cachedBundle(){try{const c=JSON.parse(localStorage.getItem('fa-cache')||'null');return c&&c.me&&c.me.email?c:null}catch(_){return null}}
+// Wake the Hiring and Procurement servers in the background while the person looks at the tiles,
+// so the app they open does not wait for a sleeping server (the first call after a quiet spell can take 5-10 seconds).
+let woke=false;function wakeApps(m){if(woke||!m||m.status!=='active')return;woke=true;const a=m.apps||{};
+  [a.hire&&CFG.HIRING_URL,a.proc&&CFG.PROCUREMENT_SERVER].forEach(u=>{if(u)try{fetch(u,{method:'GET',mode:'no-cors'}).catch(()=>{})}catch(_){}})}
 function applyBundle(b){
   if(b.token){TOKEN=b.token;try{localStorage.setItem('fa-token',TOKEN)}catch(_){}}
-  if(b.ver)VER=b.ver;if(!b.fromCache)keepBundle(b);
+  if(b.ver)VER=b.ver;if(!b.fromCache)keepBundle(b);wakeApps(b.me);
   const P0={};(b.people||[b.me]).forEach(p=>{P0[p.email]=p});P0[b.me.email]=b.me;DATA.people=P0;
   const R0={};(b.requests||[]).forEach(r=>{R0[r.email]=r});DATA.requests=R0;
   const A0={};(b.activity||[]).forEach((a,i)=>{A0['a'+i]=a});DATA.activity=A0;

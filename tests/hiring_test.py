@@ -10,7 +10,7 @@ CFG_PREVIEW = "window.FORKA_APPS={MODE:'live',ACCOUNTS_URL:'https://accounts.tes
 SESS = {'TOKCEO-0000000000000000000': {'email': 'ceo@forka.com', 'name': 'Khaled Alamer', 'role': 'hr', 'ceo': True, 'dept': None},
         'TOKCHEF-000000000000000000': {'email': 'chef@kuwaitikitchen.com', 'name': 'Head Chef', 'role': 'head', 'ceo': False, 'dept': 'Kitchen'}}
 DATA = {'reqs': {}, 'pipe': {}, 'jobs': {}, 'apps': {}, 'config': {}}
-VER = [1]; CALLS = []
+VER = [1]; CALLS = []; FAIL = [0]   # FAIL: how many applications the fake server refuses as busy before accepting
 DATA['reqs']['r1'] = {'id': 'r1', 'reqId': 'REQ-2611-01', 'title': 'Line Cook', 'dept': 'Kitchen', 'branch': 'Sharjah', 'status': 'open', 'headcount': 1, 'history': [], 'mustHaves': ['Kuwaiti dishes', 'Hygiene', 'Speed'], 'traits': ['Team cooperation'], 'knockout': ['2 years in a kitchen?'], 'ad': 'Cook with us', 'adAr': 'اطبخ معنا', 'titleAr': 'طباخ خط', 'knockoutAr': ['سنتان في مطبخ؟'], 'createdAt': 1793624193162, 'createdBy': 'ceo@forka.com', 'postedAt': 1793624734240, 'salMin': 3000, 'salMax': 4000, 'cur': 'AED'}
 DATA['jobs']['r1'] = {'id': 'r1', 'title': 'Line Cook', 'dept': 'Kitchen', 'branch': 'Sharjah', 'knockout': ['2 years in a kitchen?'], 'open': True, 'postedAt': 1793624734240}
 DATA['apps']['wabc'] = {'web': True, 'list': {'wabc': {'req': 'r1', 'jobTitle': 'Line Cook', 'name': 'Sara Ali', 'email': 'sara@mail.com', 'phone': '+971501234567', 'years': 3, 'answers': [['2 years in a kitchen?', 'Yes']], 'knockout': [], 'consent': True, 'cvFile': {'id': 'fileCV1234567890', 'drive': True, 'name': 'sara.pdf', 'size': 2048, 'type': 'application/pdf'}, 'source': 'Careers page', 'createdAt': 1793700000000, 'status': 'applied'}}}
@@ -36,6 +36,7 @@ def handle(b):
         ok = any(x['t'] == b.get('t') and x['free'] for x in BOOK['slots'])
         return {'ok': True, 'pick': b['t']} if ok else {'ok': False, 'error': 'taken'}
     if a == 'apply':
+        if FAIL[0] > 0: FAIL[0] -= 1; return {'ok': False, 'error': 'server'}
         if not b.get('name'): return {'ok': False, 'error': 'need', 'fields': ['name']}
         return {'ok': True, 'ref': 'AB12CD'}
     me = SESS.get(b.get('token'))
@@ -53,17 +54,34 @@ def handle(b):
     if a == 'cv': return {'ok': True, 'name': 'sara.txt', 'type': 'text/plain', 'data': 'Q1YgdGV4dA=='}  # headless Chrome downloads PDFs instead of showing them, so a text file stands in
     return {'ok': False, 'error': 'action'}
 
+# A big job ad: 3,000 online applications. The server sends only what changed after the first download.
+BIG = {'reqs': {'r1': DATA['reqs']['r1']}, 'pipe': {}, 'jobs': {'r1': DATA['jobs']['r1']}, 'apps': {}, 'config': {}}
+for i in range(3000):
+    BIG['apps']['w%04d' % i] = {'web': True, 'list': {'w%04d' % i: {'req': 'r1', 'jobTitle': 'Line Cook', 'name': 'Bulk Applicant %d' % i, 'email': 'b%d@mail.com' % i, 'phone': '+971500000000',
+        'years': 2, 'answers': [], 'knockout': [], 'consent': True, 'createdAt': NOW - i * 1000, 'status': 'applied', 'cvText': 'Line cook, Sharjah. ' * 25}}}
+BV = [1]; BT = {}; BCALLS = []
+def big(b):
+    BCALLS.append(b)
+    if b.get('action') != 'load': return {'ok': False, 'error': 'action'}
+    me = SESS['TOKCEO-0000000000000000000']; now = int(time.time() * 1000)
+    if b.get('ver') == 'b%d' % BV[0]: return {'ok': True, 'same': True, 'ver': b['ver'], 'me': me}
+    if b.get('since') and b.get('ver') and b.get('vk') == 'vk-ceo':
+        return {'ok': True, 'ver': 'b%d' % BV[0], 'me': me, 'now': now, 'vk': 'vk-ceo', 'delta': True,
+                'data': {c: {k: v for k, v in BIG[c].items() if BT.get(c + ':' + k, 0) > b['since']} for c in BIG}, 'ids': {c: list(BIG[c]) for c in BIG}}
+    return {'ok': True, 'ver': 'b%d' % BV[0], 'me': me, 'now': now, 'vk': 'vk-ceo', 'data': BIG}
+
 res = []
 def check(n, ok, info=''):
     res.append(bool(ok)); print(('PASS ' if ok else 'FAIL ') + n + ('' if ok else ' - ' + str(info)[:300]))
 
-async def ctx_for(b, cfg, w=1280, h=900, token=None):
+async def ctx_for(b, cfg, w=1280, h=900, token=None, handler=None):
     ctx = await b.new_context(viewport={'width': w, 'height': h})
     await ctx.route('**/config.js*', lambda r: r.fulfill(body=cfg, content_type='application/javascript'))
     await ctx.route('**/fonts.googleapis.com/**', lambda r: r.fulfill(body='', content_type='text/css'))
     async def hire(r):
-        if r.request.method == 'GET': await r.fulfill(json=handle({'action': 'jobs'}))
-        else: await r.fulfill(json=handle(json.loads(r.request.post_data or '{}')))
+        fn = handler or handle
+        if r.request.method == 'GET': await r.fulfill(json=fn({'action': 'jobs'}))
+        else: await r.fulfill(json=fn(json.loads(r.request.post_data or '{}')))
     await ctx.route('https://hire.test/**', hire)
     if token: await ctx.add_init_script(f"try{{localStorage.setItem('fa-token','{token}')}}catch(e){{}}")
     pg = await ctx.new_page(); errs = []
@@ -188,6 +206,15 @@ async def main():
             check('Arabic page: intro and values in Arabic, no English left', 'نرد على كل متقدّم' in body_ar and 'Every candidate' not in body_ar and 'Food first' not in body_ar)
             check('No page errors (careers)', not errs, errs[:2])
             await ctx.close()
+            ctx, pg, errs = await ctx_for(b, CFG)
+            await pg.goto(BASE + '/apply/#job=r1'); await pg.wait_for_timeout(800)
+            await pg.fill('[name=name]', 'Busy Day'); await pg.fill('[name=email]', 'busy@mail.com'); await pg.fill('[name=phone]', '+971 50 111 2222')
+            await pg.click('[data-yn="0"][data-v=Yes]'); await pg.check('[name=consent]')
+            FAIL[0] = 1; n0 = len([c for c in CALLS if c.get('action') == 'apply'])
+            await pg.click('#f button[type=submit]'); await pg.wait_for_timeout(4500)
+            tries = len([c for c in CALLS if c.get('action') == 'apply']) - n0
+            check('Busy server: the application is sent again by itself and goes through', tries == 2 and 'AB12CD' in await pg.inner_text('body'), tries)
+            await ctx.close()
             ctx, pg, errs = await ctx_for(b, CFG, 390, 844)
             await pg.goto(BASE + '/apply/#job=r1'); await pg.wait_for_timeout(800)
             check('Phone: job link opens straight to the job', await pg.locator('#f').count() == 1)
@@ -214,6 +241,33 @@ async def main():
             ctx, pg, errs = await ctx_for(b, CFG_PREVIEW)
             await pg.goto(BASE + '/apply/'); await pg.wait_for_timeout(500)
             check('Without the server address, the careers page says it is a preview', 'Preview' in await pg.inner_text('body'))
+            await ctx.close()
+            # ---------- a big job ad: 3,000 applications ----------
+            ctx, pg, errs = await ctx_for(b, CFG, token='TOKCEO-0000000000000000000', handler=big)
+            await pg.goto(BASE + '/hiring/'); await pg.wait_for_timeout(1500)
+            check('3,000 applications load', await pg.evaluate("Object.keys(allCands()).length") == 3000)
+            await pg.click('#nav >> text=Candidates'); await pg.wait_for_timeout(300)
+            if 'List view' in await pg.inner_text('main'): await pg.click('text=List view'); await pg.wait_for_timeout(300)
+            rows = await pg.locator('main table tr.click').count()
+            check('The list shows 200 at a time, with "Show more"', rows == 200 and 'Show 200 more (2800 not shown)' in await pg.inner_text('main'), rows)
+            ms = await pg.evaluate("(()=>{const t=performance.now();render();return performance.now()-t})()")
+            check('Redrawing the page with 3,000 applications stays quick (under 1.5 s)', ms < 1500, ms)
+            await pg.click('text=Show 200 more'); await pg.wait_for_timeout(300)
+            check('"Show more" adds the next 200', await pg.locator('main table tr.click').count() == 400)
+            BIG['apps']['wnew'] = {'web': True, 'list': {'wnew': {'req': 'r1', 'jobTitle': 'Line Cook', 'name': 'Brand New Applicant', 'email': 'new@mail.com', 'createdAt': NOW + 5000, 'status': 'applied', 'knockout': []}}}
+            BT['apps:wnew'] = int(time.time() * 1000); del BIG['apps']['w0000']; BV[0] += 1
+            await pg.evaluate("pull(true)"); await pg.wait_for_timeout(400)
+            last = BCALLS[-1]
+            check('A refresh asks only for what changed (sends the time and viewer key)', last.get('since') and last.get('vk') == 'vk-ceo' and last.get('ver'), last)
+            names = await pg.evaluate("JSON.stringify(Object.values(allCands()).map(c=>c.name))")
+            check('...the new application appears and the deleted one is gone', 'Brand New Applicant' in names and '"Bulk Applicant 0"' not in names and await pg.evaluate("Object.keys(allCands()).length") == 3000)
+            n0 = len(BCALLS); await pg.reload(); await pg.wait_for_timeout(1500)
+            first = BCALLS[n0] if len(BCALLS) > n0 else {}
+            check('After a reload the page opens from this device and only checks for changes', first.get('ver') == 'b%d' % BV[0] and 'Brand New Applicant' in await pg.evaluate("JSON.stringify(Object.values(allCands()).map(c=>c.name))"), first)
+            await pg.click('#nav >> text=Candidates'); await pg.wait_for_timeout(300)
+            if 'Board view' in await pg.inner_text('main'): await pg.click('text=Board view'); await pg.wait_for_timeout(300)
+            check('Board view: each stage shows 60 cards and says how many more', await pg.locator('.kanban .cc').count() <= 60 * 8 and 'more in this stage' in await pg.inner_text('main'))
+            check('No page errors (3,000 applications)', not errs, errs[:2])
             await ctx.close()
             src = (ROOT / 'hiring' / 'index.html').read_text() + (ROOT / 'apply' / 'index.html').read_text()
             check('No emojis in Hiring or the careers page', not re.search('[\U0001F300-\U0001FAFF☀-➿]', src))

@@ -195,7 +195,8 @@ function keepForm(){const F=document.getElementById("f");if(!F)return null;const
 function restoreForm(o){const F=document.getElementById("f");if(!F||!o)return;[...F.elements].forEach(e=>{if(e.name&&o[e.name]!==undefined&&e.type!=="file"){if(e.type==="checkbox")e.checked=o[e.name];else e.value=o[e.name]}})}
 async function load(){
   if(!HURL){D=SAMPLE;render();return}
-  try{const r=await fetch(HURL+(HURL.includes("?")?"&":"?")+"jobs=1");const j=await r.json();if(!j.ok)throw 0;D=j;err=""}catch(e){err="net"}
+  for(let i=0;i<3;i++){if(i)await new Promise(z=>setTimeout(z,i*2000));   // busy server: try again by itself
+    try{const r=await fetch(HURL+(HURL.includes("?")?"&":"?")+"jobs=1");const j=await r.json();if(!j.ok)throw 0;D=j;err="";break}catch(e){err="net"}}
   render();openFromHash()}
 function openFromHash(){const m=location.hash.match(/job=([\w-]+)/);if(m&&D){const j=D.jobs.find(x=>x.id===m[1]);if(j){job=j;form={ans:[],bad:[]};state="job";render();window.scrollTo(0,0)}}}
 async function readFile(file){if(!file)return null;
@@ -215,7 +216,11 @@ async function submit(e){e.preventDefault();if(sending)return;
     cvText:v("cvText"),answers:form.ans,consent:true,website:F.elements.website.value,lang,source:"Careers page"+(document.referrer?"":""),cv};
   if(!HURL){ref="PREVIEW";state="done";render();window.scrollTo(0,0);return}
   sending=true;render();restoreForm(kept);
-  let r;try{r=await (await fetch(HURL,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(body)})).json()}catch(x){r={ok:false,error:"net"}}
+  // When many people apply at once the server can be briefly busy: try again by itself (after 3 s, then 6 s).
+  let r;for(let i=0;i<3;i++){if(i)await new Promise(z=>setTimeout(z,i*3000));
+    try{r=await (await fetch(HURL,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(body)})).json()}catch(x){r={ok:false,error:"net"}}
+    if(i&&r.error==="again")r={ok:true,ref:""};                          // an earlier try did arrive
+    if(r.ok||!["net","server"].includes(r.error))break}
   sending=false;
   if(r.ok){ref=r.ref||"";state="done";render();window.scrollTo(0,0);return}
   form.bad=r.fields||[];render();restoreForm(kept);

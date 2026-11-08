@@ -222,7 +222,7 @@ const AR_RX=[
  [/^raised by (.+)$/,"رفعه $1"],[/^join by (.+)$/,"الالتحاق قبل $1"],[/^posted (.+)$/,"نُشرت $1"],[/^applied (.+)$/,"تقدّم في $1"],[/^\(basic (.+)\)$/,"(الأساسي $1)"],
  [/^CEO approved vacancy$/,"وافق الرئيس التنفيذي على الشاغر"],[/^Head asked for changes: (.+)$/,"طلب رئيس القسم تعديلات: $1"],[/^CEO declined: (.+)$/,"رفض الرئيس التنفيذي: $1"],
 
- [/^(\d+) \/ 2 days$/,"$1 / يومان"],[/^Candidate consented and completed the assessment \(tool: (.+)\)$/,"وافق المرشح وأكمل التقييم (الأداة: $1)"],
+ [/^(\d+) \/ 2 days$/,"$1 / يومان"],[/^Show (\d+) more \((\d+) not shown\)$/,"عرض $1 إضافية ($2 غير معروضة)"],[/^(\d+) more in this stage\. Use the list view or search\.$/,"$1 آخرون في هذه المرحلة. استخدم عرض القائمة أو البحث."],[/^Candidate consented and completed the assessment \(tool: (.+)\)$/,"وافق المرشح وأكمل التقييم (الأداة: $1)"],
 ];
 const AR_SUB=[ // last-resort fragments inside mixed text
  [" working days"," أيام عمل"],["/month)","/شهريًا)"],["(basic ","(الأساسي "],["Source: ","المصدر: "],
@@ -327,17 +327,33 @@ const local={data:null,subs:[],
   async del(col,id){if(this.data[col])delete this.data[col][id];this.save()}};
 /* ---------------- live mode: Google Sheet behind erp.forka.com sign-in ---------------- */
 const CFG=window.FORKA_APPS||{};const HURL=CFG.HIRING_URL||"";
-let TOKEN="",RVER="",SME=null;const RCB={};const RDATA={reqs:{},pipe:{},jobs:{},apps:{},config:{}};
+let TOKEN="",RVER="",SME=null,RSINCE=0,RVK="";const RCB={};const RDATA={reqs:{},pipe:{},jobs:{},apps:{},config:{}};
 async function api(action,payload){try{const r=await fetch(HURL,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(Object.assign({action,token:TOKEN},payload||{}))});return await r.json()}catch(e){return{ok:false,error:"net"}}}
-function keepData(){try{localStorage.setItem("fh-cache",JSON.stringify({ver:RVER,me:SME,data:RDATA}))}catch(e){}}
+/* The last download is kept in this browser (IndexedDB holds far more than localStorage's 5 MB),
+   so Hiring opens at once and a refresh downloads only what changed. */
+const IDB={p:null,open(){return this.p||(this.p=new Promise(res=>{try{const q=indexedDB.open("forka-hiring",1);q.onupgradeneeded=()=>q.result.createObjectStore("kv");q.onsuccess=()=>res(q.result);q.onerror=()=>res(null)}catch(e){res(null)}}))},
+  async get(k){const d=await this.open();if(!d)return null;return new Promise(res=>{try{const q=d.transaction("kv").objectStore("kv").get(k);q.onsuccess=()=>res(q.result||null);q.onerror=()=>res(null)}catch(e){res(null)}})},
+  async set(k,v){const d=await this.open();if(!d)return;try{d.transaction("kv","readwrite").objectStore("kv").put(v,k)}catch(e){}},
+  async del(k){const d=await this.open();if(!d)return;try{d.transaction("kv","readwrite").objectStore("kv").delete(k)}catch(e){}}};
+let _kt=0;function keepData(){clearTimeout(_kt);_kt=setTimeout(()=>IDB.set("cache",{tok:TOKEN,ver:RVER,since:RSINCE,vk:RVK,me:SME,data:RDATA}),300)}
 function fire(col){(RCB[col]||[]).forEach(cb=>cb(JSON.parse(JSON.stringify(RDATA[col]||{}))))}
-function applyRemote(r,fromCache){if(r.me)SME=r.me;if(r.ver)RVER=r.ver;if(r.data){Object.keys(RDATA).forEach(c=>{RDATA[c]=r.data[c]||{}});if(!fromCache)keepData();Object.keys(RDATA).forEach(fire)}}
-async function pull(light){const r=await api("load",{ver:light?RVER:""});
+function applyRemote(r,fromCache){if(r.me)SME=r.me;if(r.ver)RVER=r.ver;if(r.vk)RVK=r.vk;
+  if(r.now)RSINCE=r.now-120000;else if(fromCache)RSINCE=r.since||0;        // 2 minutes of overlap: nothing saved meanwhile is missed
+  if(r.data&&r.delta){const ch=[];let lost=false;                           // only what changed since the last download
+    Object.keys(RDATA).forEach(c=>{const keep=r.ids[c]||[],cur=RDATA[c],add=r.data[c]||{},o={};let n=0;
+      keep.forEach(id=>{if(add[id]!==undefined)o[id]=add[id];else if(cur[id]!==undefined)o[id]=cur[id];else lost=true});
+      Object.keys(add).forEach(id=>{if(o[id]===undefined)o[id]=add[id]});
+      n=Object.keys(add).length+Object.keys(cur).filter(id=>o[id]===undefined).length;
+      if(n){RDATA[c]=o;ch.push(c)}});
+    if(lost){RVER="";RSINCE=0;setTimeout(()=>pull(false),0);return}       // this device is missing something: download everything once
+    keepData();ch.forEach(fire);return}
+  if(r.data){Object.keys(RDATA).forEach(c=>{RDATA[c]=r.data[c]||{}});if(!fromCache)keepData();Object.keys(RDATA).forEach(fire)}}
+async function pull(light){const r=await api("load",RVER?{ver:RVER,since:RSINCE,vk:RVK}:{ver:""});
   if(r.ok){if(r.same){if(r.me)SME=r.me;return}const typing=document.activeElement&&["INPUT","TEXTAREA","SELECT"].includes(document.activeElement.tagName)&&$("#modal").classList.contains("on");
     if(typing&&light)return;applyRemote(r);banner("");return}
   if(r.error==="session")return gone("signin");if(r.error==="noaccess")return gone("noaccess");
   if(!light)banner("Can't reach the hiring data right now — showing what was saved on this device.")}
-function gone(kind){try{localStorage.removeItem("fh-cache")}catch(e){}
+function gone(kind){try{localStorage.removeItem("fh-cache")}catch(e){}IDB.del("cache");
   document.body.innerHTML=`<div style="max-width:460px;margin:12vh auto;padding:28px;background:#fffdf9;border:1px solid #e4ded4;border-radius:12px;font-family:'Inter Tight',system-ui,sans-serif;text-align:center"><div style="font-family:'EB Garamond',serif;font-size:26px;margin-bottom:8px">Forka Hiring</div><p style="color:#4a4642">${kind==="noaccess"?"You are signed in, but you are not on the hiring team yet. Ask Khaled to add you (Hiring &gt; Team).":"Please sign in at Forka Apps first."}</p><a href="${esc(CFG.ERP_HOME||"/")}" style="display:inline-block;margin-top:10px;background:#23211F;color:#fff;padding:9px 16px;border-radius:8px;text-decoration:none">Open Forka Apps</a></div>`}
 const store={
   watch(col,cb){ if(DEMO) return local.watch(col,cb);
@@ -368,8 +384,9 @@ function banner(m){const b=$("#banner");b.textContent=m;b.style.display=m?"block
   if(HURL){
     try{TOKEN=localStorage.getItem("fa-token")||""}catch(e){}
     if(!TOKEN){gone("signin");return}
-    let c=null;try{c=JSON.parse(localStorage.getItem("fh-cache")||"null")}catch(e){}
-    if(c&&c.me&&c.data){applyRemote(c,true)}            // open at once from the last visit
+    let c=await IDB.get("cache");if(!c){try{c=JSON.parse(localStorage.getItem("fh-cache")||"null")}catch(e){}}
+    try{localStorage.removeItem("fh-cache")}catch(e){}  // moved to IndexedDB
+    if(c&&c.me&&c.data&&(!c.tok||c.tok===TOKEN)){applyRemote(c,true)}   // open at once from the last visit (same sign-in only)
     ["reqs","pipe","jobs"].forEach(k=>store.watch(k,o=>{S[k]=o;afterData()}));
     store.watch("apps",o=>{S.apps=o;afterData()});
     store.watch("config",o=>{S.team=o.team||{members:{}};S.brand=o.brand||null;afterData()});
@@ -384,7 +401,9 @@ function banner(m){const b=$("#banner");b.textContent=m;b.style.display=m?"block
   store.watch("config",o=>{S.team=o.team||{members:{}};S.brand=o.brand||null;afterData()});
 })();
 let resolving=false;
-async function afterData(){ resolveRole(); render(); if(!DEMO&&!HURL&&USER&&!resolving){resolving=true; const ids=new Set(Object.keys(S.team.members||{})); Object.values(S.pipe).forEach(p=>{p.ownerUid&&ids.add(p.ownerUid);(p.history||[]).forEach(h=>h.by&&ids.add(h.by))}); Object.values(S.reqs).forEach(r=>r.createdBy&&ids.add(r.createdBy)); try{const ps=await USER.profiles([...ids]);for(const k in ps)NAMES[k]=ps[k].name||NAMES[k]||""}catch(e){} resolving=false; render();} }
+// Five lists arrive together; draw the page once for all of them, not five times.
+let _adq=false;function afterData(){if(_adq)return;_adq=true;Promise.resolve().then(()=>{_adq=false;afterDataNow()})}
+async function afterDataNow(){ resolveRole(); render(); if(!DEMO&&!HURL&&USER&&!resolving){resolving=true; const ids=new Set(Object.keys(S.team.members||{})); Object.values(S.pipe).forEach(p=>{p.ownerUid&&ids.add(p.ownerUid);(p.history||[]).forEach(h=>h.by&&ids.add(h.by))}); Object.values(S.reqs).forEach(r=>r.createdBy&&ids.add(r.createdBy)); try{const ps=await USER.profiles([...ids]);for(const k in ps)NAMES[k]=ps[k].name||NAMES[k]||""}catch(e){} resolving=false; render();} }
 function resolveRole(){
   let id = DEMO? V.viewAs : ME, p;
   if(DEMO){ p=DEMO_PEOPLE[id]; V.role=p.role; V.ceo=!!p.ceo; V.dept=p.dept||null; V.me=id; }
@@ -409,11 +428,18 @@ function resolveRole(){
 const PAGE_LABEL={dash:"Dashboard",approvals:"CEO approvals",reqs:"Hiring requests",pipeline:"Candidates",pool:"Talent pool & compliance",careers:"Careers page",team:"Team & access",jobs:"Open roles",mine:"My applications"};
 
 /* ---------------- derived ---------------- */
-function allCands(){ // pipeline records + online applications not yet picked up by HR
+let _ac=null,_acP=null,_acA=null;
+function allCands(){ // pipeline records + online applications not yet picked up by HR (built once per data change)
+  if(_ac&&_acP===S.pipe&&_acA===S.apps) return _ac;
   const out={...S.pipe};
   for(const [u,doc] of Object.entries(S.apps)){ for(const [aid,a] of Object.entries(doc.list||{})){ if(!out[aid]) out[aid]={...a,id:aid,ownerUid:u,stage:a.knockout&&a.knockout.length?"rejected":"applied",reject:a.knockout&&a.knockout.length?{reason:"Pre-screen: "+a.knockout.join("; "),at:a.createdAt,auto:true}:null,online:true,unsaved:true,history:[{t:a.createdAt,by:u,m:"Applied online"}]} } }
-  return out;
+  _acP=S.pipe;_acA=S.apps;return _ac=out;
 }
+// Long lists show 200 rows at a time (a big job ad can bring thousands); "Show more" adds the next 200.
+const PAGE=200;
+const shown=(L,key)=>L.slice(0,(V.more&&V.more[key])||PAGE);
+function moreRow(L,key,cols){const n=(V.more&&V.more[key])||PAGE;if(L.length<=n)return "";
+  return `<tr><td colspan="${cols}" style="text-align:center"><button class="btn sm sec" onclick="event.stopPropagation();V.more=V.more||{};V.more['${key}']=${n+PAGE};render()">Show ${Math.min(PAGE,L.length-n)} more (${L.length-n} not shown)</button></td></tr>`}
 function reqOf(c){return S.reqs[c.req]||{}}
 function headSees(r){return V.role!=="head"||r.dept===V.dept||r.createdBy===V.me}
 function scr(c,r){ // screening average: CV must-haves + HR call
@@ -524,13 +550,13 @@ function pPipeline(C){
   const live=L.filter(c=>!["rejected","pool"].includes(c.stage));
   if(V.pv==="board"){
     const cols=STAGES.filter(s=>V.role!=="head"||SI[s[0]]>=SI.shortlist);
-    return head+`<div class="kanban">${cols.map(s=>{const cs=live.filter(c=>c.stage===s[0]);return `<div class="col"><h4><span>${s[1]}</span><span>${cs.length}</span></h4>${cs.map(card).join("")}</div>`}).join("")}</div>
+    return head+`<div class="kanban">${cols.map(s=>{const cs=live.filter(c=>c.stage===s[0]);return `<div class="col"><h4><span>${s[1]}</span><span>${cs.length}</span></h4>${cs.slice(0,60).map(card).join("")}${cs.length>60?`<p class="small muted">${cs.length-60} more in this stage. Use the list view or search.</p>`:""}</div>`}).join("")}</div>
     <p class="small muted">${L.length-live.length} rejected or in talent pool — see the list view${V.role==="hr"?" or Talent pool":""}.</p>`;
   }
   const sel=V.sel;
   return head+(V.role==="hr"?`<div class="row" style="margin-bottom:8px"><span class="small muted">${sel.size} selected</span><button class="btn sm sec" ${sel.size?"":"disabled"} onclick="bulk('advance')">Move to next stage</button><button class="btn sm sec" ${sel.size?"":"disabled"} onclick="bulk('pool')">Talent pool</button><button class="btn sm bad" ${sel.size?"":"disabled"} onclick="bulk('reject')">Reject with reason</button></div>`:"")+
   `<div class="card"><table><tr>${V.role==="hr"?`<th><input type="checkbox" style="width:auto" onchange="L_all(this.checked)"></th>`:""}<th>Candidate</th><th>Role</th><th>Stage</th><th>Screen</th><th>Interview</th><th>Applied</th></tr>
-  ${L.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0)).map(c=>{const r=reqOf(c);return `<tr class="click" onclick="openCand('${c.id}')">${V.role==="hr"?`<td onclick="event.stopPropagation()"><input type="checkbox" style="width:auto" ${sel.has(c.id)?"checked":""} onchange="this.checked?V.sel.add('${c.id}'):V.sel.delete('${c.id}');render()"></td>`:""}<td><b>${esc(c.name)}</b><div class="small muted">${esc(c.source||"")}</div></td><td>${esc(r.title||"—")}</td><td>${stageTag(c)}</td><td>${f1(scr(c,r))}</td><td>${f1(ivAvg(c))}</td><td>${fmtD(c.createdAt)}</td></tr>`}).join("")||`<tr><td colspan="7" class="empty">No candidates.</td></tr>`}</table></div>`;
+  ${shown(L.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0)),"list").map(c=>{const r=reqOf(c);return `<tr class="click" onclick="openCand('${c.id}')">${V.role==="hr"?`<td onclick="event.stopPropagation()"><input type="checkbox" style="width:auto" ${sel.has(c.id)?"checked":""} onchange="this.checked?V.sel.add('${c.id}'):V.sel.delete('${c.id}');render()"></td>`:""}<td><b>${esc(c.name)}</b><div class="small muted">${esc(c.source||"")}</div></td><td>${esc(r.title||"—")}</td><td>${stageTag(c)}</td><td>${f1(scr(c,r))}</td><td>${f1(ivAvg(c))}</td><td>${fmtD(c.createdAt)}</td></tr>`}).join("")||`<tr><td colspan="7" class="empty">No candidates.</td></tr>`}${moreRow(L,"list",7)}</table></div>`;
 }
 window.L_all=v=>{const C=allCands();Object.values(C).forEach(c=>v?V.sel.add(c.id):V.sel.delete(c.id));render()};
 function stageTag(c){ if(c.stage==="rejected")return `<span class="tag bad">Rejected</span>`; if(c.stage==="pool")return `<span class="tag blue">Talent pool</span>`; if(c.stage==="hired")return `<span class="tag ok">Hired</span>`; return `<span class="tag">${STAGES[SI[c.stage]][1]}</span>` }
@@ -541,7 +567,7 @@ function pPool(C){
   const old=L.filter(c=>c.personality&&c.personality.summary&&workDaysSince(c.reject?.at||c.stageAt)>130);
   return `<div class="top"><div><h1>Talent pool & compliance</h1><p>Rejected candidates get a reply. Strong "not now" candidates stay searchable for the next opening.</p></div></div>
   ${old.length?`<div class="note" style="margin-bottom:12px"><b>${old.length} personality report(s) past 6 months</b> for unsuccessful candidates — the Hiring Guide says delete them. <button class="btn sm sec" onclick="purgeOld()">Delete those reports</button></div>`:`<div class="note ok" style="margin-bottom:12px">Retention check: no personality reports older than 6 months for unsuccessful candidates.</div>`}
-  <div class="card"><table><tr><th>Candidate</th><th>Applied for</th><th>Status</th><th>Reason on file</th><th>Consent</th><th></th></tr>${L.map(c=>`<tr class="click" onclick="openCand('${c.id}')"><td><b>${esc(c.name)}</b><div class="small muted">${esc(c.email||"")}</div></td><td>${esc(reqOf(c).title||"—")}</td><td>${stageTag(c)}</td><td class="small">${esc(c.reject?.reason||c.poolNote||"—")}</td><td>${c.consent?'<span class="tag ok">Yes</span>':'<span class="tag warn">Not recorded</span>'}</td><td class="right">${c.stage==="pool"?`<button class="btn sm sec" onclick="event.stopPropagation();reconsider('${c.id}')">Consider for a role</button>`:""}</td></tr>`).join("")||`<tr><td colspan="6" class="empty">Nobody here yet.</td></tr>`}</table></div>`;
+  <div class="card"><table><tr><th>Candidate</th><th>Applied for</th><th>Status</th><th>Reason on file</th><th>Consent</th><th></th></tr>${shown(L,"pool").map(c=>`<tr class="click" onclick="openCand('${c.id}')"><td><b>${esc(c.name)}</b><div class="small muted">${esc(c.email||"")}</div></td><td>${esc(reqOf(c).title||"—")}</td><td>${stageTag(c)}</td><td class="small">${esc(c.reject?.reason||c.poolNote||"—")}</td><td>${c.consent?'<span class="tag ok">Yes</span>':'<span class="tag warn">Not recorded</span>'}</td><td class="right">${c.stage==="pool"?`<button class="btn sm sec" onclick="event.stopPropagation();reconsider('${c.id}')">Consider for a role</button>`:""}</td></tr>`).join("")||`<tr><td colspan="6" class="empty">Nobody here yet.</td></tr>`}${moreRow(L,"pool",6)}</table></div>`;
 }
 function brand(){return S.brand||{intro:"We operate restaurants across the UAE and Oman — Kuwaiti Kitchen, Mayar Cafe and more — and we're building the biggest F&B group in the region. Owners should own; operators should operate. We're looking for operators.",values:["Food first","Standards you can measure","Grow with the group","Multi-skilled teams","Every candidate gets a reply"],benefits:"Clear career paths across five businesses · training through the Forka Learning Library · a fair, scored hiring process"}}
 function pCareers(){const b=brand();
