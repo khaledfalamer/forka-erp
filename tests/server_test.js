@@ -22,7 +22,10 @@ const res=[];const ck=(n,ok,i)=>{res.push(!!ok);console.log((ok?'PASS ':'FAIL ')
 ctx.setup();
 ck('Setup creates People/Requests/Activity with 10 people',sheets.People&&sheets.Requests&&sheets.Activity&&sheets.People.d.length===11);
 let r=call({action:'google',idToken:'tok-ceo'});ck('CEO signs in with Google',r.ok&&r.token&&r.me.level==='ceo',r);
-const ceo=r.token;ck('CEO receives people, requests and activity',Array.isArray(r.people)&&r.people.length===10&&Array.isArray(r.activity));
+const ceo=r.token;
+ck('CEO opens every app and every Procurement section without ticking (Oman included)',r.me.apps.proc&&r.me.apps.hire&&r.me.apps.branch&&['plan','ops','fin','dept','ceo','oman'].every(x=>r.me.sides.includes(x)),r.me);
+{const w=call({action:'who',token:r.token});ck('Procurement "who" gives the CEO every section',w.ok&&w.me.sides.includes('oman'),w)}
+ck('CEO receives people, requests and activity',Array.isArray(r.people)&&r.people.length===10&&Array.isArray(r.activity));
 ck('No PIN hashes ever sent to the browser',!JSON.stringify(r).includes('pinHash'));
 ck('Wrong client id refused',call({action:'google',idToken:'tok-badaud'}).error==='token');
 ck('Unverified email refused',call({action:'google',idToken:'tok-unver'}).error==='unverified');

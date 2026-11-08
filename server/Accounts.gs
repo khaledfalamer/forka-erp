@@ -60,7 +60,7 @@ function setup() {
 
 /* ---------------- people ---------------- */
 function rowToPerson_(r) {
-  return {
+  return ceoAll_({
     email: key_(r[0]), name: String(r[1]), title: String(r[2]),
     level: LEVELS.indexOf(String(r[3]).toLowerCase()) >= 0 ? String(r[3]).toLowerCase() : 'staff',
     status: STATUSES.indexOf(String(r[4]).toLowerCase()) >= 0 ? String(r[4]).toLowerCase() : 'pending',
@@ -69,7 +69,13 @@ function rowToPerson_(r) {
     method: String(r[9]).toLowerCase() === 'pin' ? 'pin' : 'google',
     hasPin: !!String(r[10]), pinHash: String(r[10]),
     addedBy: String(r[11]), updatedAt: r[12] instanceof Date ? r[12].toISOString() : String(r[12]), updatedBy: String(r[13])
-  };
+  });
+}
+/* An active CEO opens every app and every section automatically, including ones added later.
+   Nothing has to be ticked for the CEO in People and access. */
+function ceoAll_(p) {
+  if (p.level === 'ceo' && p.status === 'active') { p.apps = { proc: 1, hire: 1, branch: 1 }; p.sides = SIDES.slice(); }
+  return p;
 }
 /* People are read from the Sheet at most once every 5 minutes; every change clears this copy at once.
    Edits typed straight into the Sheet show within 5 minutes. */

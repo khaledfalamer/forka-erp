@@ -258,7 +258,7 @@ const T={en:{
   people:'People and access',addP:'Add person',waiting:'Waiting for approval',allow:'Allow',reject:'Reject',
   team:'Team',search:'Search name or email',all:'All',st_active:'Active',st_pending:'To confirm',st_blocked:'Blocked',
   colP:'Person',colL:'Clearance',colS:'Status',colA:'Apps',colM:'Sign-in',m_google:'Google',m_pin:'PIN',
-  edit:'Edit person',newP:'Add a person',email:'Company email',lv:'Clearance level',st:'Status',appsAcc:'Apps they can open',
+  edit:'Edit person',newP:'Add a person',email:'Company email',lv:'Clearance level',st:'Status',appsAcc:'Apps they can open',ceoAll:'CEO: opens every app and every section automatically, including new ones. Nothing to tick.',
   procSides:'Procurement sections',method:'Sign-in method',setPin:'PIN (4 to 8 digits)',pinKeep:'Leave empty to keep the current PIN',
   save:'Save',cancel:'Cancel',confirm:'Confirm access',block:'Block',unblock:'Allow again',
   need:'Fill in the fields marked in red.',dupe:'This email is already on the list.',lastCeo:'There must always be at least one active CEO.',
@@ -295,7 +295,7 @@ const T={en:{
   people:'الأشخاص والصلاحيات',addP:'إضافة شخص',waiting:'بانتظار الموافقة',allow:'موافقة',reject:'رفض',
   team:'الفريق',search:'ابحث بالاسم أو البريد',all:'الكل',st_active:'مفعل',st_pending:'بانتظار التأكيد',st_blocked:'محظور',
   colP:'الشخص',colL:'الصلاحية',colS:'الحالة',colA:'التطبيقات',colM:'طريقة الدخول',m_google:'Google',m_pin:'رقم سري',
-  edit:'تعديل الشخص',newP:'إضافة شخص',email:'بريد الشركة',lv:'مستوى الصلاحية',st:'الحالة',appsAcc:'التطبيقات المسموحة',
+  edit:'تعديل الشخص',newP:'إضافة شخص',email:'بريد الشركة',lv:'مستوى الصلاحية',st:'الحالة',appsAcc:'التطبيقات المسموحة',ceoAll:'الرئيس التنفيذي: يفتح كل التطبيقات وكل الأقسام تلقائياً، بما فيها الجديدة. لا حاجة لأي تحديد.',
   procSides:'أقسام المشتريات',method:'طريقة الدخول',setPin:'الرقم السري (من 4 إلى 8 أرقام)',pinKeep:'اتركه فارغا للإبقاء على الرقم الحالي',
   save:'حفظ',cancel:'إلغاء',confirm:'تأكيد الصلاحية',block:'حظر',unblock:'السماح مرة أخرى',
   need:'املأ الحقول المظللة بالأحمر.',dupe:'هذا البريد موجود في القائمة.',lastCeo:'يجب أن يبقى رئيس تنفيذي مفعل واحد على الأقل.',
@@ -327,7 +327,9 @@ let toastMsg='';
 try{const s=sessionStorage.getItem('fa-me');if(s)me=s}catch(_){}
 
 const P=()=>DATA.people;
-const person=id=>P()[id];
+// An active CEO opens every app and every section automatically (the server does the same).
+const ceoAll=p=>p&&p.level==='ceo'&&p.status==='active'?Object.assign({},p,{apps:Object.fromEntries(APPS.map(a=>[a.id,1])),sides:SIDES.slice()}):p;
+const person=id=>ceoAll(P()[id]);
 const isCeo=p=>p&&p.level==='ceo'&&p.status==='active';
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const initials=n=>String(n||'?').split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase();
@@ -530,8 +532,8 @@ function vModal(){
         :'<label class="f">'+t('setPin')+'<input type="password" inputmode="numeric" autocomplete="new-password" data-k="pinNew" value="'+esc(d.pinNew||'')+'"'+cls('pinNew')+'></label>'+(d.pin?'<div class="sm-t">'+t('pinKeep')+'</div>':''))+'</div>'+
     '<div class="g2"><div class="box"><div class="t">'+t('lv')+'</div><div class="seg">'+['staff','manager','ceo'].map(l=>'<button data-a="d-level" data-v="'+l+'" class="'+(d.level===l?'on':'')+'">'+lvName(l)+'</button>').join('')+'</div></div>'+
     '<div class="box"><div class="t">'+t('st')+'</div><div class="seg">'+['active','pending','blocked'].map(s=>'<button data-a="d-status" data-v="'+s+'" class="'+(d.status===s?'on':'')+'">'+t('st_'+s)+'</button>').join('')+'</div></div></div>'+
-    '<div class="box"><div class="t">'+t('appsAcc')+'</div>'+APPS.map(a=>'<label class="ck"><input type="checkbox" data-a="d-app" data-v="'+a.id+'"'+(d.apps[a.id]?' checked':'')+'>'+t('a_'+a.id)+'</label>'+
-      (a.id==='proc'&&d.apps.proc?'<div class="subs" id="sides"><span class="sm-t" style="width:100%">'+t('procSides')+'</span>'+SIDES.map(s=>'<label class="ck"><input type="checkbox" data-a="d-side" data-v="'+s+'"'+((d.sides||[]).includes(s)?' checked':'')+'>'+t('s_'+s)+'</label>').join('')+'</div>':'')).join('')+'</div>'+
+    '<div class="box"><div class="t">'+t('appsAcc')+'</div>'+(d.level==='ceo'&&d.status==='active'?'<div class="sm-t">'+t('ceoAll')+'</div>':APPS.map(a=>'<label class="ck"><input type="checkbox" data-a="d-app" data-v="'+a.id+'"'+(d.apps[a.id]?' checked':'')+'>'+t('a_'+a.id)+'</label>'+
+      (a.id==='proc'&&d.apps.proc?'<div class="subs" id="sides"><span class="sm-t" style="width:100%">'+t('procSides')+'</span>'+SIDES.map(s=>'<label class="ck"><input type="checkbox" data-a="d-side" data-v="'+s+'"'+((d.sides||[]).includes(s)?' checked':'')+'>'+t('s_'+s)+'</label>').join('')+'</div>':'')).join(''))+'</div>'+
     (modal.err?'<div class="err">'+esc(modal.err)+'</div>':'')+
     '<div class="acts">'+(!isNew&&modal.id!==me?(d.status==='blocked'?'':'<button class="btn dan" data-a="d-block">'+t('block')+'</button>'):'')+'<div class="sp"></div><button class="btn" data-a="m-close">'+t('cancel')+'</button><button class="btn pri" data-a="p-save">'+t('save')+'</button></div></div></div>'}
 
