@@ -1,0 +1,32 @@
+# Forka Apps (erp.forka.com): notes for Claude
+
+Owner: Khaled Alamer, CEO of Forka Collective (F&B group: UAE branches Sharjah, Fujairah, Umm Al Quwain, Mayar Cafe, Ajman Central Store, plus Oman). Read this before any change.
+
+## Standing rules (Khaled)
+- Never change the live site, and never push to main, unless Khaled says "add it" / "go live" for that change. Build and test on a branch first and show him.
+- No emojis in any app. Use text labels and simple glyphs (← → ✓ ✕) or SVG line icons.
+- Forka brand: charcoal #2B2B2B, paper/off-white, bronze #8C6A3F. Headings in EB Garamond, text in Inter Tight, Arabic in IBM Plex Sans Arabic.
+- Every screen in English and Arabic (RTL). Plain English, because many staff read English as a second language.
+- Procurement sides are called Purchasing and Operations, never "Planning".
+- Required fields show red when they block saving or the next step.
+- An active CEO opens every app and every section automatically (ceoAll_ in server/Accounts.gs). Never make the CEO tick access for himself.
+- Never put secrets in the repo. config.js holds public settings only.
+
+## What lives where
+- erp.forka.com = this repo on GitHub Pages (CNAME). Every push to main runs .github/workflows/test-and-deploy.yml. The site publishes only if all checks pass.
+- index.html: the hub (sign-in, app tiles, People and access). hiring/: the Hiring app. apply/: a copy of the careers page (apply.forka.com is the forka-apply repo).
+- server/Accounts.gs = Apps Script "Forka Apps - Accounts server" (its only file is Code.gs). Sheet "Forka Apps - Accounts" 1YkqcYwtKcm4mOz-wJGLvSPAeEYGzPxqLep_SzRGOCCA, tabs People / Requests / Activity. PINs are stored as salted hashes only.
+- server/Hiring.gs = Apps Script bound to the Sheet "Forka Hiring" (1U_1G9okE9chorTYVollXyOSaKi5GocJWp5-VZUpUfNo). The web app address is HIRING_URL in config.js.
+- Google sign-in client 443945615318-21aveveme3c8n41fepp4gmof3vnrs8if.apps.googleusercontent.com (Google Cloud project "Forka Apps", origin https://erp.forka.com).
+- Apps Script changes do NOT deploy from GitHub. Khaled pastes the file into the script project, then Deploy > Manage deployments > pencil > New version (keeping the same web address). Tell him exactly which project and which file. Never let him choose "New deployment".
+
+## Checks (run before every push)
+node tests/server_test.js · node tests/hiring_server_test.js · python3 tests/ci_test.py · python3 tests/hiring_test.py (tests/live_test.py runs in CI)
+
+## Rollback
+Website: revert the commit on main. Apps Script: Manage deployments > pencil > choose the previous version.
+
+## Open items (8 Nov 2026)
+- Confirm the team in People and access (everyone except Khaled starts "To confirm").
+- Give oman@forka.com (Mr. Tamer, Oman manager) Procurement with the Oman store section.
+- Hiring: set the HR_EMAILS script property. Rename the Hiring script project from "Untitled project".
