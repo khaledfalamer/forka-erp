@@ -67,6 +67,11 @@ async def main():
             await pg.click('[data-a=fclear]'); await pg.fill('#q','maintenance'); await pg.wait_for_timeout(100)
             vis = await pg.locator('.card').count(); check('Search finds cards by words', vis == 3, vis)
             await pg.fill('#q',''); await pg.click('[data-a=filter]')
+            await pg.click('.card:has-text("Second quick card")'); await pg.click('[data-a=cdel]')
+            shown = await pg.locator('[role=alertdialog]').count()
+            await pg.click('[data-a=ask-no]'); kept = await pg.locator('.md').count() == 1
+            await pg.click('[data-a=cdel]'); await pg.click('[data-a=ask-yes]'); await pg.wait_for_timeout(100)
+            check('Delete asks first (in the page), Cancel keeps it, Delete removes it', shown == 1 and kept and await pg.locator('.card:has-text("Second quick card")').count() == 0)
             # collapse list
             await pg.click(L('Daily')+' [data-a=lcol]'); check('Collapse a list', await pg.locator('.list.col').count() == 1)
             await pg.click('.list.col [data-a=lcol]')

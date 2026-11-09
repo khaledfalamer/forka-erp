@@ -2,7 +2,7 @@
 <html lang="en" dir="ltr">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Forka Boards</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -218,7 +218,7 @@ en:{app:'Boards',search:'Search',addCard:'Add a card',addCardBtn:'Add card',card
   background:'Background',reset:'Reset preview data',resetQ:'Put the sample boards back? Your changes in this preview will be lost.',preview:'Preview: changes are kept only in this browser. Nothing is shared yet.',
   dueWeek:'Due this week',overdueF:'Overdue',noMatch:'No cards match the filter.',close:'Close',add:'Add',
   l_added:'added this card to {a}',l_moved:'moved this card from {a} to {b}',l_done:'marked this card complete',l_undone:'marked this card not complete',now:'just now',mAgo:'{n} min ago',hAgo:'{n} h ago',
-  lb_fin:'Finance',lb_proc:'Procurement',lb_mnt:'Maintenance',lb_hr:'HR',lb_urg:'Urgent',lb_mkt:'Marketing',actions:'Actions',addTo:'Add to card',deleteBoard:'Delete board',deleteBoardQ:'Delete this board and everything on it?',cards:'cards'},
+  lb_fin:'Finance',lb_proc:'Procurement',lb_mnt:'Maintenance',lb_hr:'HR',lb_urg:'Urgent',lb_mkt:'Marketing',actions:'Actions',addTo:'Add to card',deleteBoard:'Delete board',deleteBoardQ:'Delete this board and everything on it?',cards:'cards',yes:'Delete'},
 ar:{app:'اللوحات',search:'بحث',addCard:'إضافة بطاقة',addCardBtn:'إضافة',cardPh:'اكتب عنوان البطاقة',addList:'إضافة قائمة أخرى',listPh:'اسم القائمة',addListBtn:'إضافة القائمة',cancel:'إلغاء',
   boards:'لوحاتك',newBoard:'إنشاء لوحة',boardPh:'اسم اللوحة',create:'إنشاء',filter:'تصفية',clear:'مسح التصفية',members:'الأعضاء',labels:'التصنيفات',due:'تاريخ الاستحقاق',repeat:'التكرار',
   r_:'لا يتكرر',r_daily:'يومي',r_weekly:'أسبوعي',r_monthly:'شهري',desc:'الوصف',descPh:'أضف تفاصيل: ما المطلوب، من نتواصل معه، روابط…',checklist:'قائمة المهام',addItem:'إضافة بند',itemPh:'إضافة بند',
@@ -227,7 +227,7 @@ ar:{app:'اللوحات',search:'بحث',addCard:'إضافة بطاقة',addCard
   background:'الخلفية',reset:'إعادة بيانات المعاينة',resetQ:'إرجاع اللوحات النموذجية؟ ستضيع تعديلاتك في هذه المعاينة.',preview:'معاينة: التعديلات محفوظة في هذا المتصفح فقط، ولا تُشارك مع أحد بعد.',
   dueWeek:'مستحقة هذا الأسبوع',overdueF:'متأخرة',noMatch:'لا توجد بطاقات مطابقة.',close:'إغلاق',add:'إضافة',
   l_added:'أضاف هذه البطاقة إلى {a}',l_moved:'نقل هذه البطاقة من {a} إلى {b}',l_done:'حدّد البطاقة كمكتملة',l_undone:'ألغى اكتمال البطاقة',now:'الآن',mAgo:'قبل {n} دقيقة',hAgo:'قبل {n} ساعة',
-  lb_fin:'مالية',lb_proc:'مشتريات',lb_mnt:'صيانة',lb_hr:'موارد بشرية',lb_urg:'عاجل',lb_mkt:'تسويق',actions:'إجراءات',addTo:'إضافة إلى البطاقة',deleteBoard:'حذف اللوحة',deleteBoardQ:'حذف هذه اللوحة وكل ما فيها؟',cards:'بطاقات'}};
+  lb_fin:'مالية',lb_proc:'مشتريات',lb_mnt:'صيانة',lb_hr:'موارد بشرية',lb_urg:'عاجل',lb_mkt:'تسويق',actions:'إجراءات',addTo:'إضافة إلى البطاقة',deleteBoard:'حذف اللوحة',deleteBoardQ:'حذف هذه اللوحة وكل ما فيها؟',cards:'بطاقات',yes:'حذف'}};
 let lang=(()=>{try{return localStorage.getItem('fb-lang')==='ar'?'ar':'en'}catch(e){return 'en'}})();
 const t=(k,v)=>{let s=(T[lang][k]??T.en[k]??k);if(v)Object.keys(v).forEach(x=>{s=s.replace('{'+x+'}',v[x])});return s};
 
@@ -271,6 +271,8 @@ const label=id=>LABELS.find(l=>l.id===id);
 const listOf=cid=>Object.values(D.lists).find(l=>l.cards.includes(cid));
 
 /* ---------- view state ---------- */
+let ASK=null;   // in-page "are you sure?" box (browser pop-ups are blocked in some places)
+function ask(msg,go){ASK={msg,go};V.pop=null;render();setTimeout(()=>{const b=document.querySelector('[data-a=ask-no]');b&&b.focus()},0)}
 const V={comp:null,addList:false,editList:null,editBoard:false,pop:null,card:null,filter:false,f:{q:'',members:[],labels:[],due:''}};
 
 /* ---------- helpers ---------- */
@@ -317,7 +319,8 @@ function render(){
     </div>
   </div>
   ${V.card&&D.cards[V.card]?modalHTML(D.cards[V.card]):''}
-  ${V.pop?popHTML():''}`;
+  ${V.pop?popHTML():''}
+  ${ASK?`<div class="ov" style="z-index:60;align-items:center"><div class="md" role="alertdialog" aria-modal="true" style="max-width:400px;padding:22px"><p style="margin:0 0 18px;font-size:15px;line-height:1.45">${esc(ASK.msg)}</p><div class="row" style="justify-content:flex-end"><button class="btn sec" data-a="ask-no">${t('cancel')}</button><button class="btn" style="background:#a33a2c" data-a="ask-yes">${t('yes')}</button></div></div></div>`:''}`;
   const c2=document.querySelector('.canvas');if(c2)c2.scrollLeft=sx;
   document.querySelectorAll('.list[data-id] .cards').forEach(e=>{const y=ys[e.closest('.list').dataset.id];if(y)e.scrollTop=y});
   if(V.pop)placePop();
@@ -435,8 +438,10 @@ document.addEventListener('click',e=>{
       ['To do','In progress','Done'].forEach(ln=>{const l={id:uid('l'),name:ln,cards:[],col:false};D.lists[l.id]=l;b.lists.push(l.id)});
       D.boards[b.id]=b;D.order.push(b.id);D.cur=b.id;V.pop=null;save();render();break}
     case 'bgset':B().bg=v;save();render();break;
-    case 'reset':if(confirm(t('resetQ'))){D=seed();V.pop=null;V.card=null;save();render()}break;
-    case 'bdel':if(confirm(t('deleteBoardQ'))){const b=B();b.lists.forEach(lid=>{D.lists[lid].cards.forEach(cid=>delete D.cards[cid]);delete D.lists[lid]});delete D.boards[b.id];D.order=D.order.filter(x=>x!==b.id);D.cur=D.order[0];V.pop=null;save();render()}break;
+    case 'ask-no':ASK=null;render();break;
+    case 'ask-yes':{const go=ASK&&ASK.go;ASK=null;if(go)go();render();break}
+    case 'reset':ask(t('resetQ'),()=>{D=seed();V.card=null;save()});break;
+    case 'bdel':ask(t('deleteBoardQ'),()=>{const b=B();b.lists.forEach(lid=>{D.lists[lid].cards.forEach(cid=>delete D.cards[cid]);delete D.lists[lid]});delete D.boards[b.id];D.order=D.order.filter(x=>x!==b.id);D.cur=D.order[0];save()});break;
     case 'filter':V.filter=!V.filter;render();break;
     case 'fm':V.f.members=V.f.members.includes(v)?V.f.members.filter(x=>x!==v):V.f.members.concat(v);render();break;
     case 'fl':V.f.labels=V.f.labels.includes(v)?V.f.labels.filter(x=>x!==v):V.f.labels.concat(v);render();break;
@@ -452,7 +457,7 @@ document.addEventListener('click',e=>{
     case 'lcol':D.lists[id].col=!D.lists[id].col;V.pop=null;save();render();break;
     case 'lmenu':V.pop=V.pop&&V.pop.kind==='lmenu'&&V.pop.id===id?null:{kind:'lmenu',id,anchor:`.list[data-id="${id}"] [data-a=lmenu]`};render();break;
     case 'lsort':D.lists[id].cards.sort((x,y)=>(D.cards[x].due||9e15)-(D.cards[y].due||9e15));V.pop=null;save();render();break;
-    case 'ldel':if(confirm(t('delListQ'))){D.lists[id].cards.forEach(cid=>delete D.cards[cid]);delete D.lists[id];B().lists=B().lists.filter(x=>x!==id);V.pop=null;save();render()}break;
+    case 'ldel':ask(t('delListQ'),()=>{D.lists[id].cards.forEach(cid=>delete D.cards[cid]);delete D.lists[id];B().lists=B().lists.filter(x=>x!==id);save()});break;
     case 'ov':if(e.target===a){commitModalFields();V.card=null;render()}break;
     case 'mclose':commitModalFields();V.card=null;render();break;
     case 'cm':commitModalFields();c.members=c.members.includes(v)?c.members.filter(x=>x!==v):c.members.concat(v);save();render();break;
@@ -462,7 +467,7 @@ document.addEventListener('click',e=>{
     case 'ckdel':commitModalFields();c.check.splice(+a.dataset.i,1);save();render();break;
     case 'ckadd':addCheck();break;
     case 'cmt':{const tx=document.getElementById('cmt').value.trim();if(!tx)return;commitModalFields();logTo(c,{c:tx});save();render();break}
-    case 'cdel':if(confirm(t('delQ'))){const l=listOf(c.id);if(l)l.cards.splice(l.cards.indexOf(c.id),1);delete D.cards[c.id];V.card=null;save();render()}break;
+    case 'cdel':commitModalFields();ask(t('delQ'),()=>{const l=listOf(c.id);if(l)l.cards.splice(l.cards.indexOf(c.id),1);delete D.cards[c.id];V.card=null;save()});break;
   }
 });
 function focusSel(s){const el=document.querySelector(s);if(el){el.focus();if(el.select&&el.tagName==='INPUT')el.select()}}
@@ -481,7 +486,7 @@ document.addEventListener('keydown',e=>{
   if(id==='ckin'&&e.key==='Enter'){e.preventDefault();addCheck();return}
   if(id==='mt'&&e.key==='Enter'){e.preventDefault();e.target.blur();return}
   if(e.key==='Enter'&&e.target.classList&&e.target.classList.contains('card')){V.card=e.target.dataset.id;render();return}
-  if(e.key==='Escape'){if(V.pop){V.pop=null;render()}else if(V.card){commitModalFields();V.card=null;render()}else if(V.comp){V.comp=null;render()}else if(V.addList){V.addList=false;render()}else if(V.editList){V.editList=null;render()}else if(V.editBoard){V.editBoard=false;render()}}
+  if(e.key==='Escape'){if(ASK){ASK=null;render()}else if(V.pop){V.pop=null;render()}else if(V.card){commitModalFields();V.card=null;render()}else if(V.comp){V.comp=null;render()}else if(V.addList){V.addList=false;render()}else if(V.editList){V.editList=null;render()}else if(V.editBoard){V.editBoard=false;render()}}
 });
 document.addEventListener('input',e=>{if(e.target.id==='q'){V.f.q=e.target.value;const pos=e.target.selectionStart;render();const q=document.getElementById('q');q.focus();q.setSelectionRange(pos,pos)}
   if(e.target.id==='mt'){e.target.style.height='auto';e.target.style.height=e.target.scrollHeight+'px'}});
