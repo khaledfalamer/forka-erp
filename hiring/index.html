@@ -142,6 +142,9 @@ pre.out{white-space:pre-wrap;background:#fff;border:1px solid var(--line);border
 /* ============ Language layer: English / العربية (display only — stored data and logic stay in English) ============ */
 let LANG=(()=>{try{return localStorage.getItem("forkaHireLang")==="ar"?"ar":"en"}catch(e){return "en"}})();
 const AR={
+"Guidance for AI":"إرشادات للذكاء الاصطناعي","Save guidance":"حفظ الإرشادات",
+"The AI follows this every time it drafts a job description or job ad. Write it like a note to a new HR assistant: tone, what to always include, what never to say.":"يلتزم الذكاء الاصطناعي بهذه الإرشادات في كل مرة يكتب فيها وصفاً وظيفياً أو إعلان وظيفة. اكتبها كأنها ملاحظة لمساعد موارد بشرية جديد: الأسلوب، وما يجب ذكره دائماً، وما لا يُذكر أبداً.",
+"Notes for the AI, for this job only":"ملاحظات للذكاء الاصطناعي لهذه الوظيفة فقط","Draft JD + ads with AI":"كتابة الوصف والإعلانات بالذكاء الاصطناعي",
 // nav, roles, header
 "Dashboard":"الرئيسية","CEO approvals":"موافقات الرئيس","Hiring requests":"طلبات التوظيف","Candidates":"المرشحون","Talent pool & compliance":"بنك المواهب","Careers page":"صفحة الوظائف","Team & access":"الفريق","Open roles":"الوظائف المتاحة","My applications":"طلباتي",
 "CEO · HR":"الرئيس التنفيذي","HR":"الموارد البشرية","Dept head":"رئيس القسم","Candidate":"مرشح","Department head":"رئيس القسم","CEO":"الرئيس التنفيذي","Dept head + HR":"رئيس القسم + الموارد البشرية",
@@ -389,7 +392,7 @@ function banner(m){const b=$("#banner");b.textContent=m;b.style.display=m?"block
     if(c&&c.me&&c.data&&(!c.tok||c.tok===TOKEN)){applyRemote(c,true)}   // open at once from the last visit (same sign-in only)
     ["reqs","pipe","jobs"].forEach(k=>store.watch(k,o=>{S[k]=o;afterData()}));
     store.watch("apps",o=>{S.apps=o;afterData()});
-    store.watch("config",o=>{S.team=o.team||{members:{}};S.brand=o.brand||null;afterData()});
+    store.watch("config",o=>{S.team=o.team||{members:{}};S.brand=o.brand||null;S.aiguide=o.aiguide||null;afterData()});
     await pull(false);if(!SME)return;
     setInterval(()=>{if(!document.hidden)pull(true)},30000);
     document.addEventListener("visibilitychange",()=>{if(!document.hidden)pull(true)});
@@ -398,7 +401,7 @@ function banner(m){const b=$("#banner");b.textContent=m;b.style.display=m?"block
   else { ME=await USER.id(); OWNER=!!USER.isOwner(); }
   ["reqs","pipe","jobs"].forEach(c=>store.watch(c,o=>{S[c]=o;afterData()}));
   store.watch("apps",o=>{S.apps=o;afterData()});
-  store.watch("config",o=>{S.team=o.team||{members:{}};S.brand=o.brand||null;afterData()});
+  store.watch("config",o=>{S.team=o.team||{members:{}};S.brand=o.brand||null;S.aiguide=o.aiguide||null;afterData()});
 })();
 let resolving=false;
 // Five lists arrive together; draw the page once for all of them, not five times.
@@ -573,6 +576,9 @@ function brand(){return S.brand||{intro:"We operate restaurants across the UAE a
 function pCareers(){const b=brand();
   return `<div class="top"><div><h1>Careers page</h1><p>Your employer brand: what every candidate sees first. Edit the words here; open roles appear automatically when HR posts them.</p></div>${HURL?`<a class="btn sec" href="${esc(CFG.APPLY_URL||"https://apply.forka.com/")}" target="_blank" rel="noopener">Open the careers page</a>`:`<button class="btn sec" onclick="V.viewAs='candidate';V.page=null;afterData()" ${DEMO?"disabled":""}>Preview as candidate</button>`}</div>
   <div class="grid g2"><div class="card"><label>Intro</label><textarea id="b_intro" style="min-height:120px">${esc(b.intro)}</textarea><label>Values <span class="hint">one per line</span></label><textarea id="b_vals">${esc(b.values.join("\n"))}</textarea><label>What we offer</label><textarea id="b_ben">${esc(b.benefits)}</textarea><div class="row" style="margin-top:12px"><button class="btn" onclick="saveBrand()">Save</button></div></div>
+  ${V.role==="hr"?`<div class="card" id="aiguidecard" style="margin-top:14px"><h3>Guidance for AI</h3><p class="small muted">The AI follows this every time it drafts a job description or job ad. Write it like a note to a new HR assistant: tone, what to always include, what never to say.</p>
+    <textarea id="ai_guide" style="min-height:150px" placeholder="For example:&#10;- Warm and simple English. Short sentences.&#10;- Always mention: free staff meal, visa provided, one day off a week.&#10;- Never mention salary or the branch manager's name.&#10;- Arabic ad in Gulf-friendly Modern Standard Arabic.">${esc((S.aiguide&&S.aiguide.text)||"")}</textarea>
+    <div class="row" style="margin-top:10px"><button class="btn" onclick="saveGuide()">Save guidance</button>${S.aiguide&&S.aiguide.at?`<span class="small muted">Last saved ${fmtD(S.aiguide.at)}</span>`:""}</div></div>`:""}
   <div>${heroHtml(b)}<div class="note info">${HURL?`Candidates apply at <b>apply.forka.com</b> with no account: posted jobs appear there in English and Arabic, and each application lands in Candidates with its CV. Walk-ins and email CVs: <b>+ Add applicant</b>.`:`Public candidates without a Forka account apply through hr@forka.com (position in the subject). HR logs them with <b>+ Add applicant</b> — paste the CV and the AI fills the form. Staff and invited candidates apply right here.`}</div></div></div>`}
 function heroHtml(b){return `<div class="hero"><div class="small" style="letter-spacing:2px;color:#d7b48a">FORKA COLLECTIVE · CAREERS</div><h1 style="margin:6px 0 8px">Build the region's best restaurants with us</h1><p>${esc(b.intro)}</p><div class="vals">${b.values.map(v=>`<span>${esc(v)}</span>`).join("")}</div><p class="small" style="margin-top:12px">${esc(b.benefits)}</p></div>`}
 function pTeam(){
@@ -642,6 +648,7 @@ function openReq(id){
   <div class="grid g2" style="margin-top:12px"><div class="card"><h3>The role</h3><p class="small"><b>Purpose:</b> ${esc(r.purpose||"—")}</p><p class="small"><b>Duties:</b> ${esc(r.duties||"—")}</p>${isHR||V.ceo?`<p class="small"><b>Salary range:</b> ${fmtN(r.salMin)}–${fmtN(r.salMax)} ${r.cur} total package · basic = 30%</p>`:`<p class="small"><b>Salary range:</b> ${fmtN(r.salMin)}–${fmtN(r.salMax)} ${r.cur}</p>`}</div>
   <div class="card"><h3>Scorecard inputs</h3><p class="small"><b>Must-haves:</b> ${r.mustHaves.map(esc).join(" · ")}</p><p class="small"><b>Test in interview:</b> ${r.testQs.map(esc).join(" · ")}</p><p class="small"><b>Practical:</b> ${esc(r.practical)} · <b>Traits:</b> ${r.traits.map(esc).join(", ")}${r.critical?` · <b>critical:</b> ${esc(r.critical)}`:""}</p></div></div>
   ${(isHR&&["approved","review","ready","open"].includes(r.status))?`<div class="card sec"><div class="row"><h3>Job description, ad & pre-screening</h3><span class="sp"></span>${AI_ON()?`<button class="btn sm ai" onclick="aiJD('${id}')">Draft JD + ads with AI</button>`:""}</div>
+   ${AI_ON()?`<label>Notes for the AI, for this job only <span class="hint">optional — e.g. "mention the night-shift allowance"</span></label><input id="r_ainote" maxlength="600" placeholder="Anything special about this job?">`:""}
    <label>Job description</label><textarea id="r_jd" style="min-height:140px">${esc(r.jd||"")}</textarea>
    <div class="grid g2"><div><label>Job ad — English <span class="hint">LinkedIn / Indeed</span></label><textarea id="r_ad" style="min-height:120px">${esc(r.ad||"")}</textarea></div><div><label>Job ad — Arabic</label><textarea id="r_adar" dir="rtl" style="min-height:120px">${esc(r.adAr||"")}</textarea></div></div>
    <label>Job title — Arabic <span class="hint">shown on the careers page in Arabic</span></label><input id="r_titlear" dir="rtl" value="${esc(r.titleAr||"")}">
@@ -959,6 +966,7 @@ async function memSearch(q){ try{ const hits=await USER.search(q||""); $("#m_res
 async function saveMember(){ if(!PICK)return toast("Pick a person"); const t=JSON.parse(JSON.stringify(S.team||{members:{}})); t.members=t.members||{}; t.members[PICK]={role:$("#m_role").value,dept:$("#m_role").value==="head"?$("#m_dept").value:null};
   await store.put("config","team",t); closeModal(); toast("Added"); render() }
 async function removeMember(k){ const t=JSON.parse(JSON.stringify(S.team)); delete t.members[k]; await store.put("config","team",t); render() }
+async function saveGuide(){ const v=$("#ai_guide").value.trim().slice(0,4000); await store.put("config","aiguide",{text:v,at:now(),by:V.me}); toast(v?"Guidance saved — the AI will follow it":"Guidance cleared") }
 async function saveBrand(){ await store.put("config","brand",{intro:$("#b_intro").value,values:$("#b_vals").value.split("\n").map(s=>s.trim()).filter(Boolean),benefits:$("#b_ben").value}); toast("Careers page saved") }
 
 /* ---------------- small dialogs ---------------- */
@@ -982,8 +990,10 @@ const AI_ERR={rate_limited:"AI is busy — try in a minute",aibusy:"AI is busy �
   nocv:"There is no CV file or CV text to read.",cvold:"This is an old Word (.doc) file. Ask for a PDF, or paste the CV text.",cvread:"The CV file could not be read. Paste the CV text instead.",
   missing:"The CV file was not found.",action:"The Hiring script on Google is still the old version. Paste the new script into the Forka Hiring project and deploy a New version.",net:"Can't reach the Hiring server — check the internet and try again.",role:"Only HR or this department's head can do this.",session:"Please sign in again at Forka Apps."};
 async function aiBusy(btn,fn){ btn=btn||event?.target; const old=btn?.textContent; if(btn){btn.disabled=true;btn.textContent="Working…"} try{ await fn() }catch(e){ toast(AI_ERR[e&&e.code]||("AI couldn't do that"+(e&&e.detail?" ("+String(e.detail).slice(0,140)+")":e&&e.code?" ("+e.code+")":"")+" — try again"),9000) } if(btn){btn.disabled=false;btn.textContent=old} }
+function aiGuide(){ const g=((S.aiguide&&S.aiguide.text)||"").trim(), n=(($("#r_ainote")||{}).value||"").trim();
+  return (g?`Forka HR's standing guidance. Follow it. Where it conflicts with the general instructions below, it wins:\n<guidance>\n${g}\n</guidance>\n\n`:"")+(n?`Extra notes for this job only (follow them too):\n<notes>\n${n}\n</notes>\n\n`:"") }
 function aiJD(id){ const btn=event.target; aiBusy(btn,async()=>{ const r=S.reqs[id];
-  const o=await askJSON(`You write hiring material for Forka Collective, an F&B operating group running restaurants in the UAE and Oman (Kuwaiti Kitchen, Mayar Cafe). Plain English, many readers use English as a second language. No hype.
+  const o=await askJSON(aiGuide()+`You write hiring material for Forka Collective, an F&B operating group running restaurants in the UAE and Oman (Kuwaiti Kitchen, Mayar Cafe). Plain English, many readers use English as a second language. No hype.
 Role: ${r.title} · ${r.dept} · ${r.branch}. Purpose: ${r.purpose}. Duties: ${r.duties}. Must-haves: ${r.mustHaves.join("; ")}. Practical test: ${r.practical}. Traits: ${r.traits.join(", ")}.
 Return {"jd": "job description with sections: About the role, What you'll do, What you need (must-haves), Nice to have, How we hire (CV screen, HR call, short online assessment, interview + ${r.practical}, references, offer). Include a line that the role may include other duties as assigned.", "ad":"LinkedIn post, max 120 words, tells people to email hr@forka.com with '${r.title}' in the subject", "adAr":"the same ad in natural Gulf-friendly Modern Standard Arabic", "knockout":["3 yes/no knock-out questions built from the must-haves, phrased so the right answer is Yes"]}`);
   $("#r_jd").value=o.jd||""; $("#r_ad").value=o.ad||""; $("#r_adar").value=o.adAr||""; if(o.knockout) $("#r_ko").value=o.knockout.join("\n"); toast("Draft ready — review, then Save") }) }
