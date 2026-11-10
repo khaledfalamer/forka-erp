@@ -6,6 +6,7 @@ window.FORKA_APPS = {
   PROCUREMENT_URL: 'https://procurement.forka.com/',
   PROCUREMENT_SERVER: 'https://script.google.com/macros/s/AKfycbzaeb4OB4VNk_Pz8-IGNrnLdUNFLVtdeqUIgrFFZyl_Nl11f-anrlxJJ2OiZsaJDmN22w/exec',   // Procurement's server: only woken up in the background
   HIRING_URL: 'https://script.google.com/macros/s/AKfycbx5vwTaOmiKlPMuskrdRSQfMewvX7NOkTTpXymlQgEzK5Vh8uIf95jOyWz19n7wrmN42w/exec',          // Hiring server (Apps Script web app, ends with /exec). Empty = Hiring stays on claude.ai
+  BOARDS_URL: '',          // Boards server (Apps Script web app, ends with /exec). Empty = Boards stays the sample-data preview
   APPLY_URL: 'https://apply.forka.com/',
   ERP_HOME: 'https://erp.forka.com/'
 };
