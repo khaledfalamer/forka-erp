@@ -261,6 +261,17 @@ button.st{cursor:pointer}
 .pop textarea{width:100%;min-height:70px;border-radius:8px;border:1px solid var(--line);background:var(--field);padding:8px 10px;outline:none;resize:vertical;margin-top:6px}
 .menu-b{display:none}
 .lock{font-size:12.5px;color:var(--muted);padding:6px 8px}
+/* department team */
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin:0 0 18px}
+.tab{padding:9px 14px;font-weight:600;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px;font-size:14.5px}
+.tab.on{color:var(--text);border-color:var(--bronze)}
+.tab .c{color:var(--muted);font-weight:500;margin-inline-start:4px}
+.teamadd{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px}
+.box{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.box h4{margin:0 0 4px;font-size:15px}
+.box p{margin:0 0 10px;color:var(--muted);font-size:13px}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:#23211f;color:#fff;padding:11px 16px;border-radius:10px;z-index:70;font-size:14px;box-shadow:0 8px 24px rgba(0,0,0,.3);max-width:90vw}
+@media (max-width:760px){.teamadd{grid-template-columns:1fr}}
 /* new task form */
 .ntf{padding:4px 28px 26px}
 .ntf .fl{display:block;font-size:12.5px;font-weight:600;color:var(--muted);margin:14px 0 6px}
@@ -345,7 +356,14 @@ en:{app:'Boards',search:'Search this board',addCard:'Add a card',addCardBtn:'Add
   checkLines:'Checklist (one item per line)',createTask:'Create task',need:'Fill in the boxes in red.',reqBoard:'Requests to {d}',asReq:'Request to {d}',
   reqNote:'This goes to {d} as a request. Their head sees it first and assigns it. You can follow it in My tasks.',requested:'My requests to other departments',
   fromD:'From {d}',reqBy:'requested by {p} ({d})',moveBoard:'Move to board',l_req:'sent this request from {a}',roNote:'You asked for this task. You can follow it and comment.',
-  stateL:'Where it is',doneTag:'Done'},
+  stateL:'Where it is',doneTag:'Done',
+  teamTab:'Team',teamLead:'Everyone in {d}. Add someone who already uses Forka Apps, or invite someone new. They see only the boards you add them to, or boards open to everyone in {d}.',
+  addExisting:'Add someone who already uses Forka Apps',addExistingHint:'People with a Forka Apps account who are not in a department yet.',addToTeam:'Add to team',noFree:'Everyone with an account is already in a department. Invite someone new instead.',
+  inviteNew:'Invite someone new',inviteHint:'Their name and company email. They sign in at erp.forka.com with Google.',fullName:'Full name',sendInvite:'Send invite',inviteAuto:'In the live app the invite email is sent automatically.',
+  roleL:'Role',emailL:'Email',statusL:'Status',invited:'Invite sent',active:'Active',copyInvite:'Copy invite',remove:'Remove',copied:'Invite copied. Paste it in WhatsApp or email.',
+  inviteText:'Hello {p}, you have been added to Forka Boards ({d}). Open https://erp.forka.com and sign in with Google using {e}.',
+  inviteSent:'Invite sent to {p}.',addedTo:'{p} added to {d}.',removeQ:'Remove {p} from {d}? They lose access to its boards. Their tasks stay.',
+  allDept:'Everyone in {d}',allDeptHint:'{n} people now, and anyone who joins later',inviteTo:'Invite someone new to {d}',otherDepts:'People from other departments, for this board only'},
 ar:{app:'اللوحات',search:'بحث في هذه اللوحة',addCard:'إضافة بطاقة',addCardBtn:'إضافة',cardPh:'اكتب عنوان البطاقة',addList:'إضافة قائمة أخرى',listPh:'اسم القائمة',addListBtn:'إضافة القائمة',cancel:'إلغاء',
   newBoard:'إنشاء لوحة',boardPh:'اسم اللوحة',create:'إنشاء',filter:'تصفية',clear:'مسح التصفية',members:'الأعضاء',labels:'التصنيفات',due:'تاريخ الاستحقاق',repeat:'التكرار',
   r_:'لا يتكرر',r_daily:'يومي',r_weekly:'أسبوعي',r_monthly:'شهري',desc:'الوصف',descPh:'أضف تفاصيل: ما المطلوب، من نتواصل معه، روابط…',checklist:'قائمة المهام',itemPh:'إضافة بند',
@@ -372,9 +390,16 @@ ar:{app:'اللوحات',search:'بحث في هذه اللوحة',addCard:'إض�
   checkLines:'قائمة المهام (بند في كل سطر)',createTask:'إنشاء المهمة',need:'عبّئ الخانات الحمراء.',reqBoard:'طلبات إلى {d}',asReq:'طلب إلى {d}',
   reqNote:'تُرسل إلى {d} كطلب. يراها مسؤول القسم أولاً ويُسندها. يمكنك متابعتها في مهامي.',requested:'طلباتي من الأقسام الأخرى',
   fromD:'من {d}',reqBy:'طلبها {p} ({d})',moveBoard:'نقل إلى لوحة',l_req:'أرسل هذا الطلب من {a}',roNote:'أنت طلبت هذه المهمة. يمكنك متابعتها والتعليق.',
-  stateL:'أين وصلت',doneTag:'منجزة'}};
+  stateL:'أين وصلت',doneTag:'منجزة',
+  teamTab:'الفريق',teamLead:'كل أعضاء {d}. أضف شخصاً يستخدم تطبيقات فوركا، أو ادعُ شخصاً جديداً. يرون فقط اللوحات التي تضيفهم إليها، أو اللوحات المفتوحة لكل {d}.',
+  addExisting:'أضف شخصاً يستخدم تطبيقات فوركا',addExistingHint:'أشخاص لديهم حساب في تطبيقات فوركا وليسوا في قسم بعد.',addToTeam:'أضف إلى الفريق',noFree:'كل من لديه حساب موجود في قسم. ادعُ شخصاً جديداً بدلاً من ذلك.',
+  inviteNew:'ادعُ شخصاً جديداً',inviteHint:'الاسم وبريد الشركة. يدخل إلى erp.forka.com بحساب Google.',fullName:'الاسم الكامل',sendInvite:'إرسال الدعوة',inviteAuto:'في التطبيق الفعلي تُرسل رسالة الدعوة تلقائياً.',
+  roleL:'الدور',emailL:'البريد',statusL:'الحالة',invited:'أُرسلت الدعوة',active:'نشط',copyInvite:'نسخ الدعوة',remove:'إزالة',copied:'تم نسخ الدعوة. الصقها في واتساب أو البريد.',
+  inviteText:'مرحباً {p}، تمت إضافتك إلى لوحات فوركا ({d}). افتح https://erp.forka.com وادخل بحساب Google باستخدام {e}.',
+  inviteSent:'أُرسلت الدعوة إلى {p}.',addedTo:'تمت إضافة {p} إلى {d}.',removeQ:'إزالة {p} من {d}؟ سيفقد الوصول إلى لوحاتها. تبقى مهامه.',
+  allDept:'كل أعضاء {d}',allDeptHint:'{n} أشخاص الآن، وكل من ينضم لاحقاً',inviteTo:'ادعُ شخصاً جديداً إلى {d}',otherDepts:'أشخاص من أقسام أخرى، لهذه اللوحة فقط'}};
 let lang=(()=>{try{return localStorage.getItem('fb-lang')==='ar'?'ar':'en'}catch(e){return 'en'}})();
-const t=(k,v)=>{let s=(T[lang][k]??T.en[k]??k);if(v)Object.keys(v).forEach(x=>{s=s.replace('{'+x+'}',v[x])});return s};
+const t=(k,v)=>{let s=(T[lang][k]??T.en[k]??k);if(v)Object.keys(v).forEach(x=>{s=s.split('{'+x+'}').join(v[x])});return s};
 
 /* ---------- departments and people ---------- */
 const DEPTS=[{id:'ops',en:'Operations',ar:'العمليات',tint:'#e3e8dc',dot:'#6f8a5a'},{id:'mkt',en:'Marketing',ar:'التسويق',tint:'#e2e7ec',dot:'#5b7896'},
@@ -384,7 +409,7 @@ const DEPTS=[{id:'ops',en:'Operations',ar:'العمليات',tint:'#e3e8dc',dot:
 const deptName=id=>{if(id==='ceo')return t('ceoRole');const d=DEPTS.find(x=>x.id===id);return d?d[lang]:id};
 const dept=id=>DEPTS.find(x=>x.id===id)||DEPTS[0];
 /* Preview people are roles, not real staff. The live version takes everyone from Forka Apps > People and access. */
-const PEOPLE=[
+const PEOPLE0=[
   {id:'ka',en:'Khaled Alamer',ar:'خالد العامر',ini:'KA',color:'#c27a2c',ceo:true},
   {id:'oh',en:'Operations Head',ar:'مسؤول العمليات',ini:'OH',dept:'ops',role:'head',color:'#6f8a5a'},{id:'os',en:'Operations Supervisor',ar:'مشرف العمليات',ini:'OS',dept:'ops',role:'staff',color:'#869b74'},
   {id:'mh',en:'Marketing Head',ar:'مسؤول التسويق',ini:'MH',dept:'mkt',role:'head',color:'#5b7896'},{id:'md',en:'Designer',ar:'المصمم',ini:'DS',dept:'mkt',role:'staff',color:'#7891ab'},
@@ -393,7 +418,9 @@ const PEOPLE=[
   {id:'hh',en:'HR Head',ar:'مسؤول الموارد البشرية',ini:'HR',dept:'hr',role:'head',color:'#a8655a'},
   {id:'nh',en:'Maintenance Head',ar:'مسؤول الصيانة',ini:'MN',dept:'mnt',role:'head',color:'#4f7f78'},{id:'nt',en:'Technician',ar:'الفني',ini:'TC',dept:'mnt',role:'staff',color:'#6a9a93'},
   {id:'dh',en:'Development Head',ar:'مسؤول التطوير',ini:'DH',dept:'dev',role:'head',color:'#5c6680'},
-  {id:'om',en:'Oman Manager',ar:'مدير عُمان',ini:'OM',dept:'oman',role:'head',color:'#a88a4a'}];
+  {id:'om',en:'Oman Manager',ar:'مدير عُمان',ini:'OM',dept:'oman',role:'head',color:'#a88a4a'},
+  {id:'u1',en:'Cashier',ar:'الكاشير',ini:'CA',dept:null,role:'staff',color:'#8a8178'},{id:'u2',en:'Driver',ar:'السائق',ini:'DR',dept:null,role:'staff',color:'#7d8a8a'}];
+let PEOPLE=PEOPLE0.map(p=>Object.assign({},p));
 const person=id=>PEOPLE.find(p=>p.id===id)||{id,en:id,ar:id,ini:'?',color:'#777'};
 const pname=id=>{const p=person(id);return p[lang]||p.en};
 const headOfDept=d=>PEOPLE.find(p=>p.dept===d&&p.role==='head');
@@ -404,7 +431,7 @@ const DONE_RX=/^(done|completed?|finished|مكتمل|منجز|تم)/i;
 
 /* ---------- sample data ---------- */
 function seed(){
-  const D={boards:{},lists:{},cards:{},order:[],me:'ka',dark:{}};
+  const D={boards:{},lists:{},cards:{},order:[],me:'ka',dark:{},people:PEOPLE0.map(p=>Object.assign({},p))};
   const mk=(dep,name,members,status,lists)=>{const b={id:uid('b'),dept:dep,name,members,status,lists:[]};D.boards[b.id]=b;D.order.push(b.id);
     lists.forEach(([ln,cards])=>{const l={id:uid('l'),name:ln,cards:[],col:false};D.lists[l.id]=l;b.lists.push(l.id);
       cards.forEach(c=>{const o=Object.assign({id:uid('c'),title:'',desc:'',labels:[],members:[],due:null,done:false,doneAt:null,repeat:'',check:[],log:[]},typeof c==='string'?{title:c}:c);
@@ -462,12 +489,14 @@ function seed(){
 }
 const KEY='forka-boards-preview-v3';
 let D=(()=>{try{const d=JSON.parse(localStorage.getItem(KEY)||'null');if(d&&d.boards&&d.me)return d}catch(e){}return seed()})();
+if(!D.people)D.people=PEOPLE0.map(p=>Object.assign({},p));PEOPLE=D.people;
 function save(){try{localStorage.setItem(KEY,JSON.stringify(D))}catch(e){}}
 
 /* ---------- who may do what ---------- */
 const ME=()=>D.me, meP=()=>person(D.me), isCEO=()=>!!meP().ceo;
 const headOf=dep=>isCEO()||(meP().role==='head'&&meP().dept===dep);
-const canSee=b=>!!b&&(isCEO()||headOf(b.dept)||b.members.includes(ME()));
+const canSee=b=>!!b&&(isCEO()||headOf(b.dept)||b.members.includes(ME())||(b.allDept&&meP().dept===b.dept));
+const boardPeople=b=>[...new Set((b.allDept?PEOPLE.filter(p=>p.dept===b.dept&&!p.ceo).map(p=>p.id):[]).concat(b.members))];
 const canAdmin=b=>!!b&&headOf(b.dept);
 const boards=()=>D.order.map(id=>D.boards[id]).filter(canSee);
 const depts=()=>DEPTS.filter(d=>isCEO()||headOf(d.id)||boards().some(b=>b.dept===d.id));
@@ -533,6 +562,7 @@ function render(){
     ${V.card&&D.cards[V.card]?modalHTML(D.cards[V.card]):''}
     ${V.nt?ntHTML():''}
     ${V.pop?popHTML():''}
+    ${V.toast?`<div class="toast" role="status">${esc(V.toast)}</div>`:''}
     ${ASK?`<div class="ov" style="z-index:60;align-items:center"><div class="md" role="alertdialog" aria-modal="true" style="max-width:400px;padding:22px"><p style="margin:0 0 18px;font-size:15px;line-height:1.45">${esc(ASK.msg)}</p><div class="row" style="justify-content:flex-end"><button class="btn sec" data-a="ask-no">${t('cancel')}</button><button class="btn" style="background:#a33a2c" data-a="ask-yes">${t('yes')}</button></div></div></div>`:''}
   </div>`;
   const c2=document.querySelector('.canvas');if(c2)c2.scrollLeft=sx;
@@ -563,7 +593,7 @@ function progressHTML(){
   const proj=all.filter(b=>b.kind!=='requests').sort((a,b)=>(order[a.status&&a.status.s]??3)-(order[b.status&&b.status.s]??3)).map(b=>{const s=stats(cardsOf(b));
     return `<tr class="click" data-a="board" data-id="${b.id}"><td><b>${esc(bname(b))}</b><div class="sm">${esc(deptName(b.dept))}</div></td><td>${stChip(b.status)}</td>
       <td class="sm" style="max-width:280px">${b.status&&b.status.note?esc(b.status.note)+`<div>${esc(pname(b.status.by))} · ${ago(b.status.at)}</div>`:'-'}</td>
-      <td>${pbar(s.pct)}</td><td class="num ${s.over?'bad':''}">${s.over}</td><td><div style="display:flex">${b.members.slice(0,5).map(m=>av(m)).join('')}</div></td></tr>`}).join('');
+      <td>${pbar(s.pct)}</td><td class="num ${s.over?'bad':''}">${s.over}</td><td><div style="display:flex">${boardPeople(b).slice(0,5).map(m=>av(m)).join('')}</div></td></tr>`}).join('');
   const load=PEOPLE.map(p=>{const cs=all.flatMap(cardsOf).filter(c=>c.members.includes(p.id));return {p,s:stats(cs)}}).filter(x=>x.s.total).sort((a,b)=>b.s.over-a.s.over||b.s.open-a.s.open)
     .map(({p,s})=>`<tr><td><div style="display:flex;align-items:center;gap:8px">${av(p.id)}<span>${esc(pname(p.id))}</span></div></td><td class="sm">${p.ceo?t('ceoRole'):esc(deptName(p.dept))}</td><td class="num">${s.open}</td><td class="num ${s.over?'bad':''}">${s.over}</td><td class="num">${s.week}</td><td class="num">${s.doneW}</td></tr>`).join('');
   return `<div class="page">
@@ -597,17 +627,35 @@ function mineHTML(){
       <td class="num">${c.due?`<span class="due ${dueCls(c)}" style="display:inline-flex;gap:4px;align-items:center">${ic('clock')}${fmtDay(c.due)}</span>`:''}</td></tr>`).join('')}</table></div>`:''}</div>`}
 
 /* Department page */
+function teamHTML(d){const team=PEOPLE.filter(x=>x.dept===d.id),free=PEOPLE.filter(x=>!x.dept&&!x.ceo),iv=V.inv||{name:'',email:'',bad:[]},miss=k=>iv.bad.includes(k)?'miss':'';
+  const nb=id=>D.order.map(x=>D.boards[x]).filter(b=>b&&b.dept===d.id&&!b.kind&&boardPeople(b).includes(id)).length;
+  return `<p class="lead">${esc(t('teamLead',{d:d[lang]}))}</p>
+    <div class="teamadd">
+      <div class="box"><h4>${t('addExisting')}</h4><p>${t('addExistingHint')}</p>
+        ${free.length?`<div class="row" style="margin:0"><select class="fld" id="addp" style="flex:1">${free.map(x=>`<option value="${x.id}">${esc(pname(x.id))}</option>`).join('')}</select><button class="btn" data-a="addp">${t('addToTeam')}</button></div>`:`<p style="margin:0">${t('noFree')}</p>`}</div>
+      <div class="box"><h4>${t('inviteNew')}</h4><p>${t('inviteHint')}</p>
+        ${iv.bad.length?`<div class="errbox" style="margin:0 0 8px">${t('need')}</div>`:''}
+        <div class="g3" style="grid-template-columns:1fr 1fr"><input class="fld ${miss('name')}" id="ivname" dir="auto" placeholder="${t('fullName')}" value="${esc(iv.name)}" maxlength="80"><input class="fld ${miss('email')}" id="ivemail" type="email" dir="ltr" placeholder="name@forka.com" value="${esc(iv.email)}" maxlength="120"></div>
+        <div class="row"><button class="btn" data-a="invite">${t('sendInvite')}</button><span class="lock" style="padding:0">${t('inviteAuto')}</span></div></div>
+    </div>
+    <div class="tw"><table class="tbl" id="teamtbl"><tr><th>${t('t_person')}</th><th>${t('roleL')}</th><th>${t('emailL')}</th><th class="num">${t('t_boards')}</th><th>${t('statusL')}</th><th></th></tr>
+      ${team.map(x=>`<tr><td><div style="display:flex;align-items:center;gap:8px">${av(x.id)}<b>${esc(pname(x.id))}</b></div></td><td class="sm">${x.role==='head'?t('headLabel'):t('staff')}</td>
+        <td class="sm" dir="ltr">${esc(x.email||'-')}</td><td class="num">${nb(x.id)}</td>
+        <td>${x.invited?`<span class="st risk"><i></i>${t('invited')}</span>`:`<span class="st on"><i></i>${t('active')}</span>`}</td>
+        <td style="text-align:end;white-space:nowrap">${x.invited?`<button class="btn sec" style="height:30px;font-size:13px" data-a="copyinv" data-v="${x.id}">${t('copyInvite')}</button> `:''}${x.role!=='head'?`<button class="btn dan" style="height:30px;font-size:13px" data-a="rmteam" data-v="${x.id}">${t('remove')}</button>`:''}</td></tr>`).join('')}
+    </table></div>`}
 function deptHTML(){
-  const d=dept(V.dept),bs=boards().filter(b=>b.dept===d.id),admin=headOf(d.id),h=headOfDept(d.id);
+  const d=dept(V.dept),bs=boards().filter(b=>b.dept===d.id),admin=headOf(d.id),h=headOfDept(d.id),tab=admin&&V.dtab==='team'?'team':'boards';
   return `<div class="page" style="background:${theme()==='light'?d.tint:'var(--pagebg)'}">
     <h1>${esc(d[lang])}</h1><p class="lead">${admin?t('deptLead',{n:bs.length}):t('deptLeadStaff')}${h?` · ${t('headLabel')}: <b style="color:var(--text)">${esc(pname(h.id))}</b>`:''}</p>
-    <div class="tiles">${bs.map(b=>{const s=stats(cardsOf(b));return `<button class="tile" data-a="board" data-id="${b.id}"><span class="band" style="background:${d.dot}"></span>
+    ${admin?`<div class="tabs"><button class="tab ${tab==='boards'?'on':''}" data-a="dtab" data-v="boards">${t('t_boards')}</button><button class="tab ${tab==='team'?'on':''}" data-a="dtab" data-v="team">${t('teamTab')} <span class="c">${PEOPLE.filter(x=>x.dept===d.id).length}</span></button></div>`:''}
+    ${tab==='team'?teamHTML(d):`<div class="tiles">${bs.map(b=>{const s=stats(cardsOf(b));return `<button class="tile" data-a="board" data-id="${b.id}"><span class="band" style="background:${d.dot}"></span>
         <h3>${esc(bname(b))}</h3><div>${b.kind?'':stChip(b.status)}</div>
         <div class="meta"><span>${t('openN',{n:s.open})}</span>${s.over?`<span class="bad">${t('overN',{n:s.over})}</span>`:''}</div>
-        ${pbar(s.pct)}<div class="foot"><span class="sm" style="color:var(--muted);font-size:12px">${b.status&&b.status.at?t('updated',{t:ago(b.status.at)}):''}</span><span class="who">${b.members.slice(0,6).map(m=>av(m)).join('')}</span></div></button>`}).join('')}
+        ${pbar(s.pct)}<div class="foot"><span class="sm" style="color:var(--muted);font-size:12px">${b.status&&b.status.at?t('updated',{t:ago(b.status.at)}):''}</span><span class="who">${boardPeople(b).slice(0,6).map(m=>av(m)).join('')}</span></div></button>`}).join('')}
       ${admin?(V.newBoard?`<div class="tile comp" style="justify-content:center"><input id="newb" placeholder="${t('boardPh')}" maxlength="80" dir="auto"><div class="row"><button class="btn" data-a="bnew">${t('create')}</button><button class="ib" data-a="bnew-x" aria-label="${t('cancel')}">${ic('x')}</button></div></div>`
         :`<button class="tile new" data-a="bnew-open">${ic('plus')}${t('newBoard')}</button>`):''}
-    </div>${!bs.length&&!admin?`<div class="empty-p">${t('noBoards')}</div>`:''}</div>`}
+    </div>${!bs.length&&!admin?`<div class="empty-p">${t('noBoards')}</div>`:''}`}</div>`}
 
 /* Board */
 function boardHTML(){const b=B(),d=dept(b.dept),admin=canAdmin(b);
@@ -617,7 +665,7 @@ function boardHTML(){const b=B(),d=dept(b.dept),admin=canAdmin(b);
       ${V.editBoard?`<input class="bname-in" id="bname" value="${esc(b.name)}" maxlength="80" dir="auto">`:`<button class="bname" dir="auto" data-a="${admin&&!b.kind?'bname':''}">${esc(bname(b))}</button>`}
       ${b.kind?'':stChip(b.status,admin)}
       <div class="sp"></div>
-      <div class="members hide-sm">${b.members.map(m=>av(m)).join('')}</div>
+      <div class="members hide-sm">${boardPeople(b).slice(0,8).map(m=>av(m)).join('')}</div>
       ${admin?`<button class="pill" data-a="members">${ic('users')}<span class="hide-sm">${t('members')}</span></button>`:''}
       <button class="pill ${V.filter||filtering()?'on':''}" data-a="filter">${ic('filter')}<span class="hide-sm">${t('filter')}</span></button>
       <button class="ib" data-a="bmenu" aria-label="${t('boardMenu')}" title="${t('boardMenu')}">${ic('dots')}</button>
@@ -630,7 +678,7 @@ function boardHTML(){const b=B(),d=dept(b.dept),admin=canAdmin(b);
     </div></div>`}
 function filterBar(){const f=V.f,b=B();
   return `<div class="fbar">
-    ${b.members.map(id=>`<button class="chip ${f.members.includes(id)?'on':''}" data-a="fm" data-v="${id}">${av(id)} ${esc(pname(id))}</button>`).join('')}
+    ${boardPeople(b).map(id=>`<button class="chip ${f.members.includes(id)?'on':''}" data-a="fm" data-v="${id}">${av(id)} ${esc(pname(id))}</button>`).join('')}
     ${LABELS.map(l=>`<button class="chip ${f.labels.includes(l.id)?'on':''}" data-a="fl" data-v="${l.id}"><i style="background:${l.color}"></i>${t('lb_'+l.id)}</button>`).join('')}
     <button class="chip ${f.due==='week'?'on':''}" data-a="fd" data-v="week">${ic('clock')} ${t('dueWeek')}</button>
     <button class="chip ${f.due==='over'?'on':''}" data-a="fd" data-v="over">${t('overdueF')}</button>
@@ -665,7 +713,7 @@ function cardHTML(c){
 function modalHTML(c){
   const l=listOf(c.id),b=boardOfList(l.id),admin=canAdmin(b),n=c.check.length,d=c.check.filter(x=>x.d).length,pc=n?Math.round(d/n*100):0;
   const ro=!canSee(b)&&!c.members.includes(ME());
-  const pool=[...new Set(b.members.concat(c.members,PEOPLE.filter(x=>x.dept===b.dept).map(x=>x.id)))];
+  const pool=[...new Set(boardPeople(b).concat(c.members,PEOPLE.filter(x=>x.dept===b.dept).map(x=>x.id)))];
   const moveTo=admin?Object.values(D.boards).filter(x=>x.dept===b.dept&&canAdmin(x)):[];
   const log=c.log.slice().sort((x,y)=>y.at-x.at);
   return `<div class="ov" data-a="ov"><div class="md" role="dialog" aria-modal="true" aria-label="${esc(c.title)}">
@@ -710,7 +758,7 @@ function ntDefaults(n){const ts=ntTargets(n.dept).filter(b=>!b.kind);if(!n.board
   const b=D.boards[n.board];if(b&&!b.lists.includes(n.list))n.list=b.lists[0];return n}
 function openNew(o){V.nt=ntDefaults(Object.assign({dept:myDept()==='ceo'?'ops':myDept(),board:null,list:null,title:'',members:[],due:'',pri:'normal',labels:[],desc:'',check:'',bad:[]},o||{}));V.pop=null;V.side=false;render();focusSel('#nt-title')}
 function ntSync(){const n=V.nt;if(!n)return;const g=id=>document.getElementById(id);if(g('nt-title')){n.title=g('nt-title').value;n.due=g('nt-due').value;n.pri=g('nt-pri').value;n.desc=g('nt-desc').value;n.check=g('nt-check').value}}
-function ntPool(n){const req=n.board==='__req',b=D.boards[n.board];return req?PEOPLE.filter(x=>x.dept===n.dept).map(x=>x.id):[...new Set(b.members.concat(PEOPLE.filter(x=>x.dept===n.dept&&x.role==='head').map(x=>x.id)))]}
+function ntPool(n){const req=n.board==='__req',b=D.boards[n.board];return req?PEOPLE.filter(x=>x.dept===n.dept).map(x=>x.id):[...new Set(boardPeople(b).concat(PEOPLE.filter(x=>x.dept===n.dept&&x.role==='head').map(x=>x.id)))]}
 function ntHTML(){const n=V.nt,req=n.board==='__req',b=D.boards[n.board],miss=k=>n.bad.includes(k)?'miss':'',dn=deptName(n.dept);
   const ts=ntTargets(n.dept).filter(x=>!x.kind);
   return `<div class="ov"><div class="md" role="dialog" aria-modal="true" aria-label="${t('newTask')}" style="max-width:660px">
@@ -754,10 +802,14 @@ function popHTML(){const p=V.pop,b=B();
     <button class="mi" data-a="lcol" data-id="${p.id}">${ic('collapse')}${t('collapse')}</button>
     <button class="mi" data-a="lsort" data-id="${p.id}">${ic('clock')}${t('sortDue')}</button>
     ${admin?`<hr><button class="mi dan" data-a="ldel" data-id="${p.id}">${ic('trash')}${t('delList')}</button>`:''}</div>`}
-  if(p.kind==='members'){const own=PEOPLE.filter(x=>x.dept===b.dept),oth=PEOPLE.filter(x=>x.dept!==b.dept);
-    const row=x=>{const fixed=x.ceo||(x.dept===b.dept&&x.role==='head');const on=fixed||b.members.includes(x.id);
+  if(p.kind==='members'){const own=PEOPLE.filter(x=>x.dept===b.dept),oth=PEOPLE.filter(x=>x.dept!==b.dept&&x.dept);
+    const row=x=>{const fixed=x.ceo||(x.dept===b.dept&&x.role==='head')||(b.allDept&&x.dept===b.dept);const on=fixed||b.members.includes(x.id);
       return `<button class="mrow" ${fixed?'disabled style="opacity:.7;cursor:default"':`data-a="mtoggle" data-v="${x.id}"`}>${av(x.id)}<span><span>${esc(pname(x.id))}</span><div class="r">${x.ceo?t('ceoRole'):esc(deptName(x.dept))+(x.role==='head'?' · '+t('head'):'')}</div></span><span class="tk">${on?ic('tick'):''}</span></button>`};
-    return `<div class="pop wide" id="pop"><h4>${t('pickMembers')}</h4><div class="lock">${t('memberHint')}</div>${own.map(row).join('')}<hr>${oth.map(row).join('')}</div>`}
+    return `<div class="pop wide" id="pop"><h4>${t('pickMembers')}</h4><div class="lock">${t('memberHint')}</div>
+      <button class="mrow" data-a="alldept"><span class="av" style="background:${dept(b.dept).dot}">${ic('users')}</span><span><b>${esc(t('allDept',{d:deptName(b.dept)}))}</b><div class="r">${esc(t('allDeptHint',{n:own.filter(x=>!x.ceo).length}))}</div></span><span class="tk">${b.allDept?ic('tick'):''}</span></button><hr>
+      ${own.map(row).join('')}
+      <button class="mrow" data-a="goteam" data-id="${b.dept}" style="color:var(--bronze);font-weight:600">${ic('plus')}${esc(t('inviteTo',{d:deptName(b.dept)}))}</button>
+      <hr><div class="lock">${t('otherDepts')}</div>${oth.map(row).join('')}</div>`}
   if(p.kind==='status'){const s=b.status||{};return `<div class="pop wide" id="pop"><h4>${t('setStatus')}</h4>
     ${['on','risk','off'].map(k=>`<button class="mrow" data-a="stset" data-v="${k}"><span class="st ${k}"><i></i>${t('st_'+k)}</span><span class="tk">${s.s===k?ic('tick'):''}</span></button>`).join('')}
     <div class="lock">${t('statusNote')}</div><textarea id="stnote" dir="auto" maxlength="240">${esc(s.note||'')}</textarea><div class="row"><button class="btn" data-a="stsave">${t('save')}</button></div></div>`}
@@ -792,13 +844,24 @@ document.addEventListener('click',e=>{
     case 'side':V.side=!V.side;render();break;
     case 'lang':lang=v;try{localStorage.setItem('fb-lang',v)}catch(x){}render();break;
     case 'go':V.view=v;V.dept=null;V.board=null;V.side=false;render();break;
-    case 'dept':V.view='dept';V.dept=id;V.board=null;V.side=false;V.newBoard=false;render();break;
+    case 'dept':V.view='dept';if(V.dept!==id)V.dtab='boards';V.dept=id;V.board=null;V.side=false;V.newBoard=false;V.inv=null;render();break;
     case 'board':V.view='board';V.board=id;V.dept=D.boards[id].dept;V.side=false;V.f={q:'',members:[],labels:[],due:''};V.filter=false;V.comp=null;render();break;
     case 'open':V.card=id;render();break;
     case 'bname':V.editBoard=true;render();focusSel('#bname');break;
     case 'bmenu':V.pop=V.pop&&V.pop.kind==='bmenu'?null:{kind:'bmenu',anchor:'[data-a=bmenu]'};render();break;
     case 'members':V.pop=V.pop&&V.pop.kind==='members'?null:{kind:'members',anchor:'[data-a=members]'};render();break;
     case 'status':V.pop=V.pop&&V.pop.kind==='status'?null:{kind:'status',anchor:'.bbar [data-a=status]',s:(B().status||{}).s};render();break;
+    case 'alldept':{const b=B();b.allDept=!b.allDept;save();render();break}
+    case 'goteam':V.pop=null;V.view='dept';V.dept=id;V.dtab='team';V.board=null;render();focusSel('#ivname');break;
+    case 'dtab':V.dtab=v;render();break;
+    case 'addp':{const x=person(document.getElementById('addp').value);x.dept=V.dept;x.invited=false;save();flash(t('addedTo',{p:pname(x.id),d:deptName(V.dept)}));break}
+    case 'invite':{const nm=document.getElementById('ivname').value.trim(),em=document.getElementById('ivemail').value.trim().toLowerCase(),bad=[];
+      if(!nm)bad.push('name');if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)||PEOPLE.some(x=>(x.email||'')===em))bad.push('email');
+      if(bad.length){V.inv={name:nm,email:em,bad};render();return}
+      const ini=nm.split(/\s+/).map(w=>w[0]).join('').slice(0,2).toUpperCase()||'?';
+      PEOPLE.push({id:uid('p'),en:nm,ar:nm,ini,dept:V.dept,role:'staff',color:dept(V.dept).dot,email:em,invited:true});V.inv=null;save();flash(t('inviteSent',{p:nm}));break}
+    case 'copyinv':{const x=person(v),txt=t('inviteText',{p:pname(v),d:deptName(x.dept),e:x.email});try{navigator.clipboard.writeText(txt).then(()=>flash(t('copied')),()=>flash(txt))}catch(err){flash(txt)}break}
+    case 'rmteam':{const x=person(v);ask(t('removeQ',{p:pname(v),d:deptName(x.dept)}),()=>{Object.values(D.boards).filter(b=>b.dept===x.dept).forEach(b=>{b.members=b.members.filter(m=>m!==v)});x.dept=null;save()});break}
     case 'mtoggle':{const b=B();b.members=b.members.includes(v)?b.members.filter(x=>x!==v):b.members.concat(v);save();render();break}
     case 'stset':{const b=B();b.status=Object.assign({},b.status||{},{s:v,by:ME(),at:Date.now()});save();render();break}
     case 'stsave':{const b=B(),n=document.getElementById('stnote').value.trim();b.status=Object.assign({s:'on'},b.status||{},{note:n,by:ME(),at:Date.now()});V.pop=null;save();render();break}
@@ -810,7 +873,7 @@ document.addEventListener('click',e=>{
     case 'theme':D.dark=D.dark||{};D.dark[ME()]=v==='dark';save();render();break;
     case 'ask-no':ASK=null;render();break;
     case 'ask-yes':{const go=ASK&&ASK.go;ASK=null;if(go)go();render();break}
-    case 'reset':ask(t('resetQ'),()=>{const me=D.me;D=seed();D.me=me;V.card=null;home();save()});break;
+    case 'reset':ask(t('resetQ'),()=>{const me=D.me;D=seed();PEOPLE=D.people;D.me=PEOPLE.some(x=>x.id===me)?me:'ka';V.card=null;home();save()});break;
     case 'bdel':ask(t('deleteBoardQ'),()=>{const b=B();b.lists.forEach(lid=>{D.lists[lid].cards.forEach(cid=>delete D.cards[cid]);delete D.lists[lid]});delete D.boards[b.id];D.order=D.order.filter(x=>x!==b.id);V.view='dept';V.board=null;save()});break;
     case 'filter':V.filter=!V.filter;render();break;
     case 'fm':V.f.members=V.f.members.includes(v)?V.f.members.filter(x=>x!==v):V.f.members.concat(v);render();break;
@@ -845,6 +908,7 @@ document.addEventListener('click',e=>{
     case 'cdel':commitModalFields();ask(t('delQ'),()=>{const l=listOf(c.id);if(l)l.cards.splice(l.cards.indexOf(c.id),1);delete D.cards[c.id];V.card=null;save()});break;
   }
 });
+function flash(m){V.toast=m;render();clearTimeout(flash.t);flash.t=setTimeout(()=>{V.toast=null;render()},2600)}
 function focusSel(s){const el=document.querySelector(s);if(el){el.focus();if(el.select&&el.tagName==='INPUT')el.select()}}
 function scrollListEnd(id){const el=document.querySelector(`.list[data-id="${id}"] .cards`);if(el)el.scrollTop=el.scrollHeight}
 function addList(){const inp=document.getElementById('newl');const n=inp&&inp.value.trim();if(!n)return;const l={id:uid('l'),name:n,cards:[],col:false};D.lists[l.id]=l;B().lists.push(l.id);save();render();focusSel('#newl');const cv=document.querySelector('.canvas');cv.scrollLeft=lang==='ar'?-cv.scrollWidth:cv.scrollWidth}
