@@ -22,7 +22,12 @@ async def new_task(pg, title, members=(), due='2026-11-20'):
     await pg.fill('#nt-title', title)
     for m in members: await pg.click(f'.ntf [data-a=ntm][data-v={m}]')
     if due: await pg.fill('#nt-due', due)
-    await pg.click('[data-a=ntgo]'); await pg.wait_for_timeout(120)
+    await pg.click('[data-a=ntgo]')
+    try: await pg.wait_for_selector('.ntf', state='detached', timeout=4000)
+    except Exception:
+        err = await pg.inner_text('.ntf .errbox') if await pg.locator('.ntf .errbox').count() else ''
+        print('NEW TASK FORM DID NOT CLOSE:', err, await pg.eval_on_selector_all('.ntf .miss', 'e=>e.map(x=>x.id||x.className)'), await pg.input_value('#nt-due'))
+        raise
 
 async def open_board(pg, dept, name):
     await pg.click(f'.side [data-a=dept][data-id={dept}]'); await pg.wait_for_timeout(100)

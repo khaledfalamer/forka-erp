@@ -329,8 +329,24 @@ button.st{cursor:pointer}
 .from{color:var(--bronze)!important;font-weight:600}
 .newt{width:100%;display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:12px}
 fieldset.ro{border:0;padding:0;margin:0;min-width:0}
+/* tidy: room for the close button, side boxes stacked, phone top bar */
+.mhead{padding-inline-end:58px!important}
+.side2 .row{flex-wrap:wrap}
+.side2 .row select{flex:1 1 100%!important}
+.side2 .row .btn{flex:1 1 100%;justify-content:center}
+.sm-only{display:none}
 @media (max-width:760px){
-  .g3{grid-template-columns:1fr}
+  .top{gap:8px;padding:0 10px}
+  .top .brand,.top .viewas,.top label.hide-sm{display:none}
+  .search{min-width:0}
+  .sm-only{display:block}
+  .side .viewas{width:100%;max-width:none;margin:0 0 12px}
+  .bbar{flex-wrap:wrap;row-gap:6px;padding:8px 10px}
+  .bbar .bname,.bbar .bname-in{order:-1;flex:1 1 100%;max-width:100%;font-size:19px}
+  .bbar .sp{display:none}
+  .g3{grid-template-columns:minmax(0,1fr)}
+  .fld,.ntf select,.ntf input,.ntf textarea{max-width:100%;min-width:0}
+  .md{max-width:100vw;overflow-x:hidden}
   .ntf{padding:4px 16px 24px}
   .menu-b{display:inline-flex}
   .side{position:fixed;top:52px;bottom:0;inset-inline-start:0;z-index:25;width:270px;transform:translateX(-105%);transition:transform .2s;box-shadow:0 10px 30px rgba(0,0,0,.3)}
@@ -419,7 +435,7 @@ en:{app:'Boards',search:'Search this board',addCard:'Add a card',addCardBtn:'Add
   templates:'Templates',startFrom:'Start from',tpl_blank:'Blank (To do, In progress, Done)',tpl_weekly:'Weekly plan',tpl_opening:'Branch opening',tpl_hiring:'Hiring a role',tpl_maint:'Maintenance requests',
   saveTpl:'Save board as template',tplSaved:'Saved as a template. Use it when you create a board.',cardTpl:'Save card as template',cardTplSaved:'Saved. Pick it in New task, "Start from a template".',fromTpl:'Start from a template',none:'None',mineTpl:'Saved: {n}',
   copyTo:'Copy to board',copyBtn:'Copy',copied2:'Copied to {b}.',moveTo:'Move to board',moveBtn:'Move',moved:'Moved to {b}.',
-  mentionHint:'Type @ to mention someone.',fileGone:'This file is not in this browser.'},
+  mentionHint:'Type @ to mention someone.',fileGone:'This file is not in this browser.',colour:'Change colour'},
 ar:{app:'اللوحات',search:'بحث في هذه اللوحة',addCard:'إضافة بطاقة',addCardBtn:'إضافة',cardPh:'اكتب عنوان البطاقة',addList:'إضافة قائمة أخرى',listPh:'اسم القائمة',addListBtn:'إضافة القائمة',cancel:'إلغاء',
   newBoard:'إنشاء لوحة',boardPh:'اسم اللوحة',create:'إنشاء',filter:'تصفية',clear:'مسح التصفية',members:'الأعضاء',labels:'التصنيفات',due:'تاريخ الاستحقاق',repeat:'التكرار',
   r_:'لا يتكرر',r_daily:'يومي',r_weekly:'أسبوعي',r_monthly:'شهري',desc:'الوصف',descPh:'أضف تفاصيل: ما المطلوب، من نتواصل معه، روابط…',checklist:'قائمة المهام',itemPh:'إضافة بند',
@@ -465,7 +481,7 @@ ar:{app:'اللوحات',search:'بحث في هذه اللوحة',addCard:'إض�
   templates:'القوالب',startFrom:'البدء من',tpl_blank:'فارغة (للعمل، قيد التنفيذ، منجز)',tpl_weekly:'خطة أسبوعية',tpl_opening:'افتتاح فرع',tpl_hiring:'توظيف لوظيفة',tpl_maint:'طلبات الصيانة',
   saveTpl:'حفظ اللوحة كقالب',tplSaved:'حُفظت كقالب. استخدمه عند إنشاء لوحة.',cardTpl:'حفظ البطاقة كقالب',cardTplSaved:'حُفظت. اخترها في مهمة جديدة، "البدء من قالب".',fromTpl:'البدء من قالب',none:'بدون',mineTpl:'محفوظة: {n}',
   copyTo:'نسخ إلى لوحة',copyBtn:'نسخ',copied2:'نُسخت إلى {b}.',moveTo:'نقل إلى لوحة',moveBtn:'نقل',moved:'نُقلت إلى {b}.',
-  mentionHint:'اكتب @ لذكر شخص.',fileGone:'هذا الملف غير موجود في هذا المتصفح.'}};
+  mentionHint:'اكتب @ لذكر شخص.',fileGone:'هذا الملف غير موجود في هذا المتصفح.',colour:'تغيير اللون'}};
 let lang=(()=>{try{return localStorage.getItem('fb-lang')==='ar'?'ar':'en'}catch(e){return 'en'}})();
 const t=(k,v)=>{let s=(T[lang][k]??T.en[k]??k);if(v)Object.keys(v).forEach(x=>{s=s.split('{'+x+'}').join(v[x])});return s};
 
@@ -500,12 +516,16 @@ const lname=l=>l?(l.name||T[lang]['lb_'+l.id]||T.en['lb_'+l.id]||''):'';
 const PALETTE=['#4f8a3c','#9a6b3f','#3e6aa1','#7a5aa6','#b8432f','#2f8a85','#a8732c','#5c6680','#b05a7a','#6b655c'];
 const day=864e5,today=()=>{const d=new Date();d.setHours(0,0,0,0);return d.getTime()};
 const DONE_RX=/^(done|completed?|finished|مكتمل|منجز|تم)/i;
+const SYS={todo:['To do','للعمل'],doing:['In progress','قيد التنفيذ'],done:['Done','منجز'],week:['This week','هذا الأسبوع'],now:['Doing','نعمل عليه'],wait:['Waiting on others','بانتظار الآخرين'],
+  waiting:['Waiting','بالانتظار'],newreq:['New requests','طلبات جديدة'],acc:['Accepted','مقبولة'],reported:['Reported','تم الإبلاغ'],sched:['Scheduled','مجدولة'],inprog:['In progress','قيد التنفيذ'],fixed:['Fixed','تم الإصلاح']};
+const sysKey=name=>Object.keys(SYS).find(k=>SYS[k][0]===name);
+const LN=l=>!l?'':l.sys&&SYS[l.sys]?SYS[l.sys][lang==='ar'?1:0]:l.name;
 
 /* ---------- sample data ---------- */
 function seed(){
   const D={boards:{},lists:{},cards:{},order:[],me:'ka',dark:{},people:PEOPLE0.map(p=>Object.assign({},p))};
   const mk=(dep,name,members,status,lists)=>{const b={id:uid('b'),dept:dep,name,members,status,lists:[]};D.boards[b.id]=b;D.order.push(b.id);
-    lists.forEach(([ln,cards])=>{const l={id:uid('l'),name:ln,cards:[],col:false};D.lists[l.id]=l;b.lists.push(l.id);
+    lists.forEach(([ln,cards])=>{const l={id:uid('l'),name:ln,sys:sysKey(ln),cards:[],col:false};D.lists[l.id]=l;b.lists.push(l.id);
       cards.forEach(c=>{const o=Object.assign({id:uid('c'),title:'',desc:'',labels:[],members:[],due:null,done:false,doneAt:null,repeat:'',check:[],log:[]},typeof c==='string'?{title:c}:c);
         if(typeof o.due==='number'&&Math.abs(o.due)<400)o.due=today()+o.due*day;
         if(DONE_RX.test(ln)&&!o.done){o.done=true}if(o.done&&!o.doneAt)o.doneAt=Date.now()-2*day;
@@ -559,7 +579,7 @@ function seed(){
     ['In progress',[]],['Done',[{title:'Oman section opened in Procurement',members:['om']}]]]);
   return D;
 }
-const KEY='forka-boards-preview-v3';
+const KEY='forka-boards-preview-v4';
 let D=(()=>{try{const d=JSON.parse(localStorage.getItem(KEY)||'null');if(d&&d.boards&&d.me)return d}catch(e){}return seed()})();
 if(!D.people)D.people=PEOPLE0.map(p=>Object.assign({},p));PEOPLE=D.people;
 function save(){try{localStorage.setItem(KEY,JSON.stringify(D))}catch(e){}}
@@ -584,7 +604,7 @@ const B=()=>D.boards[V.board];
 const myDept=()=>meP().ceo?'ceo':meP().dept;
 /* Each department has one "Requests to ..." board, made the first time someone sends it a request. Its head sees it and assigns the work. */
 function reqBoard(dep,create,X){X=X||D;let b=Object.values(X.boards).find(x=>x.dept===dep&&x.kind==='requests');
-  if(!b&&create){b={id:uid('b'),dept:dep,name:'',kind:'requests',members:[],status:null,lists:[]};['New requests','Accepted','Done'].forEach(ln=>{const l={id:uid('l'),name:ln,cards:[],col:false};X.lists[l.id]=l;b.lists.push(l.id)});X.boards[b.id]=b;X.order.unshift(b.id)}
+  if(!b&&create){b={id:uid('b'),dept:dep,name:'',kind:'requests',members:[],status:null,lists:[]};['newreq','acc','done'].forEach(k=>{const l={id:uid('l'),name:SYS[k][0],sys:k,cards:[],col:false};X.lists[l.id]=l;b.lists.push(l.id)});X.boards[b.id]=b;X.order.unshift(b.id)}
   return b}
 const bname=b=>b.kind==='requests'?t('reqBoard',{d:deptName(b.dept)}):b.name;
 const allCards=()=>Object.values(D.boards).flatMap(b=>cardsOf(b).map(c=>({c,b})));
@@ -649,6 +669,7 @@ function render(){
 function sideHTML(){
   const mineN=allCards().filter(({c})=>!c.done&&c.members.includes(ME())).length;
   return `<nav class="side ${V.side?'open':''}" aria-label="${t('departments')}">
+    <select class="viewas sm-only" id="viewas2" aria-label="${t('viewAs')}">${PEOPLE.map(p=>`<option value="${p.id}" ${p.id===ME()?'selected':''}>${esc(t('viewAs'))}: ${esc(pname(p.id))}</option>`).join('')}</select>
     <button class="btn newt" data-a="newtask">${ic('plus')}${t('newTask')}</button>
     <button class="nav ${V.view==='mine'?'on':''}" data-a="go" data-v="mine">${ic('inbox')}${t('mine')}<span class="n">${mineN||''}</span></button>
     ${isCEO()?`<button class="nav ${V.view==='progress'?'on':''}" data-a="go" data-v="progress">${ic('chart')}${t('progress')}</button>`:''}
@@ -692,12 +713,12 @@ function mineHTML(){
   Object.values(G).forEach(a=>a.sort((x,y)=>(x.c.due||0)-(y.c.due||0)));
   const grp=(k,cls)=>G[k].length?`<div class="mine-g ${cls||''}">${t('g_'+k)} <span class="c">${G[k].length}</span></div><div class="tw"><table class="tbl">${G[k].map(({c,b})=>{const dc=dueCls(c);
     return `<tr class="click" data-a="open" data-id="${c.id}"><td><b dir="auto">${esc(c.title)}</b>${c.labels.length?`<div style="display:flex;gap:4px;margin-top:5px">${c.labels.map(l=>`<span style="height:6px;width:28px;border-radius:3px;background:${(label(l,b)||{}).color||'#999'}"></span>`).join('')}</div>`:''}</td>
-      <td class="sm">${esc(bname(b))}<div>${esc(deptName(b.dept))} · ${esc((listOf(c.id)||{}).name||'')}</div></td><td class="num">${c.due?`<span class="due ${dc}" style="display:inline-flex;gap:4px;align-items:center">${ic('clock')}${fmtDay(c.due)}</span>`:''}</td></tr>`}).join('')}</table></div>`:'';
+      <td class="sm">${esc(bname(b))}<div>${esc(deptName(b.dept))} · ${esc(LN(listOf(c.id)))}</div></td><td class="num">${c.due?`<span class="due ${dc}" style="display:inline-flex;gap:4px;align-items:center">${ic('clock')}${fmtDay(c.due)}</span>`:''}</td></tr>`}).join('')}</table></div>`:'';
   return `<div class="page"><h1>${t('mine')}</h1><p class="lead">${t('mineLead')}</p>
     ${mine.length?grp('over','bad')+grp('today')+grp('week')+grp('later')+grp('none'):`<div class="empty-p">${t('nothingMine')}</div>`}
     ${reqs.length?`<div class="mine-g">${ic('inbox')}${t('requested')} <span class="c">${reqs.length}</span></div><div class="tw"><table class="tbl" id="myreqs">${reqs.map(({c,b})=>`<tr class="click" data-a="open" data-id="${c.id}">
       <td><b dir="auto">${esc(c.title)}</b><div class="sm">${esc(deptName(b.dept))}</div></td>
-      <td>${c.done?`<span class="st on"><i></i>${t('doneTag')}</span>`:`<span class="st none">${esc((listOf(c.id)||{}).name||'')}</span>`}</td>
+      <td>${c.done?`<span class="st on"><i></i>${t('doneTag')}</span>`:`<span class="st none">${esc(LN(listOf(c.id)))}</span>`}</td>
       <td class="sm">${c.members.length?c.members.map(m=>esc(pname(m))).join(', '):''}</td>
       <td class="num">${c.due?`<span class="due ${dueCls(c)}" style="display:inline-flex;gap:4px;align-items:center">${ic('clock')}${fmtDay(c.due)}</span>`:''}</td></tr>`).join('')}</table></div>`:''}</div>`}
 
@@ -777,10 +798,10 @@ function filterBar(){const f=V.f,b=B();
   </div>`}
 function listHTML(l,admin){
   const all=l.cards.map(id=>D.cards[id]).filter(c=>c&&!c.archived),shown=all.filter(match);
-  if(l.col)return `<div class="list col" data-id="${l.id}"><div class="lhead"><button class="ib" data-a="lcol" data-id="${l.id}" aria-label="${t('expand')}" title="${t('expand')}">${ic('expand')}</button><span class="lcount">${shown.length}</span><div class="ltitle" dir="auto">${esc(l.name)}</div></div></div>`;
+  if(l.col)return `<div class="list col" data-id="${l.id}"><div class="lhead"><button class="ib" data-a="lcol" data-id="${l.id}" aria-label="${t('expand')}" title="${t('expand')}">${ic('expand')}</button><span class="lcount">${shown.length}</span><div class="ltitle" dir="auto">${esc(LN(l))}</div></div></div>`;
   return `<div class="list" data-id="${l.id}">
     <div class="lhead ${admin?'':'nodrag'}">
-      ${V.editList===l.id?`<input class="lin" id="lname" dir="auto" value="${esc(l.name)}" maxlength="60">`:`<div class="ltitle" dir="auto" ${admin?`data-a="lname" data-id="${l.id}"`:''}>${esc(l.name)}</div>`}
+      ${V.editList===l.id?`<input class="lin" id="lname" dir="auto" value="${esc(LN(l))}" maxlength="60">`:`<div class="ltitle" dir="auto" ${admin?`data-a="lname" data-id="${l.id}"`:''}>${esc(LN(l))}</div>`}
       <span class="lcount">${filtering()?shown.length+'/'+all.length:all.length}</span>
       <button class="ib" data-a="lcol" data-id="${l.id}" aria-label="${t('collapse')}" title="${t('collapse')}">${ic('collapse')}</button>
       <button class="ib" data-a="lmenu" data-id="${l.id}" aria-label="${t('listMenu')}" title="${t('listMenu')}">${ic('dots')}</button>
@@ -812,7 +833,7 @@ function modalHTML(c){
   return `<div class="ov" data-a="ov"><div class="md" role="dialog" aria-modal="true" aria-label="${esc(c.title)}">
     <button class="ib x" data-a="mclose" aria-label="${t('close')}">${ic('x')}</button>
     <div class="mhead">${ic('card')}<textarea class="mt" dir="auto" id="mt" rows="1" maxlength="300" ${ro?'readonly':''}>${esc(c.title)}</textarea></div>
-    <div class="msub">${esc(bname(b))} · ${t('inList')} <b>${esc(l?l.name:'')}</b>${c.requester?` · <span class="from">${esc(t('reqBy',{p:pname(c.requester),d:deptName(c.fromDept)}))}</span>`:''}</div>
+    <div class="msub">${esc(bname(b))} · ${t('inList')} <b>${esc(LN(l))}</b>${c.requester?` · <span class="from">${esc(t('reqBy',{p:pname(c.requester),d:deptName(c.fromDept)}))}</span>`:''}</div>
     ${ro?`<div class="reqnote" style="margin:6px 28px 0">${ic('inbox')}${t('roNote')}</div>`:''}
     <div class="mbody"><div><fieldset class="ro" ${ro?'disabled':''}>
       <div class="sec kv">
@@ -845,7 +866,7 @@ function modalHTML(c){
       <div class="sl" style="font-size:12px;font-weight:600;color:var(--muted);margin:14px 0 6px">${t('repeat')}</div>
       <select class="fld" style="width:100%" id="crep">${['','daily','weekly','monthly'].map(r=>`<option value="${r}" ${c.repeat===r?'selected':''}>${t('r_'+r)}</option>`).join('')}</select>
       <div class="sl" style="font-size:12px;font-weight:600;color:var(--muted);margin:14px 0 6px">${t('move')}</div>
-      <select class="fld" style="width:100%" id="cmove">${b.lists.map(id=>`<option value="${id}" ${l&&l.id===id?'selected':''}>${esc(D.lists[id].name)}</option>`).join('')}</select>
+      <select class="fld" style="width:100%" id="cmove">${b.lists.map(id=>`<option value="${id}" ${l&&l.id===id?'selected':''}>${esc(LN(D.lists[id]))}</option>`).join('')}</select>
       <div class="sl" style="font-size:12px;font-weight:600;color:var(--muted);margin:14px 0 6px">${t('copyTo')}</div>
       <div class="row" style="margin:0"><select class="fld" style="flex:1;min-width:0" id="ccopy">${copyTo.map(x=>`<option value="${x.id}" ${x.id===b.id?'selected':''}>${esc(bname(x))}</option>`).join('')}</select><button class="btn sec" data-a="ccopy">${ic('copy')}${t('copyBtn')}</button></div>
       ${moveTo.length>1?`<div class="sl" style="font-size:12px;font-weight:600;color:var(--muted);margin:14px 0 6px">${t('moveTo')}</div>
@@ -876,7 +897,7 @@ function ntHTML(){const n=V.nt,req=n.board==='__req',b=D.boards[n.board],miss=k=
       <div class="g3">
         <div><label class="fl" for="nt-dept">${t('forDept')}</label><select class="fld" id="nt-dept">${DEPTS.map(d=>`<option value="${d.id}" ${d.id===n.dept?'selected':''}>${esc(d[lang])}</option>`).join('')}</select></div>
         <div><label class="fl" for="nt-board">${t('onBoard')}</label><select class="fld" id="nt-board">${ts.map(x=>`<option value="${x.id}" ${x.id===n.board?'selected':''}>${esc(bname(x))}</option>`).join('')}<option value="__req" ${req?'selected':''}>${esc(t('asReq',{d:dn}))}</option></select></div>
-        <div><label class="fl" for="nt-list">${t('inListL')}</label><select class="fld" id="nt-list" ${req?'disabled':''}>${req?`<option>New requests</option>`:b.lists.map(id=>`<option value="${id}" ${id===n.list?'selected':''}>${esc(D.lists[id].name)}</option>`).join('')}</select></div>
+        <div><label class="fl" for="nt-list">${t('inListL')}</label><select class="fld" id="nt-list" ${req?'disabled':''}>${req?`<option>${esc(SYS.newreq[lang==='ar'?1:0])}</option>`:b.lists.map(id=>`<option value="${id}" ${id===n.list?'selected':''}>${esc(LN(D.lists[id]))}</option>`).join('')}</select></div>
       </div>
       ${req?`<div class="reqnote">${ic('inbox')}<span>${esc(t('reqNote',{d:dn}))}</span></div>`:''}
       <label class="fl">${t('assignTo')} ${req?'':'<b>*</b>'}</label>
@@ -898,7 +919,7 @@ function ntCreate(){ntSync();const n=V.nt,req=n.board==='__req',bad=[];
   const c={id:uid('c'),title:n.title.trim().replace(/\s+/g,' '),desc:n.desc.trim(),labels:n.labels.slice(),members:n.members.slice(),due:new Date(n.due+'T00:00:00').getTime(),
     done:DONE_RX.test(l.name),doneAt:DONE_RX.test(l.name)?Date.now():null,repeat:'',priority:n.pri,check:n.check.split('\n').map(x=>x.trim()).filter(Boolean).map(x=>({t:x,d:false})),log:[]};
   if(req||myDept()!==b.dept){c.requester=ME();c.fromDept=myDept()}
-  logTo(c,req?{k:'l_req',a:deptName(myDept())}:{k:'l_added',a:l.name});D.cards[c.id]=c;l.cards.push(c.id);V.nt=null;
+  logTo(c,req?{k:'l_req',a:deptName(myDept())}:{k:'l_added',a:LN(l)});D.cards[c.id]=c;l.cards.push(c.id);V.nt=null;
   c.members.forEach(m=>notify(m,'assign',c.id));if(req){const h=headOfDept(n.dept);if(h)notify(h.id,'req',c.id,{d:n.dept})}
   save();render()}
 function popHTML(){const p=V.pop,b=B();
@@ -907,12 +928,12 @@ function popHTML(){const p=V.pop,b=B();
     ${b&&canAdmin(b)?`<button class="mi" data-a="labels">${ic('tag')}${t('editLabels')}</button><button class="mi" data-a="btpl">${ic('copy')}${t('saveTpl')}</button>`:''}
     <hr><button class="mi" data-a="reset">${ic('repeat')}${t('reset')}</button>${b&&canAdmin(b)?`<button class="mi dan" data-a="bdel">${ic('trash')}${t('deleteBoard')}</button>`:''}</div>`;
   if(p.kind==='labels')return `<div class="pop wide" id="pop"><h4>${t('editLabels')}</h4><div class="lock">${t('labelsHint')}</div>
-    ${labelsOf(b).map(l=>`<div class="labrow"><button class="sw" style="background:${l.color}" data-a="labcol" data-v="${l.id}" aria-label="colour"></button><input class="labname" data-lab="${l.id}" dir="auto" maxlength="30" value="${esc(lname(l))}" aria-label="${t('labelName')}"><button class="ib" data-a="labdel" data-v="${l.id}" aria-label="${t('removeF')}">${ic('x')}</button></div>`).join('')}
+    ${labelsOf(b).map(l=>`<div class="labrow"><button class="sw" style="background:${l.color}" data-a="labcol" data-v="${l.id}" aria-label="${t('colour')}" title="${t('colour')}"></button><input class="labname" data-lab="${l.id}" dir="auto" maxlength="30" value="${esc(lname(l))}" aria-label="${t('labelName')}"><button class="ib" data-a="labdel" data-v="${l.id}" aria-label="${t('removeF')}">${ic('x')}</button></div>`).join('')}
     <button class="mi" data-a="labadd">${ic('plus')}${t('addLabel')}</button></div>`;
   if(p.kind==='archive'){const ac=b.lists.flatMap(l=>D.lists[l]?D.lists[l].cards.map(id=>D.cards[id]).filter(c=>c&&c.archived&&!(D.lists[l].archived)):[]),al=b.lists.map(id=>D.lists[id]).filter(l=>l&&l.archived),adm=canAdmin(b);
     return `<div class="pop wide" id="pop" style="width:360px"><h4>${t('archived')}</h4>${!ac.length&&!al.length?`<div class="lock">${t('noArch')}</div>`:''}
-      ${al.map(l=>`<div class="arch"><span dir="auto"><b>${esc(l.name)}</b><small>${t('archiveList')} · ${l.cards.length} ${t('cards')}</small></span>${adm?`<button class="btn sec" data-a="lrestore" data-v="${l.id}">${t('restore')}</button><button class="btn dan" data-a="lgone" data-v="${l.id}">${t('delForever')}</button>`:''}</div>`).join('')}
-      ${ac.map(c=>`<div class="arch"><span dir="auto">${esc(c.title)}<small>${esc((listOf(c.id)||{}).name||'')} · ${c.archivedAt?ago(c.archivedAt):''}</small></span><button class="btn sec" data-a="crestore" data-v="${c.id}">${t('restore')}</button>${adm?`<button class="btn dan" data-a="cgone" data-v="${c.id}">${t('delForever')}</button>`:''}</div>`).join('')}</div>`}
+      ${al.map(l=>`<div class="arch"><span dir="auto"><b>${esc(LN(l))}</b><small>${t('archiveList')} · ${l.cards.length} ${t('cards')}</small></span>${adm?`<button class="btn sec" data-a="lrestore" data-v="${l.id}">${t('restore')}</button><button class="btn dan" data-a="lgone" data-v="${l.id}">${t('delForever')}</button>`:''}</div>`).join('')}
+      ${ac.map(c=>`<div class="arch"><span dir="auto">${esc(c.title)}<small>${esc(LN(listOf(c.id)))} · ${c.archivedAt?ago(c.archivedAt):''}</small></span><button class="btn sec" data-a="crestore" data-v="${c.id}">${t('restore')}</button>${adm?`<button class="btn dan" data-a="cgone" data-v="${c.id}">${t('delForever')}</button>`:''}</div>`).join('')}</div>`}
   if(p.kind==='notes'){const L=notesFor();return `<div class="pop wide" id="pop" style="width:360px"><h4>${t('alerts')}</h4>
     ${L.length?L.map(x=>`<button class="note-i ${x.read?'':'unread'}" data-a="nopen" data-v="${x.id||''}" data-id="${x.card}">${av(x.by||ME())}<span><span dir="auto">${esc(x.txt)}</span><small dir="auto">${esc(x.title)} · ${x.at?ago(x.at):''}</small></span></button>`).join(''):`<div class="lock">${t('noAlerts')}</div>`}
     <hr><button class="mi" data-a="nread">${ic('tick')}${t('markRead')}</button>
@@ -951,20 +972,20 @@ const unread=()=>(D.notes||[]).filter(x=>x.to===ME()&&!x.read&&D.cards[x.card]).
 function withMentions(txt){let h=esc(txt);PEOPLE.forEach(p=>[p.en,p.ar].forEach(nm=>{if(nm){const e=esc('@'+nm);h=h.split(e).join(`<span class="ment">${e}</span>`)}}));return h}
 function mentioned(txt){return PEOPLE.filter(p=>[p.en,p.ar].some(nm=>nm&&txt.includes('@'+nm))).map(p=>p.id)}
 /* Templates: a few ready-made boards plus boards and cards saved by heads. */
-const TPLS=[{id:'blank',lists:['To do','In progress','Done']},{id:'weekly',lists:['This week','Doing','Waiting on others','Done']},
-  {id:'opening',lists:['To do','In progress','Waiting','Done'],cards:['Trade licence renewed','Signage approved','Kitchen equipment installed','POS and printers set up','Staff rota for opening week','Opening stock order','Health and safety check']},
-  {id:'hiring',lists:['To do','Doing','Done'],cards:['Write the job ad','Post on the careers page','Screen CVs','Interviews','References','Offer and contract']},
-  {id:'maint',lists:['Reported','Scheduled','In progress','Fixed']}];
+const TPLS=[{id:'blank',lists:['todo','doing','done']},{id:'weekly',lists:['week','now','wait','done']},
+  {id:'opening',lists:['todo','doing','waiting','done'],cards:[['Trade licence renewed','تجديد الرخصة التجارية'],['Signage approved','اعتماد اللوحات'],['Kitchen equipment installed','تركيب معدات المطبخ'],['POS and printers set up','تجهيز نقاط البيع والطابعات'],['Staff rota for opening week','جدول الموظفين لأسبوع الافتتاح'],['Opening stock order','طلب مخزون الافتتاح'],['Health and safety check','فحص الصحة والسلامة']]},
+  {id:'hiring',lists:['todo','now','done'],cards:[['Write the job ad','كتابة إعلان الوظيفة'],['Post on the careers page','النشر في صفحة الوظائف'],['Screen CVs','فرز السير الذاتية'],['Interviews','المقابلات'],['References','التحقق من المراجع'],['Offer and contract','العرض والعقد']]},
+  {id:'maint',lists:['reported','sched','inprog','fixed']}];
 const allTpls=()=>TPLS.map(x=>({id:x.id,name:t('tpl_'+x.id)})).concat((D.tpls||[]).map(x=>({id:x.id,name:t('mineTpl',{n:x.name})})));
 function makeBoard(dep,name,tplId){const h=headOfDept(dep);const b={id:uid('b'),dept:dep,name,members:[...new Set([h?h.id:null,ME()].filter(x=>x&&!person(x).ceo))],status:null,lists:[]};
   const saved=(D.tpls||[]).find(x=>x.id===tplId),bi=TPLS.find(x=>x.id===tplId)||TPLS[0];
-  const lists=saved?saved.lists:bi.lists.map((ln,i)=>({name:ln,cards:i===0?(bi.cards||[]).map(title=>({title})):[]}));
+  const lists=saved?saved.lists:bi.lists.map((k,i)=>({name:SYS[k][0],sys:k,cards:i===0?(bi.cards||[]).map(x=>({title:x[lang==='ar'?1:0]})):[]}));
   if(saved)b.labels=saved.labels?JSON.parse(JSON.stringify(saved.labels)):undefined;
-  lists.forEach(L=>{const ln=typeof L==='string'?L:L.name,l={id:uid('l'),name:ln,cards:[],col:false};D.lists[l.id]=l;b.lists.push(l.id);
+  lists.forEach(L=>{const ln=typeof L==='string'?L:L.name,l={id:uid('l'),name:ln,sys:L.sys||undefined,cards:[],col:false};D.lists[l.id]=l;b.lists.push(l.id);
     (L.cards||[]).forEach(x=>{const c={id:uid('c'),title:x.title,desc:x.desc||'',labels:(x.labels||[]).slice(),members:[],due:null,done:DONE_RX.test(ln),doneAt:null,repeat:'',priority:x.priority||'normal',check:(x.check||[]).map(k=>({t:k.t,d:false})),log:[]};
-      logTo(c,{k:'l_added',a:ln});D.cards[c.id]=c;l.cards.push(c.id)})});
+      logTo(c,{k:'l_added',a:LN(l)});D.cards[c.id]=c;l.cards.push(c.id)})});
   D.boards[b.id]=b;D.order.push(b.id);return b}
-function boardAsTpl(b){return {id:uid('t'),name:b.name,labels:b.labels?JSON.parse(JSON.stringify(b.labels)):null,lists:liveLists(b).map(id=>({name:D.lists[id].name,
+function boardAsTpl(b){return {id:uid('t'),name:b.name,labels:b.labels?JSON.parse(JSON.stringify(b.labels)):null,lists:liveLists(b).map(id=>({name:D.lists[id].name,sys:D.lists[id].sys,
   cards:D.lists[id].cards.map(cid=>D.cards[cid]).filter(c=>c&&!c.archived).map(c=>({title:c.title,desc:c.desc,labels:c.labels,priority:c.priority,check:c.check}))}))}}
 function ensureLabels(b){if(!b.labels)b.labels=LABELS.map(l=>({id:l.id,color:l.color,name:lname(l)}));return b.labels}
 /* Files: kept in this browser (IndexedDB) in the preview; the live app saves them to a private Google Drive folder. */
@@ -978,9 +999,9 @@ function copyCard(c,b2){const l2=D.lists[liveLists(b2).find(id=>D.lists[id].name
     check:c.check.map(k=>({t:k.t,d:k.d})),atts:(c.atts||[]).map(a=>Object.assign({},a)),cover:c.cover||null,log:[]};
   logTo(x,{k:'l_added',a:l2.name});D.cards[x.id]=x;l2.cards.push(x.id);return x}
 function addCard(lid,title){title=title.trim();if(!title)return;const l=D.lists[lid];const c={id:uid('c'),title,desc:'',labels:[],members:[],due:null,done:DONE_RX.test(l.name),doneAt:DONE_RX.test(l.name)?Date.now():null,repeat:'',check:[],log:[]};
-  logTo(c,{k:'l_added',a:l.name});D.cards[c.id]=c;l.cards.push(c.id);save()}
+  logTo(c,{k:'l_added',a:LN(l)});D.cards[c.id]=c;l.cards.push(c.id);save()}
 function moveCard(cid,toL,idx){const from=listOf(cid);if(!from)return;from.cards.splice(from.cards.indexOf(cid),1);const to=D.lists[toL];idx=Math.max(0,Math.min(idx,to.cards.length));to.cards.splice(idx,0,cid);
-  const c=D.cards[cid];if(from.id!==toL){logTo(c,{k:'l_moved',a:from.name,b:to.name});
+  const c=D.cards[cid];if(from.id!==toL){logTo(c,{k:'l_moved',a:LN(from),b:LN(to)});
     if(DONE_RX.test(to.name)&&!c.done){c.done=true;c.doneAt=Date.now();logTo(c,{k:'l_done'})}else if(DONE_RX.test(from.name)&&!DONE_RX.test(to.name)&&c.done){c.done=false;c.doneAt=null;logTo(c,{k:'l_undone'})}}save()}
 function commitModalFields(){const c=D.cards[V.card];if(!c)return;const mt=document.getElementById('mt'),de=document.getElementById('cdesc');
   if(mt&&mt.value.trim())c.title=mt.value.trim().replace(/\s+/g,' ');if(de)c.desc=de.value;save()}
@@ -1093,12 +1114,12 @@ document.addEventListener('click',e=>{
   }
 });
 async function await_(k){const bl=await FILES.get(k);if(!bl){flash(t('fileGone'));return}const w=window.open(URL.createObjectURL(bl),'_blank');if(!w)location.href=URL.createObjectURL(bl)}
-function flash(m){V.toast=m;render();clearTimeout(flash.t);flash.t=setTimeout(()=>{V.toast=null;render()},2600)}
+function flash(m){V.toast=m;render();clearTimeout(flash.t);flash.t=setTimeout(()=>{V.toast=null;const el=document.querySelector('.toast');if(el)el.remove()},2600)}   // never redraw here: it would wipe what someone is typing
 function focusSel(s){const el=document.querySelector(s);if(el){el.focus();if(el.select&&el.tagName==='INPUT')el.select()}}
 function scrollListEnd(id){const el=document.querySelector(`.list[data-id="${id}"] .cards`);if(el)el.scrollTop=el.scrollHeight}
 function addList(){const inp=document.getElementById('newl');const n=inp&&inp.value.trim();if(!n)return;const l={id:uid('l'),name:n,cards:[],col:false};D.lists[l.id]=l;B().lists.push(l.id);save();render();focusSel('#newl');const cv=document.querySelector('.canvas');cv.scrollLeft=lang==='ar'?-cv.scrollWidth:cv.scrollWidth}
 function addCheck(){const inp=document.getElementById('ckin');const v=inp&&inp.value.trim();if(!v)return;commitModalFields();D.cards[V.card].check.push({t:v,d:false});save();render();focusSel('#ckin')}
-function saveListName(){const inp=document.getElementById('lname');if(inp&&V.editList&&inp.value.trim())D.lists[V.editList].name=inp.value.trim();V.editList=null;save();render()}
+function saveListName(){const inp=document.getElementById('lname'),l=V.editList&&D.lists[V.editList];if(inp&&l&&inp.value.trim()&&inp.value.trim()!==LN(l)){l.name=inp.value.trim();delete l.sys}V.editList=null;save();render()}
 function saveBoardName(){const inp=document.getElementById('bname');if(inp&&inp.value.trim())B().name=inp.value.trim();V.editBoard=false;save();render()}
 document.addEventListener('keydown',e=>{
   const id=e.target.id;
@@ -1122,7 +1143,7 @@ document.addEventListener('input',e=>{
   if(e.target.id==='q'){V.f.q=e.target.value;const pos=e.target.selectionStart;render();const q=document.getElementById('q');q.focus();q.setSelectionRange(pos,pos)}
   if(e.target.id==='mt'){e.target.style.height='auto';e.target.style.height=e.target.scrollHeight+'px'}});
 document.addEventListener('change',e=>{
-  if(e.target.id==='viewas'){D.me=e.target.value;V.card=null;V.pop=null;V.nt=null;home();save();render();return}
+  if(e.target.id==='viewas'||e.target.id==='viewas2'){D.me=e.target.value;V.side=false;V.card=null;V.pop=null;V.nt=null;home();save();render();return}
   if(V.nt&&['nt-dept','nt-board','nt-list'].includes(e.target.id)){ntSync();const n=V.nt;
     if(e.target.id==='nt-dept'){n.dept=e.target.value;n.board=null;n.members=[]}
     if(e.target.id==='nt-board'){n.board=e.target.value;n.list=null;n.members=n.members.filter(m=>ntPool(Object.assign({},n)).includes(m))}
