@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Forka Apps - How to use</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@500;600&family=Inter+Tight:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--charcoal:#23211f;--paper:#f6f3ee;--card:#fffdf9;--line:#e5dfd5;--bronze:#9a6b3f;--bronze-soft:#efe4d4;--text:#23211f;--muted:#6b655c;--ok:#4f7a3a;--bad:#a33a2c;
+  --sans:'Inter Tight','IBM Plex Sans Arabic',system-ui,sans-serif;--serif:'EB Garamond',Georgia,serif}
+html[dir=rtl]{--sans:'IBM Plex Sans Arabic','Inter Tight',system-ui,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--text);font-family:var(--sans);line-height:1.55;-webkit-font-smoothing:antialiased}
+a{color:var(--bronze)}
+.top{position:sticky;top:0;z-index:5;background:var(--charcoal);color:#f3eee6;display:flex;align-items:center;gap:14px;padding:12px 20px}
+.top b{font-family:var(--serif);letter-spacing:.32em;font-size:19px}
+.top .t{color:#d7b48a;font-weight:600;font-size:14px}
+.top .sp{flex:1}
+.seg{display:flex;background:#2a2724;border-radius:999px;padding:3px}
+.seg button{border:0;background:none;color:#a9a196;font:inherit;font-size:13px;font-weight:600;padding:4px 11px;border-radius:999px;cursor:pointer}
+.seg button.on{background:var(--bronze);color:#fff}
+.home{color:#f3eee6;text-decoration:none;font-size:13px;font-weight:600;border:1px solid #4a443d;border-radius:8px;padding:5px 10px}
+.wrap{max-width:1080px;margin:0 auto;padding:28px 20px 60px;display:grid;grid-template-columns:230px 1fr;gap:28px}
+nav.toc{position:sticky;top:76px;align-self:start;font-size:14px}
+nav.toc a{display:block;padding:6px 10px;border-radius:7px;color:var(--text);text-decoration:none}
+nav.toc a:hover{background:#ece6dc}
+nav.toc h5{font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:16px 10px 6px}
+html[dir=rtl] nav.toc h5{letter-spacing:0}
+h1{font-family:var(--serif);font-size:36px;font-weight:600;margin:0 0 6px;line-height:1.15}
+.lead{color:var(--muted);font-size:16px;margin:0 0 20px}
+.who{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 26px}
+.who span{font-size:13px;color:var(--muted);align-self:center;margin-inline-end:4px}
+.who button{border:1px solid var(--line);background:var(--card);color:var(--text);font:inherit;font-size:14px;font-weight:600;padding:7px 14px;border-radius:999px;cursor:pointer}
+.who button.on{background:var(--charcoal);border-color:var(--charcoal);color:#fff}
+section{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px 24px;margin-bottom:16px;scroll-margin-top:80px}
+section h2{font-family:var(--serif);font-size:25px;font-weight:600;margin:0 0 4px}
+section .for{display:inline-block;font-size:12px;font-weight:600;color:var(--bronze);background:var(--bronze-soft);border-radius:999px;padding:2px 10px;margin-bottom:10px}
+section h3{font-size:16px;margin:18px 0 6px}
+section p{margin:6px 0}
+ol,ul{margin:6px 0;padding-inline-start:22px}
+li{margin:4px 0}
+.ui{font-weight:600;background:#f1ece4;border-radius:5px;padding:0 5px;white-space:nowrap}
+.tip{border-inline-start:3px solid var(--bronze);background:#faf6ef;padding:9px 12px;border-radius:6px;margin:12px 0;font-size:14.5px}
+.rule{border-inline-start:3px solid var(--bad);background:#fbf0ed;padding:9px 12px;border-radius:6px;margin:12px 0;font-size:14.5px}
+table{width:100%;border-collapse:collapse;font-size:14px;margin:8px 0}
+th,td{text-align:start;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;color:var(--muted);font-weight:600}
+.hidden{display:none}
+.print{border:1px solid var(--line);background:var(--card);font:inherit;font-size:13px;font-weight:600;padding:7px 14px;border-radius:8px;cursor:pointer}
+@media (max-width:820px){.wrap{grid-template-columns:1fr;padding:18px 14px 50px}nav.toc{display:none}h1{font-size:29px}section{padding:18px 16px}.top .t{display:none}}
+@media print{.top,.who,nav.toc,.print{display:none!important}.wrap{display:block;padding:0}section{break-inside:avoid;border:0;border-bottom:1px solid #ccc;border-radius:0}body{background:#fff}.hidden{display:block!important}}
+</style>
+</head>
+<body>
+<div class="top"><b>FORKA</b><span class="t" id="tt"></span><span class="sp"></span>
+  <a class="home" href="/" id="homel"></a>
+  <div class="seg"><button data-l="en">EN</button><button data-l="ar">عربي</button></div></div>
+<div class="wrap"><nav class="toc" id="toc"></nav><main id="main"></main></div>
+<script>
+/* Forka Apps guide for the team. Every step names the button as it appears on screen.
+   Sections are tagged by role; "I am" shows only the parts for that person (everyone sees "Start here" and "Problems"). */
+const ROLES=['all','staff','head','store','hr','ceo'];
+const R={en:{all:'Everyone',staff:'Staff',head:'Department head',store:'Purchasing, store and finance',hr:'HR',ceo:'CEO'},
+         ar:{all:'الجميع',staff:'الموظفون',head:'مسؤول القسم',store:'المشتريات والمستودع والمالية',hr:'الموارد البشرية',ceo:'الرئيس التنفيذي'}};
+const W={en:{tt:'How to use Forka Apps',home:'Open Forka Apps',title:'How to use Forka Apps',lead:'Short, step by step. Pick who you are to see only what you need.',iam:'I am:',print:'Print this guide',contents:'Contents',for:'For: '},
+         ar:{tt:'دليل استخدام تطبيقات فوركا',home:'فتح تطبيقات فوركا',title:'دليل استخدام تطبيقات فوركا',lead:'خطوات قصيرة وواضحة. اختر دورك لترى ما يخصك فقط.',iam:'أنا:',print:'طباعة الدليل',contents:'المحتويات',for:'لـ: '}};
+const u=s=>`<span class="ui">${s}</span>`;
+const S=[
+{id:'start',roles:['all'],en:{h:'Start here: signing in',b:`
+<p>Forka Apps is one place for all our work apps: <b>erp.forka.com</b>. It works on a computer and on a phone.</p>
+<h3>Sign in</h3><ol>
+<li>Open <b>erp.forka.com</b>.</li>
+<li>Press ${u('Sign in with Google')} and choose your <b>company email</b> (for example name@forka.com).</li>
+<li>No company email? Press ${u('No company email? Sign in with a PIN')} and type the PIN the CEO gave you.</li>
+<li>You see the apps you are allowed to open. Press one to start.</li></ol>
+<h3>First time</h3><ul>
+<li>If you see ${u('Request access')}: write your name, job title and what you need, then press ${u('Send request')}. The CEO allows or rejects it.</li>
+<li>${u('Access being confirmed')} means you are on the list. Wait for the CEO to confirm.</li></ul>
+<h3>Every day</h3><ul>
+<li>Switch language with ${u('EN')} / ${u('عربي')} at the top.</li>
+<li>On a phone: open erp.forka.com, then "Add to Home Screen" in the browser menu. It opens like an app.</li>
+<li>On a shared computer, press ${u('Sign out')} when you finish.</li></ul>
+<div class="rule">Never share your PIN or let someone use your sign-in. Everything you do is recorded with your name.</div>`},
+ ar:{h:'ابدأ هنا: تسجيل الدخول',b:`
+<p>تطبيقات فوركا مكان واحد لكل تطبيقات العمل: <b>erp.forka.com</b>. تعمل على الكمبيوتر والهاتف.</p>
+<h3>تسجيل الدخول</h3><ol>
+<li>افتح <b>erp.forka.com</b>.</li>
+<li>اضغط ${u('الدخول بحساب Google')} واختر <b>بريد الشركة</b> (مثل name@forka.com).</li>
+<li>لا يوجد بريد للشركة؟ اضغط ${u('لا يوجد بريد للشركة؟ ادخل بالرقم السري')} واكتب الرقم السري الذي أعطاك إياه الرئيس التنفيذي.</li>
+<li>تظهر لك التطبيقات المسموحة لك. اضغط على أحدها للبدء.</li></ol>
+<h3>أول مرة</h3><ul>
+<li>إذا ظهرت ${u('طلب صلاحية دخول')}: اكتب اسمك ومسماك الوظيفي وما تحتاجه، ثم اضغط ${u('إرسال الطلب')}. يوافق الرئيس التنفيذي أو يرفض.</li>
+<li>${u('بانتظار تأكيد الصلاحية')} تعني أنك في القائمة. انتظر تأكيد الرئيس التنفيذي.</li></ul>
+<h3>كل يوم</h3><ul>
+<li>غيّر اللغة من ${u('EN')} / ${u('عربي')} في الأعلى.</li>
+<li>على الهاتف: افتح erp.forka.com ثم "إضافة إلى الشاشة الرئيسية" من قائمة المتصفح. يفتح مثل التطبيق.</li>
+<li>على جهاز مشترك، اضغط ${u('تسجيل الخروج')} عند الانتهاء.</li></ul>
+<div class="rule">لا تشارك رقمك السري ولا تسمح لأحد باستخدام دخولك. كل ما تفعله يُسجَّل باسمك.</div>`}},
+
+{id:'apps',roles:['all'],en:{h:'Which app is for what',b:`
+<table><tr><th>App</th><th>Use it for</th><th>Who</th></tr>
+<tr><td><b>Procurement</b></td><td>Purchase plan, requests from departments, purchase orders (LPOs), receiving deliveries (GRN), stock, supplier payments.</td><td>Department heads, purchasing, store, finance, CEO</td></tr>
+<tr><td><b>Forka Hire</b></td><td>Hiring requests, job ads, candidates, interviews and offers.</td><td>HR, department heads, CEO</td></tr>
+<tr><td><b>Careers page</b> (apply.forka.com)</td><td>Where candidates see open jobs and apply. No sign-in.</td><td>Share it with candidates</td></tr>
+<tr><td><b>Boards</b> (being tested)</td><td>Department tasks and projects, like Trello.</td><td>Coming soon for every department</td></tr></table>
+<p>You only see the apps the CEO turned on for you. Missing one you need? Ask the CEO.</p>`},
+ ar:{h:'أي تطبيق لأي عمل',b:`
+<table><tr><th>التطبيق</th><th>الاستخدام</th><th>لمن</th></tr>
+<tr><td><b>المشتريات</b></td><td>خطة الشراء، طلبات الأقسام، أوامر الشراء، استلام التوريدات، المخزون، دفعات الموردين.</td><td>مسؤولو الأقسام، المشتريات، المستودع، المالية، الرئيس التنفيذي</td></tr>
+<tr><td><b>فوركا للتوظيف</b></td><td>طلبات التوظيف، إعلانات الوظائف، المرشحون، المقابلات والعروض.</td><td>الموارد البشرية، مسؤولو الأقسام، الرئيس التنفيذي</td></tr>
+<tr><td><b>صفحة الوظائف</b> (apply.forka.com)</td><td>يرى فيها المرشحون الوظائف ويتقدمون. بدون تسجيل دخول.</td><td>شاركها مع المرشحين</td></tr>
+<tr><td><b>اللوحات</b> (قيد التجربة)</td><td>مهام ومشاريع الأقسام، مثل Trello.</td><td>قريباً لكل الأقسام</td></tr></table>
+<p>ترى فقط التطبيقات التي فعّلها لك الرئيس التنفيذي. ينقصك تطبيق تحتاجه؟ اطلبه من الرئيس التنفيذي.</p>`}},
+
+{id:'head-proc',roles:['head'],en:{h:'Ask procurement for something',b:`
+<p>For anything new your department needs: a new ingredient or brand, equipment, a service, design work.</p><ol>
+<li>Open ${u('Procurement')}, then the ${u('Requests')} section.</li>
+<li>Press ${u('New request')} and choose the type: Food or ingredient, Equipment, Service, Design or creative, or Other.</li>
+<li>Say what you need and <b>why</b>, how much, and by when. Boxes in red must be filled.</li>
+<li>Send it. Follow every step in ${u('My requests')}: procurement accepts it, calls or meets you to agree the details, then finds suppliers.</li></ol>
+<div class="tip">Every purchase from a department request needs the CEO's OK before the order is placed. Add a clear reason to avoid questions.</div>`},
+ ar:{h:'اطلب شيئاً من المشتريات',b:`
+<p>لأي شيء جديد يحتاجه قسمك: مادة أو علامة جديدة، معدات، خدمة، أعمال تصميم.</p><ol>
+<li>افتح ${u('المشتريات')} ثم قسم ${u('الطلبات')}.</li>
+<li>اضغط ${u('طلب جديد')} واختر النوع: طعام أو مكوّن، معدات، خدمة، تصميم أو إبداع، أو أخرى.</li>
+<li>اكتب ما تحتاجه و<b>السبب</b>، والكمية، والموعد. الخانات الحمراء يجب تعبئتها.</li>
+<li>أرسله. تابع كل خطوة في ${u('طلباتي')}: تقبله المشتريات، وتتصل بك أو تقابلك لتحديد التفاصيل، ثم تبحث عن موردين.</li></ol>
+<div class="tip">كل شراء من طلب قسم يحتاج موافقة الرئيس التنفيذي قبل الطلب من المورد. اكتب سبباً واضحاً لتجنب الأسئلة.</div>`}},
+
+{id:'head-hire',roles:['head'],en:{h:'Hire for your department',b:`
+<ol>
+<li>Open ${u('Forka Hire')} and go to ${u('Hiring requests')}. Press ${u('+ New hiring request')} (about 10 minutes). For the same role again, start from your last request.</li>
+<li>The CEO approves the vacancy. HR builds the scorecard and you approve it. HR posts the job on the careers page.</li>
+<li>In ${u('Candidates')} you see the people HR shortlisted for your roles.</li>
+<li>Interview: score every question <b>on your own before discussing</b> with HR, then press ${u('Submit my scorecard')}. Other scores stay hidden until you submit.</li>
+<li>To book an interview, use ${u('Invite to interview')}: pick a few times and the candidate chooses one by link.</li></ol>
+<div class="tip">You only see your own department's requests and candidates. Salaries and personality reports stay with HR.</div>`},
+ ar:{h:'وظّف لقسمك',b:`
+<ol>
+<li>افتح ${u('فوركا للتوظيف')} واذهب إلى ${u('طلبات التوظيف')}. اضغط ${u('+ طلب توظيف جديد')} (حوالي 10 دقائق). لنفس الوظيفة مرة أخرى، ابدأ من آخر طلب.</li>
+<li>يوافق الرئيس التنفيذي على الشاغر. تعدّ الموارد البشرية بطاقة التقييم وتوافق أنت عليها. تنشر الموارد البشرية الوظيفة في صفحة الوظائف.</li>
+<li>في ${u('المرشحون')} ترى من اختارتهم الموارد البشرية لوظائفك.</li>
+<li>المقابلة: قيّم كل سؤال <b>بنفسك قبل النقاش</b> مع الموارد البشرية، ثم اضغط ${u('إرسال تقييمي')}. تبقى التقييمات الأخرى مخفية حتى ترسل.</li>
+<li>لحجز مقابلة استخدم ${u('دعوة للمقابلة')}: اختر عدة أوقات ويختار المرشح أحدها عبر رابط.</li></ol>
+<div class="tip">ترى فقط طلبات ومرشحي قسمك. الرواتب وتقارير الشخصية تبقى مع الموارد البشرية.</div>`}},
+
+{id:'staff',roles:['staff'],en:{h:'For staff',b:`
+<ul>
+<li>Open erp.forka.com and press the app you need. If a tile is grey or missing, you do not have it yet: ask your department head.</li>
+<li>Fill every box in red before saving. Red means "needed".</li>
+<li>When you change something, press ${u('Save')} (or ${u('Save changes')}). ${u('Cancel')} throws your changes away.</li>
+<li>Something looks wrong? Take a screenshot and send it to your department head with what you pressed.</li></ul>
+<div class="tip">Friends looking for a job? Send them <b>apply.forka.com</b>. Every candidate gets a reply.</div>`},
+ ar:{h:'للموظفين',b:`
+<ul>
+<li>افتح erp.forka.com واضغط التطبيق الذي تحتاجه. إذا كان رمز التطبيق رمادياً أو غير موجود، فليس لديك صلاحية بعد: اطلبها من مسؤول قسمك.</li>
+<li>عبّئ كل خانة حمراء قبل الحفظ. الأحمر يعني "مطلوب".</li>
+<li>عندما تغيّر شيئاً اضغط ${u('حفظ')} (أو ${u('حفظ التعديلات')}). ${u('إلغاء')} يحذف تعديلاتك.</li>
+<li>هناك شيء غير صحيح؟ خذ صورة للشاشة وأرسلها لمسؤول قسمك مع ما ضغطت عليه.</li></ul>
+<div class="tip">أصدقاء يبحثون عن عمل؟ أرسل لهم <b>apply.forka.com</b>. كل متقدم يحصل على رد.</div>`}},
+
+{id:'buy',roles:['store'],en:{h:'Procurement: Purchasing',b:`
+<p>Section ${u('Purchasing')}: the monthly plan, stock, suppliers and orders.</p><ol>
+<li>${u('Requests')}: new requests from department heads. Accept and agree the details with the requester, or decline with a reason (a reason is always needed).</li>
+<li>${u('Procurement ongoing')}: find suppliers, collect quotes, and follow up until delivered. Purchases from requests wait for the CEO's OK.</li>
+<li>${u('Purchase orders')}: LPOs are made automatically (after CEO approval, and for stock that reached its reorder point). Check the draft, then issue it. ${u('New LPO')} adds one by hand.</li>
+<li>${u('Inventory')}: update "Stock now" with today's count. The app works out "To buy". When a line is right, press ${u('Confirm')}.</li>
+<li>${u('Suppliers')}: keep phone, payment terms and credit days filled (red = missing).</li></ol>`},
+ ar:{h:'المشتريات: قسم الشراء',b:`
+<p>قسم ${u('المشتريات')}: الخطة الشهرية، المخزون، الموردون والطلبات.</p><ol>
+<li>${u('الطلبات')}: طلبات جديدة من مسؤولي الأقسام. اقبلها واتفق على التفاصيل مع صاحب الطلب، أو ارفضها مع ذكر السبب (السبب مطلوب دائماً).</li>
+<li>${u('المشتريات الجارية')}: ابحث عن موردين، اجمع العروض، وتابع حتى التسليم. مشتريات الطلبات تنتظر موافقة الرئيس التنفيذي.</li>
+<li>${u('أوامر الشراء')}: تُنشأ تلقائياً (بعد موافقة الرئيس التنفيذي، وللأصناف التي وصلت نقطة إعادة الطلب). راجع المسودة ثم أصدرها. ${u('أمر شراء جديد')} لإضافة أمر يدوياً.</li>
+<li>${u('المخزون')}: حدّث «المخزون الآن» بجرد اليوم. التطبيق يحسب «للشراء». عندما يكون السطر صحيحاً اضغط ${u('تأكيد')}.</li>
+<li>${u('الموردون')}: أكمل الهاتف وشروط الدفع وأيام الائتمان (الأحمر = ناقص).</li></ol>`}},
+
+{id:'store',roles:['store'],en:{h:'Procurement: Operations (store)',b:`
+<p>Section ${u('Operations')}: what comes into the store and what goes out to the branches.</p><ol>
+<li><b>Receiving (GRN)</b>: one GRN per delivery. Check the truck, count every item, record rejections with photos.</li>
+<li>${u('Branch requests')}: a branch asks for items, the store approves and issues them with a transfer bill at cost price, then the branch confirms what arrived.</li>
+<li>${u('Stock movements')}: everything in (accepted on GRNs) and out (issued to branches).</li></ol>
+<div class="rule">The person who ordered must not receive. Purchasing buys, the store receives, Finance pays.</div>`},
+ ar:{h:'المشتريات: قسم العمليات (المستودع)',b:`
+<p>قسم ${u('العمليات')}: ما يدخل المستودع وما يخرج للفروع.</p><ol>
+<li><b>الاستلام (GRN)</b>: استلام واحد لكل توريد. افحص الشاحنة، عدّ كل صنف، وسجّل المرفوض مع صور.</li>
+<li>${u('طلبات الفروع')}: يطلب الفرع أصنافاً، يوافق المستودع ويصرفها بفاتورة تحويل بسعر التكلفة، ثم يؤكد الفرع ما وصل.</li>
+<li>${u('حركة المخزون')}: كل ما دخل (المقبول في الاستلام) وما خرج (المصروف للفروع).</li></ol>
+<div class="rule">من يطلب لا يستلم. المشتريات تشتري، المستودع يستلم، المالية تدفع.</div>`}},
+
+{id:'fin',roles:['store'],en:{h:'Procurement: Payments (finance)',b:`
+<ol>
+<li>${u('Payments')}: everything received from suppliers and what is still to pay. A delivery is ready to pay when the invoice, quantities and price checks are complete.</li>
+<li>Pay only when the purchase order, the GRN and the invoice match.</li>
+<li>${u('Statements (SOA)')}: every delivery is added to the supplier's statement automatically; payments are recorded when you mark a bill paid.</li></ol>
+<div class="tip">Oman has its own Payments section (amounts in OMR). Each bill shows if it is paid from the UAE or from Oman.</div>`},
+ ar:{h:'المشتريات: المدفوعات (المالية)',b:`
+<ol>
+<li>${u('المدفوعات')}: كل ما استُلم من الموردين وما بقي للدفع. التوريد جاهز للدفع عندما تكتمل الفاتورة والكميات وفحص الأسعار.</li>
+<li>ادفع فقط عندما يتطابق أمر الشراء والاستلام والفاتورة.</li>
+<li>${u('كشوف الحساب')}: يُضاف كل توريد إلى كشف المورد تلقائياً، وتُسجّل الدفعات عندما تحدد الفاتورة كمدفوعة.</li></ol>
+<div class="tip">لعُمان قسم مدفوعات خاص (المبالغ بالريال العماني). كل فاتورة توضح إن كانت تُدفع من الإمارات أو من عُمان.</div>`}},
+
+{id:'hr',roles:['hr'],en:{h:'Forka Hire for HR',b:`
+<ol>
+<li><b>Post a job</b>: open the approved hiring request. ${u('Draft JD + ads with AI')} writes the job description and the English and Arabic ads; read and edit before saving. Your house style goes in ${u('Careers page')} → ${u('Guidance for AI')}.</li>
+<li><b>New applications</b> arrive in ${u('Candidates')}. HR gets one email for the first, then a summary every 15 minutes.</li>
+<li><b>Screen</b>: open a candidate and press ${u('Summarise CV')}. The AI reads the CV and suggests a score for each must-have with the evidence. <b>It is a suggestion: check it against the CV. People decide.</b></li>
+<li><b>Interviews</b>: ${u('Invite to interview')} sends the candidate a link to pick a time; WhatsApp works too.</li>
+<li><b>Reject with a reason</b> (the criterion that was not met). Strong "not now" people go to the talent pool.</li></ol>
+<div class="rule">Every candidate gets a reply. Never judge by name, photo, age, gender, nationality or religion.</div>`},
+ ar:{h:'فوركا للتوظيف للموارد البشرية',b:`
+<ol>
+<li><b>نشر وظيفة</b>: افتح طلب التوظيف الموافق عليه. ${u('كتابة الوصف والإعلانات بالذكاء الاصطناعي')} يكتب الوصف الوظيفي والإعلان بالعربية والإنجليزية؛ اقرأ وعدّل قبل الحفظ. ضع أسلوب الشركة في ${u('صفحة الوظائف')} ← ${u('إرشادات للذكاء الاصطناعي')}.</li>
+<li><b>الطلبات الجديدة</b> تصل إلى ${u('المرشحون')}. تصل للموارد البشرية رسالة لأول طلب، ثم ملخص كل 15 دقيقة.</li>
+<li><b>الفرز</b>: افتح المرشح واضغط ${u('تلخيص السيرة الذاتية')}. يقرأ الذكاء الاصطناعي السيرة ويقترح درجة لكل شرط أساسي مع الدليل. <b>هذا اقتراح: تحقق منه مقابل السيرة. القرار للإنسان.</b></li>
+<li><b>المقابلات</b>: ${u('دعوة للمقابلة')} يرسل للمرشح رابطاً لاختيار الموعد؛ ويمكن عبر واتساب أيضاً.</li>
+<li><b>ارفض مع ذكر السبب</b> (الشرط غير المستوفى). المرشحون الجيدون "ليس الآن" يذهبون إلى بنك المواهب.</li></ol>
+<div class="rule">كل متقدم يحصل على رد. لا تحكم بالاسم أو الصورة أو العمر أو الجنس أو الجنسية أو الدين.</div>`}},
+
+{id:'ceo',roles:['ceo'],en:{h:'For the CEO',b:`
+<ul>
+<li>${u('People and access')}: add a person, choose their clearance (staff, manager, CEO), the apps they can open and their Procurement sections. Confirm or reject access requests.</li>
+<li>Procurement ${u('CEO')} → ${u('Approvals')}: purchases waiting for your OK. Check the supplier and quotation, then approve or send back.</li>
+<li>Forka Hire ${u('CEO approvals')}: vacancies (step 2) and final candidates (step 14), two working days each.</li>
+<li>${u('Activity')}: who did what, and when.</li></ul>
+<div class="tip">As an active CEO you open every app and every section automatically. Nothing to tick for yourself.</div>`},
+ ar:{h:'للرئيس التنفيذي',b:`
+<ul>
+<li>${u('الأشخاص والصلاحيات')}: أضف شخصاً، واختر مستوى الصلاحية (موظف، مدير، رئيس تنفيذي)، والتطبيقات المسموحة، وأقسام المشتريات. وافق على طلبات الدخول أو ارفضها.</li>
+<li>المشتريات ${u('الرئيس التنفيذي')} ← ${u('الموافقات')}: مشتريات تنتظر موافقتك. راجع المورد والعرض، ثم وافق أو أعد.</li>
+<li>فوركا للتوظيف ${u('موافقات الرئيس')}: الشواغر (الخطوة 2) والمرشحون النهائيون (الخطوة 14)، يوما عمل لكل منهما.</li>
+<li>${u('سجل النشاط')}: من فعل ماذا ومتى.</li></ul>
+<div class="tip">بصفتك الرئيس التنفيذي النشط تفتح كل التطبيقات والأقسام تلقائياً. لا حاجة لتحديد أي شيء لنفسك.</div>`}},
+
+{id:'help',roles:['all'],en:{h:'Problems and what to do',b:`
+<table><tr><th>You see</th><th>Do this</th></tr>
+<tr><td>Please sign in again.</td><td>Your session ended. Sign in again at erp.forka.com.</td></tr>
+<tr><td>Could not reach the server.</td><td>Check the internet, wait a minute, try again.</td></tr>
+<tr><td>No apps are switched on for you yet.</td><td>Ask the CEO to turn on the apps you need.</td></tr>
+<tr><td>Boxes in red.</td><td>They are required. Fill them, then save.</td></tr>
+<tr><td>The page looks old after an update.</td><td>Refresh the page (F5, or pull down on a phone).</td></tr></table>
+<p>Still stuck? Send a screenshot and what you pressed to your department head, or to Ruby (admin@forka.com).</p>`},
+ ar:{h:'المشاكل وما تفعله',b:`
+<table><tr><th>ما يظهر لك</th><th>ماذا تفعل</th></tr>
+<tr><td>سجّل الدخول مرة أخرى.</td><td>انتهت الجلسة. سجّل الدخول من جديد في erp.forka.com.</td></tr>
+<tr><td>تعذر الوصول إلى الخادم.</td><td>تأكد من الإنترنت، انتظر دقيقة، ثم حاول مرة أخرى.</td></tr>
+<tr><td>لا توجد تطبيقات مفعّلة لك بعد.</td><td>اطلب من الرئيس التنفيذي تفعيل ما تحتاجه.</td></tr>
+<tr><td>خانات باللون الأحمر.</td><td>هي مطلوبة. عبّئها ثم احفظ.</td></tr>
+<tr><td>الصفحة تبدو قديمة بعد تحديث.</td><td>حدّث الصفحة (F5، أو اسحب للأسفل على الهاتف).</td></tr></table>
+<p>ما زلت تواجه مشكلة؟ أرسل صورة الشاشة وما ضغطت عليه لمسؤول قسمك، أو لروبي (admin@forka.com).</p>`}}
+];
+let lang=(()=>{try{const q=new URLSearchParams(location.search).get('lang');if(q)return q==='ar'?'ar':'en';return localStorage.getItem('fa-lang')==='ar'||localStorage.getItem('fh-lang')==='ar'?'ar':'en'}catch(e){return 'en'}})();
+let who=(()=>{const m=location.hash.match(/^#for-(staff|head|store|hr|ceo)$/);return m?m[1]:'all'})();
+function render(){
+  document.documentElement.lang=lang;document.documentElement.dir=lang==='ar'?'rtl':'ltr';
+  const w=W[lang];document.title=w.tt;
+  document.getElementById('tt').textContent=w.tt;document.getElementById('homel').textContent=w.home;
+  document.querySelectorAll('.seg button').forEach(b=>b.classList.toggle('on',b.dataset.l===lang));
+  const shown=s=>who==='all'||s.roles.includes('all')||s.roles.includes(who);
+  document.getElementById('main').innerHTML=`<h1>${w.title}</h1><p class="lead">${w.lead}</p>
+    <div class="who"><span>${w.iam}</span>${ROLES.map(r=>`<button data-r="${r}" class="${who===r?'on':''}">${R[lang][r]}</button>`).join('')}<button class="print" onclick="print()">${w.print}</button></div>
+    ${S.map(s=>`<section id="${s.id}" class="${shown(s)?'':'hidden'}"><span class="for">${w.for}${s.roles.map(r=>R[lang][r]).join(' · ')}</span><h2>${s[lang].h}</h2>${s[lang].b}</section>`).join('')}`;
+  document.getElementById('toc').innerHTML=`<h5>${w.contents}</h5>`+S.filter(shown).map(s=>`<a href="#${s.id}">${s[lang].h}</a>`).join('');
+}
+document.addEventListener('click',e=>{const l=e.target.closest('[data-l]');if(l){lang=l.dataset.l;try{localStorage.setItem('fa-lang',lang)}catch(x){}render();return}
+  const r=e.target.closest('[data-r]');if(r){who=r.dataset.r;history.replaceState(null,'',who==='all'?location.pathname:'#for-'+who);render()}});
+render();
+</script>
+</body>
+</html>
