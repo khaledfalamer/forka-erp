@@ -51,6 +51,10 @@ def handle(b):
         bk = {'token': 'tok-new-0000000000000000', 'kind': b['kind'], 'slots': b['slots'], 'mins': b['mins'], 'mode': b['mode'], 'place': b['place'], 'by': me['email'], 'byName': me['name'], 'at': NOW, 'pick': None}
         DATA['pipe'][b['id']].setdefault('books', {})[b['kind']] = bk; VER[0] += 1
         return {'ok': True, 'ver': 'v%d' % VER[0], 'link': 'https://apply.forka.com/#book=' + bk['token'], 'mailed': True, 'book': bk}
+    if a == 'aisum':
+        return {'ok': True, 'ai': {'summary': 'Line cook with 3 years in Kuwaiti kitchens.', 'role': 'Line cook, Kuwaiti Kitchen', 'years': 3, 'employers': ['Kuwaiti Kitchen'], 'languages': ['English', 'Arabic'],
+            'visaNotice': 'Own visa', 'mustHaves': [{'item': 'Kuwaiti dishes', 'score': 4, 'evidence': 'Cooked machboos daily'}, {'item': 'Hygiene', 'score': 1, 'evidence': 'Not in the CV'}, {'item': 'Speed', 'score': 3, 'evidence': 'Busy lunch service'}],
+            'checks': ['No hygiene certificate shown'], 'questions': ['How do you keep the line clean in a rush?'], 'model': 'claude-opus-5-5'}}
     if a == 'cv': return {'ok': True, 'name': 'sara.txt', 'type': 'text/plain', 'data': 'Q1YgdGV4dA=='}  # headless Chrome downloads PDFs instead of showing them, so a text file stands in
     return {'ok': False, 'error': 'action'}
 
@@ -125,6 +129,18 @@ async def main():
             await newp.close()
             n = len(CALLS); await pg.reload(); await pg.wait_for_timeout(150)
             check('Reload shows the last data at once (before the server answers)', 'Sara Ali' in await pg.evaluate("JSON.stringify(allCands())"))
+            # --- AI CV summary ---
+            await pg.evaluate("go('pipeline')"); await pg.evaluate("openCand('wabc')"); await pg.wait_for_timeout(300)
+            check('Candidate with a CV file shows "Summarise CV"', await pg.locator('#aisumbtn').count() == 1)
+            await pg.click('#aisumbtn'); await pg.wait_for_timeout(500)
+            sent = [c for c in CALLS if c.get('action') == 'aisum']
+            check('Summarise sends the job and the private CV file id to the server (not the AI key)', sent and sent[-1].get('cv') == 'fileCV1234567890' and sent[-1].get('req') == 'r1')
+            box = await pg.inner_text('#aisum') if await pg.locator('#aisum').count() else ''
+            check('Summary, must-have scores with evidence, checks and questions show on the candidate', 'Line cook with 3 years' in box and 'Cooked machboos daily' in box and 'No hygiene certificate shown' in box and 'keep the line clean' in box, box[:200])
+            saved = DATA['pipe'].get('wabc', {})
+            check('The summary is saved, so it is not paid for again', saved.get('ai', {}).get('summary') and saved.get('cv', {}).get('0') == 4, saved.get('ai'))
+            await pg.screenshot(path=str(ROOT / 'tests' / 'shots' / 'hiring_ai_summary.png'), full_page=False)
+            await pg.evaluate("closeModal();DRAFT=null")
             # --- interview comparison ---
             await pg.evaluate("go('pipeline')"); await pg.evaluate("openCand('civ')"); await pg.wait_for_timeout(300)
             cmp = await pg.inner_text('.cmp')

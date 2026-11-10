@@ -641,7 +641,7 @@ function openReq(id){
   <div class="bd"><div class="steps">${["Request","CEO approves","HR scorecard","Head approves","Posted"].map((t,i)=>`<span class="${si>i||r.status==="filled"?"done":si===i?"cur":""}">${t}</span>`).join("")}</div>
   <div class="grid g2" style="margin-top:12px"><div class="card"><h3>The role</h3><p class="small"><b>Purpose:</b> ${esc(r.purpose||"—")}</p><p class="small"><b>Duties:</b> ${esc(r.duties||"—")}</p>${isHR||V.ceo?`<p class="small"><b>Salary range:</b> ${fmtN(r.salMin)}–${fmtN(r.salMax)} ${r.cur} total package · basic = 30%</p>`:`<p class="small"><b>Salary range:</b> ${fmtN(r.salMin)}–${fmtN(r.salMax)} ${r.cur}</p>`}</div>
   <div class="card"><h3>Scorecard inputs</h3><p class="small"><b>Must-haves:</b> ${r.mustHaves.map(esc).join(" · ")}</p><p class="small"><b>Test in interview:</b> ${r.testQs.map(esc).join(" · ")}</p><p class="small"><b>Practical:</b> ${esc(r.practical)} · <b>Traits:</b> ${r.traits.map(esc).join(", ")}${r.critical?` · <b>critical:</b> ${esc(r.critical)}`:""}</p></div></div>
-  ${(isHR&&["approved","review","ready","open"].includes(r.status))?`<div class="card sec"><div class="row"><h3>Job description, ad & pre-screening</h3><span class="sp"></span>${SAMPLE?`<button class="btn sm ai" onclick="aiJD('${id}')">Draft JD + ads with AI</button>`:""}</div>
+  ${(isHR&&["approved","review","ready","open"].includes(r.status))?`<div class="card sec"><div class="row"><h3>Job description, ad & pre-screening</h3><span class="sp"></span>${AI_ON()?`<button class="btn sm ai" onclick="aiJD('${id}')">Draft JD + ads with AI</button>`:""}</div>
    <label>Job description</label><textarea id="r_jd" style="min-height:140px">${esc(r.jd||"")}</textarea>
    <div class="grid g2"><div><label>Job ad — English <span class="hint">LinkedIn / Indeed</span></label><textarea id="r_ad" style="min-height:120px">${esc(r.ad||"")}</textarea></div><div><label>Job ad — Arabic</label><textarea id="r_adar" dir="rtl" style="min-height:120px">${esc(r.adAr||"")}</textarea></div></div>
    <label>Job title — Arabic <span class="hint">shown on the careers page in Arabic</span></label><input id="r_titlear" dir="rtl" value="${esc(r.titleAr||"")}">
@@ -708,7 +708,7 @@ function addApplicant(reqId){
   openModal(`<div class="hd"><div><h2>Add applicant</h2><div class="small muted">From hr@forka.com, LinkedIn, Indeed, referral or walk-in</div></div><button class="x" onclick="closeModal()">×</button></div>
   <div class="bd"><div class="grid g2"><div><label>Role</label><select id="n_req">${R.map(r=>`<option value="${r.id}" ${r.id===reqId?"selected":""}>${esc(r.title)} · ${esc(r.branch)}</option>`).join("")}</select></div><div><label>Source</label><select id="n_src">${["Email (hr@forka.com)","LinkedIn","Indeed","Referral","Walk-in","Talent pool","Agency"].map(s=>`<option>${s}</option>`).join("")}</select></div></div>
   <label>CV file <span class="hint">PDF or photo, from the email</span></label><input type="file" id="n_file" accept=".pdf,application/pdf,image/*">
-  <label>CV text <span class="hint">paste it — ${SAMPLE?"AI can fill the fields below":"then fill the fields"}</span></label><textarea id="n_cv" style="min-height:120px"></textarea>${SAMPLE?`<button class="btn sm ai" style="margin-top:6px" onclick="aiParse()">Fill fields from CV</button>`:""}
+  <label>CV text <span class="hint">paste it — ${AI_ON()?"AI can fill the fields below":"then fill the fields"}</span></label><textarea id="n_cv" style="min-height:120px"></textarea>${AI_ON()?`<button class="btn sm ai" style="margin-top:6px" onclick="aiParse()">Fill fields from CV</button>`:""}
   <div class="grid g3"><div><label>Name</label><input id="n_name"></div><div><label>Email</label><input id="n_email"></div><div><label>Phone</label><input id="n_phone"></div><div><label>Location</label><input id="n_loc"></div><div><label>Years experience</label><input id="n_yrs" type="number"></div><div><label>Expected salary</label><input id="n_sal" type="number"></div></div>
   <div class="chk"><input type="checkbox" id="n_cons"><span>Candidate consented to Forka holding their data (stated in the application email or form)</span></div></div>
   <div class="ft"><button class="btn sec" onclick="closeModal()">Cancel</button><button class="btn br" onclick="saveApplicant()">Add to pipeline</button></div>`);
@@ -733,10 +733,10 @@ function openCand(id){
   // profile
   body+=`<div class="grid g2" style="margin-top:10px"><div class="card"><h3>Profile</h3><p class="small">${esc(d.email||"")} ${d.phone?" · "+esc(d.phone):""}<br>${esc(d.location||"")} · ${d.years??"–"} yrs · notice ${d.notice??"–"} days · ${esc(d.visa||"")}</p>${isHR?`<p class="small"><b>Expected salary:</b> ${fmtN(d.salary)} ${r.cur||""} ${d.salary&&r.salMax&&d.salary>r.salMax?'<span class="tag warn">above range</span>':""}</p>`:""}
    ${(d.answers||[]).length?`<p class="small"><b>Pre-screen:</b> ${d.answers.map(a=>`${esc(a[0])} — <b>${esc(a[1])}</b>`).join("<br>")}</p>`:""}<p class="small muted">Source: ${esc(d.source||"")} · consent ${d.consent?"recorded":"not recorded"}</p></div>
-   <div class="card"><div class="row"><h3>CV</h3><span class="sp"></span>${cvLink(d.cvFile)}</div>${d.cvText?`<pre class="out" style="max-height:170px;margin-top:8px">${esc(d.cvText)}</pre>`:`<p class="small muted">${d.cvFile?"Open the file above.":"No CV yet."}</p>`}</div></div>`;
+   <div class="card"><div class="row"><h3>CV</h3><span class="sp"></span>${AI_ON()&&(d.cvFile||d.cvText)?`<button class="btn sm ai" id="aisumbtn" onclick="aiSum()">${d.ai?"Summarise again":"Summarise CV"}</button>`:""}${cvLink(d.cvFile)}</div>${aiSumHTML(d)}${d.cvText?`<pre class="out" style="max-height:170px;margin-top:8px">${esc(d.cvText)}</pre>`:`<p class="small muted">${d.cvFile?"Open the file above.":"No CV yet."}</p>`}</div></div>`;
   // screening (HR only)
   if(isHR&&si>=SI.screening){ const lock=si>SI.screening;
-    body+=`<div class="card sec"><div class="row"><h3>Screening scorecard</h3><span class="tag ${sAvg>=PASS?"ok":"warn"}">avg ${f1(sAvg)} · pass ${PASS}</span><span class="sp"></span>${SAMPLE&&!lock?`<button class="btn sm ai" onclick="aiScreen()">Suggest CV scores</button>`:""}</div>
+    body+=`<div class="card sec"><div class="row"><h3>Screening scorecard</h3><span class="tag ${sAvg>=PASS?"ok":"warn"}">avg ${f1(sAvg)} · pass ${PASS}</span><span class="sp"></span>${AI_ON()&&!lock?`<button class="btn sm ai" onclick="aiScreen()">Summarise CV and suggest scores</button>`:""}</div>
     ${(()=>{const F=autoCheck(d,r);return F.length?`<p class="small"><b>Auto-check:</b> ${F.map(([k,x])=>`<span class="flag tag ${k}">${esc(x)}</span>`).join("")}</p>`:""})()}<p class="small muted">Part 1 — CV against the must-haves (1 does not meet · 3 meets with gaps · 5 exceeds)</p>${(r.mustHaves||[]).map((m,i)=>`<div class="crit"><span>${esc(m)}${d.aiWhy?.[i]?`<div class="small muted">AI: ${esc(d.aiWhy[i])}</div>`:""}</span>${scoreBtns("cv."+i,d.cv?.[i],lock)}</div>`).join("")}
     <p class="small muted" style="margin-top:10px">Part 2 — HR call, 15–30 minutes</p>${CALL.map((m,i)=>`<div class="crit"><span>${m}</span>${scoreBtns("call."+i,d.call?.[i],lock)}</div>`).join("")}
     <label>Call notes</label><textarea ${lock?"disabled":""} oninput="DRAFT.callNotes=this.value">${esc(d.callNotes||"")}</textarea></div>`; }
@@ -972,14 +972,41 @@ function ask(q,opts){ return new Promise(res=>{ const prev=$("#dlg").innerHTML, 
 async function copyTxt(t){ try{await navigator.clipboard.writeText(t);toast("Copied")}catch(e){toast("Select the text and copy it")} }
 
 /* ---------------- AI helpers (Claude) — suggestions only, people decide ---------------- */
-async function askJSON(prompt){ const r=await SAMPLE(prompt+"\n\nReply with JSON only, no prose, no code fences."); const t=r.text||""; const m=t.match(/[\[{][\s\S]*[\]}]/); return JSON.parse(m?m[0]:t) }
-async function aiBusy(btn,fn){ btn=btn||event?.target; const old=btn?.textContent; if(btn){btn.disabled=true;btn.textContent="Working…"} try{ await fn() }catch(e){ toast(e&&e.code==="rate_limited"?"AI is busy — try in a minute":e&&e.code==="not_granted"?"AI not allowed on this page":"AI couldn't do that — try again") } if(btn){btn.disabled=false;btn.textContent=old} }
+const AI_ON=()=>!!SAMPLE||!!HURL;
+async function aiText(prompt){ if(SAMPLE) return (await SAMPLE(prompt)).text||"";
+  const r=await api("ai",{prompt}); if(!r.ok){const e=new Error(r.error);e.code=r.error;throw e} return r.text||"" }
+async function askJSON(prompt){ const t=await aiText(prompt+"\n\nReply with JSON only, no prose, no code fences."); const m=t.match(/[\[{][\s\S]*[\]}]/); return JSON.parse(m?m[0]:t) }
+const AI_ERR={rate_limited:"AI is busy — try in a minute",aibusy:"AI is busy — try in a minute",not_granted:"AI not allowed on this page",
+  nokey:"AI is not switched on yet. The CEO adds the AI key in the Hiring script (Script properties).",aikey:"The AI key was not accepted. Ask the CEO to check it.",
+  ailimit:"Today's AI limit is reached. Try again tomorrow.",airefused:"AI declined this one. Review it by hand.",aitimeout:"AI took too long — try again.",
+  nocv:"There is no CV file or CV text to read.",cvold:"This is an old Word (.doc) file. Ask for a PDF, or paste the CV text.",cvread:"The CV file could not be read. Paste the CV text instead.",
+  missing:"The CV file was not found.",role:"Only HR or this department's head can do this.",session:"Please sign in again at Forka Apps."};
+async function aiBusy(btn,fn){ btn=btn||event?.target; const old=btn?.textContent; if(btn){btn.disabled=true;btn.textContent="Working…"} try{ await fn() }catch(e){ toast(AI_ERR[e&&e.code]||"AI couldn't do that — try again") } if(btn){btn.disabled=false;btn.textContent=old} }
 function aiJD(id){ const btn=event.target; aiBusy(btn,async()=>{ const r=S.reqs[id];
   const o=await askJSON(`You write hiring material for Forka Collective, an F&B operating group running restaurants in the UAE and Oman (Kuwaiti Kitchen, Mayar Cafe). Plain English, many readers use English as a second language. No hype.
 Role: ${r.title} · ${r.dept} · ${r.branch}. Purpose: ${r.purpose}. Duties: ${r.duties}. Must-haves: ${r.mustHaves.join("; ")}. Practical test: ${r.practical}. Traits: ${r.traits.join(", ")}.
 Return {"jd": "job description with sections: About the role, What you'll do, What you need (must-haves), Nice to have, How we hire (CV screen, HR call, short online assessment, interview + ${r.practical}, references, offer). Include a line that the role may include other duties as assigned.", "ad":"LinkedIn post, max 120 words, tells people to email hr@forka.com with '${r.title}' in the subject", "adAr":"the same ad in natural Gulf-friendly Modern Standard Arabic", "knockout":["3 yes/no knock-out questions built from the must-haves, phrased so the right answer is Yes"]}`);
   $("#r_jd").value=o.jd||""; $("#r_ad").value=o.ad||""; $("#r_adar").value=o.adAr||""; if(o.knockout) $("#r_ko").value=o.knockout.join("\n"); toast("Draft ready — review, then Save") }) }
-function aiScreen(){ const btn=event.target; if(!(DRAFT.cvText||"").trim()) return toast("AI scoring needs CV text — this candidate sent a file only, so score from the file by hand"); aiBusy(btn,async()=>{ const d=DRAFT, r=reqOf(d);
+/* CV summary: the Hiring server sends the CV file (PDF, Word or photo) to Claude with the job's must-haves. Suggestions only. */
+function aiSumHTML(d){ const a=d.ai; if(!a) return "";
+  const li=x=>x&&x.length?`<ul style="margin:4px 0 0;padding-inline-start:18px">${x.map(y=>`<li>${esc(y)}</li>`).join("")}</ul>`:"";
+  return `<div class="note info" id="aisum" style="margin-top:8px"><div class="row"><b>AI summary</b><span class="tag">Suggestion — check it against the CV</span><span class="sp"></span><span class="small muted">${fmtD(a.at)}</span></div>
+    <p style="margin:6px 0">${esc(a.summary||"")}</p>
+    <p class="small" style="margin:4px 0">${a.role?`<b>Role:</b> ${esc(a.role)} · `:""}${a.years!=null?`<b>Years:</b> ${esc(a.years)} · `:""}${(a.languages||[]).length?`<b>Languages:</b> ${esc(a.languages.join(", "))} · `:""}${a.visaNotice?`<b>Visa / notice:</b> ${esc(a.visaNotice)}`:""}</p>
+    ${(a.employers||[]).length?`<p class="small" style="margin:4px 0"><b>Recent employers:</b> ${esc(a.employers.join(" · "))}</p>`:""}
+    ${(a.mustHaves||[]).length?`<table class="small" style="margin-top:6px"><tr><th>Must-have</th><th>AI score</th><th>Evidence in the CV</th></tr>${a.mustHaves.map(m=>`<tr><td>${esc(m.item)}</td><td><span class="tag ${m.score>=PASS?"ok":"warn"}">${m.score} / 5</span></td><td>${esc(m.evidence)}</td></tr>`).join("")}</table>`:""}
+    ${(a.checks||[]).length?`<p class="small" style="margin:8px 0 0"><b>Check with the candidate</b></p>${li(a.checks)}`:""}
+    ${(a.questions||[]).length?`<p class="small" style="margin:8px 0 0"><b>Questions about this CV</b></p>${li(a.questions)}`:""}</div>`}
+function aiSum(){ const btn=window.event&&window.event.target; aiBusy(btn,async()=>{ const d=DRAFT, r=reqOf(d);
+  if(SAMPLE){ d.ai=await askJSON(`Summarise this CV for the job ${r.title}. Must-haves: ${JSON.stringify(r.mustHaves||[])}. Ignore name, age, gender, nationality, religion. Score each must-have 1-5 with evidence from the CV.
+CV: """${(d.cvText||"").slice(0,12000)}"""
+Return {"summary":"3-4 sentences","role":"","years":null,"employers":[],"languages":[],"visaNotice":"","mustHaves":[{"item":"","score":1,"evidence":""}],"checks":[],"questions":[]}`) }
+  else { const res=await api("aisum",{req:d.req,cv:d.cvFile&&d.cvFile.drive?d.cvFile.id:"",text:d.cvText||""}); if(!res.ok){const e=new Error(res.error);e.code=res.error;throw e} d.ai=res.ai }
+  d.ai.at=now(); d.ai.by=V.me;
+  d.cv=d.cv||{}; d.aiWhy=[]; (d.ai.mustHaves||[]).forEach((m,i)=>{ d.aiWhy[i]=m.evidence; if(d.cv[i]==null&&m.score>=1&&m.score<=5) d.cv[i]=m.score });
+  await persist(d,"AI CV summary"); DRAFT=JSON.parse(JSON.stringify(d)); toast("Summary ready — check it against the CV"); openCand(d.id) }) }
+function aiScreen(){ return aiSum() }
+function aiScreenOld(){ const btn=event.target; if(!(DRAFT.cvText||"").trim()) return toast("AI scoring needs CV text — this candidate sent a file only, so score from the file by hand"); aiBusy(btn,async()=>{ const d=DRAFT, r=reqOf(d);
   const o=await askJSON(`Score this CV against each must-have on 1–5 (1 does not meet, 3 meets with gaps, 5 exceeds). Judge only evidence in the CV; if it isn't there, score low and say so. Ignore name, age, gender, nationality, religion.
 Must-haves: ${JSON.stringify(r.mustHaves)}
 CV: """${(d.cvText||"").slice(0,6000)}"""
