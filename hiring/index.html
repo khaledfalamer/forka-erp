@@ -314,7 +314,7 @@ const fmtN=n=>n==null||n===""?"–":Number(n).toLocaleString("en-US");
 const avg=a=>{a=a.filter(x=>typeof x==="number");return a.length?a.reduce((p,c)=>p+c,0)/a.length:null};
 const f1=x=>x==null?"–":x.toFixed(1);
 function workDaysSince(t){ if(!t) return 0; let d=new Date(t),n=0;const e=new Date(); d.setHours(0,0,0,0); while(d<e){d.setDate(d.getDate()+1); if(d>e)break; const w=d.getDay(); if(w!==5&&w!==6)n++;} return n; } // Gulf week: Fri/Sat off
-function toast(m){const t=$("#toast");t.textContent=m;t.style.display="block";clearTimeout(t._t);t._t=setTimeout(()=>t.style.display="none",2600)}
+function toast(m,ms){const t=$("#toast");t.textContent=m;t.style.display="block";clearTimeout(t._t);t._t=setTimeout(()=>t.style.display="none",ms||2600)}
 const nm=id=>NAMES[id]||(DEMO_PEOPLE[id]?.name)||(/@/.test(id||"")?String(id).split("@")[0]:"Someone");
 
 /* ---------------- storage layer (shared db, or local demo) ---------------- */
@@ -934,7 +934,7 @@ async function uploadCV(file){
   catch(e){ toast("Upload failed — try again or paste the text"); return null }
 }
 async function openCV(id){ const w=window.open("","_blank"); if(w)w.document.write("<p style='font-family:sans-serif'>Opening CV…</p>");
-  const r=await api("cv",{id}); if(!r.ok){ if(w)w.close(); toast("Couldn't open the CV."); return }
+  const r=await api("cv",{id}); if(!r.ok){ const m=r.error==="missing"?"This CV file was not found in the Hiring CV folder.":r.error==="session"?"Please sign in again at Forka Apps.":"Couldn't open the CV ("+(r.error||"error")+"). Close this tab and try again."; if(w)w.document.body.innerHTML="<p style='font-family:sans-serif;max-width:520px;margin:12vh auto'>"+m+"</p>"; toast(m,8000); return }
   const bin=atob(r.data),u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);
   const url=URL.createObjectURL(new Blob([u],{type:r.type||"application/pdf"})); if(w)w.location=url; else location.href=url }
 function cvLink(f){ if(!f) return "";
@@ -974,14 +974,14 @@ async function copyTxt(t){ try{await navigator.clipboard.writeText(t);toast("Cop
 /* ---------------- AI helpers (Claude) — suggestions only, people decide ---------------- */
 const AI_ON=()=>!!SAMPLE||!!HURL;
 async function aiText(prompt){ if(SAMPLE) return (await SAMPLE(prompt)).text||"";
-  const r=await api("ai",{prompt}); if(!r.ok){const e=new Error(r.error);e.code=r.error;throw e} return r.text||"" }
+  const r=await api("ai",{prompt}); if(!r.ok){const e=new Error(r.error);e.code=r.error;e.detail=r.detail;throw e} return r.text||"" }
 async function askJSON(prompt){ const t=await aiText(prompt+"\n\nReply with JSON only, no prose, no code fences."); const m=t.match(/[\[{][\s\S]*[\]}]/); return JSON.parse(m?m[0]:t) }
 const AI_ERR={rate_limited:"AI is busy — try in a minute",aibusy:"AI is busy — try in a minute",not_granted:"AI not allowed on this page",
   nokey:"AI is not switched on yet. The CEO adds the AI key in the Hiring script (Script properties).",aikey:"The AI key was not accepted. Ask the CEO to check it.",
   ailimit:"Today's AI limit is reached. Try again tomorrow.",airefused:"AI declined this one. Review it by hand.",aitimeout:"AI took too long — try again.",
   nocv:"There is no CV file or CV text to read.",cvold:"This is an old Word (.doc) file. Ask for a PDF, or paste the CV text.",cvread:"The CV file could not be read. Paste the CV text instead.",
-  missing:"The CV file was not found.",role:"Only HR or this department's head can do this.",session:"Please sign in again at Forka Apps."};
-async function aiBusy(btn,fn){ btn=btn||event?.target; const old=btn?.textContent; if(btn){btn.disabled=true;btn.textContent="Working…"} try{ await fn() }catch(e){ toast(AI_ERR[e&&e.code]||"AI couldn't do that — try again") } if(btn){btn.disabled=false;btn.textContent=old} }
+  missing:"The CV file was not found.",action:"The Hiring script on Google is still the old version. Paste the new script into the Forka Hiring project and deploy a New version.",net:"Can't reach the Hiring server — check the internet and try again.",role:"Only HR or this department's head can do this.",session:"Please sign in again at Forka Apps."};
+async function aiBusy(btn,fn){ btn=btn||event?.target; const old=btn?.textContent; if(btn){btn.disabled=true;btn.textContent="Working…"} try{ await fn() }catch(e){ toast(AI_ERR[e&&e.code]||("AI couldn't do that"+(e&&e.detail?" ("+String(e.detail).slice(0,140)+")":e&&e.code?" ("+e.code+")":"")+" — try again"),9000) } if(btn){btn.disabled=false;btn.textContent=old} }
 function aiJD(id){ const btn=event.target; aiBusy(btn,async()=>{ const r=S.reqs[id];
   const o=await askJSON(`You write hiring material for Forka Collective, an F&B operating group running restaurants in the UAE and Oman (Kuwaiti Kitchen, Mayar Cafe). Plain English, many readers use English as a second language. No hype.
 Role: ${r.title} · ${r.dept} · ${r.branch}. Purpose: ${r.purpose}. Duties: ${r.duties}. Must-haves: ${r.mustHaves.join("; ")}. Practical test: ${r.practical}. Traits: ${r.traits.join(", ")}.
@@ -1001,7 +1001,7 @@ function aiSum(){ const btn=window.event&&window.event.target; aiBusy(btn,async(
   if(SAMPLE){ d.ai=await askJSON(`Summarise this CV for the job ${r.title}. Must-haves: ${JSON.stringify(r.mustHaves||[])}. Ignore name, age, gender, nationality, religion. Score each must-have 1-5 with evidence from the CV.
 CV: """${(d.cvText||"").slice(0,12000)}"""
 Return {"summary":"3-4 sentences","role":"","years":null,"employers":[],"languages":[],"visaNotice":"","mustHaves":[{"item":"","score":1,"evidence":""}],"checks":[],"questions":[]}`) }
-  else { const res=await api("aisum",{req:d.req,cv:d.cvFile&&d.cvFile.drive?d.cvFile.id:"",text:d.cvText||""}); if(!res.ok){const e=new Error(res.error);e.code=res.error;throw e} d.ai=res.ai }
+  else { const res=await api("aisum",{req:d.req,cv:d.cvFile&&d.cvFile.drive?d.cvFile.id:"",text:d.cvText||""}); if(!res.ok){const e=new Error(res.error);e.code=res.error;e.detail=res.detail;throw e} d.ai=res.ai }
   d.ai.at=now(); d.ai.by=V.me;
   d.cv=d.cv||{}; d.aiWhy=[]; (d.ai.mustHaves||[]).forEach((m,i)=>{ d.aiWhy[i]=m.evidence; if(d.cv[i]==null&&m.score>=1&&m.score<=5) d.cv[i]=m.score });
   await persist(d,"AI CV summary"); DRAFT=JSON.parse(JSON.stringify(d)); toast("Summary ready — check it against the CV"); openCand(d.id) }) }

@@ -141,6 +141,8 @@ async def main():
             check('The summary is saved, so it is not paid for again', saved.get('ai', {}).get('summary') and saved.get('cv', {}).get('0') == 4, saved.get('ai'))
             await pg.screenshot(path=str(ROOT / 'tests' / 'shots' / 'hiring_ai_summary.png'), full_page=False)
             await pg.evaluate("closeModal();DRAFT=null")
+            await pg.evaluate("aiBusy(null,async()=>{await askJSON('Write a JD')})"); await pg.wait_for_timeout(300)
+            check('Old Hiring script on Google: the AI message says so (not just "try again")', 'still the old version' in await pg.inner_text('#toast'), await pg.inner_text('#toast'))
             # --- interview comparison ---
             await pg.evaluate("go('pipeline')"); await pg.evaluate("openCand('civ')"); await pg.wait_for_timeout(300)
             cmp = await pg.inner_text('.cmp')
