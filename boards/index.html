@@ -877,7 +877,7 @@ function seed(){
   D.ports=[{id:'pf1',name:'CEO Admins',owner:'ka',items:[{b:aj.id,pri:'high'},{b:bn('October Month-end Close').id,pri:'urgent'},{b:bn('Forka Apps Roadmap').id,pri:'normal'}]}];
   return D;
 }
-const KEY='forka-boards-preview-v4';
+const KEY='forka-boards-preview-v5';
 let D=(()=>{try{const d=JSON.parse(localStorage.getItem(KEY)||'null');if(d&&d.boards&&d.me)return d}catch(e){}return seed()})();
 if(!D.people)D.people=PEOPLE0.map(p=>Object.assign({},p));PEOPLE=D.people;
 function save(){try{localStorage.setItem(KEY,JSON.stringify(D))}catch(e){}}
