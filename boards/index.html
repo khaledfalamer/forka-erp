@@ -337,6 +337,50 @@ fieldset.ro{border:0;padding:0;margin:0;min-width:0}
 .side2 .row select{flex:1 1 100%!important}
 .side2 .row .btn{flex:1 1 100%;justify-content:center;display:flex;align-items:center;gap:6px}
 .sm-only{display:none}
+/* label names, people, profile, chat */
+.card .lbs.nm span{height:auto;width:auto;padding:1px 7px;font-size:11.5px;font-weight:600;color:#fff;border-radius:4px;line-height:1.5}
+.meav{display:inline-flex;border-radius:50%}
+.ppl{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
+.pcard{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;text-align:start;color:var(--text)}
+.pcard:hover{border-color:var(--bronze-l)}
+.pcard>span{display:flex;flex-direction:column;gap:2px;min-width:0}
+.pcard small{color:var(--muted);font-size:12.5px}
+.av.lg{width:42px;height:42px;font-size:14px}.av.xl{width:64px;height:64px;font-size:21px}
+.awt{display:inline-block;margin-top:3px;font-size:11.5px;font-weight:600;padding:1px 7px;border-radius:5px;background:#fbefd6;color:#7a4f06;width:max-content}
+.board:not(.light) .awt{background:#3d2f12;color:#f0c674}
+.profh{display:flex;align-items:center;gap:16px;padding:24px 28px 4px;padding-inline-end:58px}
+.profh h2{font-family:var(--serif);font-size:26px;margin:0}
+.profh .sm{color:var(--muted);font-size:13.5px}
+.about{margin:10px 0;line-height:1.5}
+.cbtns{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.cbtns .btn{display:inline-flex;align-items:center;gap:6px;text-decoration:none}
+.chat{flex:1;display:grid;grid-template-columns:260px minmax(0,1fr);min-height:0;background:var(--pagebg);color:var(--text)}
+.chl{border-inline-end:1px solid var(--line);padding:18px 12px;overflow-y:auto}
+.chl h1{font-family:var(--serif);font-size:28px;margin:0 6px 8px;font-weight:600}
+.chl h5{font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:16px 6px 6px;font-weight:600}
+.chl select{width:100%;margin-top:6px}
+.chi{display:flex;align-items:center;gap:8px;width:100%;padding:7px 8px;border-radius:8px;text-align:start;font-size:14px}
+.chi:hover{background:var(--hover)}.chi.on{background:var(--pill);font-weight:700}
+.chi .hash{width:24px;text-align:center;color:var(--muted);font-weight:700}
+.chi .av{width:24px;height:24px;font-size:10px}
+.chi .cnt{margin-inline-start:auto;background:var(--bad);color:#fff;font-size:11px;font-weight:700;border-radius:999px;padding:1px 7px}
+.chm{display:flex;flex-direction:column;min-height:0}
+.chh{display:flex;align-items:baseline;gap:10px;padding:16px 20px;border-bottom:1px solid var(--line)}
+.chh b{font-size:17px}.chh .sm{color:var(--muted);font-size:13px}
+.chback{display:none}
+.chs{flex:1;overflow-y:auto;padding:12px 20px}
+.chday{text-align:center;margin:14px 0 6px;font-size:12px;color:var(--muted)}
+.chday span{background:var(--soft);padding:2px 10px;border-radius:999px}
+.msg{display:flex;gap:10px;padding:6px 0}
+.msg>div{min-width:0}
+.msg .mh{display:flex;gap:8px;align-items:baseline}
+.msg .mh b{font-size:14px}.msg .mh span{font-size:11.5px;color:var(--muted)}
+.msg .mb{font-size:14.5px;line-height:1.45;white-space:pre-wrap;overflow-wrap:anywhere}
+.chc{display:flex;gap:8px;align-items:flex-end;padding:12px 20px 16px;border-top:1px solid var(--line)}
+.chc .desc{min-height:42px;max-height:160px;resize:none}
+.chc .btn{height:42px}
+@media (max-width:760px){.chat{grid-template-columns:minmax(0,1fr)}.chat.has .chl{display:none}.chat:not(.has) .chm{display:none}.chback{display:inline-flex}.chh{padding:10px 12px;align-items:center}.chs{padding:10px 12px}.chc{padding:10px 12px}.profh{padding:18px 16px 4px}}
+
 /* Strategy: goals, portfolios, timeline, reporting, resourcing */
 .phead{display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap}
 .phead>div:first-child{flex:1;min-width:220px}
@@ -604,7 +648,15 @@ en:{app:'Boards',search:'Search this board',addCard:'Add a card',addCardBtn:'Add
   limitL:'Weekly limit',overdueCol:'Overdue',thisWeek:'This week',perfLead:'From the tasks recorded in Boards only. Use it to start a conversation, not as the whole picture.',
   period:'Period',p30:'Last 30 days',p90:'Last 90 days',pmonth:'This month',pf_done:'Completed',pf_ontime:'On time',pf_late:'Late',pf_avgLate:'Avg. days late',pf_overNow:'Overdue now',pf_subs:'Subtasks done',
   vsPrev:'vs previous period',noTasksP:'No finished tasks with a due date in this period.',perfOf:'{p}: finished in this period',onTimeTag:'On time',lateBy:'{n} days late',noDue:'No due date',
-  doneOn:'Done',close2:'Close',stillOver:'Overdue now',tasksIn:'{p}, {w}'},
+  doneOn:'Done',close2:'Close',stillOver:'Overdue now',tasksIn:'{p}, {w}',
+  people:'People',peopleLead:'Everyone in Forka Apps. Open a profile for contact details, to send a message, or to see what they are working on.',findPerson:'Find a person',
+  editProfile:'Edit my profile',phone:'Phone',about:'About me',aboutPh:'For example: I work 9am to 6pm, Sunday to Thursday.',ooo:'Out of office',oooFrom:'From',oooTo:'Until',oooNote:'Note',
+  oooBad:'"Until" must be on or after "From".',awayUntil:'Away until {d}',sendMsg:'Send a message',openTasks:'Open tasks',whatsapp:'WhatsApp',call:'Call',emailB:'Email',
+  noContact:'No contact details yet.',myProfileHint:'Everyone in Forka Apps can see your profile.',
+  chat:'Chat',channels:'Channels',dms:'Direct messages',everyone:'Everyone',newDm:'Message someone…',msgPh:'Write a message… (type @ to mention someone)',sendB:'Send',
+  chatLead:'Channel for {d}',chatAll:'For everyone at Forka',noMsgs:'No messages yet. Say hello.',pickChat:'Choose a channel or a person.',
+  chatNote:'Preview: messages stay in this browser. In the live app everyone in the channel sees them straight away.',n_chat:'{p} mentioned you in {x}',n_dm:'{p} sent you a message',
+  today2:'Today',yesterday:'Yesterday',lblNames:'Show label names on cards',lblColours:'Show label colours only'},
 ar:{app:'اللوحات',search:'بحث في هذه اللوحة',addCard:'إضافة بطاقة',addCardBtn:'إضافة',cardPh:'اكتب عنوان البطاقة',addList:'إضافة قائمة أخرى',listPh:'اسم القائمة',addListBtn:'إضافة القائمة',cancel:'إلغاء',
   newBoard:'إنشاء لوحة',boardPh:'اسم اللوحة',create:'إنشاء',filter:'تصفية',clear:'مسح التصفية',members:'الأعضاء',labels:'التصنيفات',due:'تاريخ الاستحقاق',repeat:'التكرار',
   r_:'لا يتكرر',r_daily:'يومي',r_weekly:'أسبوعي',r_monthly:'شهري',desc:'الوصف',descPh:'أضف تفاصيل: ما المطلوب، من نتواصل معه، روابط…',checklist:'قائمة المهام',itemPh:'إضافة بند',
@@ -681,12 +733,20 @@ ar:{app:'اللوحات',search:'بحث في هذه اللوحة',addCard:'إض�
   limitL:'الحد الأسبوعي',overdueCol:'متأخرة',thisWeek:'هذا الأسبوع',perfLead:'من المهام المسجلة في اللوحات فقط. استخدمه لبدء حوار، وليس كصورة كاملة.',
   period:'الفترة',p30:'آخر 30 يوماً',p90:'آخر 90 يوماً',pmonth:'هذا الشهر',pf_done:'منجزة',pf_ontime:'في الموعد',pf_late:'متأخرة',pf_avgLate:'متوسط أيام التأخير',pf_overNow:'متأخرة الآن',pf_subs:'مهام فرعية منجزة',
   vsPrev:'مقارنة بالفترة السابقة',noTasksP:'لا توجد مهام منجزة لها تاريخ استحقاق في هذه الفترة.',perfOf:'{p}: ما أُنجز في هذه الفترة',onTimeTag:'في الموعد',lateBy:'متأخرة {n} أيام',noDue:'بدون تاريخ',
-  doneOn:'أُنجزت',close2:'إغلاق',stillOver:'متأخرة الآن',tasksIn:'{p}، {w}'}};
+  doneOn:'أُنجزت',close2:'إغلاق',stillOver:'متأخرة الآن',tasksIn:'{p}، {w}',
+  people:'الأشخاص',peopleLead:'كل من في تطبيقات فوركا. افتح الملف الشخصي لبيانات التواصل أو لإرسال رسالة أو لرؤية ما يعمل عليه.',findPerson:'ابحث عن شخص',
+  editProfile:'تعديل ملفي',phone:'الهاتف',about:'نبذة عني',aboutPh:'مثال: أعمل من 9 صباحاً إلى 6 مساءً، من الأحد إلى الخميس.',ooo:'خارج المكتب',oooFrom:'من',oooTo:'حتى',oooNote:'ملاحظة',
+  oooBad:'تاريخ "حتى" يجب أن يكون في يوم "من" أو بعده.',awayUntil:'غائب حتى {d}',sendMsg:'إرسال رسالة',openTasks:'المهام المفتوحة',whatsapp:'واتساب',call:'اتصال',emailB:'بريد',
+  noContact:'لا توجد بيانات تواصل بعد.',myProfileHint:'يرى ملفك كل من في تطبيقات فوركا.',
+  chat:'المحادثة',channels:'القنوات',dms:'رسائل مباشرة',everyone:'الجميع',newDm:'راسل شخصاً…',msgPh:'اكتب رسالة… (اكتب @ لذكر شخص)',sendB:'إرسال',
+  chatLead:'قناة {d}',chatAll:'لكل فريق فوركا',noMsgs:'لا رسائل بعد. ابدأ بالتحية.',pickChat:'اختر قناة أو شخصاً.',
+  chatNote:'معاينة: الرسائل تبقى في هذا المتصفح. في التطبيق الفعلي يراها كل أعضاء القناة فوراً.',n_chat:'ذكرك {p} في {x}',n_dm:'أرسل لك {p} رسالة',
+  today2:'اليوم',yesterday:'أمس',lblNames:'إظهار أسماء التصنيفات على البطاقات',lblColours:'إظهار ألوان التصنيفات فقط'}};
 let lang=(()=>{try{return localStorage.getItem('fb-lang')==='ar'?'ar':'en'}catch(e){return 'en'}})();
 const t=(k,v)=>{let s=(T[lang][k]??T.en[k]??k);if(v)Object.keys(v).forEach(x=>{s=s.split('{'+x+'}').join(v[x])});return s};
 
 /* ---------- departments and people ---------- */
-const DEPTS=[{id:'ops',en:'Operations',ar:'العمليات',tint:'#e3e8dc',dot:'#6f8a5a'},{id:'mkt',en:'Marketing',ar:'التسويق',tint:'#e2e7ec',dot:'#5b7896'},
+const DEPTS=[{id:'adm',en:'Executive & Administration',ar:'الإدارة التنفيذية',tint:'#ece6dc',dot:'#7a6a55'},{id:'ops',en:'Operations',ar:'العمليات',tint:'#e3e8dc',dot:'#6f8a5a'},{id:'mkt',en:'Marketing',ar:'التسويق',tint:'#e2e7ec',dot:'#5b7896'},
   {id:'proc',en:'Procurement',ar:'المشتريات',tint:'#ebe1d1',dot:'#9a6b3f'},{id:'fin',en:'Finance',ar:'المالية',tint:'#e7e4ee',dot:'#6d5f8f'},
   {id:'hr',en:'HR',ar:'الموارد البشرية',tint:'#efe3df',dot:'#a8655a'},{id:'mnt',en:'Maintenance',ar:'الصيانة',tint:'#dfe7e5',dot:'#4f7f78'},
   {id:'dev',en:'Development',ar:'التطوير',tint:'#e4e5ec',dot:'#5c6680'},{id:'oman',en:'Oman',ar:'عُمان',tint:'#eee6d5',dot:'#a88a4a'}];
@@ -695,6 +755,7 @@ const dept=id=>DEPTS.find(x=>x.id===id)||DEPTS[0];
 /* Preview people are roles, not real staff. The live version takes everyone from Forka Apps > People and access. */
 const PEOPLE0=[
   {id:'ka',en:'Khaled Alamer',ar:'خالد العامر',ini:'KA',color:'#c27a2c',ceo:true},
+  {id:'ea',en:'Executive Administrator',ar:'المسؤولة الإدارية التنفيذية',ini:'EA',dept:'adm',role:'head',color:'#7a6a55'},
   {id:'oh',en:'Operations Head',ar:'مسؤول العمليات',ini:'OH',dept:'ops',role:'head',color:'#6f8a5a'},{id:'os',en:'Operations Supervisor',ar:'مشرف العمليات',ini:'OS',dept:'ops',role:'staff',color:'#869b74'},
   {id:'mh',en:'Marketing Head',ar:'مسؤول التسويق',ini:'MH',dept:'mkt',role:'head',color:'#5b7896'},{id:'md',en:'Designer',ar:'المصمم',ini:'DS',dept:'mkt',role:'staff',color:'#7891ab'},
   {id:'ph',en:'Procurement Head',ar:'مسؤول المشتريات',ini:'PH',dept:'proc',role:'head',color:'#9a6b3f'},{id:'pb',en:'Buyer',ar:'المشتري',ini:'BY',dept:'proc',role:'staff',color:'#b0855a'},
@@ -734,16 +795,16 @@ function seed(){
         if(DONE_RX.test(ln)&&!o.done){o.done=true}if(o.done&&!o.doneAt)o.doneAt=Date.now()-(2+(Object.keys(D.cards).length*7)%40)*day;
         o.log=o.log.length?o.log:[{at:Date.now()-3*day,by:members[0]||'ka',k:'l_added',a:ln}];D.cards[o.id]=o;l.cards.push(o.id)})});return b};
   const st=(s,note,by,daysAgo)=>({s,note,by,at:Date.now()-(daysAgo||1)*day});
-  mk('ops','Executive Admin Task Board',['ka','oh','os'],st('on','Weekly meetings with each department are now booked.','oh',2),[
-    ['To do',[{title:'Research Ways to Improve Administrative Operations',labels:['urg'],members:['os'],due:5},{title:'Identify Administrative Support Needs in Marketing Department',labels:['mkt'],members:['oh']}]],
+  mk('adm','Executive Admin Task Board',['ka','ea','os'],st('on','Weekly meetings with each department are now booked.','ea',2),[
+    ['To do',[{title:'Research Ways to Improve Administrative Operations',labels:['urg'],members:['os'],due:5},{title:'Identify Administrative Support Needs in Marketing Department',labels:['mkt'],members:['ea']}]],
     ['In-progress',[{title:'Coordinate with Mr. Adam to set a Weekly Meeting with Maintenance',labels:['mnt'],members:['ka'],due:2},
-      {title:'Schedule 1-hour Google Meet with Bilal (Pixel Accounting) to review October 2026 financial reports',labels:['fin'],members:['ka','oh'],due:1,desc:'Send the October reports before the call.',
-        check:[{t:'Send the meeting invite',d:true},{t:'Share October P&L',d:false},{t:'Agree next steps',d:false}],log:[{at:Date.now()-2*3600e3,by:'oh',c:'Reports are ready in the shared folder.'},{at:Date.now()-2*day,by:'ka',k:'l_added',a:'In-progress'}]},
+      {title:'Schedule 1-hour Google Meet with Bilal (Pixel Accounting) to review October 2026 financial reports',labels:['fin'],members:['ka','ea'],due:1,desc:'Send the October reports before the call.',
+        check:[{t:'Send the meeting invite',d:true},{t:'Share October P&L',d:false},{t:'Agree next steps',d:false}],log:[{at:Date.now()-2*3600e3,by:'ea',c:'Reports are ready in the shared folder.'},{at:Date.now()-2*day,by:'ka',k:'l_added',a:'In-progress'}]},
       {title:'Confirm Weekly Finance and Bookkeeping Meetings with Ahmed',labels:['fin'],members:['os'],due:-1},
-      {title:'Consolidated Processes and Reports every Department',desc:'One process document and one monthly report per department.',members:['oh'],due:9}]],
-    ['Completed',[{title:'Update Monthly November Training Schedules',labels:['hr'],members:['os']},{title:'Schedule Weekly Procurement Meetings',labels:['proc'],members:['oh']}]],
+      {title:'Consolidated Processes and Reports every Department',desc:'One process document and one monthly report per department.',members:['ea'],due:9}]],
+    ['Completed',[{title:'Update Monthly November Training Schedules',labels:['hr'],members:['os']},{title:'Schedule Weekly Procurement Meetings',labels:['proc'],members:['ea']}]],
     ['Daily',[{title:'Daily Inbox Sweep',repeat:'daily',members:['os']},{title:'Daily Log - Operations',repeat:'daily',members:['os']}]],
-    ['Weekly',[{title:'Weekly Forka Admins Meetings',repeat:'weekly',members:['ka']},{title:'Weekly Maintenance Meetings with Omar',repeat:'weekly',labels:['mnt'],members:['oh']}]],
+    ['Weekly',[{title:'Weekly Forka Admins Meetings',repeat:'weekly',members:['ka']},{title:'Weekly Maintenance Meetings with Omar',repeat:'weekly',labels:['mnt'],members:['ea']}]],
     ['Monthly',[{title:'Monthly Forka Admin Meeting',repeat:'monthly',members:['ka']}]]]);
   const aj=mk('ops','Ajman Branch Opening',['oh','os','nt'],st('risk','Kitchen hood delivery slipped one week.','oh',1),[
     ['To do',[{title:'Staff rota for opening week',members:['os'],due:6,f:{area:'foh'}},{title:'Hood installation sign-off',labels:['mnt','urg'],members:['nt'],due:-2,f:{area:'kit',cost:'4500'}},
@@ -804,6 +865,15 @@ function seed(){
     {id:'g4',title:'Keep Sharjah equipment downtime under one day',lvl:'mnt',owner:'nh',due:today()+60*day,boards:[bn('Sharjah Maintenance').id],status:sAt('risk','Cold room waiting for a spare part.','nh',1)},
     {id:'g5',title:'Grow December sales with the campaign',lvl:'mkt',owner:'mh',due:today()+40*day,boards:[bn('December Campaign').id],status:sAt('on','Visuals approved.','mh',1)},
     {id:'g6',title:'Hire 6 line cooks before Ramadan',lvl:'hr',owner:'hh',due:today()+70*day,boards:[],pct:40,status:sAt('on','Four interviews booked.','hh',2)}];
+  const m=(k,by,ago,tx)=>{D.msgs=D.msgs||{};(D.msgs[k]=D.msgs[k]||[]).push({id:uid('m'),by,at:Date.now()-ago*60e3,t:tx})};
+  m('all','ka',1500,'Good morning team. From today we follow our work in Forka Boards. Ask your head if you cannot see your board.');
+  m('all','hh',1440,'Reminder: the November training schedule is on the HR board.');
+  m('adm','ea',300,'Weekly meetings with every department are booked. Invites are in your calendars.');
+  m('adm','ka',240,'Thank you. Please add the minutes to each card after the meeting.');
+  m('mkt','mh',180,'Visuals for the December campaign are approved. @Designer please start the week 1 posts.');
+  m('ops','oh',120,'Ajman: hood delivery slipped one week. Soft opening date stays the same for now.');
+  D.prof={ea:{about:'Executive Administrator. I book meetings, follow up on tasks and keep the boards up to date.'},oh:{about:'Operations Head for the UAE branches.'},
+    nt:{about:'Maintenance technician for Sharjah and Ajman.',ooo:{from:new Date(today()-new Date().getTimezoneOffset()*6e4).toISOString().slice(0,10),to:new Date(today()+2*day-new Date().getTimezoneOffset()*6e4).toISOString().slice(0,10),note:'On site in Fujairah. Call the Maintenance Head for urgent jobs.'}}};
   D.ports=[{id:'pf1',name:'CEO Admins',owner:'ka',items:[{b:aj.id,pri:'high'},{b:bn('October Month-end Close').id,pri:'urgent'},{b:bn('Forka Apps Roadmap').id,pri:'normal'}]}];
   return D;
 }
@@ -895,14 +965,15 @@ function render(){
     <select class="viewas" id="viewas" aria-label="${t('viewAs')}">${PEOPLE.map(p=>`<option value="${p.id}" ${p.id===ME()?'selected':''}>${esc(pname(p.id))}${p.ceo?' - '+t('ceoRole'):''}</option>`).join('')}</select>
     <div class="seg"><button data-a="lang" data-v="en" class="${lang==='en'?'on':''}">EN</button><button data-a="lang" data-v="ar" class="${lang==='ar'?'on':''}">عربي</button></div>
     <button class="ib bell" data-a="bell" aria-label="${t('alerts')}" title="${t('alerts')}" style="color:#f3eee6">${ic('bell')}${unread()?`<span class="dot">${unread()}</span>`:''}</button>
-    ${av(ME())}
+    <button class="meav" data-a="prof" data-v="${ME()}" aria-label="${t('editProfile')}">${av(ME())}</button>
   </div>
   <div class="board ${theme()==='light'?'light':''} shell">
     ${sideHTML()}
-    <div class="main">${V.view==='board'?boardHTML():V.view==='progress'?progressHTML():V.view==='dept'?deptHTML():V.view==='projects'?projectsHTML():V.view==='goals'?goalsHTML():V.view==='ports'?portsHTML():V.view==='report'?reportHTML():V.view==='res'?resHTML():mineHTML()}</div>
+    <div class="main">${V.view==='board'?boardHTML():V.view==='progress'?progressHTML():V.view==='dept'?deptHTML():V.view==='projects'?projectsHTML():V.view==='goals'?goalsHTML():V.view==='ports'?portsHTML():V.view==='report'?reportHTML():V.view==='res'?resHTML():V.view==='people'?peopleHTML():V.view==='chat'?chatHTML():mineHTML()}</div>
     ${V.card&&D.cards[V.card]?modalHTML(D.cards[V.card]):''}
     ${V.nt?ntHTML():''}
     ${V.gf?goalFormHTML():''}
+    ${V.prof?profHTML():''}
     ${V.pop?popHTML():''}
     ${V.toast?`<div class="toast" role="status">${esc(V.toast)}</div>`:''}
     ${ASK?`<div class="ov" style="z-index:60;align-items:center"><div class="md" role="alertdialog" aria-modal="true" style="max-width:400px;padding:22px"><p style="margin:0 0 18px;font-size:15px;line-height:1.45">${esc(ASK.msg)}</p><div class="row" style="justify-content:flex-end"><button class="btn sec" data-a="ask-no">${t('cancel')}</button><button class="btn" style="background:#a33a2c" data-a="ask-yes">${t('yes')}</button></div></div></div>`:''}
@@ -913,6 +984,7 @@ function render(){
   if(V.pop)placePop();
   const mt=document.getElementById('mt');if(mt){mt.style.height='auto';mt.style.height=mt.scrollHeight+'px'}
   hydrate();
+  if(V.view==='chat'&&V.chScroll!==V.ch){V.chScroll=V.ch;scrollChat()}
 }
 function sideHTML(){
   const mineN=allCards().filter(({c})=>!c.done&&c.members.includes(ME())).length;
@@ -921,6 +993,8 @@ function sideHTML(){
     <button class="btn newt" data-a="newtask">${ic('plus')}${t('newTask')}</button>
     <button class="nav ${V.view==='mine'?'on':''}" data-a="go" data-v="mine">${ic('inbox')}${t('mine')}<span class="n">${mineN||''}</span></button>
     <button class="nav ${V.view==='projects'?'on':''}" data-a="go" data-v="projects">${ic('folder')}${t('projectsNav')}</button>
+    <button class="nav ${V.view==='chat'?'on':''}" data-a="go" data-v="chat">${ic('chat')}${t('chat')}<span class="n">${chatUnread()||''}</span></button>
+    <button class="nav ${V.view==='people'?'on':''}" data-a="go" data-v="people">${ic('users')}${t('people')}</button>
     ${isCEO()?`<button class="nav ${V.view==='progress'?'on':''}" data-a="go" data-v="progress">${ic('chart')}${t('progress')}</button>`:''}
     <h5>${t('strategy')}</h5>
     <button class="nav ${V.view==='goals'?'on':''}" data-a="go" data-v="goals">${ic('target')}${t('goals')}</button>
@@ -1181,6 +1255,65 @@ function perfDetail(pid,f,to){const a=perfOf(pid,f,to),over=Object.values(D.card
     ${a.done.length?`<div class="tw"><table class="tbl"><tr><th>${t('t_task')}</th><th>${t('due')}</th><th>${t('doneOn')}</th><th></th></tr>${a.done.sort((x,y)=>y.doneAt-x.doneAt).map(row).join('')}</table></div>`:`<div class="empty-p">${t('noTasksP')}</div>`}
     ${over.length?`<div class="mine-g bad">${t('stillOver')} <span class="c">${over.length}</span></div><div class="tw"><table class="tbl">${over.map(c=>`<tr class="click" data-a="open" data-id="${c.id}"><td><b dir="auto">${esc(c.title)}</b></td><td class="num"><span class="due over">${fmtDay(c.due)}</span></td></tr>`).join('')}</table></div>`:''}`}
 
+/* ---------- People (profiles) and Chat (department channels and direct messages) ---------- */
+const lblNames=()=>!(D.lblOff||{})[ME()];
+const prof=id=>(D.prof||{})[id]||{};
+const away=id=>{const o=prof(id).ooo;return o&&o.to&&o.from&&today()>=new Date(o.from+'T00:00:00').getTime()&&today()<=new Date(o.to+'T00:00:00').getTime()?o:null};
+const awayTag=id=>{const o=away(id);return o?`<span class="awt">${esc(t('awayUntil',{d:fmtDay(new Date(o.to+'T00:00:00').getTime())}))}</span>`:''};
+function peopleHTML(){const q=(V.pq2||'').toLowerCase(),L=PEOPLE.filter(p=>!p.invited||isCEO()).filter(p=>!q||pname(p.id).toLowerCase().includes(q)||(p.dept&&deptName(p.dept).toLowerCase().includes(q)));
+  const grp=[['ceo',L.filter(p=>p.ceo)]].concat(DEPTS.map(d=>[d.id,L.filter(p=>p.dept===d.id)])).filter(g=>g[1].length);
+  return `<div class="page"><h1>${t('people')}</h1><p class="lead">${t('peopleLead')}</p>
+    <div class="pfind">${ic('search')}<input id="pq2" type="search" placeholder="${t('findPerson')}" value="${esc(V.pq2||'')}" aria-label="${t('findPerson')}"></div>
+    ${grp.map(([k,ps])=>`<div class="h2">${k==='ceo'?esc(t('ceoRole')):`<span style="width:10px;height:10px;border-radius:3px;background:${dept(k).dot}"></span>${esc(deptName(k))}`}</div>
+      <div class="ppl">${ps.map(p=>{const n=allCards().filter(({c})=>!c.done&&c.members.includes(p.id)).length;return `<button class="pcard" data-a="prof" data-v="${p.id}">${av(p.id,'lg')}<span><b dir="auto">${esc(pname(p.id))}</b>
+        <small>${p.ceo?t('ceoRole'):p.role==='head'?t('headLabel'):t('staff')}${n?' · '+t('openN',{n}):''}</small>${awayTag(p.id)}</span></button>`}).join('')}</div>`).join('')}</div>`}
+function profHTML(){const id=V.prof,p=person(id),me=id===ME(),ed=me&&V.profEdit,P=ed&&V.prDraft?V.prDraft:prof(id),o=P.ooo||{};
+  const open=allCards().filter(({c})=>!c.done&&c.members.includes(id)),email=p.email||P.email||'',ph=(P.phone||'').replace(/[^\d+]/g,'');
+  return `<div class="ov" data-a="profx"><div class="md" role="dialog" aria-modal="true" aria-label="${esc(pname(id))}" style="max-width:560px">
+    <button class="ib x" data-a="profx" aria-label="${t('close')}">${ic('x')}</button>
+    <div class="profh">${av(id,'xl')}<div><h2 dir="auto">${esc(pname(id))}</h2><div class="sm">${p.ceo?t('ceoRole'):(p.role==='head'?t('headLabel'):t('staff'))+(p.dept?' · '+esc(deptName(p.dept)):'')}</div>${awayTag(id)}</div></div>
+    <div class="ntf">${ed?`<label class="fl" for="pr-phone">${t('phone')}</label><input class="fld" id="pr-phone" dir="ltr" maxlength="30" value="${esc(P.phone||'')}" style="width:100%" placeholder="+971 5x xxx xxxx">
+      <label class="fl" for="pr-about">${t('about')}</label><textarea class="desc" id="pr-about" dir="auto" maxlength="300" style="min-height:70px" placeholder="${t('aboutPh')}">${esc(P.about||'')}</textarea>
+      <label class="fl">${t('ooo')}</label><div class="g3"><div><label class="fl" for="pr-from" style="margin-top:0">${t('oooFrom')}</label><input class="fld" type="date" id="pr-from" value="${esc(o.from||'')}"></div><div><label class="fl" for="pr-to" style="margin-top:0">${t('oooTo')}</label><input class="fld ${V.oooBad?'miss':''}" type="date" id="pr-to" value="${esc(o.to||'')}"></div><div><label class="fl" for="pr-note" style="margin-top:0">${t('oooNote')}</label><input class="fld" id="pr-note" dir="auto" maxlength="80" value="${esc(o.note||'')}"></div></div>
+      ${V.oooBad?`<div class="errbox">${t('oooBad')}</div>`:''}
+      <div class="row" style="justify-content:flex-end;margin-top:16px"><button class="btn sec" data-a="profcancel">${t('cancel')}</button><button class="btn" data-a="profsave">${t('saveB')}</button></div>`
+    :`${P.about?`<p class="about" dir="auto">${esc(P.about)}</p>`:''}${away(id)&&o.note?`<div class="reqnote">${esc(o.note)}</div>`:''}
+      <div class="cbtns">${email?`<a class="btn sec" href="mailto:${esc(email)}">${ic('inbox')}${t('emailB')}</a>`:''}${ph?`<a class="btn sec" href="tel:${esc(ph)}">${t('call')}</a><a class="btn sec" href="https://wa.me/${esc(ph.replace('+',''))}" target="_blank" rel="noopener">${t('whatsapp')}</a>`:''}
+        ${me?'':`<button class="btn" data-a="dm" data-v="${id}">${ic('chat')}${t('sendMsg')}</button>`}${me?`<button class="btn" data-a="profedit">${t('editProfile')}</button>`:''}</div>
+      ${!email&&!ph?`<div class="lock" style="padding:8px 0 0">${t('noContact')}</div>`:''}
+      <div class="h2" style="margin-top:18px">${t('openTasks')} <span class="sm" style="color:var(--muted);font-weight:500">${open.length}</span></div>
+      ${open.length?`<div class="tw"><table class="tbl">${open.slice(0,8).map(({c,b})=>`<tr class="click" data-a="open" data-id="${c.id}"><td><b dir="auto">${esc(c.title)}</b><div class="sm">${esc(bname(b))}</div></td><td class="num">${c.due?`<span class="due ${dueCls(c)}">${fmtDay(c.due)}</span>`:''}</td></tr>`).join('')}</table></div>`:''}
+      ${me?`<div class="lock" style="padding:10px 0 0">${t('myProfileHint')}</div>`:''}`}</div></div></div>`}
+/* Chat */
+const chMembers=k=>k==='all'?PEOPLE.filter(p=>!p.invited).map(p=>p.id):k.startsWith('dm:')?k.slice(3).split('|'):PEOPLE.filter(p=>p.dept===k||p.ceo).map(p=>p.id);
+const canCh=k=>chMembers(k).includes(ME());
+const myChans=()=>['all'].concat(DEPTS.map(d=>d.id).filter(canCh));
+const dmKey=(a,b)=>'dm:'+[a,b].sort().join('|');
+const myDms=()=>Object.keys(D.msgs||{}).filter(k=>k.startsWith('dm:')&&canCh(k)&&(D.msgs[k]||[]).length).sort((a,b)=>lastAt(b)-lastAt(a));
+const lastAt=k=>{const m=(D.msgs||{})[k]||[];return m.length?m[m.length-1].at:0};
+const chName=k=>k==='all'?t('everyone'):k.startsWith('dm:')?pname(k.slice(3).split('|').find(x=>x!==ME())||ME()):deptName(k);
+const chUnread=k=>{const seen=((D.seen||{})[ME()]||{})[k]||0;return ((D.msgs||{})[k]||[]).filter(m=>m.by!==ME()&&m.at>seen).length};
+const chatUnread=()=>myChans().concat(myDms()).reduce((a,k)=>a+chUnread(k),0);
+function markSeen(k){D.seen=D.seen||{};D.seen[ME()]=D.seen[ME()]||{};D.seen[ME()][k]=Date.now()}
+function chatHTML(){const k=V.ch&&canCh(V.ch)?V.ch:null,list=myChans(),dms=myDms();
+  const item=x=>{const n=chUnread(x);return `<button class="chi ${k===x?'on':''}" data-a="chopen" data-v="${x}">${x.startsWith('dm:')?av(x.slice(3).split('|').find(y=>y!==ME())||ME()):`<span class="hash">#</span>`}<span dir="auto">${esc(chName(x))}</span>${n?`<span class="cnt">${n}</span>`:''}</button>`};
+  const others=PEOPLE.filter(p=>p.id!==ME()&&!p.invited&&!dms.includes(dmKey(ME(),p.id)));
+  const msgs=k?((D.msgs||{})[k]||[]):[];let lastDay='';
+  const dayL=ts=>{const d=new Date(ts);d.setHours(0,0,0,0);const x=d.getTime();return x===today()?t('today2'):x===today()-day?t('yesterday'):fmtDay(ts)};
+  return `<div class="chat ${k?'has':''}"><div class="chl"><h1>${t('chat')}</h1><h5>${t('channels')}</h5>${list.map(item).join('')}
+      <h5>${t('dms')}</h5>${dms.map(item).join('')}<select class="fld" id="dmnew" aria-label="${t('newDm')}"><option value="">${t('newDm')}</option>${others.map(p=>`<option value="${p.id}">${esc(pname(p.id))}</option>`).join('')}</select>
+      <p class="lock" style="padding:12px 4px 0">${t('chatNote')}</p></div>
+    <div class="chm">${k?`<div class="chh"><button class="ib chback" data-a="chopen" data-v="" aria-label="${t('back')}">${ic(lang==='ar'?'right':'left')}</button><b dir="auto">${k.startsWith('dm:')?'':'# '}${esc(chName(k))}</b><span class="sm">${k==='all'?t('chatAll'):k.startsWith('dm:')?'':esc(t('chatLead',{d:deptName(k)}))+' · '+chMembers(k).length}</span></div>
+      <div class="chs" id="chs">${msgs.length?msgs.map(m=>{const dl=dayL(m.at),sep=dl!==lastDay?`<div class="chday"><span>${esc(dl)}</span></div>`:'';lastDay=dl;
+        return sep+`<div class="msg ${m.by===ME()?'me':''}">${av(m.by)}<div><div class="mh"><b>${esc(pname(m.by))}</b><span>${new Date(m.at).toLocaleTimeString(lang==='ar'?'ar-AE':'en-GB',{hour:'2-digit',minute:'2-digit'})}</span></div><div class="mb" dir="auto">${withMentions(m.t)}</div></div></div>`}).join(''):`<div class="empty-p" style="margin:20px">${t('noMsgs')}</div>`}</div>
+      <div class="chc"><textarea id="chin" class="desc" dir="auto" rows="1" maxlength="2000" placeholder="${t('msgPh')}"></textarea><button class="btn" data-a="chsend">${t('sendB')}</button></div>`
+      :`<div class="empty-p" style="margin:40px 20px">${t('pickChat')}</div>`}</div></div>`}
+function chSend(){const ta=document.getElementById('chin'),tx=ta&&ta.value.trim(),k=V.ch;if(!tx||!k)return;D.msgs=D.msgs||{};(D.msgs[k]=D.msgs[k]||[]).push({id:uid('m'),by:ME(),at:Date.now(),t:tx});
+  if(D.msgs[k].length>400)D.msgs[k]=D.msgs[k].slice(-400);markSeen(k);
+  if(k.startsWith('dm:'))chMembers(k).forEach(m=>notify(m,'dm',null,{ch:k}));else mentioned(tx).filter(m=>chMembers(k).includes(m)).forEach(m=>notify(m,'chat',null,{ch:k,x:'#'+chName(k)}));
+  save();render();focusSel('#chin');scrollChat()}
+function scrollChat(){const el=document.getElementById('chs');if(el)el.scrollTop=el.scrollHeight}
+
 /* Department page */
 function teamHTML(d){const team=PEOPLE.filter(x=>x.dept===d.id),free=PEOPLE.filter(x=>!x.dept&&!x.ceo),iv=V.inv||{name:'',email:'',bad:[]},miss=k=>iv.bad.includes(k)?'miss':'';
   const nb=id=>D.order.map(x=>D.boards[x]).filter(b=>b&&b.dept===d.id&&!b.kind&&boardPeople(b).includes(id)).length;
@@ -1282,7 +1415,7 @@ function cardHTML(c){const b=B();
   const fc=fieldChips(c,b);
   return `<div class="card ${c.done?'done':''} ${c.type==='milestone'?'ms':''}" data-id="${c.id}" tabindex="0">
     ${c.cover&&(c.atts||[]).some(x=>x.id===c.cover)?`<img class="cover" data-att="${c.cover}" alt="">`:''}
-    ${c.labels.length?`<div class="lbs">${c.labels.map(id=>{const l=label(id);return l?`<span style="background:${l.color}" title="${esc(lname(l))}"></span>`:''}).join('')}</div>`:''}
+    ${c.labels.length?`<div class="lbs ${lblNames()?'nm':''}">${c.labels.map(id=>{const l=label(id);return l?`<span style="background:${l.color}" title="${esc(lname(l))}">${lblNames()?esc(lname(l)):''}</span>`:''}).join('')}</div>`:''}
     <div class="ct" dir="auto">${c.done?`<span style="color:var(--ok)">${ic('tick')}</span> `:''}${c.type==='milestone'?`<span class="msd" title="${t('ty_milestone')}">${ic('diamond')}</span> `:''}${esc(c.title)}</div>
     ${fc?`<div class="fcs">${fc}</div>`:''}
     ${badges||c.members.length?`<div class="bd">${badges}${who.length?`<span class="who">${who.map((m,i)=>av(m,i===0&&who.length>1?'own':'')).join('')}</span>`:''}</div>`:''}
@@ -1428,7 +1561,7 @@ function ntCreate(){ntSync();const n=V.nt,req=n.board==='__req',bad=[];
   save();render()}
 function popHTML(){const p=V.pop,b=B();
   if(p.kind==='bmenu')return `<div class="pop" id="pop"><h4>${t('theme')}</h4><div class="seg" style="margin:0 4px 8px;background:var(--soft)"><button style="flex:1" data-a="theme" data-v="light" class="${theme()==='light'?'on':''}">${t('light')}</button><button style="flex:1" data-a="theme" data-v="dark" class="${theme()==='dark'?'on':''}">${t('dark')}</button></div>
-    <hr><button class="mi" data-a="archv">${ic('archive')}${t('archived')}</button>
+    <hr><button class="mi" data-a="lbltog">${ic('tag')}${lblNames()?t('lblColours'):t('lblNames')}</button><button class="mi" data-a="archv">${ic('archive')}${t('archived')}</button>
     ${b&&canAdmin(b)?`<button class="mi" data-a="labels">${ic('tag')}${t('editLabels')}</button><button class="mi" data-a="fieldsed">${ic('grid')}${t('fields')}</button><button class="mi" data-a="btpl">${ic('copy')}${t('saveTpl')}</button>`:''}
     <hr><button class="mi" data-a="reset">${ic('repeat')}${t('reset')}</button>${b&&canAdmin(b)?`<button class="mi dan" data-a="bdel">${ic('trash')}${t('deleteBoard')}</button>`:''}</div>`;
   if(p.kind==='labels')return `<div class="pop wide" id="pop"><h4>${t('editLabels')}</h4><div class="lock">${t('labelsHint')}</div>
@@ -1448,7 +1581,7 @@ function popHTML(){const p=V.pop,b=B();
       ${al.map(l=>`<div class="arch"><span dir="auto"><b>${esc(LN(l))}</b><small>${t('archiveList')} · ${l.cards.length} ${t('cards')}</small></span>${adm?`<button class="btn sec" data-a="lrestore" data-v="${l.id}">${t('restore')}</button><button class="btn dan" data-a="lgone" data-v="${l.id}">${t('delForever')}</button>`:''}</div>`).join('')}
       ${ac.map(c=>`<div class="arch"><span dir="auto">${esc(c.title)}<small>${esc(LN(listOf(c.id)))} · ${c.archivedAt?ago(c.archivedAt):''}</small></span><button class="btn sec" data-a="crestore" data-v="${c.id}">${t('restore')}</button>${adm?`<button class="btn dan" data-a="cgone" data-v="${c.id}">${t('delForever')}</button>`:''}</div>`).join('')}</div>`}
   if(p.kind==='notes'){const L=notesFor();return `<div class="pop wide" id="pop" style="width:360px"><h4>${t('alerts')}</h4>
-    ${L.length?L.map(x=>`<button class="note-i ${x.read?'':'unread'}" data-a="nopen" data-v="${x.id||''}" data-id="${x.card}">${av(x.by||ME())}<span><span dir="auto">${esc(x.txt)}</span><small dir="auto">${esc(x.title)} · ${x.at?ago(x.at):''}</small></span></button>`).join(''):`<div class="lock">${t('noAlerts')}</div>`}
+    ${L.length?L.map(x=>`<button class="note-i ${x.read?'':'unread'}" data-a="nopen" data-v="${x.id||''}" data-id="${x.card||''}" data-ch="${x.ch||''}">${av(x.by||ME())}<span><span dir="auto">${esc(x.txt)}</span><small dir="auto">${esc(x.title)} · ${x.at?ago(x.at):''}</small></span></button>`).join(''):`<div class="lock">${t('noAlerts')}</div>`}
     <hr><button class="mi" data-a="nread">${ic('tick')}${t('markRead')}</button>
     <label class="mi"><input type="checkbox" id="emailme" ${(D.emailOff||{})[ME()]?'':'checked'}> ${t('emailMe')}</label><div class="lock">${t('emailNote')}</div></div>`}
   if(p.kind==='lmenu'){const admin=canAdmin(b);return `<div class="pop" id="pop"><h4>${t('listMenu')}</h4>
@@ -1476,12 +1609,12 @@ function placePop(){const el=document.getElementById('pop'),a=V.pop.anchor&&docu
 function logTo(c,e){c.log.push(Object.assign({at:Date.now(),by:ME()},e))}
 /* Alerts: stored ones (assigned, mentioned, request, done) plus "due soon" worked out live. In the live app they are emailed too. */
 function notify(to,k,card,x){if(!to||to===ME())return;(D.notes=D.notes||[]).push(Object.assign({id:uid('n'),to,by:ME(),k,card,at:Date.now(),read:false},x||{}));if(D.notes.length>500)D.notes=D.notes.slice(-500)}
-function notesFor(){const me=ME(),out=(D.notes||[]).filter(x=>x.to===me&&D.cards[x.card]).map(x=>Object.assign({},x,{title:D.cards[x.card].title,
+function notesFor(){const me=ME(),out=(D.notes||[]).filter(x=>x.to===me&&(D.cards[x.card]||x.ch)).map(x=>Object.assign({},x,{title:x.ch?chName(x.ch):D.cards[x.card].title,
     txt:t('n_'+x.k,{p:pname(x.by),d:deptName(x.d||''),x:x.x||''})}));
   const t0=today();allCards().forEach(({c})=>{if(!c.done&&c.due&&c.members.includes(me)&&c.due<t0+2*day){const w=c.due<t0?'w_over':c.due<t0+day?'w_today':'w_tomorrow';
     out.push({card:c.id,k:'due',title:c.title,txt:t('n_due',{w:t(w)}),at:0,read:true,by:me})}});
   return out.sort((a,b)=>(b.at||0)-(a.at||0)).slice(0,60)}
-const unread=()=>(D.notes||[]).filter(x=>x.to===ME()&&!x.read&&D.cards[x.card]).length;
+const unread=()=>(D.notes||[]).filter(x=>x.to===ME()&&!x.read&&(D.cards[x.card]||x.ch)).length;
 function withMentions(txt){let h=esc(txt);PEOPLE.forEach(p=>[p.en,p.ar].forEach(nm=>{if(nm){const e=esc('@'+nm);h=h.split(e).join(`<span class="ment">${e}</span>`)}}));return h}
 function mentioned(txt){return PEOPLE.filter(p=>[p.en,p.ar].some(nm=>nm&&txt.includes('@'+nm))).map(p=>p.id)}
 /* Templates: a few ready-made boards plus boards and cards saved by heads. */
@@ -1537,8 +1670,18 @@ document.addEventListener('click',e=>{
     case '':break;
     case 'side':V.side=!V.side;render();break;
     case 'lang':lang=v;try{localStorage.setItem('fb-lang',v)}catch(x){}render();break;
-    case 'go':V.view=v;V.dept=null;V.board=null;V.side=false;if(v==='ports')V.port=null;V.perfP=null;render();break;
+    case 'go':if(v==='chat'&&V.ch)markSeen(V.ch);V.view=v;V.dept=null;V.board=null;V.side=false;if(v==='ports')V.port=null;V.perfP=null;render();break;
     case 'gnew':gfOpen(null);break;
+    case 'lbltog':D.lblOff=D.lblOff||{};D.lblOff[ME()]=lblNames();V.pop=null;save();render();break;
+    case 'prof':V.prof=v;V.profEdit=false;V.oooBad=false;V.pop=null;render();break;
+    case 'profx':if(k==='profx'&&a.classList.contains('ov')&&e.target!==a)break;V.prof=null;V.profEdit=false;render();break;
+    case 'profedit':V.profEdit=true;render();focusSel('#pr-phone');break;
+    case 'profcancel':V.profEdit=false;V.oooBad=false;V.prDraft=null;render();break;
+    case 'profsave':{const g=x=>document.getElementById(x).value.trim(),f=g('pr-from'),to=g('pr-to');if(f&&to&&to<f||(!!f!==!!to)){V.oooBad=true;V.prDraft={phone:g('pr-phone'),about:g('pr-about'),ooo:{from:f,to,note:g('pr-note')}};render();break}
+      D.prof=D.prof||{};D.prof[ME()]=Object.assign({},prof(ME()),{phone:g('pr-phone'),about:g('pr-about'),ooo:f?{from:f,to,note:g('pr-note')}:null});V.profEdit=false;V.oooBad=false;V.prDraft=null;save();render();break}
+    case 'dm':{const k2=dmKey(ME(),v);V.prof=null;V.view='chat';V.ch=k2;V.side=false;markSeen(k2);save();render();focusSel('#chin');break}
+    case 'chopen':V.ch=v||null;if(v)markSeen(v);save();render();scrollChat();if(v)focusSel('#chin');break;
+    case 'chsend':chSend();break;
     case 'gopen':gfOpen(id);break;
     case 'gx':V.gf=null;render();break;
     case 'gsave':gfSave();break;
@@ -1584,7 +1727,7 @@ document.addEventListener('click',e=>{
     case 'calm':{const m=V.calM?new Date(V.calM):new Date();V.calM=v==='0'?null:new Date(m.getFullYear(),m.getMonth()+(+v),1).getTime();render();break}
     case 'calnew':{if(V.view==='mine'){openNew({due:v});break}const b=B();openNew({dept:b.dept,board:b.kind?null:b.id,due:v});break}
     case 'bell':V.pop=V.pop&&V.pop.kind==='notes'?null:{kind:'notes',anchor:'[data-a=bell]'};render();break;
-    case 'nopen':{const x=(D.notes||[]).find(n=>n.id===v);if(x)x.read=true;V.pop=null;V.card=id;save();render();break}
+    case 'nopen':{const x=(D.notes||[]).find(n=>n.id===v);if(x)x.read=true;V.pop=null;if(a.dataset.ch){V.view='chat';V.ch=a.dataset.ch;markSeen(V.ch);save();render();scrollChat();break}V.card=id;save();render();break}
     case 'nread':(D.notes||[]).forEach(x=>{if(x.to===ME())x.read=true});save();render();break;
     case 'labels':V.pop={kind:'labels',anchor:'[data-a=bmenu]'};render();break;
     case 'labcol':{const L=ensureLabels(B()),l=L.find(x=>x.id===v);l.color=PALETTE[(PALETTE.indexOf(l.color)+1)%PALETTE.length];save();render();break}
@@ -1664,8 +1807,8 @@ document.addEventListener('click',e=>{
     case 'ckadd':addCheck();break;
     case 'cmt':{const tx=document.getElementById('cmt').value.trim();if(!tx)return;commitModalFields();logTo(c,{c:tx});const ms=mentioned(tx);ms.forEach(m=>notify(m,'mention',c.id));
       [...new Set(c.members.concat(c.follow||[],c.requester?[c.requester]:[]))].filter(m=>!ms.includes(m)).forEach(m=>notify(m,'comment',c.id));save();render();break}
-    case 'ment':{const ta=document.getElementById('cmt'),pos=ta.selectionStart,before=ta.value.slice(0,pos).replace(/@[^@\n]{0,30}$/,''),after=ta.value.slice(pos);ta.value=before+'@'+pname(v)+' '+after;V.pop=null;
-      const keep=ta.value;render();const t2=document.getElementById('cmt');t2.value=keep;t2.focus();t2.setSelectionRange(before.length+pname(v).length+2,before.length+pname(v).length+2);break}
+    case 'ment':{const mi=V.mentIn||'cmt',ta=document.getElementById(mi),pos=ta.selectionStart,before=ta.value.slice(0,pos).replace(/@[^@\n]{0,30}$/,''),after=ta.value.slice(pos);ta.value=before+'@'+pname(v)+' '+after;V.pop=null;
+      const keep=ta.value;render();const t2=document.getElementById(mi);t2.value=keep;t2.focus();t2.setSelectionRange(before.length+pname(v).length+2,before.length+pname(v).length+2);break}
     case 'cdel':commitModalFields();ask(t('delQ'),()=>{const l=listOf(c.id);if(l)l.cards.splice(l.cards.indexOf(c.id),1);delete D.cards[c.id];V.card=null;save()});break;
   }
 });
@@ -1687,21 +1830,24 @@ document.addEventListener('keydown',e=>{
   if(id==='lname'&&e.key==='Enter'){e.preventDefault();saveListName();return}
   if(id==='bname'&&e.key==='Enter'){e.preventDefault();saveBoardName();return}
   if(id==='ckin'&&e.key==='Enter'){e.preventDefault();addCheck();return}
+  if(id==='chin'&&e.key==='Enter'&&!e.shiftKey){e.preventDefault();chSend();return}
   if(id==='subin'&&e.key==='Enter'){e.preventDefault();addSub();return}
   if(id==='secnew'&&e.key==='Enter'){e.preventDefault();document.querySelector('[data-a=secadd]').click();return}
   if(id==='secname'&&e.key==='Enter'){e.preventDefault();saveSec();return}
   if(id==='mt'&&e.key==='Enter'){e.preventDefault();e.target.blur();return}
   if(e.key==='Enter'&&e.target.classList&&e.target.classList.contains('card')){V.card=e.target.dataset.card||e.target.dataset.id;render();return}
   if(e.key==='Escape'&&V.gf){V.gf=null;render();return}
+  if(e.key==='Escape'&&V.prof){V.prof=null;V.profEdit=false;render();return}
   if(e.key==='Escape'){if(V.secEdit){V.secEdit=null;render()}else if(ASK){ASK=null;render()}else if(V.nt){V.nt=null;render()}else if(V.pop){V.pop=null;render()}else if(V.card){commitModalFields();V.card=null;render()}else if(V.comp){V.comp=null;render()}else if(V.addList){V.addList=false;render()}else if(V.editList){V.editList=null;render()}else if(V.editBoard){V.editBoard=false;render()}else if(V.side){V.side=false;render()}}
 });
 document.addEventListener('input',e=>{
-  if(e.target.id==='cmt'){const m=e.target.value.slice(0,e.target.selectionStart).match(/@([^@\n]{0,30})$/);
-    if(m){const b=boardOfList(listOf(V.card).id),q=m[1].toLowerCase(),L=[...new Set(boardPeople(b).concat(PEOPLE.filter(p=>p.dept===b.dept||p.ceo).map(p=>p.id)))].filter(id=>pname(id).toLowerCase().includes(q)).slice(0,6);
+  if(e.target.id==='cmt'||e.target.id==='chin'){const m=e.target.value.slice(0,e.target.selectionStart).match(/@([^@\n]{0,30})$/);V.mentIn=e.target.id;
+    if(m){const q=m[1].toLowerCase(),pool=e.target.id==='chin'?chMembers(V.ch).filter(x=>x!==ME()):(b=>[...new Set(boardPeople(b).concat(PEOPLE.filter(p=>p.dept===b.dept||p.ceo).map(p=>p.id)))])(boardOfList(listOf(V.card).id)),L=pool.filter(id=>pname(id).toLowerCase().includes(q)).slice(0,6);
       let el=document.getElementById('mentpop');if(!el){el=document.createElement('div');el.id='mentpop';el.className='pop';document.querySelector('.shell').appendChild(el)}
       el.innerHTML=L.length?L.map(id=>`<button class="mrow" data-a="ment" data-v="${id}">${av(id)}<span>${esc(pname(id))}</span></button>`).join(''):'';
-      const r=e.target.getBoundingClientRect();el.style.left=Math.max(8,lang==='ar'?r.right-270:r.left)+'px';el.style.top=(r.bottom+4)+'px';el.style.display=L.length?'block':'none'}
+      const r=e.target.getBoundingClientRect();el.style.left=Math.max(8,lang==='ar'?r.right-270:r.left)+'px';el.style.display=L.length?'block':'none';el.style.top=(r.bottom+4+el.offsetHeight>innerHeight?r.top-el.offsetHeight-4:r.bottom+4)+'px'}
     else{const el=document.getElementById('mentpop');if(el)el.remove()}}
+  if(e.target.id==='pq2'){V.pq2=e.target.value;const pos=e.target.selectionStart;render();const q=document.getElementById('pq2');q.focus();q.setSelectionRange(pos,pos)}
   if(e.target.id==='pq'){V.pf.q=e.target.value;const pos=e.target.selectionStart;render();const q=document.getElementById('pq');q.focus();q.setSelectionRange(pos,pos)}
   if(e.target.id==='q'){V.f.q=e.target.value;const pos=e.target.selectionStart;render();const q=document.getElementById('q');q.focus();q.setSelectionRange(pos,pos)}
   if(e.target.id==='mt'){e.target.style.height='auto';e.target.style.height=e.target.scrollHeight+'px'}});
@@ -1713,6 +1859,7 @@ document.addEventListener('change',e=>{
     if(e.target.id==='nt-board'){n.board=e.target.value;n.list=null;n.members=n.members.filter(m=>ntPool(Object.assign({},n)).includes(m))}
     if(e.target.id==='nt-list')n.list=e.target.value;
     ntDefaults(n);n.members=n.members.filter(m=>ntPool(n).includes(m));render();return}
+  if(e.target.id==='dmnew'&&e.target.value){const k2=dmKey(ME(),e.target.value);V.ch=k2;markSeen(k2);save();render();focusSel('#chin');return}
   if(V.gf&&e.target.id==='gf-lvl'){gfSync();V.gf.boards=V.gf.boards.filter(id=>{const b=D.boards[id];return b&&(V.gf.lvl==='company'||b.dept===V.gf.lvl)});render();return}
   if(e.target.classList&&e.target.classList.contains('ppri')){const x=(D.ports||[]).find(q=>q.id===V.port),i=x&&x.items.find(q=>q.b===e.target.dataset.b);if(i){i.pri=e.target.value;save()}return}
   if(e.target.id==='padd'&&e.target.value){const x=(D.ports||[]).find(q=>q.id===V.port);x.items.push({b:e.target.value,pri:'normal'});save();render();return}
