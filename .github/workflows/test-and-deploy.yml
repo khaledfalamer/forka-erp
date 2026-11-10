@@ -37,9 +37,13 @@ jobs:
         run: python tests/hiring_test.py
       - name: Boards (preview) page checks
         run: python tests/boards_test.py
+      - name: Boards server checks (who sees and changes what)
+        run: node tests/boards_server_test.js
+      - name: Boards signed-in checks (several people, real server code)
+        run: python tests/boards_live_test.py
       - name: No secrets in the site
         run: |
-          ! grep -RInE "GOCSPX-|AIza[0-9A-Za-z_-]{30}|\"pin\"[[:space:]]*:[[:space:]]*\"[0-9]{4,}\"" index.html config.js hiring apply
+          ! grep -RInE "GOCSPX-|AIza[0-9A-Za-z_-]{30}|\"pin\"[[:space:]]*:[[:space:]]*\"[0-9]{4,}\"" index.html config.js hiring apply boards server
   deploy:
     needs: test
     runs-on: ubuntu-latest

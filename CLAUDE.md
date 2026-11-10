@@ -17,11 +17,12 @@ Owner: Khaled Alamer, CEO of Forka Collective (F&B group: UAE branches Sharjah, 
 - index.html: the hub (sign-in, app tiles, People and access). hiring/: the Hiring app. apply/: a copy of the careers page (apply.forka.com is the forka-apply repo).
 - server/Accounts.gs = Apps Script "Forka Apps - Accounts server" (its only file is Code.gs). Sheet "Forka Apps - Accounts" 1YkqcYwtKcm4mOz-wJGLvSPAeEYGzPxqLep_SzRGOCCA, tabs People / Requests / Activity. PINs are stored as salted hashes only.
 - server/Hiring.gs = Apps Script bound to the Sheet "Forka Hiring" (1U_1G9okE9chorTYVollXyOSaKi5GocJWp5-VZUpUfNo). The web app address is HIRING_URL in config.js.
+- server/Boards.gs = Apps Script "Forka Boards server", bound to the Sheet "Forka Boards" (tab Data: one row per board, list, card, message, goal...). Asks the accounts server who people are; reads the accounts Sheet for the list of people; files in a private Drive folder. Web app address = BOARDS_URL in config.js (empty = Boards stays the sample-data preview). Departments and heads are set by the CEO in Boards > People.
 - Google sign-in client 443945615318-21aveveme3c8n41fepp4gmof3vnrs8if.apps.googleusercontent.com (Google Cloud project "Forka Apps", origin https://erp.forka.com).
 - Apps Script changes do NOT deploy from GitHub. Khaled pastes the file into the script project, then Deploy > Manage deployments > pencil > New version (keeping the same web address). Tell him exactly which project and which file. Never let him choose "New deployment".
 
 ## Checks (run before every push)
-node tests/server_test.js · node tests/hiring_server_test.js · python3 tests/ci_test.py · python3 tests/hiring_test.py (tests/live_test.py runs in CI)
+node tests/server_test.js · node tests/hiring_server_test.js · node tests/boards_server_test.js · python3 tests/ci_test.py · python3 tests/hiring_test.py · python3 tests/boards_test.py · python3 tests/boards_live_test.py (tests/live_test.py runs in CI)
 
 ## Rollback
 Website: revert the commit on main. Apps Script: Manage deployments > pencil > choose the previous version.

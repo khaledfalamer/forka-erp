@@ -337,6 +337,12 @@ fieldset.ro{border:0;padding:0;margin:0;min-width:0}
 .side2 .row select{flex:1 1 100%!important}
 .side2 .row .btn{flex:1 1 100%;justify-content:center;display:flex;align-items:center;gap:6px}
 .sm-only{display:none}
+.sync{font-size:12px;color:#a9a196;white-space:nowrap}.sync.saving{color:#e0a23a}.sync.off{color:#e08b7d}
+.gate{max-width:440px;margin:14vh auto;padding:30px;background:#fffdf9;color:#23211f;border-radius:14px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px}
+.gate .brand b{font-family:var(--serif);letter-spacing:.32em;font-size:22px}.gate .brand span{color:var(--bronze);font-weight:600;margin-inline-start:8px}
+.gate p{line-height:1.5;margin:14px 0}.gate .btn{display:inline-flex;align-items:center;height:40px;text-decoration:none}
+@media (max-width:760px){.sync{display:none}}
+
 /* label names, people, profile, chat */
 .card .lbs.nm span{height:auto;width:auto;padding:1px 7px;font-size:11.5px;font-weight:600;color:#fff;border-radius:4px;line-height:1.5}
 .meav{display:inline-flex;border-radius:50%}
@@ -537,6 +543,7 @@ html[dir=rtl] .pfind input{padding:0 38px 0 14px}
 </head>
 <body>
 <div class="app" id="app"></div>
+<script src="../config.js"></script>
 <script>
 /* Forka Boards - preview with departments. Everything is kept in this browser (localStorage) until it is connected to Forka Apps.
    Who sees what:  CEO = every department and board, plus Company progress.
@@ -656,7 +663,11 @@ en:{app:'Boards',search:'Search this board',addCard:'Add a card',addCardBtn:'Add
   chat:'Chat',channels:'Channels',dms:'Direct messages',everyone:'Everyone',newDm:'Message someone…',msgPh:'Write a message… (type @ to mention someone)',sendB:'Send',
   chatLead:'Channel for {d}',chatAll:'For everyone at Forka',noMsgs:'No messages yet. Say hello.',pickChat:'Choose a channel or a person.',
   chatNote:'Preview: messages stay in this browser. In the live app everyone in the channel sees them straight away.',n_chat:'{p} mentioned you in {x}',n_dm:'{p} sent you a message',
-  today2:'Today',yesterday:'Yesterday',lblNames:'Show label names on cards',lblColours:'Show label colours only'},
+  today2:'Today',yesterday:'Yesterday',lblNames:'Show label names on cards',lblColours:'Show label colours only',
+  sSaved:'Saved',sSaving:'Saving…',sOff:'Offline: changes will be sent when the connection is back',notAllowed:'You cannot change this. It was put back as it was.',
+  signinNeed:'Please sign in at Forka Apps first, then open Boards from there.',signinBtn:'Sign in at Forka Apps',netErr:'Boards could not reach the server. Check the connection and try again.',retry:'Try again',loading:'Opening your boards…',
+  noDept:'Not in a department yet',inviteLive:'They are added to Forka Apps as "To confirm". The CEO confirms them, then they sign in with Google.',
+  attHintLive:'Photos, PDF or Office files, up to 5 MB each. Saved in a private Google Drive folder; only people who can see this task can open them.'},
 ar:{app:'اللوحات',search:'بحث في هذه اللوحة',addCard:'إضافة بطاقة',addCardBtn:'إضافة',cardPh:'اكتب عنوان البطاقة',addList:'إضافة قائمة أخرى',listPh:'اسم القائمة',addListBtn:'إضافة القائمة',cancel:'إلغاء',
   newBoard:'إنشاء لوحة',boardPh:'اسم اللوحة',create:'إنشاء',filter:'تصفية',clear:'مسح التصفية',members:'الأعضاء',labels:'التصنيفات',due:'تاريخ الاستحقاق',repeat:'التكرار',
   r_:'لا يتكرر',r_daily:'يومي',r_weekly:'أسبوعي',r_monthly:'شهري',desc:'الوصف',descPh:'أضف تفاصيل: ما المطلوب، من نتواصل معه، روابط…',checklist:'قائمة المهام',itemPh:'إضافة بند',
@@ -741,7 +752,11 @@ ar:{app:'اللوحات',search:'بحث في هذه اللوحة',addCard:'إض�
   chat:'المحادثة',channels:'القنوات',dms:'رسائل مباشرة',everyone:'الجميع',newDm:'راسل شخصاً…',msgPh:'اكتب رسالة… (اكتب @ لذكر شخص)',sendB:'إرسال',
   chatLead:'قناة {d}',chatAll:'لكل فريق فوركا',noMsgs:'لا رسائل بعد. ابدأ بالتحية.',pickChat:'اختر قناة أو شخصاً.',
   chatNote:'معاينة: الرسائل تبقى في هذا المتصفح. في التطبيق الفعلي يراها كل أعضاء القناة فوراً.',n_chat:'ذكرك {p} في {x}',n_dm:'أرسل لك {p} رسالة',
-  today2:'اليوم',yesterday:'أمس',lblNames:'إظهار أسماء التصنيفات على البطاقات',lblColours:'إظهار ألوان التصنيفات فقط'}};
+  today2:'اليوم',yesterday:'أمس',lblNames:'إظهار أسماء التصنيفات على البطاقات',lblColours:'إظهار ألوان التصنيفات فقط',
+  sSaved:'تم الحفظ',sSaving:'جارٍ الحفظ…',sOff:'غير متصل: ستُرسل التعديلات عند عودة الاتصال',notAllowed:'لا يمكنك تغيير هذا. أُعيد كما كان.',
+  signinNeed:'يرجى تسجيل الدخول في تطبيقات فوركا أولاً، ثم افتح اللوحات من هناك.',signinBtn:'تسجيل الدخول في تطبيقات فوركا',netErr:'تعذّر الوصول إلى الخادم. تحقق من الاتصال وحاول مرة أخرى.',retry:'حاول مرة أخرى',loading:'جارٍ فتح لوحاتك…',
+  noDept:'ليس في قسم بعد',inviteLive:'يُضاف إلى تطبيقات فوركا بحالة "للتأكيد". يؤكده الرئيس التنفيذي ثم يدخل بحساب Google.',
+  attHintLive:'صور أو PDF أو ملفات Office حتى 5 ميغابايت لكل ملف. تُحفظ في مجلد خاص على Google Drive، ولا يفتحها إلا من يرى هذه المهمة.'}};
 let lang=(()=>{try{return localStorage.getItem('fb-lang')==='ar'?'ar':'en'}catch(e){return 'en'}})();
 const t=(k,v)=>{let s=(T[lang][k]??T.en[k]??k);if(v)Object.keys(v).forEach(x=>{s=s.split('{'+x+'}').join(v[x])});return s};
 
@@ -878,9 +893,11 @@ function seed(){
   return D;
 }
 const KEY='forka-boards-preview-v5';
-let D=(()=>{try{const d=JSON.parse(localStorage.getItem(KEY)||'null');if(d&&d.boards&&d.me)return d}catch(e){}return seed()})();
+const CFG=window.FORKA_APPS||{};
+const LIVE=!!CFG.BOARDS_URL&&!/^(127\.0\.0\.1|localhost)$/.test(location.hostname)&&!/[?&]demo\b/.test(location.search);
+let D=(()=>{if(LIVE)return {boards:{},lists:{},cards:{},order:[],me:'',people:[]};try{const d=JSON.parse(localStorage.getItem(KEY)||'null');if(d&&d.boards&&d.me)return d}catch(e){}return seed()})();
 if(!D.people)D.people=PEOPLE0.map(p=>Object.assign({},p));PEOPLE=D.people;
-function save(){try{localStorage.setItem(KEY,JSON.stringify(D))}catch(e){}}
+function save(){if(LIVE){syncQueue();return}try{localStorage.setItem(KEY,JSON.stringify(D))}catch(e){}}
 
 /* ---------- who may do what ---------- */
 const ME=()=>D.me, meP=()=>person(D.me), isCEO=()=>!!meP().ceo;
@@ -961,8 +978,8 @@ function render(){
     <button class="ib menu-b" data-a="side" aria-label="${t('departments')}">${ic('menu')}</button>
     <div class="brand"><b>FORKA</b><span>${t('app')}</span></div>
     <div class="search">${V.view==='board'?`${ic('search')}<input id="q" type="search" placeholder="${t('search')}" value="${esc(V.f.q)}" aria-label="${t('search')}">`:''}</div>
-    <label class="hide-sm" style="font-size:12px;color:#a9a196">${t('viewAs')}</label>
-    <select class="viewas" id="viewas" aria-label="${t('viewAs')}">${PEOPLE.map(p=>`<option value="${p.id}" ${p.id===ME()?'selected':''}>${esc(pname(p.id))}${p.ceo?' - '+t('ceoRole'):''}</option>`).join('')}</select>
+    ${LIVE?`<span id="sync" class="sync ${SV.state||'ok'}">${t(SV.state==='saving'?'sSaving':SV.state==='off'?'sOff':'sSaved')}</span>`:`<label class="hide-sm" style="font-size:12px;color:#a9a196">${t('viewAs')}</label>`}
+    ${LIVE?'':`<select class="viewas" id="viewas" aria-label="${t('viewAs')}">${PEOPLE.map(p=>`<option value="${p.id}" ${p.id===ME()?'selected':''}>${esc(pname(p.id))}${p.ceo?' - '+t('ceoRole'):''}</option>`).join('')}</select>`}
     <div class="seg"><button data-a="lang" data-v="en" class="${lang==='en'?'on':''}">EN</button><button data-a="lang" data-v="ar" class="${lang==='ar'?'on':''}">عربي</button></div>
     <button class="ib bell" data-a="bell" aria-label="${t('alerts')}" title="${t('alerts')}" style="color:#f3eee6">${ic('bell')}${unread()?`<span class="dot">${unread()}</span>`:''}</button>
     <button class="meav" data-a="prof" data-v="${ME()}" aria-label="${t('editProfile')}">${av(ME())}</button>
@@ -989,7 +1006,7 @@ function render(){
 function sideHTML(){
   const mineN=allCards().filter(({c})=>!c.done&&c.members.includes(ME())).length;
   return `<nav class="side ${V.side?'open':''}" aria-label="${t('departments')}">
-    <select class="viewas sm-only" id="viewas2" aria-label="${t('viewAs')}">${PEOPLE.map(p=>`<option value="${p.id}" ${p.id===ME()?'selected':''}>${esc(t('viewAs'))}: ${esc(pname(p.id))}</option>`).join('')}</select>
+    ${LIVE?'':`<select class="viewas sm-only" id="viewas2" aria-label="${t('viewAs')}">${PEOPLE.map(p=>`<option value="${p.id}" ${p.id===ME()?'selected':''}>${esc(t('viewAs'))}: ${esc(pname(p.id))}</option>`).join('')}</select>`}
     <button class="btn newt" data-a="newtask">${ic('plus')}${t('newTask')}</button>
     <button class="nav ${V.view==='mine'?'on':''}" data-a="go" data-v="mine">${ic('inbox')}${t('mine')}<span class="n">${mineN||''}</span></button>
     <button class="nav ${V.view==='projects'?'on':''}" data-a="go" data-v="projects">${ic('folder')}${t('projectsNav')}</button>
@@ -1029,7 +1046,7 @@ function progressHTML(){
     <div class="tw"><table class="tbl"><tr><th>${t('t_board')}</th><th>${t('t_status')}</th><th>${t('t_note')}</th><th>${t('t_prog')}</th><th class="num">${t('t_over')}</th><th>${t('t_members')}</th></tr>${proj}</table></div>
     <div class="h2">${ic('users')}${t('workload')}</div>
     <div class="tw"><table class="tbl"><tr><th>${t('t_person')}</th><th>${t('t_dept')}</th><th class="num">${t('t_open')}</th><th class="num">${t('t_over')}</th><th class="num">${t('t_week')}</th><th class="num">${t('t_done')}</th></tr>${load}</table></div>
-    <p class="lead" style="margin-top:18px"><span class="note" style="margin:0">${t('preview')}</span></p>
+    ${LIVE?'':`<p class="lead" style="margin-top:18px"><span class="note" style="margin:0">${t('preview')}</span></p>`}
   </div>`}
 
 /* My tasks: your own sections (like Asana), or grouped by due date. Subtasks given to you show here too. */
@@ -1261,10 +1278,10 @@ const prof=id=>(D.prof||{})[id]||{};
 const away=id=>{const o=prof(id).ooo;return o&&o.to&&o.from&&today()>=new Date(o.from+'T00:00:00').getTime()&&today()<=new Date(o.to+'T00:00:00').getTime()?o:null};
 const awayTag=id=>{const o=away(id);return o?`<span class="awt">${esc(t('awayUntil',{d:fmtDay(new Date(o.to+'T00:00:00').getTime())}))}</span>`:''};
 function peopleHTML(){const q=(V.pq2||'').toLowerCase(),L=PEOPLE.filter(p=>!p.invited||isCEO()).filter(p=>!q||pname(p.id).toLowerCase().includes(q)||(p.dept&&deptName(p.dept).toLowerCase().includes(q)));
-  const grp=[['ceo',L.filter(p=>p.ceo)]].concat(DEPTS.map(d=>[d.id,L.filter(p=>p.dept===d.id)])).filter(g=>g[1].length);
+  const grp=[['ceo',L.filter(p=>p.ceo)]].concat(DEPTS.map(d=>[d.id,L.filter(p=>p.dept===d.id)]),[['none',L.filter(p=>!p.ceo&&!p.dept)]]).filter(g=>g[1].length);
   return `<div class="page"><h1>${t('people')}</h1><p class="lead">${t('peopleLead')}</p>
     <div class="pfind">${ic('search')}<input id="pq2" type="search" placeholder="${t('findPerson')}" value="${esc(V.pq2||'')}" aria-label="${t('findPerson')}"></div>
-    ${grp.map(([k,ps])=>`<div class="h2">${k==='ceo'?esc(t('ceoRole')):`<span style="width:10px;height:10px;border-radius:3px;background:${dept(k).dot}"></span>${esc(deptName(k))}`}</div>
+    ${grp.map(([k,ps])=>`<div class="h2">${k==='ceo'?esc(t('ceoRole')):k==='none'?esc(t('noDept')):`<span style="width:10px;height:10px;border-radius:3px;background:${dept(k).dot}"></span>${esc(deptName(k))}`}</div>
       <div class="ppl">${ps.map(p=>{const n=allCards().filter(({c})=>!c.done&&c.members.includes(p.id)).length;return `<button class="pcard" data-a="prof" data-v="${p.id}">${av(p.id,'lg')}<span><b dir="auto">${esc(pname(p.id))}</b>
         <small>${p.ceo?t('ceoRole'):p.role==='head'?t('headLabel'):t('staff')}${n?' · '+t('openN',{n}):''}</small>${awayTag(p.id)}</span></button>`}).join('')}</div>`).join('')}</div>`}
 function profHTML(){const id=V.prof,p=person(id),me=id===ME(),ed=me&&V.profEdit,P=ed&&V.prDraft?V.prDraft:prof(id),o=P.ooo||{};
@@ -1283,6 +1300,8 @@ function profHTML(){const id=V.prof,p=person(id),me=id===ME(),ed=me&&V.profEdit,
       ${!email&&!ph?`<div class="lock" style="padding:8px 0 0">${t('noContact')}</div>`:''}
       <div class="h2" style="margin-top:18px">${t('openTasks')} <span class="sm" style="color:var(--muted);font-weight:500">${open.length}</span></div>
       ${open.length?`<div class="tw"><table class="tbl">${open.slice(0,8).map(({c,b})=>`<tr class="click" data-a="open" data-id="${c.id}"><td><b dir="auto">${esc(c.title)}</b><div class="sm">${esc(bname(b))}</div></td><td class="num">${c.due?`<span class="due ${dueCls(c)}">${fmtDay(c.due)}</span>`:''}</td></tr>`).join('')}</table></div>`:''}
+      ${isCEO()&&!p.ceo?`<div class="g3" style="margin-top:14px"><div><label class="fl" for="prdept">${t('t_dept')}</label><select class="fld" id="prdept"><option value="">${t('noDept')}</option>${DEPTS.map(d=>`<option value="${d.id}" ${p.dept===d.id?'selected':''}>${esc(d[lang])}</option>`).join('')}</select></div>
+        <div><label class="fl" for="prrole">${t('roleL')}</label><select class="fld" id="prrole" ${p.dept?'':'disabled'}><option value="staff">${t('staff')}</option><option value="head" ${p.role==='head'?'selected':''}>${t('headLabel')}</option></select></div></div>`:''}
       ${me?`<div class="lock" style="padding:10px 0 0">${t('myProfileHint')}</div>`:''}`}</div></div></div>`}
 /* Chat */
 const chMembers=k=>k==='all'?PEOPLE.filter(p=>!p.invited).map(p=>p.id):k.startsWith('dm:')?k.slice(3).split('|'):PEOPLE.filter(p=>p.dept===k||p.ceo).map(p=>p.id);
@@ -1302,7 +1321,7 @@ function chatHTML(){const k=V.ch&&canCh(V.ch)?V.ch:null,list=myChans(),dms=myDms
   const dayL=ts=>{const d=new Date(ts);d.setHours(0,0,0,0);const x=d.getTime();return x===today()?t('today2'):x===today()-day?t('yesterday'):fmtDay(ts)};
   return `<div class="chat ${k?'has':''}"><div class="chl"><h1>${t('chat')}</h1><h5>${t('channels')}</h5>${list.map(item).join('')}
       <h5>${t('dms')}</h5>${dms.map(item).join('')}<select class="fld" id="dmnew" aria-label="${t('newDm')}"><option value="">${t('newDm')}</option>${others.map(p=>`<option value="${p.id}">${esc(pname(p.id))}</option>`).join('')}</select>
-      <p class="lock" style="padding:12px 4px 0">${t('chatNote')}</p></div>
+      ${LIVE?'':`<p class="lock" style="padding:12px 4px 0">${t('chatNote')}</p>`}</div>
     <div class="chm">${k?`<div class="chh"><button class="ib chback" data-a="chopen" data-v="" aria-label="${t('back')}">${ic(lang==='ar'?'right':'left')}</button><b dir="auto">${k.startsWith('dm:')?'':'# '}${esc(chName(k))}</b><span class="sm">${k==='all'?t('chatAll'):k.startsWith('dm:')?'':esc(t('chatLead',{d:deptName(k)}))+' · '+chMembers(k).length}</span></div>
       <div class="chs" id="chs">${msgs.length?msgs.map(m=>{const dl=dayL(m.at),sep=dl!==lastDay?`<div class="chday"><span>${esc(dl)}</span></div>`:'';lastDay=dl;
         return sep+`<div class="msg ${m.by===ME()?'me':''}">${av(m.by)}<div><div class="mh"><b>${esc(pname(m.by))}</b><span>${new Date(m.at).toLocaleTimeString(lang==='ar'?'ar-AE':'en-GB',{hour:'2-digit',minute:'2-digit'})}</span></div><div class="mb" dir="auto">${withMentions(m.t)}</div></div></div>`}).join(''):`<div class="empty-p" style="margin:20px">${t('noMsgs')}</div>`}</div>
@@ -1314,6 +1333,81 @@ function chSend(){const ta=document.getElementById('chin'),tx=ta&&ta.value.trim(
   save();render();focusSel('#chin');scrollChat()}
 function scrollChat(){const el=document.getElementById('chs');if(el)el.scrollTop=el.scrollHeight}
 
+/* ---------- Live: Forka Apps sign-in and the Boards server (when BOARDS_URL is set in config.js) ----------
+   Everything is kept on the server, one row per board, list, card, message, goal… Each change is sent within half a second;
+   other people's changes arrive every 20 seconds. If the connection drops, changes wait and are sent again. */
+const SV={tok:'',snap:{},docs:{},pend:{},since:0,t:null,busy:false,ready:false,people:[],me:{email:''}};
+const DELETABLE=['board','list','card','goal','port','tpl','ctpl'];
+const iniOf=n=>String(n||'').split(/[\s@._-]+/).filter(Boolean).map(w=>w[0]).join('').slice(0,2).toUpperCase()||'?';
+const HCOL=['#6f8a5a','#5b7896','#9a6b3f','#6d5f8f','#a8655a','#4f7f78','#5c6680','#a88a4a','#7a6a55'];
+const hcol=s=>HCOL[[...String(s)].reduce((a,c)=>a+c.charCodeAt(0),0)%HCOL.length];
+function api(action,p){return fetch(CFG.BOARDS_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(Object.assign({action,token:SV.tok},p||{}))}).then(r=>r.json()).catch(()=>({ok:false,error:'net'}))}
+function toDocs(){const out={},put=(id,kind,json)=>{out[id]={kind,json}},cl={},me=ME();
+  Object.values(D.lists).forEach(l=>l.cards.forEach(c=>{cl[c]=l.id}));
+  D.order.forEach((id,i)=>{const b=D.boards[id];if(b)put(id,'board',Object.assign({},b,{id,ord:i}))});
+  Object.keys(D.lists).forEach(id=>put(id,'list',Object.assign({},D.lists[id],{id})));
+  Object.keys(D.cards).forEach(id=>put(id,'card',Object.assign({},D.cards[id],{id,l:cl[id]||D.cards[id].l||null})));
+  (D.goals||[]).forEach(g=>put('goal:'+g.id,'goal',g));(D.ports||[]).forEach(p=>put('port:'+p.id,'port',p));
+  Object.keys(D.msgs||{}).forEach(k=>D.msgs[k].forEach(m=>put('msg:'+m.id,'msg',Object.assign({k},m))));
+  (D.notes||[]).forEach(n=>put('note:'+n.id,'note',n));
+  if(me)put('user:'+me,'user',{my:(D.my||{})[me]||null,seen:(D.seen||{})[me]||null,dark:!!(D.dark||{})[me],lblOff:!!(D.lblOff||{})[me],emailOff:!!(D.emailOff||{})[me]});
+  Object.keys(D.prof||{}).forEach(e=>put('prof:'+e,'prof',D.prof[e]));Object.keys(D.cap||{}).forEach(e=>put('cap:'+e,'cap',{n:D.cap[e]}));
+  PEOPLE.forEach(p=>{if(p.ceo)return;const id='member:'+p.id,j={dept:p.dept||null,role:p.role||'staff'};if(p.inv)j.inv=p.inv;if(SV.snap[id]||j.dept||j.role!=='staff'||j.inv)put(id,'member',j)});
+  (D.tpls||[]).forEach(x=>put('tpl:'+x.id,'tpl',x));(D.cardTpl||[]).forEach(x=>put('ctpl:'+x.id,'ctpl',x));
+  return out}
+function syncQueue(){if(!SV.ready)return;const cur=toDocs();
+  Object.keys(cur).forEach(id=>{const s=JSON.stringify(cur[id].json);if(SV.snap[id]!==s){SV.pend[id]={id,kind:cur[id].kind,json:cur[id].json};SV.snap[id]=s;SV.docs[id]={kind:cur[id].kind,json:JSON.parse(s)}}});
+  Object.keys(SV.snap).forEach(id=>{if(!cur[id]){const k=SV.docs[id]&&SV.docs[id].kind;if(DELETABLE.includes(k))SV.pend[id]={id,kind:k,del:true};delete SV.snap[id];delete SV.docs[id]}});
+  if(Object.keys(SV.pend).length){setSync('saving');clearTimeout(SV.t);SV.t=setTimeout(flush,500)}}
+async function flush(){if(SV.busy){clearTimeout(SV.t);SV.t=setTimeout(flush,700);return}
+  const all=Object.values(SV.pend);if(!all.length){setSync('ok');return}
+  const docs=all.slice(0,250);docs.forEach(d=>delete SV.pend[d.id]);SV.busy=true;
+  const r=await api('save',{docs});SV.busy=false;
+  if(!r.ok){docs.forEach(d=>{if(!SV.pend[d.id])SV.pend[d.id]=d});if(r.error==='session')return gate('signin');setSync('off');clearTimeout(SV.t);SV.t=setTimeout(flush,8000);return}
+  if(r.rejected&&r.rejected.length){flash(t('notAllowed'));await pull(false)}
+  if(Object.keys(SV.pend).length){clearTimeout(SV.t);SV.t=setTimeout(flush,300)}else setSync('ok')}
+async function flushAll(){for(let i=0;i<20&&(Object.keys(SV.pend).length||SV.busy);i++){clearTimeout(SV.t);await flush();if(SV.busy)await new Promise(r=>setTimeout(r,300))}}
+async function pull(delta){syncQueue();if(SV.pulling)return;SV.pulling=true;const r=await api('load',delta?{since:SV.since}:{});SV.pulling=false;
+  if(!r.ok){if(r.error==='session')return gate('signin');setSync('off');return}
+  if(!delta){Object.keys(SV.docs).forEach(id=>{if(!SV.pend[id]){delete SV.docs[id];delete SV.snap[id]}});SV.people=r.people||SV.people}
+  if(r.me)SV.me=r.me;SV.since=r.now;let ch=!delta;
+  r.docs.forEach(d=>{if(SV.pend[d.id])return;if(d.del){if(SV.docs[d.id]){delete SV.docs[d.id];delete SV.snap[d.id];ch=true}return}
+    const s=JSON.stringify(d.json);if(SV.snap[d.id]===s)return;SV.docs[d.id]={kind:d.kind,json:d.json};SV.snap[d.id]=s;ch=true});
+  if(ch){fromDocs();soft()}
+  setSync(Object.keys(SV.pend).length?'saving':'ok')}
+function fromDocs(){const me=SV.me.email,N={boards:{},lists:{},cards:{},order:[],me,dark:{},lblOff:{},emailOff:{},my:{},seen:{},goals:[],ports:[],msgs:{},notes:[],prof:{},cap:{},tpls:[],cardTpl:[]},bs=[],mem={};
+  Object.keys(SV.docs).forEach(id=>{const d=SV.docs[id],j=JSON.parse(JSON.stringify(d.json));
+    switch(d.kind){case 'board':N.boards[id]=j;bs.push(Object.assign({},j,{id}));break;case 'list':N.lists[id]=j;break;case 'card':N.cards[id]=j;break;
+      case 'goal':N.goals.push(j);break;case 'port':N.ports.push(j);break;case 'msg':(N.msgs[j.k]=N.msgs[j.k]||[]).push(j);break;case 'note':N.notes.push(j);break;
+      case 'user':if(id==='user:'+me){if(j.my)N.my[me]=j.my;if(j.seen)N.seen[me]=j.seen;N.dark[me]=!!j.dark;N.lblOff[me]=!!j.lblOff;N.emailOff[me]=!!j.emailOff}break;
+      case 'prof':N.prof[id.slice(5)]=j;break;case 'cap':N.cap[id.slice(4)]=j.n;break;case 'member':mem[id.slice(7)]=j;break;case 'tpl':N.tpls.push(j);break;case 'ctpl':N.cardTpl.push(j);break}});
+  // a card belongs to the list it names, so two people moving cards at the same moment never lose one
+  Object.keys(N.lists).forEach(id=>{const l=N.lists[id];l.cards=(l.cards||[]).filter(c=>N.cards[c]&&N.cards[c].l===id)});
+  Object.keys(N.cards).forEach(id=>{const l=N.lists[N.cards[id].l];if(l&&!l.cards.includes(id))l.cards.push(id)});
+  Object.values(N.msgs).forEach(a=>a.sort((x,y)=>x.at-y.at));N.notes.sort((x,y)=>x.at-y.at);
+  N.order=bs.sort((a,b)=>(a.ord??1e9)-(b.ord??1e9)).map(b=>b.id);
+  N.people=SV.people.map(p=>{const m=mem[p.email]||{},nm=p.name||p.email;return {id:p.email,en:nm,ar:nm,ini:iniOf(nm),color:p.ceo?'#c27a2c':m.dept?dept(m.dept).dot:hcol(p.email),
+    dept:p.ceo?null:(m.dept||null),role:p.ceo?'staff':(m.role||'staff'),email:p.email,ceo:!!p.ceo,invited:!!p.invited,title:p.title||''}});
+  Object.keys(mem).forEach(e=>{if(mem[e].inv&&!N.people.some(p=>p.id===e)){const nm=mem[e].inv.name||e;N.people.push({id:e,en:nm,ar:nm,ini:iniOf(nm),color:hcol(e),dept:mem[e].dept,role:'staff',email:e,invited:true,inv:mem[e].inv})}});
+  D=N;PEOPLE=D.people}
+/* Don't redraw under someone's fingers: wait until they leave the box they are typing in. */
+function soft(){const a=document.activeElement;if(DR.d||ASK||(a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)&&!['q','pq','pq2'].includes(a.id))){V.stale=true;return}render()}
+function setSync(s){SV.state=s;const el=document.getElementById('sync');if(el){el.className='sync '+s;el.textContent=s==='ok'?t('sSaved'):s==='saving'?t('sSaving'):t('sOff')}}
+function gate(k){SV.ready=false;document.getElementById('app').innerHTML=`<div class="gate"><div class="brand"><b>FORKA</b><span>${t('app')}</span></div>
+  ${k==='load'?`<p>${t('loading')}</p>`:k==='signin'?`<p>${t('signinNeed')}</p><a class="btn" href="${esc(CFG.ERP_HOME||'../')}">${t('signinBtn')}</a>`:`<p>${t('netErr')}</p><button class="btn" onclick="location.reload()">${t('retry')}</button>`}
+  <div class="seg" style="margin-top:18px"><button onclick="lang='en';try{localStorage.setItem('fb-lang','en')}catch(e){};gate('${k}')" class="${lang==='en'?'on':''}">EN</button><button onclick="lang='ar';try{localStorage.setItem('fb-lang','ar')}catch(e){};gate('${k}')" class="${lang==='ar'?'on':''}">عربي</button></div></div>`;
+  document.documentElement.lang=lang;document.documentElement.dir=lang==='ar'?'rtl':'ltr'}
+function openHash(){const h=decodeURIComponent(location.hash.slice(1));if(h.startsWith('card=')&&D.cards[h.slice(5)])V.card=h.slice(5);if(h.startsWith('chat=')){V.view='chat';V.ch=h.slice(5)}}
+async function bootLive(){try{SV.tok=localStorage.getItem('fa-token')||''}catch(e){}
+  if(!SV.tok)return gate('signin');gate('load');
+  const r=await api('load');if(!r.ok)return gate(r.error==='session'?'signin':'net');
+  SV.people=r.people||[];SV.me=r.me;SV.since=r.now;r.docs.forEach(d=>{SV.docs[d.id]={kind:d.kind,json:d.json};SV.snap[d.id]=JSON.stringify(d.json)});
+  fromDocs();SV.ready=true;home();openHash();render();setSync('ok');
+  setInterval(()=>{if(!document.hidden&&SV.ready)pull(true)},20000);
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden&&SV.ready)pull(true)});
+  window.addEventListener('beforeunload',e=>{if(Object.keys(SV.pend).length){flush();e.preventDefault();e.returnValue=''}})}
+const b64=f=>new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(String(r.result).split(',')[1]||'');r.onerror=rej;r.readAsDataURL(f)});
+
 /* Department page */
 function teamHTML(d){const team=PEOPLE.filter(x=>x.dept===d.id),free=PEOPLE.filter(x=>!x.dept&&!x.ceo),iv=V.inv||{name:'',email:'',bad:[]},miss=k=>iv.bad.includes(k)?'miss':'';
   const nb=id=>D.order.map(x=>D.boards[x]).filter(b=>b&&b.dept===d.id&&!b.kind&&boardPeople(b).includes(id)).length;
@@ -1324,7 +1418,7 @@ function teamHTML(d){const team=PEOPLE.filter(x=>x.dept===d.id),free=PEOPLE.filt
       <div class="box"><h4>${t('inviteNew')}</h4><p>${t('inviteHint')}</p>
         ${iv.bad.length?`<div class="errbox" style="margin:0 0 8px">${t('need')}</div>`:''}
         <div class="g3" style="grid-template-columns:1fr 1fr"><input class="fld ${miss('name')}" id="ivname" dir="auto" placeholder="${t('fullName')}" value="${esc(iv.name)}" maxlength="80"><input class="fld ${miss('email')}" id="ivemail" type="email" dir="ltr" placeholder="name@forka.com" value="${esc(iv.email)}" maxlength="120"></div>
-        <div class="row"><button class="btn" data-a="invite">${t('sendInvite')}</button><span class="lock" style="padding:0">${t('inviteAuto')}</span></div></div>
+        <div class="row"><button class="btn" data-a="invite">${t('sendInvite')}</button><span class="lock" style="padding:0">${t(LIVE?'inviteLive':'inviteAuto')}</span></div></div>
     </div>
     <div class="tw"><table class="tbl" id="teamtbl"><tr><th>${t('t_person')}</th><th>${t('roleL')}</th><th>${t('emailL')}</th><th class="num">${t('t_boards')}</th><th>${t('statusL')}</th><th></th></tr>
       ${team.map(x=>`<tr><td><div style="display:flex;align-items:center;gap:8px">${av(x.id)}<b>${esc(pname(x.id))}</b></div></td><td class="sm">${x.role==='head'?t('headLabel'):t('staff')}</td>
@@ -1473,7 +1567,7 @@ function modalHTML(c){
           <button class="btn sec" data-a="attopen" data-v="${x.id}">${t('openF')}</button>
           ${/^image\//.test(x.type)?`<button class="btn sec" data-a="attcover" data-v="${x.id}">${c.cover===x.id?t('noCover'):t('makeCover')}</button>`:''}
           ${admin||x.by===ME()?`<button class="btn sec" data-a="attdel" data-v="${x.id}">${t('removeF')}</button>`:''}</div>`).join('')}</div>
-        <div class="lock" style="padding:6px 0 0">${t('attHint')}</div></div>
+        <div class="lock" style="padding:6px 0 0">${t(LIVE?'attHintLive':'attHint')}</div></div>
       <div class="sec"><div class="sh">${ic('check')}${t('checklist')}</div>
         ${n?`<div class="prog"><span>${pc}%</span><div class="bar"><i class="${pc===100?'full':''}" style="width:${pc}%"></i></div></div>`:''}
         ${c.check.map((x,i)=>`<div class="cki ${x.d?'done':''}"><input type="checkbox" data-a="ck" data-i="${i}" ${x.d?'checked':''} aria-label="${esc(x.t)}"><span dir="auto">${esc(x.t)}</span><button class="ib" data-a="ckdel" data-i="${i}" aria-label="${t('del')}">${ic('x')}</button></div>`).join('')}
@@ -1563,7 +1657,7 @@ function popHTML(){const p=V.pop,b=B();
   if(p.kind==='bmenu')return `<div class="pop" id="pop"><h4>${t('theme')}</h4><div class="seg" style="margin:0 4px 8px;background:var(--soft)"><button style="flex:1" data-a="theme" data-v="light" class="${theme()==='light'?'on':''}">${t('light')}</button><button style="flex:1" data-a="theme" data-v="dark" class="${theme()==='dark'?'on':''}">${t('dark')}</button></div>
     <hr><button class="mi" data-a="lbltog">${ic('tag')}${lblNames()?t('lblColours'):t('lblNames')}</button><button class="mi" data-a="archv">${ic('archive')}${t('archived')}</button>
     ${b&&canAdmin(b)?`<button class="mi" data-a="labels">${ic('tag')}${t('editLabels')}</button><button class="mi" data-a="fieldsed">${ic('grid')}${t('fields')}</button><button class="mi" data-a="btpl">${ic('copy')}${t('saveTpl')}</button>`:''}
-    <hr><button class="mi" data-a="reset">${ic('repeat')}${t('reset')}</button>${b&&canAdmin(b)?`<button class="mi dan" data-a="bdel">${ic('trash')}${t('deleteBoard')}</button>`:''}</div>`;
+    ${LIVE?'':`<hr><button class="mi" data-a="reset">${ic('repeat')}${t('reset')}</button>`}${b&&canAdmin(b)?`<button class="mi dan" data-a="bdel">${ic('trash')}${t('deleteBoard')}</button>`:''}</div>`;
   if(p.kind==='labels')return `<div class="pop wide" id="pop"><h4>${t('editLabels')}</h4><div class="lock">${t('labelsHint')}</div>
     ${labelsOf(b).map(l=>`<div class="labrow"><button class="sw" style="background:${l.color}" data-a="labcol" data-v="${l.id}" aria-label="${t('colour')}" title="${t('colour')}"></button><input class="labname" data-lab="${l.id}" dir="auto" maxlength="30" value="${esc(lname(l))}" aria-label="${t('labelName')}"><button class="ib" data-a="labdel" data-v="${l.id}" aria-label="${t('removeF')}">${ic('x')}</button></div>`).join('')}
     <button class="mi" data-a="labadd">${ic('plus')}${t('addLabel')}</button></div>`;
@@ -1583,7 +1677,7 @@ function popHTML(){const p=V.pop,b=B();
   if(p.kind==='notes'){const L=notesFor();return `<div class="pop wide" id="pop" style="width:360px"><h4>${t('alerts')}</h4>
     ${L.length?L.map(x=>`<button class="note-i ${x.read?'':'unread'}" data-a="nopen" data-v="${x.id||''}" data-id="${x.card||''}" data-ch="${x.ch||''}">${av(x.by||ME())}<span><span dir="auto">${esc(x.txt)}</span><small dir="auto">${esc(x.title)} · ${x.at?ago(x.at):''}</small></span></button>`).join(''):`<div class="lock">${t('noAlerts')}</div>`}
     <hr><button class="mi" data-a="nread">${ic('tick')}${t('markRead')}</button>
-    <label class="mi"><input type="checkbox" id="emailme" ${(D.emailOff||{})[ME()]?'':'checked'}> ${t('emailMe')}</label><div class="lock">${t('emailNote')}</div></div>`}
+    <label class="mi"><input type="checkbox" id="emailme" ${(D.emailOff||{})[ME()]?'':'checked'}> ${t('emailMe')}</label>${LIVE?'':`<div class="lock">${t('emailNote')}</div>`}</div>`}
   if(p.kind==='lmenu'){const admin=canAdmin(b);return `<div class="pop" id="pop"><h4>${t('listMenu')}</h4>
     <button class="mi" data-a="addc" data-id="${p.id}">${ic('plus')}${t('addCard')}</button>
     <button class="mi" data-a="lcol" data-id="${p.id}">${ic('collapse')}${t('collapse')}</button>
@@ -1636,8 +1730,12 @@ function boardAsTpl(b){return {id:uid('t'),name:b.name,labels:b.labels?JSON.pars
 function ensureLabels(b){if(!b.labels)b.labels=LABELS.map(l=>({id:l.id,color:l.color,name:lname(l)}));return b.labels}
 /* Files: kept in this browser (IndexedDB) in the preview; the live app saves them to a private Google Drive folder. */
 const FILES={p:null,open(){return this.p||(this.p=new Promise(res=>{try{const q=indexedDB.open('forka-boards-files',1);q.onupgradeneeded=()=>q.result.createObjectStore('f');q.onsuccess=()=>res(q.result);q.onerror=()=>res(null)}catch(e){res(null)}}))},
-  async get(k){const d=await this.open();if(!d)return null;return new Promise(res=>{try{const q=d.transaction('f').objectStore('f').get(k);q.onsuccess=()=>res(q.result||null);q.onerror=()=>res(null)}catch(e){res(null)}})},
-  async put(k,v){const d=await this.open();if(!d)return false;return new Promise(res=>{try{const tx=d.transaction('f','readwrite');tx.objectStore('f').put(v,k);tx.oncomplete=()=>res(true);tx.onerror=()=>res(false)}catch(e){res(false)}})}};
+  async get(k){const loc=await this.get0(k);if(loc||!LIVE||!/^d:/.test(k))return loc;const r=await api('file',{id:k});if(!r.ok)return null;
+    const bl=new Blob([Uint8Array.from(atob(r.data),c=>c.charCodeAt(0))],{type:r.type});await this.put0(k,bl);return bl},
+  async put(k,v){if(!LIVE)return (await this.put0(k,v))?k:false;if(SV.pend[V.card])await flushAll();
+    const r=await api('upload',{card:V.card,name:v.name,type:v.type,data:await b64(v)});if(!r.ok){flash(t(r.error==='size'?'tooBig':'notAllowed',{f:v.name}));return false}await this.put0(r.id,v);return r.id},
+  async get0(k){const d=await this.open();if(!d)return null;return new Promise(res=>{try{const q=d.transaction('f').objectStore('f').get(k);q.onsuccess=()=>res(q.result||null);q.onerror=()=>res(null)}catch(e){res(null)}})},
+  async put0(k,v){const d=await this.open();if(!d)return false;return new Promise(res=>{try{const tx=d.transaction('f','readwrite');tx.objectStore('f').put(v,k);tx.oncomplete=()=>res(true);tx.onerror=()=>res(false)}catch(e){res(false)}})}};
 const URLS={};
 async function hydrate(){for(const img of document.querySelectorAll('img[data-att]')){const k=img.dataset.att;if(!URLS[k]){const bl=await FILES.get(k);if(bl)URLS[k]=URL.createObjectURL(bl)}if(URLS[k]&&img.src!==URLS[k])img.src=URLS[k]}}
 function copyCard(c,b2){const l2=D.lists[liveLists(b2).find(id=>D.lists[id].name===(listOf(c.id)||{}).name)||liveLists(b2)[0]];if(!l2)return;
@@ -1713,7 +1811,7 @@ document.addEventListener('click',e=>{
       if(!nm)bad.push('name');if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)||PEOPLE.some(x=>(x.email||'')===em))bad.push('email');
       if(bad.length){V.inv={name:nm,email:em,bad};render();return}
       const ini=nm.split(/\s+/).map(w=>w[0]).join('').slice(0,2).toUpperCase()||'?';
-      PEOPLE.push({id:uid('p'),en:nm,ar:nm,ini,dept:V.dept,role:'staff',color:dept(V.dept).dot,email:em,invited:true});V.inv=null;save();flash(t('inviteSent',{p:nm}));break}
+      PEOPLE.push({id:LIVE?em:uid('p'),en:nm,ar:nm,ini,dept:V.dept,role:'staff',color:dept(V.dept).dot,email:em,invited:true,inv:LIVE?{name:nm}:undefined});V.inv=null;save();flash(t('inviteSent',{p:nm}));break}
     case 'copyinv':{const x=person(v),txt=t('inviteText',{p:pname(v),d:deptName(x.dept),e:x.email});try{navigator.clipboard.writeText(txt).then(()=>flash(t('copied')),()=>flash(txt))}catch(err){flash(txt)}break}
     case 'rmteam':{const x=person(v);ask(t('removeQ',{p:pname(v),d:deptName(x.dept)}),()=>{Object.values(D.boards).filter(b=>b.dept===x.dept).forEach(b=>{b.members=b.members.filter(m=>m!==v)});x.dept=null;save()});break}
     case 'mtoggle':{const b=B();b.members=b.members.includes(v)?b.members.filter(x=>x!==v):b.members.concat(v);save();render();break}
@@ -1859,6 +1957,7 @@ document.addEventListener('change',e=>{
     if(e.target.id==='nt-board'){n.board=e.target.value;n.list=null;n.members=n.members.filter(m=>ntPool(Object.assign({},n)).includes(m))}
     if(e.target.id==='nt-list')n.list=e.target.value;
     ntDefaults(n);n.members=n.members.filter(m=>ntPool(n).includes(m));render();return}
+  if((e.target.id==='prdept'||e.target.id==='prrole')&&V.prof&&isCEO()){const x=person(V.prof);if(e.target.id==='prdept'){x.dept=e.target.value||null;if(!x.dept)x.role='staff'}else x.role=e.target.value;save();render();return}
   if(e.target.id==='dmnew'&&e.target.value){const k2=dmKey(ME(),e.target.value);V.ch=k2;markSeen(k2);save();render();focusSel('#chin');return}
   if(V.gf&&e.target.id==='gf-lvl'){gfSync();V.gf.boards=V.gf.boards.filter(id=>{const b=D.boards[id];return b&&(V.gf.lvl==='company'||b.dept===V.gf.lvl)});render();return}
   if(e.target.classList&&e.target.classList.contains('ppri')){const x=(D.ports||[]).find(q=>q.id===V.port),i=x&&x.items.find(q=>q.b===e.target.dataset.b);if(i){i.pri=e.target.value;save()}return}
@@ -1876,8 +1975,8 @@ document.addEventListener('change',e=>{
   if(V.nt&&e.target.id==='nt-tpl'){ntSync();const x=(D.cardTpl||[]).find(k=>k.id===e.target.value),n=V.nt;n.tpl=e.target.value;
     if(x){n.title=x.title;n.desc=x.desc||'';n.labels=x.labels.slice();n.pri=x.priority||'normal';n.check=(x.check||[]).join('\n')}render();return}
   const c=V.card&&D.cards[V.card];if(!c)return;
-  if(e.target.id==='fileup'){commitModalFields();const fs=[...e.target.files];(async()=>{for(const f of fs){if(f.size>5*1024*1024){flash(t('tooBig',{f:f.name}));continue}
-      const id=uid('f');if(await FILES.put(id,f)){(c.atts=c.atts||[]).push({id,name:f.name,type:f.type||'application/octet-stream',size:f.size,by:ME(),at:Date.now()});if(!c.cover&&/^image\//.test(f.type))c.cover=id}}
+  if(e.target.id==='fileup'){commitModalFields();const fs=[...e.target.files],cid=c.id;(async()=>{for(const f of fs){if(f.size>5*1024*1024){flash(t('tooBig',{f:f.name}));continue}
+      const id=await FILES.put(uid('f'),f),c2=D.cards[cid];if(id&&c2){(c2.atts=c2.atts||[]).push({id,name:f.name,type:f.type||'application/octet-stream',size:f.size,by:ME(),at:Date.now()});if(!c2.cover&&/^image\//.test(f.type))c2.cover=id}}
     save();render()})();return}
   if(e.target.id==='cdue'||e.target.id==='cstart'){commitModalFields();const sv=document.getElementById('cstart').value,dv=document.getElementById('cdue').value,tm=x=>x?new Date(x+'T00:00:00').getTime():null;
     if(sv&&dv&&sv>dv){V.dateErr={s:sv,d:dv};render();return}V.dateErr=false;c.start=tm(sv);c.due=tm(dv);save();render()}
@@ -1892,6 +1991,7 @@ document.addEventListener('change',e=>{
   if(e.target.id==='cmove'){commitModalFields();const to=D.lists[e.target.value];moveCard(c.id,to.id,to.cards.length);render()}
   if(e.target.id==='mt'||e.target.id==='cdesc'){commitModalFields()}});
 document.addEventListener('focusout',e=>{
+  if(V.stale)setTimeout(()=>{const a=document.activeElement;if(V.stale&&!(a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName))){V.stale=false;render()}},50);
   if(e.target.id==='lname')setTimeout(()=>{if(V.editList&&document.activeElement.id!=='lname')saveListName()},0);
   if(e.target.id==='bname')setTimeout(()=>{if(V.editBoard)saveBoardName()},0);
   if(e.target.id==='secname')setTimeout(()=>{if(V.secEdit&&document.activeElement.id!=='secname')saveSec()},0)});
@@ -1943,7 +2043,7 @@ function end(){clearTimeout(DR.timer);const d=DR.d;DR.d=null;if(!d||!d.started)r
   else{const cv=document.getElementById('canvas');const order=[...cv.querySelectorAll(':scope > .list, :scope > .lph')].filter(x=>x!==d.el).map(x=>x===d.ph?d.id:x.dataset.id);B().lists=order;save()}
   d.g.remove();DR.justDropped=true;setTimeout(()=>{DR.justDropped=false},50);render()}
 
-render();
+if(LIVE)bootLive();else render();
 </script>
 </body>
 </html>

@@ -211,6 +211,7 @@ const APPS=[
   {id:'branch',color:'#5f8a45',letter:'B',url:'https://claude.ai/artifact/TcvkdXqHbBkpfd4CwRZz6x',ceoOnlyUntilMoved:true}
 ];
 const ICONS={
+  boards:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16M15 4v10"/>',
   proc:'<path d="M5.5 8h13l-1.2 12H6.7L5.5 8z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/>',
   hire:'<circle cx="9" cy="8.5" r="3.2"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M15.5 5.3a3.2 3.2 0 0 1 0 6.4"/><path d="M17.5 14.4c2.1.8 3.5 2.9 3.5 5.6"/>',
   branch:'<rect x="5" y="4.5" width="14" height="16.5" rx="2.2"/><path d="M9 4.5h6V7H9z"/><path d="M8.8 13.6l2.2 2.2 4.3-4.3"/>',
@@ -250,7 +251,7 @@ const T={en:{
   yourApps:'Your apps',noApps:'No apps are switched on for you yet. Ask the CEO.',
   a_proc:'Procurement',d_proc:'Purchase plan, requests, LPOs, receiving and supplier payments.',
   a_hire:'Hiring',d_hire:'Job openings, candidates and interviews.',
-  a_branch:'Branch Check',d_branch:'Daily branch checks and follow-ups.',
+  a_branch:'Branch Check',d_branch:'Daily branch checks and follow-ups.',a_boards:'Boards',d_boards:'Tasks, projects and team chat for every department.',
   soon:'Moving here soon',curOnly:'Current version - only you can open it until it moves here',openA:'Open',admin:'Administration',
   a_people:'People and access',d_people:'Add people, set clearance and apps, approve requests.',
   a_act:'Activity',d_act:'Who did what, and when.',
@@ -287,7 +288,7 @@ const T={en:{
   yourApps:'تطبيقاتك',noApps:'لا توجد تطبيقات مفعلة لك بعد. اطلب من الرئيس التنفيذي.',
   a_proc:'المشتريات',d_proc:'خطة الشراء والطلبات وأوامر الشراء والاستلام ودفعات الموردين.',
   a_hire:'التوظيف',d_hire:'الوظائف الشاغرة والمرشحون والمقابلات.',
-  a_branch:'متابعة الفروع',d_branch:'فحص الفروع اليومي والمتابعة.',
+  a_branch:'متابعة الفروع',d_branch:'فحص الفروع اليومي والمتابعة.',a_boards:'اللوحات',d_boards:'المهام والمشاريع ومحادثة الفريق لكل قسم.',
   soon:'سينقل هنا قريبا',curOnly:'النسخة الحالية - تفتح لك فقط حتى تنقل هنا',openA:'فتح',admin:'الإدارة',
   a_people:'الأشخاص والصلاحيات',d_people:'إضافة الأشخاص وتحديد الصلاحيات والتطبيقات والموافقة على الطلبات.',
   a_act:'سجل النشاط',d_act:'من فعل ماذا ومتى.',
@@ -412,7 +413,7 @@ function setStatus(id,st){const p=person(id);if(!p)return;
 function rejectReq(id,reason){const r=DATA.requests[id];
   put('requests',id,Object.assign({},r,{state:'rejected',reason:reason||'',decidedBy:me,decidedAt:new Date().toISOString()}));
   log(me,'reject',id,reason||'');modal=null;render()}
-function canOpen(a,p){return !!a.url&&!!p.apps[a.id]&&(!a.ceoOnlyUntilMoved||isCeo(p))}
+function canOpen(a,p){return !!a.url&&(a.id==='boards'||!!p.apps[a.id])&&(!a.ceoOnlyUntilMoved||isCeo(p))}
 function openApp(a){const p=person(me);if(!canOpen(a,p))return;log(me,'open','',t('a_'+a.id));try{window.open(a.url,'_blank','noopener')}catch(_){}}
 function toast(m){toastMsg=m;render();setTimeout(()=>{toastMsg='';const el=document.querySelector('.toast');if(el)el.remove()},1800)}
 
@@ -474,7 +475,7 @@ function vHero(){const p=person(me);const h=new Date().getHours();
       '<div class="grp">'+t('month')+'</div><div class="kpis">'+kpi(s.active,'kActive',0,'#5f8a45')+kpi(s.open,'kOpen',0,'#a8703d')+kpi(s.chg,'kChg',0,'#7b4e6e')+'</div></div>'}
   return out+'</div></div>'}
 function vHome(){const p=person(me);let out='';
-  const mine=APPS.filter(a=>p.apps&&p.apps[a.id]);
+  const mine=APPS.filter(a=>a.id==='boards'||(p.apps&&p.apps[a.id]));
   out+='<div class="sec"><h2>'+t('yourApps')+'</h2>'+(mine.length?'<div class="apps">'+mine.map(a=>appTile(a,p)).join('')+'</div>':'<div class="empty-apps">'+t('noApps')+'</div>')+'</div>';
   if(isCeo(p)){const s=stats();
     out+='<div class="sec"><h2>'+t('admin')+'</h2><div class="apps">'+
@@ -609,6 +610,8 @@ function resetAll(){
 /* ---------- live mode: erp.forka.com talks to the accounts server ---------- */
 if(CFG.PROCUREMENT_URL)APPS[0].url=CFG.PROCUREMENT_URL;
 // Hiring moves from claude.ai to erp.forka.com/hiring as soon as its server address is in config.js
+/* Boards opens for everyone with an active account; each person sees only the boards their department head adds them to. */
+if(CFG.BOARDS_URL)APPS.push({id:'boards',color:'#7a6a55',letter:'B',url:new URL('boards/',location.href).href});
 if(CFG.HIRING_URL){const h=APPS.find(x=>x.id==='hire');h.url=new URL('hiring/',location.href).href;delete h.ceoOnlyUntilMoved}
 let TOKEN='',ID_TOKEN='',gReady=false;
 async function api(action,payload){
@@ -622,7 +625,7 @@ function cachedBundle(){try{const c=JSON.parse(localStorage.getItem('fa-cache')|
 // Wake the Hiring and Procurement servers in the background while the person looks at the tiles,
 // so the app they open does not wait for a sleeping server (the first call after a quiet spell can take 5-10 seconds).
 let woke=false;function wakeApps(m){if(woke||!m||m.status!=='active')return;woke=true;const a=m.apps||{};
-  [a.hire&&CFG.HIRING_URL,a.proc&&CFG.PROCUREMENT_SERVER].forEach(u=>{if(u)try{fetch(u,{method:'GET',mode:'no-cors'}).catch(()=>{})}catch(_){}})}
+  [a.hire&&CFG.HIRING_URL,a.proc&&CFG.PROCUREMENT_SERVER,CFG.BOARDS_URL].forEach(u=>{if(u)try{fetch(u,{method:'GET',mode:'no-cors'}).catch(()=>{})}catch(_){}})}
 function applyBundle(b){
   if(b.token){TOKEN=b.token;try{localStorage.setItem('fa-token',TOKEN)}catch(_){}}
   if(b.ver)VER=b.ver;if(!b.fromCache)keepBundle(b);wakeApps(b.me);
