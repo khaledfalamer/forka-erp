@@ -337,6 +337,69 @@ fieldset.ro{border:0;padding:0;margin:0;min-width:0}
 .side2 .row select{flex:1 1 100%!important}
 .side2 .row .btn{flex:1 1 100%;justify-content:center}
 .sm-only{display:none}
+/* Strategy: goals, portfolios, timeline, reporting, resourcing */
+.phead{display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap}
+.phead>div:first-child{flex:1;min-width:220px}
+.phead .btn{display:inline-flex;align-items:center;gap:6px}
+.goaltbl td:first-child{min-width:240px}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:12.5px;color:var(--muted);margin:0 0 10px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:12px;height:12px;border-radius:3px;display:inline-block}
+.lg-done{background:#4f7a3a}.lg-open{background:#c9c1b4}.lg-over{background:#b8432f}.lg-one{background:var(--bronze)}
+.legend i.lg-ms{background:none;border:2px solid var(--bronze);transform:rotate(45deg);width:10px;height:10px;border-radius:2px}
+.board:not(.light) .lg-done{background:#6f9a58}.board:not(.light) .lg-open{background:#5a544c}.board:not(.light) .lg-over{background:#d0634e}.board:not(.light) .lg-one{background:var(--bronze-l)}
+.tl{padding:0}
+.board>.main .tl{padding:12px 16px 24px;flex:1;overflow:auto;color:var(--on)}
+.tlw{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--text)}
+.tlg{display:grid;grid-template-columns:220px var(--w);min-width:calc(220px + var(--w))}
+.tll{position:sticky;inset-inline-start:0;z-index:2;background:var(--card);border-bottom:1px solid var(--line);border-inline-end:1px solid var(--line);padding:7px 10px;text-align:start;font-size:13px;min-height:38px;display:flex;flex-direction:column;justify-content:center;overflow:hidden}
+.tll span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tll small{color:var(--muted);font-size:11.5px}
+button.tll:hover span{text-decoration:underline}
+.tlr{position:relative;border-bottom:1px solid var(--line);min-height:38px}
+.tlhd{min-height:30px;font-size:11.5px;color:var(--muted)}
+.tlr.tlhd span{position:absolute;top:8px;padding-inline-start:4px;white-space:nowrap}
+.tlgrp{background:var(--soft);font-weight:700;font-size:12px;min-height:26px;padding:4px 10px}
+.tvl{position:absolute;top:0;bottom:0;width:1px;background:var(--line)}
+.tnow{position:absolute;top:0;bottom:0;width:2px;background:var(--bad);opacity:.55;z-index:1}
+.tbar{position:absolute;top:9px;height:20px;border-radius:5px;background:#c9c1b4;z-index:1;display:flex;align-items:center;padding:0 6px;overflow:hidden}
+.tbar.over{background:#b8432f;color:#fff}.tbar.done{background:#4f7a3a;color:#fff}
+.board:not(.light) .tbar{background:#5a544c}.board:not(.light) .tbar.over{background:#d0634e}.board:not(.light) .tbar.done{background:#6f9a58}
+.tbar em{font-style:normal;font-size:11px;font-weight:700}
+.tms{position:absolute;top:9px;color:var(--bronze);z-index:1;width:20px;height:20px;display:flex;align-items:center;justify-content:center}
+.tms svg{width:18px;height:18px;fill:var(--bronze)}
+.tms.done svg{fill:#4f7a3a;stroke:#4f7a3a}
+.charts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.chart{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.chart h3{margin:0 0 10px;font-size:15px}
+.hb{display:flex;flex-direction:column;gap:8px}
+.hbr{display:grid;grid-template-columns:120px minmax(0,1fr);gap:10px;align-items:center;font-size:13px}
+.hbl{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--muted)}
+.hbt{display:flex;align-items:center;gap:2px;height:16px}
+.hbt i{height:100%;display:block;min-width:3px}
+.hbt i:first-child{border-start-start-radius:4px;border-end-start-radius:4px}
+.hbt i:last-of-type{border-start-end-radius:4px;border-end-end-radius:4px}
+.hbt b{font-size:12.5px;margin-inline-start:6px;font-variant-numeric:tabular-nums}
+.vb{display:flex;align-items:flex-end;gap:8px;height:170px;padding-top:6px}
+.vbc{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:4px;min-width:0}
+.vbc i{width:70%;max-width:34px;background:var(--bronze);border-radius:4px 4px 0 0;min-height:2px}
+.vbc b{font-size:12px;font-variant-numeric:tabular-nums}
+.vbc span{font-size:10.5px;color:var(--muted);white-space:nowrap}
+.dtab{margin-top:10px;font-size:13px}
+.dtab summary{cursor:pointer;color:var(--muted)}
+.dtab .tbl{margin-top:8px;font-size:13px}
+.wlc{min-width:36px;height:30px;border-radius:7px;font-weight:700;background:var(--soft);font-variant-numeric:tabular-nums}
+.wlc.z{opacity:.45;cursor:default;font-weight:500}
+.wlc.mid{background:#fbefd6;color:#7a4f06}.wlc.hi{background:#f8e1dc;color:#8a2c1e}
+.board:not(.light) .wlc.mid{background:#3d2f12;color:#f0c674}.board:not(.light) .wlc.hi{background:#40211b;color:#f0a597}
+.capin{width:64px;height:30px;text-align:center}
+.rt{font-weight:700}.rt.g{color:var(--ok)}.rt.m{color:#a8732c}.rt.b{color:var(--bad)}
+.dl{display:inline-block;margin-inline-start:6px;font-size:11px;font-weight:700;padding:1px 5px;border-radius:4px}
+.dl.g{background:#e3eedb;color:#35571f}.dl.b{background:#f8e1dc;color:#8a2c1e}
+.board:not(.light) .dl.g{background:#2b3a24;color:#b9d9a3}.board:not(.light) .dl.b{background:#40211b;color:#f0a597}
+@media (max-width:760px){.charts{grid-template-columns:minmax(0,1fr)}.tlg{grid-template-columns:130px var(--w);min-width:calc(130px + var(--w))}.hbr{grid-template-columns:90px minmax(0,1fr)}}
+@media print{.top,.side,.noprint,.dtab{display:none!important}body{overflow:visible}.app,.shell,.main,.page{height:auto!important;overflow:visible!important;display:block}.chart{break-inside:avoid}}
+
 /* Phase 1: owner, milestones, approvals, waiting on, subtasks, custom fields, projects, my sections */
 .av.own{box-shadow:0 0 0 2px var(--bronze-l)}
 .card.ms{border-inline-start:4px solid var(--bronze)}
@@ -451,7 +514,8 @@ const ICON={
   chart:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',clip:'<path d="M21 11l-8.5 8.5a5 5 0 0 1-7-7L14 4a3.5 3.5 0 0 1 5 5l-8.5 8.5a2 2 0 0 1-3-3L15 7"/>',
   bell:'<path d="M18 8a6 6 0 1 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/>',cal:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
   archive:'<rect x="3" y="4" width="18" height="4" rx="1"/><path d="M5 8v12h14V8M10 12h4"/>',copy:'<rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/>',
-  left:'<path d="M15 6l-6 6 6 6"/>',right:'<path d="M9 6l6 6-6 6"/>', inbox:'<path d="M3 13h5l2 3h4l2-3h5"/><path d="M5 5h14l2 8v6H3v-6z"/>', menu:'<path d="M4 6h16M4 12h16M4 18h16"/>', flag:'<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>',
+  left:'<path d="M15 6l-6 6 6 6"/>',right:'<path d="M9 6l6 6-6 6"/>', inbox:'<path d="M3 13h5l2 3h4l2-3h5"/><path d="M5 5h14l2 8v6H3v-6z"/>', menu:'<path d="M4 6h16M4 12h16M4 18h16"/>', target:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>',
+  folders:'<path d="M3 8a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M7 4h4l2 2"/>', gantt:'<path d="M4 6h9M8 12h10M6 18h7"/>', download:'<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>', print:'<path d="M7 9V3h10v6M7 17H4v-7h16v7h-3M7 14h10v7H7z"/>', flag:'<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>',
   diamond:'<path d="M12 3l9 9-9 9-9-9z"/>', subs:'<path d="M5 4v9a3 3 0 0 0 3 3h11"/><path d="M15 12l4 4-4 4"/>',
   link:'<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',
   folder:'<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>', eye:'<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
@@ -524,7 +588,23 @@ en:{app:'Boards',search:'Search this board',addCard:'Add a card',addCardBtn:'Add
   sec_recent:'Recently assigned',sec_today:'Do today',sec_next:'Do next week',sec_later:'Do later',delSecQ:'Remove this section? Its tasks go back to Recently assigned.',moveSec:'Section',
   noFiles:'No files on your tasks yet.',t_file:'File',t_task:'Task',emptySec:'Drag tasks here.',renameSec:'Rename',delSec:'Remove section',
   n_comment:'{p} commented',n_unblocked:'Ready to start: "{x}" is done',n_subassign:'{p} gave you a subtask',n_ap_approved:'{p} approved it',n_ap_changes:'{p} asked for changes',n_ap_rejected:'{p} rejected it',n_fdone:'{p} completed a task you follow',
-  l_ap:'decided: {a}',l_wait:'set it to wait for "{a}"'},
+  l_ap:'decided: {a}',l_wait:'set it to wait for "{a}"',
+  strategy:'Strategy',goals:'Goals',ports:'Portfolios',report:'Reporting',resourcing:'Resourcing',
+  goalsLead:'What the company and each department are working towards. Progress comes from the boards linked to each goal.',
+  newGoal:'New goal',editGoal:'Goal',gTitle:'Goal',gTitlePh:'For example: Open the Ajman branch on time',gLevel:'For',companyLvl:'The whole company',gOwner:'Owner',gDue:'Target date',
+  gBoards:'Linked boards (progress is worked out from their tasks)',gPct:'Progress (%) when no boards are linked',gStatus:'Status',gNote:'Latest update',companyGoals:'Company goals',
+  noGoals:'No goals yet.',delGoal:'Delete goal',delGoalQ:'Delete this goal?',saveB:'Save',gRo:'Only the CEO or this department\'s head can change this goal.',linked:'{n} boards',
+  portsLead:'Your own groups of projects, to follow them together.',newPort:'New portfolio',portPh:'Portfolio name',addProj:'Add a project…',t_due:'Due date',t_pri:'Priority',
+  noPorts:'No portfolios yet. Make one for the projects you follow most.',delPort:'Delete portfolio',delPortQ:'Delete this portfolio? The boards are not touched.',projN:'{n} projects',removeP:'Remove',
+  tlV:'Timeline',listV:'List',noDates:'{n} tasks have no dates.',legDone:'Done',legOpen:'Open',legOver:'Overdue',legMs:'Milestone',
+  reportLead:'How the work is going, in numbers and charts.',reportLeadHead:'How {d} is doing, in numbers and charts.',k_done30:'Done in the last 30 days',k_ontime:'Finished on time (30 days)',
+  ch_status:'Tasks by department',ch_statusB:'Tasks by board',ch_weeks:'Tasks completed per week',ch_pri:'Open tasks by priority',ch_overP:'Overdue tasks by person',
+  asTable:'Show the numbers',exportCsv:'Export to Excel (CSV)',printB:'Print or save as PDF',weekOf:'Week of {d}',nothingOver:'Nothing overdue.',
+  resLead:'Who has how much work, and how it is going.',wlTab:'Workload',perfTab:'Performance',wlLead:'Open tasks due each week. Red means more than the weekly limit for that person.',
+  limitL:'Weekly limit',overdueCol:'Overdue',thisWeek:'This week',perfLead:'From the tasks recorded in Boards only. Use it to start a conversation, not as the whole picture.',
+  period:'Period',p30:'Last 30 days',p90:'Last 90 days',pmonth:'This month',pf_done:'Completed',pf_ontime:'On time',pf_late:'Late',pf_avgLate:'Avg. days late',pf_overNow:'Overdue now',pf_subs:'Subtasks done',
+  vsPrev:'vs previous period',noTasksP:'No finished tasks with a due date in this period.',perfOf:'{p}: finished in this period',onTimeTag:'On time',lateBy:'{n} days late',noDue:'No due date',
+  doneOn:'Done',close2:'Close',stillOver:'Overdue now',tasksIn:'{p}, {w}'},
 ar:{app:'اللوحات',search:'بحث في هذه اللوحة',addCard:'إضافة بطاقة',addCardBtn:'إضافة',cardPh:'اكتب عنوان البطاقة',addList:'إضافة قائمة أخرى',listPh:'اسم القائمة',addListBtn:'إضافة القائمة',cancel:'إلغاء',
   newBoard:'إنشاء لوحة',boardPh:'اسم اللوحة',create:'إنشاء',filter:'تصفية',clear:'مسح التصفية',members:'الأعضاء',labels:'التصنيفات',due:'تاريخ الاستحقاق',repeat:'التكرار',
   r_:'لا يتكرر',r_daily:'يومي',r_weekly:'أسبوعي',r_monthly:'شهري',desc:'الوصف',descPh:'أضف تفاصيل: ما المطلوب، من نتواصل معه، روابط…',checklist:'قائمة المهام',itemPh:'إضافة بند',
@@ -585,7 +665,23 @@ ar:{app:'اللوحات',search:'بحث في هذه اللوحة',addCard:'إض�
   sec_recent:'أُسندت مؤخراً',sec_today:'لليوم',sec_next:'للأسبوع القادم',sec_later:'لاحقاً',delSecQ:'إزالة هذا القسم؟ تعود مهامه إلى "أُسندت مؤخراً".',moveSec:'القسم',
   noFiles:'لا توجد ملفات على مهامك بعد.',t_file:'الملف',t_task:'المهمة',emptySec:'اسحب المهام إلى هنا.',renameSec:'إعادة تسمية',delSec:'إزالة القسم',
   n_comment:'علّق {p}',n_unblocked:'جاهزة للبدء: أُنجزت "{x}"',n_subassign:'أسند إليك {p} مهمة فرعية',n_ap_approved:'وافق {p}',n_ap_changes:'طلب {p} تعديلات',n_ap_rejected:'رفض {p}',n_fdone:'أنجز {p} مهمة تتابعها',
-  l_ap:'قرّر: {a}',l_wait:'جعلها بانتظار "{a}"'}};
+  l_ap:'قرّر: {a}',l_wait:'جعلها بانتظار "{a}"',
+  strategy:'الاستراتيجية',goals:'الأهداف',ports:'المحافظ',report:'التقارير',resourcing:'الموارد',
+  goalsLead:'ما تعمل الشركة وكل قسم على تحقيقه. التقدّم يُحسب من اللوحات المرتبطة بكل هدف.',
+  newGoal:'هدف جديد',editGoal:'الهدف',gTitle:'الهدف',gTitlePh:'مثال: افتتاح فرع عجمان في موعده',gLevel:'لـ',companyLvl:'الشركة كلها',gOwner:'المسؤول',gDue:'التاريخ المستهدف',
+  gBoards:'اللوحات المرتبطة (يُحسب التقدّم من مهامها)',gPct:'التقدّم (%) إذا لم تُربط لوحات',gStatus:'الحالة',gNote:'آخر تحديث',companyGoals:'أهداف الشركة',
+  noGoals:'لا توجد أهداف بعد.',delGoal:'حذف الهدف',delGoalQ:'حذف هذا الهدف؟',saveB:'حفظ',gRo:'فقط الرئيس التنفيذي أو مسؤول هذا القسم يستطيع تغيير هذا الهدف.',linked:'{n} لوحات',
+  portsLead:'مجموعاتك الخاصة من المشاريع لمتابعتها معاً.',newPort:'محفظة جديدة',portPh:'اسم المحفظة',addProj:'إضافة مشروع…',t_due:'تاريخ الاستحقاق',t_pri:'الأولوية',
+  noPorts:'لا توجد محافظ بعد. أنشئ واحدة للمشاريع التي تتابعها أكثر.',delPort:'حذف المحفظة',delPortQ:'حذف هذه المحفظة؟ لن تتأثر اللوحات.',projN:'{n} مشاريع',removeP:'إزالة',
+  tlV:'المخطط الزمني',listV:'قائمة',noDates:'{n} مهام بدون تواريخ.',legDone:'منجزة',legOpen:'مفتوحة',legOver:'متأخرة',legMs:'محطة رئيسية',
+  reportLead:'كيف يسير العمل، بالأرقام والرسوم.',reportLeadHead:'كيف يسير {d}، بالأرقام والرسوم.',k_done30:'أُنجزت في آخر 30 يوماً',k_ontime:'أُنجزت في موعدها (30 يوماً)',
+  ch_status:'المهام حسب القسم',ch_statusB:'المهام حسب اللوحة',ch_weeks:'المهام المنجزة أسبوعياً',ch_pri:'المهام المفتوحة حسب الأولوية',ch_overP:'المهام المتأخرة حسب الشخص',
+  asTable:'عرض الأرقام',exportCsv:'تصدير إلى Excel (CSV)',printB:'طباعة أو حفظ PDF',weekOf:'أسبوع {d}',nothingOver:'لا يوجد شيء متأخر.',
+  resLead:'من لديه كم من العمل، وكيف يسير.',wlTab:'حجم العمل',perfTab:'الأداء',wlLead:'المهام المفتوحة المستحقة كل أسبوع. الأحمر يعني أكثر من الحد الأسبوعي لهذا الشخص.',
+  limitL:'الحد الأسبوعي',overdueCol:'متأخرة',thisWeek:'هذا الأسبوع',perfLead:'من المهام المسجلة في اللوحات فقط. استخدمه لبدء حوار، وليس كصورة كاملة.',
+  period:'الفترة',p30:'آخر 30 يوماً',p90:'آخر 90 يوماً',pmonth:'هذا الشهر',pf_done:'منجزة',pf_ontime:'في الموعد',pf_late:'متأخرة',pf_avgLate:'متوسط أيام التأخير',pf_overNow:'متأخرة الآن',pf_subs:'مهام فرعية منجزة',
+  vsPrev:'مقارنة بالفترة السابقة',noTasksP:'لا توجد مهام منجزة لها تاريخ استحقاق في هذه الفترة.',perfOf:'{p}: ما أُنجز في هذه الفترة',onTimeTag:'في الموعد',lateBy:'متأخرة {n} أيام',noDue:'بدون تاريخ',
+  doneOn:'أُنجزت',close2:'إغلاق',stillOver:'متأخرة الآن',tasksIn:'{p}، {w}'}};
 let lang=(()=>{try{return localStorage.getItem('fb-lang')==='ar'?'ar':'en'}catch(e){return 'en'}})();
 const t=(k,v)=>{let s=(T[lang][k]??T.en[k]??k);if(v)Object.keys(v).forEach(x=>{s=s.split('{'+x+'}').join(v[x])});return s};
 
@@ -635,7 +731,7 @@ function seed(){
         if(typeof o.start==='number'&&Math.abs(o.start)<400)o.start=today()+o.start*day;
         (o.subs||[]).forEach(s=>{s.id=s.id||uid('s');if(typeof s.due==='number'&&Math.abs(s.due)<400)s.due=today()+s.due*day});
         if(!o.owner&&o.members.length)o.owner=o.members[0];
-        if(DONE_RX.test(ln)&&!o.done){o.done=true}if(o.done&&!o.doneAt)o.doneAt=Date.now()-2*day;
+        if(DONE_RX.test(ln)&&!o.done){o.done=true}if(o.done&&!o.doneAt)o.doneAt=Date.now()-(2+(Object.keys(D.cards).length*7)%40)*day;
         o.log=o.log.length?o.log:[{at:Date.now()-3*day,by:members[0]||'ka',k:'l_added',a:ln}];D.cards[o.id]=o;l.cards.push(o.id)})});return b};
   const st=(s,note,by,daysAgo)=>({s,note,by,at:Date.now()-(daysAgo||1)*day});
   mk('ops','Executive Admin Task Board',['ka','oh','os'],st('on','Weekly meetings with each department are now booked.','oh',2),[
@@ -685,9 +781,30 @@ function seed(){
       log:[{at:Date.now()-day,by,k:'l_req',a:deptName(from)}]};D.cards[c.id]=c;l.cards.push(c.id)};
   rq('mnt','mkt','md','Fix the lightbox sign at the Sharjah branch',3);
   rq('fin','ops','oh','Approve petty cash top-up for Ajman opening',2,['fh'],1);
-  mk('oman','Oman Store Setup',['om'],null,[
+  const omB=mk('oman','Oman Store Setup',['om'],null,[
     ['To do',[{title:'Add Oman suppliers to Procurement',labels:['proc'],members:['om'],due:3},{title:'First stock count',members:['om'],due:8}]],
     ['In progress',[]],['Done',[{title:'Oman section opened in Procurement',members:['om']}]]]);
+  /* finished work from the last weeks, so Reporting and Performance have something to show */
+  const bn=n=>Object.values(D.boards).find(b=>b.name===n);
+  const H={'December Campaign':[['Mood board for the campaign','md'],['Shot list for the photographer','md'],['Influencer brief','mh'],['November menu posts','md'],['Reply to Google reviews','mh'],['Story highlights refresh','md']],
+    'November Purchasing':[['Weekly vegetable order - week 1','pb'],['Weekly vegetable order - week 2','pb'],['Packaging supplier quotes','ph'],['Price check: dairy','pb'],['Monthly stock count review','ph'],['Close October LPOs','pb']],
+    'October Month-end Close':[['Sales reconciliation - all branches','fa'],['Supplier statements matched','fa'],['Petty cash count','fa'],['Management accounts draft','fh'],['Payroll accruals','fh']],
+    'Hiring - Line Cooks':[['Interview panel booked','hh'],['Shortlist from the careers page','hh'],['Trade test menu agreed','hh'],['Offer letters sent - October','hh']],
+    'Sharjah Maintenance':[['Grease trap cleaning','nt'],['Walk-in freezer door seal','nt'],['Dining AC filters','nt'],['Monthly generator test','nh'],['Hood cleaning','nt']],
+    'Forka Apps Roadmap':[['Hiring: AI CV summary','dh'],['Guide for the team (PDF)','dh'],['Procurement: roles instead of names','dh']],
+    'Oman Store Setup':[['Oman supplier list','om'],['Oman price list in OMR','om']]};
+  Object.keys(H).forEach((name,j)=>{const b=bn(name),l=D.lists[b.lists.filter(id=>DONE_RX.test(D.lists[id].name)).pop()];
+    H[name].forEach(([title,who],i)=>{const due=-(4+((i*9+j*5)%50)),late=[-2,-1,0,0,1,3][(i+j)%6];
+      const c={id:uid('c'),title,desc:'',labels:[],members:[who],owner:who,due:today()+due*day,done:true,doneAt:today()+(due+late)*day+15*3600e3,repeat:'',check:[],log:[{at:today()+(due-6)*day,by:who,k:'l_added',a:l.name}]};
+      D.cards[c.id]=c;l.cards.push(c.id)})});
+  const sAt=(s,note,by,d)=>({s,note,by,at:Date.now()-(d||1)*day});
+  D.goals=[{id:'g1',title:'Open the Ajman branch on time',lvl:'company',owner:'ka',due:today()+30*day,boards:[aj.id],status:sAt('risk','Hood delivery slipped one week; opening date still holds.','oh',1)},
+    {id:'g2',title:'Launch Forka Boards for every department',lvl:'company',owner:'ka',due:today()+45*day,boards:[bn('Forka Apps Roadmap').id],status:sAt('on','Preview with Ruby this week.','dh',2)},
+    {id:'g3',title:'Close every month within 5 working days',lvl:'fin',owner:'fh',due:today()+50*day,boards:[bn('October Month-end Close').id],status:sAt('off','October is late: two bank accounts not reconciled.','fh',1)},
+    {id:'g4',title:'Keep Sharjah equipment downtime under one day',lvl:'mnt',owner:'nh',due:today()+60*day,boards:[bn('Sharjah Maintenance').id],status:sAt('risk','Cold room waiting for a spare part.','nh',1)},
+    {id:'g5',title:'Grow December sales with the campaign',lvl:'mkt',owner:'mh',due:today()+40*day,boards:[bn('December Campaign').id],status:sAt('on','Visuals approved.','mh',1)},
+    {id:'g6',title:'Hire 6 line cooks before Ramadan',lvl:'hr',owner:'hh',due:today()+70*day,boards:[],pct:40,status:sAt('on','Four interviews booked.','hh',2)}];
+  D.ports=[{id:'pf1',name:'CEO Admins',owner:'ka',items:[{b:aj.id,pri:'high'},{b:bn('October Month-end Close').id,pri:'urgent'},{b:bn('Forka Apps Roadmap').id,pri:'normal'}]}];
   return D;
 }
 const KEY='forka-boards-preview-v4';
@@ -766,6 +883,7 @@ function render(){
   document.documentElement.lang=lang;document.documentElement.dir=lang==='ar'?'rtl':'ltr';
   if(V.view==='board'&&!canSee(B()))home();
   if(V.view==='progress'&&!isCEO())home();
+  if(['ports','report','res'].includes(V.view)&&!lead())home();
   const cv=document.querySelector('.canvas'),sx=cv?cv.scrollLeft:0,ys={};document.querySelectorAll('.list[data-id] .cards').forEach(e=>ys[e.closest('.list').dataset.id]=e.scrollTop);
   const pg=document.querySelector('.page'),py=pg?pg.scrollTop:0;
   document.getElementById('app').innerHTML=`
@@ -781,9 +899,10 @@ function render(){
   </div>
   <div class="board ${theme()==='light'?'light':''} shell">
     ${sideHTML()}
-    <div class="main">${V.view==='board'?boardHTML():V.view==='progress'?progressHTML():V.view==='dept'?deptHTML():V.view==='projects'?projectsHTML():mineHTML()}</div>
+    <div class="main">${V.view==='board'?boardHTML():V.view==='progress'?progressHTML():V.view==='dept'?deptHTML():V.view==='projects'?projectsHTML():V.view==='goals'?goalsHTML():V.view==='ports'?portsHTML():V.view==='report'?reportHTML():V.view==='res'?resHTML():mineHTML()}</div>
     ${V.card&&D.cards[V.card]?modalHTML(D.cards[V.card]):''}
     ${V.nt?ntHTML():''}
+    ${V.gf?goalFormHTML():''}
     ${V.pop?popHTML():''}
     ${V.toast?`<div class="toast" role="status">${esc(V.toast)}</div>`:''}
     ${ASK?`<div class="ov" style="z-index:60;align-items:center"><div class="md" role="alertdialog" aria-modal="true" style="max-width:400px;padding:22px"><p style="margin:0 0 18px;font-size:15px;line-height:1.45">${esc(ASK.msg)}</p><div class="row" style="justify-content:flex-end"><button class="btn sec" data-a="ask-no">${t('cancel')}</button><button class="btn" style="background:#a33a2c" data-a="ask-yes">${t('yes')}</button></div></div></div>`:''}
@@ -803,6 +922,11 @@ function sideHTML(){
     <button class="nav ${V.view==='mine'?'on':''}" data-a="go" data-v="mine">${ic('inbox')}${t('mine')}<span class="n">${mineN||''}</span></button>
     <button class="nav ${V.view==='projects'?'on':''}" data-a="go" data-v="projects">${ic('folder')}${t('projectsNav')}</button>
     ${isCEO()?`<button class="nav ${V.view==='progress'?'on':''}" data-a="go" data-v="progress">${ic('chart')}${t('progress')}</button>`:''}
+    <h5>${t('strategy')}</h5>
+    <button class="nav ${V.view==='goals'?'on':''}" data-a="go" data-v="goals">${ic('target')}${t('goals')}</button>
+    ${lead()?`<button class="nav ${V.view==='ports'?'on':''}" data-a="go" data-v="ports">${ic('folders')}${t('ports')}</button>
+    <button class="nav ${V.view==='report'?'on':''}" data-a="go" data-v="report">${ic('chart')}${t('report')}</button>
+    <button class="nav ${V.view==='res'?'on':''}" data-a="go" data-v="res">${ic('users')}${t('resourcing')}</button>`:''}
     <h5>${t('departments')}</h5>
     ${depts().map(d=>{const bs=boards().filter(b=>b.dept===d.id),s=stats(bs.flatMap(cardsOf));
       return `<button class="nav ${V.view==='dept'&&V.dept===d.id?'on':''}" data-a="dept" data-id="${d.id}"><span class="dot" style="background:${d.dot}"></span>${esc(d[lang])}<span class="n ${s.over?'bad':''}">${s.over?s.over:''}</span></button>
@@ -900,6 +1024,163 @@ function projectsHTML(){const P=V.pf=V.pf||{q:'',dept:'',owner:'',member:'',stat
     ${bs.map(({b,s,m,o})=>`<tr class="click" data-a="board" data-id="${b.id}"><td><div style="display:flex;align-items:center;gap:8px"><span style="display:inline-block;width:10px;height:10px;border-radius:3px;flex:none;background:${dept(b.dept).dot}"></span><span><b dir="auto">${esc(bname(b))}</b><div class="sm">${esc(deptName(b.dept))}</div></span></div></td>
       <td class="sm">${o?esc(pname(o)):'-'}</td><td>${b.kind?'':stChip(b.status)}</td><td>${pbar(s.pct)}</td><td class="num ${s.over?'bad':''}">${s.over}</td><td><div style="display:flex">${boardPeople(b).slice(0,5).map(x=>av(x)).join('')}</div></td><td class="sm">${m?ago(m):'-'}</td></tr>`).join('')}</table></div>`:`<div class="empty-p">${t('noProj')}</div>`}</div>`}
 
+/* ---------- Strategy: goals, portfolios, timeline, reporting, resourcing and performance ---------- */
+const lead=()=>isCEO()||meP().role==='head';
+const scopeD=()=>isCEO()?DEPTS.map(d=>d.id):meP().role==='head'?[meP().dept]:[];
+const scopeBoards=()=>boards().filter(b=>scopeD().includes(b.dept));
+const scopePeople=()=>PEOPLE.filter(p=>!p.ceo&&!p.invited&&scopeD().includes(p.dept));
+const pct=(a,b)=>b?Math.round(a/b*100):0;
+const mondayOf=ts=>{const d=new Date(ts);d.setHours(0,0,0,0);d.setDate(d.getDate()-((d.getDay()+6)%7));return d.getTime()};
+const legend=items=>`<div class="legend">${items.map(([cls,txt])=>`<span><i class="${cls}"></i>${txt}</span>`).join('')}</div>`;
+/* Goals */
+const goalsSeen=()=>(D.goals||[]).filter(g=>isCEO()||g.lvl==='company'||g.lvl===meP().dept);
+const canGoal=g=>isCEO()||(g.lvl!=='company'&&headOf(g.lvl));
+function goalPct(g){const bs=(g.boards||[]).map(id=>D.boards[id]).filter(Boolean);if(!bs.length)return Math.max(0,Math.min(100,+g.pct||0));return stats(bs.flatMap(cardsOf)).pct}
+function goalRow(g){const bs=(g.boards||[]).map(id=>D.boards[id]).filter(Boolean);
+  return `<tr class="click" data-a="gopen" data-id="${g.id}"><td><b dir="auto">${esc(g.title)}</b>${g.status&&g.status.note?`<div class="sm" dir="auto">${esc(g.status.note)}</div>`:''}</td>
+    <td>${stChip(g.status)}</td><td>${pbar(goalPct(g))}</td><td class="sm">${g.owner?`<div style="display:flex;align-items:center;gap:6px">${av(g.owner)}${esc(pname(g.owner))}</div>`:'-'}</td>
+    <td class="sm">${g.due?fmtDay(g.due):'-'}</td><td class="sm">${bs.length?bs.map(b=>esc(bname(b))).join(', '):'-'}</td></tr>`}
+function goalsHTML(){const G=goalsSeen(),groups=[['company',t('companyGoals')]].concat(DEPTS.filter(d=>G.some(g=>g.lvl===d.id)).map(d=>[d.id,d[lang]]));
+  const can=isCEO()||meP().role==='head';
+  return `<div class="page"><div class="phead"><div><h1>${t('goals')}</h1><p class="lead">${t('goalsLead')}</p></div>${can?`<button class="btn" data-a="gnew">${ic('plus')}${t('newGoal')}</button>`:''}</div>
+    ${G.length?groups.map(([k,n])=>{const gs=G.filter(g=>g.lvl===k);return gs.length?`<div class="h2">${k==='company'?ic('target'):`<span class="dot" style="width:10px;height:10px;border-radius:3px;background:${dept(k).dot}"></span>`}${esc(n)}</div>
+      <div class="tw"><table class="tbl goaltbl"><tr><th>${t('gTitle')}</th><th>${t('gStatus')}</th><th>${t('t_prog')}</th><th>${t('gOwner')}</th><th>${t('gDue')}</th><th>${t('gBoards').split(' (')[0]}</th></tr>${gs.map(goalRow).join('')}</table></div>`:''}).join(''):`<div class="empty-p">${t('noGoals')}</div>`}</div>`}
+function goalFormHTML(){const f=V.gf,g=f.id&&(D.goals||[]).find(x=>x.id===f.id),ro=g&&!canGoal(g),miss=k=>f.bad.includes(k)?'miss':'';
+  const lvls=(isCEO()?['company'].concat(DEPTS.map(d=>d.id)):[meP().dept]);
+  const bs=boards().filter(b=>f.lvl==='company'||b.dept===f.lvl);
+  return `<div class="ov"><div class="md" role="dialog" aria-modal="true" aria-label="${t('editGoal')}" style="max-width:640px">
+    <button class="ib x" data-a="gx" aria-label="${t('close')}">${ic('x')}</button>
+    <div class="mhead">${ic('target')}<div class="mt" style="cursor:default">${f.id?t('editGoal'):t('newGoal')}</div></div>
+    <div class="ntf"><fieldset class="ro" ${ro?'disabled':''}>
+      ${ro?`<div class="reqnote">${t('gRo')}</div>`:''}${f.bad.length?`<div class="errbox">${t('need')}</div>`:''}
+      <label class="fl" for="gf-title">${t('gTitle')} <b>*</b></label><input class="fld ${miss('title')}" id="gf-title" dir="auto" maxlength="160" style="width:100%" placeholder="${t('gTitlePh')}" value="${esc(f.title)}">
+      <div class="g3">
+        <div><label class="fl" for="gf-lvl">${t('gLevel')}</label><select class="fld" id="gf-lvl">${lvls.map(k=>`<option value="${k}" ${f.lvl===k?'selected':''}>${k==='company'?t('companyLvl'):esc(deptName(k))}</option>`).join('')}</select></div>
+        <div><label class="fl" for="gf-owner">${t('gOwner')} <b>*</b></label><select class="fld ${miss('owner')}" id="gf-owner"><option value="">-</option>${PEOPLE.filter(p=>!p.invited&&(f.lvl==='company'||p.dept===f.lvl||p.ceo)).map(p=>`<option value="${p.id}" ${f.owner===p.id?'selected':''}>${esc(pname(p.id))}</option>`).join('')}</select></div>
+        <div><label class="fl" for="gf-due">${t('gDue')} <b>*</b></label><input class="fld ${miss('due')}" type="date" id="gf-due" value="${esc(f.due)}"></div>
+      </div>
+      <label class="fl">${t('gBoards')}</label><div class="lchips">${bs.map(b=>`<button class="pchip ${f.boards.includes(b.id)?'on':''}" style="padding:0 12px" data-a="gfb" data-v="${b.id}">${f.boards.includes(b.id)?ic('tick'):''}${esc(bname(b))}</button>`).join('')}</div>
+      ${f.boards.length?'':`<label class="fl" for="gf-pct">${t('gPct')}</label><input class="fld" type="number" min="0" max="100" id="gf-pct" value="${esc(f.pct)}" style="width:120px">`}
+      <div class="g3"><div><label class="fl" for="gf-s">${t('gStatus')}</label><select class="fld" id="gf-s">${['on','risk','off'].map(k=>`<option value="${k}" ${f.s===k?'selected':''}>${t('st_'+k)}</option>`).join('')}</select></div></div>
+      <label class="fl" for="gf-note">${t('gNote')}</label><textarea class="desc" id="gf-note" dir="auto" style="min-height:60px" maxlength="240">${esc(f.note)}</textarea>
+      <div class="row" style="justify-content:flex-end;margin-top:18px">${f.id&&!ro?`<button class="btn dan" data-a="gdel" style="margin-inline-end:auto">${t('delGoal')}</button>`:''}<button class="btn sec" data-a="gx">${t('cancel')}</button>${ro?'':`<button class="btn" data-a="gsave">${t('saveB')}</button>`}</div>
+    </fieldset></div></div></div>`}
+function gfSync(){const f=V.gf,g=id=>document.getElementById(id);if(!f||!g('gf-title'))return;f.title=g('gf-title').value;f.lvl=g('gf-lvl').value;f.owner=g('gf-owner').value;f.due=g('gf-due').value;f.s=g('gf-s').value;f.note=g('gf-note').value;if(g('gf-pct'))f.pct=g('gf-pct').value}
+function gfOpen(id){const g=id&&(D.goals||[]).find(x=>x.id===id);
+  V.gf=g?{id:g.id,title:g.title,lvl:g.lvl,owner:g.owner||'',due:g.due?ymd(g.due):'',boards:(g.boards||[]).slice(),pct:g.pct||'',s:(g.status&&g.status.s)||'on',note:(g.status&&g.status.note)||'',bad:[]}
+    :{id:null,title:'',lvl:isCEO()?'company':meP().dept,owner:ME(),due:'',boards:[],pct:'',s:'on',note:'',bad:[]};render();focusSel('#gf-title')}
+function gfSave(){gfSync();const f=V.gf,bad=[];if(!f.title.trim())bad.push('title');if(!f.owner)bad.push('owner');if(!f.due)bad.push('due');f.bad=bad;if(bad.length){render();return}
+  D.goals=D.goals||[];let g=D.goals.find(x=>x.id===f.id);if(!g){g={id:uid('g')};D.goals.push(g)}
+  const old=g.status||{};Object.assign(g,{title:f.title.trim(),lvl:f.lvl,owner:f.owner,due:new Date(f.due+'T00:00:00').getTime(),boards:f.boards.slice(),pct:+f.pct||0,
+    status:{s:f.s,note:f.note.trim(),by:(old.s===f.s&&old.note===f.note.trim())?old.by||ME():ME(),at:(old.s===f.s&&old.note===f.note.trim())?old.at||Date.now():Date.now()}});
+  V.gf=null;save();render()}
+/* Portfolios */
+const portsSeen=()=>(D.ports||[]).filter(x=>isCEO()||x.owner===ME());
+const bDue=b=>b.due||Math.max(0,...cardsOf(b).map(c=>c.due||0))||null;
+const bStart=b=>{const v=cardsOf(b).map(c=>c.start||c.due).filter(Boolean);return v.length?Math.min(...v):null};
+function portsHTML(){const P=portsSeen(),cur=V.port&&P.find(x=>x.id===V.port);
+  if(!cur)return `<div class="page"><div class="phead"><div><h1>${t('ports')}</h1><p class="lead">${t('portsLead')}</p></div></div>
+    <div class="tiles">${P.map(x=>{const bs=x.items.map(i=>D.boards[i.b]).filter(Boolean),worst=['off','risk','on'].find(k=>bs.some(b=>b.status&&b.status.s===k));
+      return `<button class="tile" data-a="popen" data-id="${x.id}"><span class="band" style="background:var(--bronze)"></span><h3 dir="auto">${esc(x.name)}</h3><div>${worst?stChip({s:worst}):''}</div>
+        <div class="meta"><span>${t('projN',{n:bs.length})}</span></div>${pbar(stats(bs.flatMap(cardsOf)).pct)}<div class="foot"><span class="who">${av(x.owner)}</span></div></button>`}).join('')}
+      <div class="tile comp" style="justify-content:center"><input id="newport" class="fld" dir="auto" maxlength="60" placeholder="${t('portPh')}"><div class="row"><button class="btn" data-a="pnew">${ic('plus')}${t('newPort')}</button></div></div></div>
+    ${P.length?'':`<div class="empty-p" style="margin-top:14px">${t('noPorts')}</div>`}</div>`;
+  const items=cur.items.filter(i=>D.boards[i.b]&&canSee(D.boards[i.b])),tab=V.ptab||'list';
+  const add=boards().filter(b=>!cur.items.some(i=>i.b===b.id));
+  return `<div class="page"><button class="crumb" data-a="go" data-v="ports" style="color:var(--muted);padding-inline-start:0">${ic(lang==='ar'?'right':'left')} ${t('ports')}</button>
+    <div class="phead"><div><h1 dir="auto">${esc(cur.name)}</h1></div><button class="btn dan" data-a="pdel">${t('delPort')}</button></div>
+    <div class="tabs"><button class="tab ${tab==='list'?'on':''}" data-a="ptab" data-v="list">${ic('list')} ${t('listV')}</button><button class="tab ${tab==='tl'?'on':''}" data-a="ptab" data-v="tl">${ic('gantt')} ${t('tlV')}</button></div>
+    ${tab==='tl'?timelineHTML(items.map(i=>{const b=D.boards[i.b],s=stats(cardsOf(b));return {id:b.id,act:'board',label:bname(b),sub:deptName(b.dept),start:bStart(b),end:bDue(b),cls:s.pct===100?'done':s.over?'over':'',pct:s.pct}})):
+    `<div class="tw"><table class="tbl" id="porttbl"><tr><th>${t('t_board')}</th><th>${t('t_status')}</th><th>${t('t_prog')}</th><th>${t('t_due')}</th><th>${t('t_pri')}</th><th>${t('t_owner')}</th><th></th></tr>
+      ${items.map(i=>{const b=D.boards[i.b],s=stats(cardsOf(b)),o=bOwner(b),du=bDue(b);return `<tr class="click" data-a="board" data-id="${b.id}"><td><b dir="auto">${esc(bname(b))}</b><div class="sm">${esc(deptName(b.dept))}</div></td>
+        <td>${b.kind?'':stChip(b.status)}</td><td>${pbar(s.pct)}</td><td class="sm">${du?fmtDay(du):'-'}</td>
+        <td><select class="fld ppri" data-b="${b.id}" aria-label="${t('t_pri')}">${['low','normal','high','urgent'].map(r=>`<option value="${r}" ${(i.pri||'normal')===r?'selected':''}>${t('p_'+r)}</option>`).join('')}</select></td>
+        <td class="sm">${o?`<div style="display:flex;align-items:center;gap:6px">${av(o)}${esc(pname(o))}</div>`:'-'}</td><td style="text-align:end"><button class="lk2" data-a="prm" data-v="${b.id}">${t('removeP')}</button></td></tr>`}).join('')}</table></div>
+      <div class="row" style="max-width:460px;margin-top:12px"><select class="fld" id="padd" style="flex:1;min-width:0"><option value="">${t('addProj')}</option>${add.map(b=>`<option value="${b.id}">${esc(bname(b))}</option>`).join('')}</select></div>`}</div>`}
+/* Timeline: bars from start to due date. Milestones are diamonds. */
+function timelineHTML(rows,head){const DW=26,t0=today();const dated=rows.filter(r=>r.end||r.start);
+  let from=Math.min(t0-7*day,...dated.map(r=>r.start||r.end)),to=Math.max(t0+28*day,...dated.map(r=>r.end||r.start));
+  from=mondayOf(from);to=Math.min(to,from+150*day);const n=Math.round((to-from)/day)+7,W=n*DW,x=ts=>Math.round((Math.max(from,Math.min(ts,to+6*day))-from)/day)*DW;
+  const weeks=[];for(let w=from;w<from+n*day;w+=7*day)weeks.push(w);
+  const loc=lang==='ar'?'ar-AE':'en-GB';
+  return `<div class="tl">${legend([['lg-open',t('legOpen')],['lg-over',t('legOver')],['lg-done',t('legDone')],['lg-ms',t('legMs')]])}
+    <div class="tlw"><div class="tlg" style="--w:${W}px">
+      <div class="tll tlhd"></div><div class="tlr tlhd">${weeks.map(w=>`<span style="inset-inline-start:${x(w)}px">${new Date(w).toLocaleDateString(loc,{day:'numeric',month:'short'})}</span>`).join('')}<i class="tnow" style="inset-inline-start:${x(t0)+DW/2}px"></i></div>
+      ${rows.map(r=>r.group?`<div class="tll tlgrp" dir="auto">${esc(r.group)}</div><div class="tlr tlgrp"></div>`:`<button class="tll" data-a="${r.act}" data-id="${r.id}" dir="auto"><span>${esc(r.label)}</span>${r.sub?`<small>${esc(r.sub)}</small>`:''}</button>
+        <div class="tlr">${weeks.map(w=>`<i class="tvl" style="inset-inline-start:${x(w)}px"></i>`).join('')}<i class="tnow" style="inset-inline-start:${x(t0)+DW/2}px"></i>
+        ${!(r.end||r.start)?'':r.ms?`<button class="tms ${r.cls}" data-a="${r.act}" data-id="${r.id}" style="inset-inline-start:${x(r.end)+3}px" title="${esc(r.label)} · ${fmtDay(r.end)}">${ic('diamond')}</button>`
+          :`<button class="tbar ${r.cls}" data-a="${r.act}" data-id="${r.id}" style="inset-inline-start:${x(r.start||r.end)+2}px;width:${Math.max(DW-4,x(r.end||r.start)-x(r.start||r.end)+DW-4)}px" title="${esc(r.label)} · ${r.start&&r.end&&r.start!==r.end?fmtDay(r.start)+' – ':''}${fmtDay(r.end||r.start)}">${r.pct!=null?`<em>${r.pct}%</em>`:''}</button>`}</div>`).join('')}
+    </div></div>${head||''}</div>`}
+function boardTimeline(b){const rows=[];let none=0;liveLists(b).forEach(id=>{const L=D.lists[id],cs=L.cards.map(c=>D.cards[c]).filter(c=>c&&!c.archived&&match(c));const dated=cs.filter(c=>c.due||c.start);none+=cs.length-dated.length;
+  if(dated.length){rows.push({group:LN(L)});dated.forEach(c=>rows.push({id:c.id,act:'open',label:c.title,start:c.start,end:c.due,ms:c.type==='milestone',cls:c.done?'done':dueCls(c)==='over'?'over':''}))}});
+  return timelineHTML(rows,none?`<p class="sm" style="margin:10px 0 0;opacity:.8">${t('noDates',{n:none})}</p>`:'')}
+/* Reporting */
+function hbars(rows,stack){const max=Math.max(1,...rows.map(r=>stack?r.v.reduce((a,b)=>a+b,0):r.v));
+  return `<div class="hb">${rows.map(r=>{const tot=stack?r.v.reduce((a,b)=>a+b,0):r.v;return `<div class="hbr"><span class="hbl" dir="auto">${esc(r.l)}</span><span class="hbt">${stack?r.v.map((v,i)=>v?`<i class="${stack[i]}" style="width:${v/max*100}%" title="${esc(r.l)}: ${v}"></i>`:'').join(''):`<i class="${r.cls||'lg-one'}" style="width:${tot/max*100}%" title="${esc(r.l)}: ${tot}"></i>`}<b>${tot}</b></span></div>`}).join('')}</div>`}
+const tableOf=(heads,rows)=>`<details class="dtab"><summary>${t('asTable')}</summary><table class="tbl"><tr>${heads.map((h,i)=>`<th class="${i?'num':''}">${esc(h)}</th>`).join('')}</tr>${rows.map(r=>`<tr>${r.map((v,i)=>`<td class="${i?'num':''}">${esc(v)}</td>`).join('')}</tr>`).join('')}</table></details>`;
+function reportHTML(){const bs=scopeBoards(),all=bs.flatMap(b=>cardsOf(b).map(c=>({c,b}))),S=stats(all.map(x=>x.c)),t0=today(),a30=Date.now()-30*day;
+  const d30=all.filter(x=>x.c.done&&(x.c.doneAt||0)>=a30),dd=d30.filter(x=>x.c.due),ot=dd.filter(x=>x.c.doneAt<x.c.due+day).length;
+  const byDept=isCEO();const grp=byDept?DEPTS.map(d=>({l:d[lang],cs:all.filter(x=>x.b.dept===d.id).map(x=>x.c)})):bs.map(b=>({l:bname(b),cs:cardsOf(b)}));
+  const st=grp.map(g=>{const s=stats(g.cs);return {l:g.l,v:[s.done,s.open-s.over,s.over]}}).filter(r=>r.v.some(Boolean));
+  const w0=mondayOf(t0),wk=[...Array(8)].map((_,i)=>w0-(7-i)*7*day).map(w=>({w,n:all.filter(x=>x.c.done&&x.c.doneAt>=w&&x.c.doneAt<w+7*day).length}));const wmax=Math.max(1,...wk.map(x=>x.n));
+  const pri=['urgent','high','normal','low'].map(k=>({l:t('p_'+k),v:all.filter(x=>!x.c.done&&(x.c.priority||'normal')===k).length,cls:k==='urgent'?'lg-over':'lg-one'}));
+  const op=scopePeople().map(p=>({l:pname(p.id),v:all.filter(x=>!x.c.done&&x.c.due&&x.c.due<t0&&x.c.members.includes(p.id)).length,cls:'lg-over'})).filter(r=>r.v).sort((a,b)=>b.v-a.v).slice(0,8);
+  const loc=lang==='ar'?'ar-AE':'en-GB',wl=w=>new Date(w).toLocaleDateString(loc,{day:'numeric',month:'short'});
+  return `<div class="page rep"><div class="phead"><div><h1>${t('report')}</h1><p class="lead">${isCEO()?t('reportLead'):t('reportLeadHead',{d:deptName(meP().dept)})}</p></div>
+    <div class="row noprint" style="margin:0;flex-wrap:wrap"><button class="btn sec" data-a="csv">${ic('download')}${t('exportCsv')}</button><button class="btn sec" data-a="print">${ic('print')}${t('printB')}</button></div></div>
+    <div class="kpis"><div class="kpi"><b>${S.open}</b><span>${t('k_open')}</span></div><div class="kpi ${S.over?'bad':''}"><b>${S.over}</b><span>${t('k_over')}</span></div>
+      <div class="kpi"><b>${d30.length}</b><span>${t('k_done30')}</span></div><div class="kpi"><b>${dd.length?pct(ot,dd.length)+'%':'-'}</b><span>${t('k_ontime')}</span></div></div>
+    <div class="charts">
+      <div class="chart"><h3>${byDept?t('ch_status'):t('ch_statusB')}</h3>${legend([['lg-done',t('legDone')],['lg-open',t('legOpen')],['lg-over',t('legOver')]])}${hbars(st,['lg-done','lg-open','lg-over'])}
+        ${tableOf([byDept?t('t_dept'):t('t_board'),t('legDone'),t('legOpen'),t('legOver')],st.map(r=>[r.l,...r.v]))}</div>
+      <div class="chart"><h3>${t('ch_weeks')}</h3><div class="vb">${wk.map(x=>`<div class="vbc" title="${esc(t('weekOf',{d:wl(x.w)}))}: ${x.n}"><b>${x.n}</b><i style="height:${x.n/wmax*100}%"></i><span>${wl(x.w)}</span></div>`).join('')}</div>
+        ${tableOf([t('weekOf',{d:''}).trim(),t('pf_done')],wk.map(x=>[wl(x.w),x.n]))}</div>
+      <div class="chart"><h3>${t('ch_pri')}</h3>${hbars(pri)}</div>
+      <div class="chart"><h3>${t('ch_overP')}</h3>${op.length?hbars(op):`<p class="sm" style="color:var(--muted)">${t('nothingOver')}</p>`}</div>
+    </div></div>`}
+function exportCsv(){const q=v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"',d=ts=>ts?ymd(ts):'';
+  const rows=[['Board','Department','List','Task','Type','Owner','People','Start','Due','Done','Done date','Priority','Overdue']];
+  scopeBoards().forEach(b=>cardsOf(b).forEach(c=>rows.push([bname(b),deptName(b.dept),LN(listOf(c.id)),c.title,t('ty_'+(c.type||'task')),own(c)?pname(own(c)):'',c.members.map(pname).join('; '),d(c.start),d(c.due),c.done?'Yes':'No',d(c.doneAt),t('p_'+(c.priority||'normal')),!c.done&&c.due&&c.due<today()?'Yes':''])));
+  const blob=new Blob(['﻿'+rows.map(r=>r.map(q).join(',')).join('\r\n')],{type:'text/csv;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='forka-boards-'+ymd(Date.now())+'.csv';document.body.appendChild(a);a.click();a.remove()}
+/* Resourcing: workload per week, and performance per person */
+function wlItems(pid){const out=[];scopeBoards().forEach(b=>cardsOf(b).forEach(c=>{if(c.done)return;if(c.members.includes(pid))out.push({c,due:c.due,title:c.title});(c.subs||[]).forEach(s=>{if(!s.done&&s.who===pid)out.push({c,due:s.due,title:s.t})})}));return out}
+function perfOf(pid,from,to){const cs=Object.values(D.cards).filter(c=>!c.archived&&c.members.includes(pid)&&listOf(c.id));
+  const done=cs.filter(c=>c.done&&c.doneAt>=from&&c.doneAt<to),wd=done.filter(c=>c.due),ot=wd.filter(c=>c.doneAt<c.due+day),late=wd.filter(c=>c.doneAt>=c.due+day);
+  const avgLate=late.length?Math.round(late.reduce((a,c)=>a+Math.ceil((c.doneAt-c.due-day)/day),0)/late.length*10)/10:0;
+  const subs=Object.values(D.cards).flatMap(c=>(c.subs||[]).filter(s=>s.who===pid&&s.done&&s.doneAt>=from&&s.doneAt<to)).length;
+  return {done,n:done.length,wd:wd.length,ot:ot.length,late:late.length,rate:wd.length?pct(ot.length,wd.length):null,avgLate,over:cs.filter(c=>!c.done&&c.due&&c.due<today()).length,subs}}
+function perRange(){const k=V.pper||'30',now=Date.now();if(k==='month'){const d=new Date();const f=new Date(d.getFullYear(),d.getMonth(),1).getTime(),pf=new Date(d.getFullYear(),d.getMonth()-1,1).getTime();return [f,now,pf,f]}
+  const n=+k*day;return [now-n,now,now-2*n,now-n]}
+const delta=(a,b,good,u)=>{if(a==null||b==null||a===b)return '';const up=a>b;return `<small dir="ltr" class="dl ${up===good?'g':'b'}" title="${t('vsPrev')}">${up?'+':'−'}${Math.abs(a-b)}${u||''}</small>`};
+function resHTML(){const tab=V.rtab||'wl',P=scopePeople(),t0=today(),w0=mondayOf(t0),loc=lang==='ar'?'ar-AE':'en-GB';
+  const tabs=`<div class="tabs"><button class="tab ${tab==='wl'?'on':''}" data-a="rtab" data-v="wl">${ic('users')} ${t('wlTab')}</button><button class="tab ${tab==='perf'?'on':''}" data-a="rtab" data-v="perf">${ic('chart')} ${t('perfTab')}</button></div>`;
+  let body;
+  if(tab==='wl'){const W=[0,1,2,3].map(i=>w0+i*7*day);
+    body=`<p class="lead">${t('wlLead')}</p><div class="tw"><table class="tbl" id="wltbl"><tr><th>${t('t_person')}</th>${isCEO()?`<th>${t('t_dept')}</th>`:''}<th class="num">${t('overdueCol')}</th>${W.map((w,i)=>`<th class="num">${i?new Date(w).toLocaleDateString(loc,{day:'numeric',month:'short'}):t('thisWeek')}</th>`).join('')}<th class="num">${t('limitL')}</th></tr>
+      ${P.map(p=>{const it=wlItems(p.id),cap=(D.cap||{})[p.id]||6,over=it.filter(x=>x.due&&x.due<t0).length;
+        const cell=(n,k)=>`<td class="num"><button class="wlc ${n>cap?'hi':n>=Math.ceil(cap*.8)&&n?'mid':''} ${n?'':'z'}" data-a="wlc" data-v="${p.id}|${k}" data-wl="${p.id}|${k}" ${n?'':'disabled'}>${n}</button></td>`;
+        return `<tr><td><div style="display:flex;align-items:center;gap:8px">${av(p.id)}<span>${esc(pname(p.id))}</span></div></td>${isCEO()?`<td class="sm">${esc(deptName(p.dept))}</td>`:''}
+          <td class="num"><button class="wlc ${over?'hi':'z'}" data-a="wlc" data-v="${p.id}|over" data-wl="${p.id}|over" ${over?'':'disabled'}>${over}</button></td>
+          ${W.map((w,i)=>cell(it.filter(x=>x.due&&x.due>=Math.max(w,t0)&&x.due<w+7*day).length,i)).join('')}
+          <td class="num"><input class="fld capin" type="number" min="1" max="40" data-p="${p.id}" value="${cap}" aria-label="${t('limitL')}"></td></tr>`}).join('')}</table></div>`}
+  else{const [f,to,pf,pt]=perRange(),per=V.pper||'30';
+    const rows=P.map(p=>({p,a:perfOf(p.id,f,to),b:perfOf(p.id,pf,pt)})).sort((x,y)=>y.a.n-x.a.n);
+    body=`<div class="reqnote" style="margin:0 0 14px">${ic('chart')}<span>${t('perfLead')}</span></div>
+      <div class="row" style="margin:0 0 12px;align-items:center;gap:8px"><span class="sm" style="color:var(--muted)">${t('period')}</span><div class="vseg">${['30','90','month'].map(k=>`<button data-a="pper" data-v="${k}" class="${per===k?'on':''}">${t(k==='month'?'pmonth':'p'+k)}</button>`).join('')}</div></div>
+      <div class="tw"><table class="tbl" id="perftbl"><tr><th>${t('t_person')}</th>${isCEO()?`<th>${t('t_dept')}</th>`:''}<th class="num">${t('pf_done')}</th><th class="num">${t('pf_ontime')}</th><th class="num">${t('pf_late')}</th><th class="num">${t('pf_avgLate')}</th><th class="num">${t('pf_overNow')}</th><th class="num">${t('pf_subs')}</th></tr>
+      ${rows.map(({p,a,b})=>`<tr class="click" data-a="pfp" data-v="${p.id}"><td><div style="display:flex;align-items:center;gap:8px">${av(p.id)}<span>${esc(pname(p.id))}</span></div></td>${isCEO()?`<td class="sm">${esc(deptName(p.dept))}</td>`:''}
+        <td class="num">${a.n}${delta(a.n,b.n,true)}</td><td class="num">${a.rate==null?'-':`<span class="rt ${a.rate>=80?'g':a.rate>=60?'m':'b'}">${a.rate}%</span>`}${delta(a.rate,b.rate,true,'%')}</td><td class="num">${a.late}</td><td class="num">${a.late?a.avgLate:'-'}</td>
+        <td class="num ${a.over?'bad':''}">${a.over}</td><td class="num">${a.subs}</td></tr>`).join('')}</table></div>
+      ${V.perfP?perfDetail(V.perfP,f,to):''}`}
+  return `<div class="page"><h1>${t('resourcing')}</h1><p class="lead">${t('resLead')}</p>${tabs}${body}</div>`}
+function perfDetail(pid,f,to){const a=perfOf(pid,f,to),over=Object.values(D.cards).filter(c=>!c.archived&&c.members.includes(pid)&&!c.done&&c.due&&c.due<today()&&listOf(c.id));
+  const row=c=>{const b=boardOfList(listOf(c.id).id),late=c.due?Math.ceil((c.doneAt-c.due-day)/day):null;
+    return `<tr class="click" data-a="open" data-id="${c.id}"><td><b dir="auto">${esc(c.title)}</b><div class="sm">${esc(bname(b))}</div></td><td class="sm">${c.due?fmtDay(c.due):t('noDue')}</td><td class="sm">${fmtDay(c.doneAt)}</td>
+      <td>${c.due==null?'':late>0?`<span class="st off"><i></i>${t('lateBy',{n:late})}</span>`:`<span class="st on"><i></i>${t('onTimeTag')}</span>`}</td></tr>`};
+  return `<div class="h2" id="perfdet">${av(pid)} ${esc(t('perfOf',{p:pname(pid)}))}<span class="sp" style="flex:1"></span><button class="lk2" data-a="pfp" data-v="">${t('close2')}</button></div>
+    ${a.done.length?`<div class="tw"><table class="tbl"><tr><th>${t('t_task')}</th><th>${t('due')}</th><th>${t('doneOn')}</th><th></th></tr>${a.done.sort((x,y)=>y.doneAt-x.doneAt).map(row).join('')}</table></div>`:`<div class="empty-p">${t('noTasksP')}</div>`}
+    ${over.length?`<div class="mine-g bad">${t('stillOver')} <span class="c">${over.length}</span></div><div class="tw"><table class="tbl">${over.map(c=>`<tr class="click" data-a="open" data-id="${c.id}"><td><b dir="auto">${esc(c.title)}</b></td><td class="num"><span class="due over">${fmtDay(c.due)}</span></td></tr>`).join('')}</table></div>`:''}`}
+
 /* Department page */
 function teamHTML(d){const team=PEOPLE.filter(x=>x.dept===d.id),free=PEOPLE.filter(x=>!x.dept&&!x.ceo),iv=V.inv||{name:'',email:'',bad:[]},miss=k=>iv.bad.includes(k)?'miss':'';
   const nb=id=>D.order.map(x=>D.boards[x]).filter(b=>b&&b.dept===d.id&&!b.kind&&boardPeople(b).includes(id)).length;
@@ -940,14 +1221,14 @@ function boardHTML(){const b=B(),d=dept(b.dept),admin=canAdmin(b);
       ${V.editBoard?`<input class="bname-in" id="bname" value="${esc(b.name)}" maxlength="80" dir="auto">`:`<button class="bname" dir="auto" data-a="${admin&&!b.kind?'bname':''}">${esc(bname(b))}</button>`}
       ${b.kind?'':stChip(b.status,admin)}
       <div class="sp"></div>
-      <div class="vseg"><button data-a="bview" data-v="board" class="${V.bview!=='cal'?'on':''}">${t('boardV')}</button><button data-a="bview" data-v="cal" class="${V.bview==='cal'?'on':''}">${ic('cal')} ${t('calV')}</button></div>
+      <div class="vseg"><button data-a="bview" data-v="board" class="${!V.bview||V.bview==='board'?'on':''}">${t('boardV')}</button><button data-a="bview" data-v="cal" class="${V.bview==='cal'?'on':''}">${ic('cal')} ${t('calV')}</button><button data-a="bview" data-v="tl" class="${V.bview==='tl'?'on':''}">${ic('gantt')} ${t('tlV')}</button></div>
       <div class="members hide-sm">${boardPeople(b).slice(0,8).map(m=>av(m)).join('')}</div>
       ${admin?`<button class="pill" data-a="members">${ic('users')}<span class="hide-sm">${t('members')}</span></button>`:''}
       <button class="pill ${V.filter||filtering()?'on':''}" data-a="filter">${ic('filter')}<span class="hide-sm">${t('filter')}</span></button>
       <button class="ib" data-a="bmenu" aria-label="${t('boardMenu')}" title="${t('boardMenu')}">${ic('dots')}</button>
     </div>
     ${V.filter?filterBar():''}
-    ${V.bview==='cal'?calHTML(cardsOf(b).filter(match).map(c=>({id:c.id,title:c.title,due:c.due,cls:dueCls(c),ms:c.type==='milestone'}))):`<div class="canvas" id="canvas">
+    ${V.bview==='tl'?boardTimeline(b):V.bview==='cal'?calHTML(cardsOf(b).filter(match).map(c=>({id:c.id,title:c.title,due:c.due,cls:dueCls(c),ms:c.type==='milestone'}))):`<div class="canvas" id="canvas">
       ${liveLists(b).map(id=>listHTML(D.lists[id],admin)).join('')}
       ${admin?(V.addList?`<div class="addl open comp"><input id="newl" dir="auto" placeholder="${t('listPh')}" maxlength="60"><div class="row"><button class="btn" data-a="addl-go">${t('addListBtn')}</button><button class="ib" data-a="addl-x" aria-label="${t('cancel')}">${ic('x')}</button></div></div>`
         :`<button class="addl" data-a="addl">${ic('plus')}${t('addList')}</button>`):''}
@@ -1158,6 +1439,10 @@ function popHTML(){const p=V.pop,b=B();
       <select class="fld ftype" data-f="${f.id}" aria-label="${t('type')}">${['select','text','number'].map(k=>`<option value="${k}" ${f.type===k?'selected':''}>${t('fk_'+k)}</option>`).join('')}</select><button class="ib" data-a="fdelf" data-v="${f.id}" aria-label="${t('removeF')}">${ic('x')}</button></div>
       ${f.type==='select'?`<input class="fld fopts" data-f="${f.id}" dir="auto" value="${esc((f.opts||[]).map(o=>o.name).join(', '))}" placeholder="${t('optsPh')}" aria-label="${t('optsPh')}" style="width:100%;margin-top:6px">`:''}</div>`).join('')}
     <button class="mi" data-a="faddf">${ic('plus')}${t('addField')}</button></div>`;
+  if(p.kind==='wl'){const [pid,k]=p.v.split('|'),t0=today(),w=mondayOf(t0)+(+k||0)*7*day;
+    const it=wlItems(pid).filter(x=>k==='over'?x.due&&x.due<t0:x.due&&x.due>=Math.max(w,t0)&&x.due<w+7*day).sort((a,b)=>a.due-b.due);
+    return `<div class="pop wide" id="pop" style="width:340px"><h4>${esc(t('tasksIn',{p:pname(pid),w:k==='over'?t('overdueCol'):k==='0'?t('thisWeek'):t('weekOf',{d:fmtDay(w)})}))}</h4>
+      ${it.map(x=>`<button class="note-i" data-a="open" data-id="${x.c.id}"><span><span dir="auto">${esc(x.title)}</span><small>${x.title!==x.c.title?esc(t('subOf',{x:x.c.title}))+' · ':''}${fmtDay(x.due)}</small></span></button>`).join('')}</div>`}
   if(p.kind==='archive'){const ac=b.lists.flatMap(l=>D.lists[l]?D.lists[l].cards.map(id=>D.cards[id]).filter(c=>c&&c.archived&&!(D.lists[l].archived)):[]),al=b.lists.map(id=>D.lists[id]).filter(l=>l&&l.archived),adm=canAdmin(b);
     return `<div class="pop wide" id="pop" style="width:360px"><h4>${t('archived')}</h4>${!ac.length&&!al.length?`<div class="lock">${t('noArch')}</div>`:''}
       ${al.map(l=>`<div class="arch"><span dir="auto"><b>${esc(LN(l))}</b><small>${t('archiveList')} · ${l.cards.length} ${t('cards')}</small></span>${adm?`<button class="btn sec" data-a="lrestore" data-v="${l.id}">${t('restore')}</button><button class="btn dan" data-a="lgone" data-v="${l.id}">${t('delForever')}</button>`:''}</div>`).join('')}
@@ -1241,8 +1526,8 @@ document.addEventListener('click',e=>{
   if(DR.justDropped){DR.justDropped=false;return}
   const a=e.target.closest('[data-a]');
   if(V.side&&!e.target.closest('.side')&&!(a&&a.dataset.a==='side')){V.side=false;render();if(!a)return}
-  if(V.pop&&!e.target.closest('#pop')&&!(a&&['bmenu','lmenu','members','status','bell','labels','archv','fieldsed'].includes(a.dataset.a))){V.pop=null;render();if(!a)return}
-  if(e.target.closest('select.msec'))return;
+  if(V.pop&&!e.target.closest('#pop')&&!(a&&['bmenu','lmenu','members','status','bell','labels','archv','fieldsed','wlc'].includes(a.dataset.a))){V.pop=null;render();if(!a)return}
+  if(e.target.closest('select.msec,select.ppri'))return;
   if(!a){const card=e.target.closest('.card[data-id]');if(card&&!V.nt){V.card=card.dataset.card||card.dataset.id;V.comp=null;render()}
     if(V.editList&&!e.target.closest('.lhead'))saveListName();
     return}
@@ -1252,10 +1537,27 @@ document.addEventListener('click',e=>{
     case '':break;
     case 'side':V.side=!V.side;render();break;
     case 'lang':lang=v;try{localStorage.setItem('fb-lang',v)}catch(x){}render();break;
-    case 'go':V.view=v;V.dept=null;V.board=null;V.side=false;render();break;
+    case 'go':V.view=v;V.dept=null;V.board=null;V.side=false;if(v==='ports')V.port=null;V.perfP=null;render();break;
+    case 'gnew':gfOpen(null);break;
+    case 'gopen':gfOpen(id);break;
+    case 'gx':V.gf=null;render();break;
+    case 'gsave':gfSave();break;
+    case 'gdel':ask(t('delGoalQ'),()=>{D.goals=(D.goals||[]).filter(x=>x.id!==V.gf.id);V.gf=null;save()});break;
+    case 'gfb':{gfSync();const f=V.gf;f.boards=f.boards.includes(v)?f.boards.filter(x=>x!==v):f.boards.concat(v);render();break}
+    case 'popen':V.port=id;V.ptab='list';render();break;
+    case 'pnew':{const n=(document.getElementById('newport').value||'').trim();if(!n){focusSel('#newport');break}const x={id:uid('pf'),name:n,owner:ME(),items:[]};(D.ports=D.ports||[]).push(x);V.port=x.id;save();render();break}
+    case 'pdel':ask(t('delPortQ'),()=>{D.ports=(D.ports||[]).filter(x=>x.id!==V.port);V.port=null;save()});break;
+    case 'ptab':V.ptab=v;render();break;
+    case 'prm':{const x=(D.ports||[]).find(q=>q.id===V.port);x.items=x.items.filter(i=>i.b!==v);save();render();break}
+    case 'csv':exportCsv();break;
+    case 'print':window.print();break;
+    case 'rtab':V.rtab=v;render();break;
+    case 'pper':V.pper=v;render();break;
+    case 'pfp':V.perfP=v||null;render();if(v){const el=document.getElementById('perfdet');el&&el.scrollIntoView({block:'start'})}break;
+    case 'wlc':V.pop={kind:'wl',v,anchor:`[data-wl="${v}"]`};render();break;
     case 'dept':V.view='dept';if(V.dept!==id)V.dtab='boards';V.dept=id;V.board=null;V.side=false;V.newBoard=false;V.inv=null;render();break;
     case 'board':V.view='board';V.board=id;V.dept=D.boards[id].dept;V.side=false;V.f={q:'',members:[],labels:[],due:'',fields:[]};V.filter=false;V.comp=null;render();break;
-    case 'open':if(V.card)commitModalFields();V.card=id;V.dateErr=false;render();break;
+    case 'open':if(V.card)commitModalFields();V.card=id;V.dateErr=false;V.pop=null;render();break;
     case 'bname':V.editBoard=true;render();focusSel('#bname');break;
     case 'bmenu':V.pop=V.pop&&V.pop.kind==='bmenu'?null:{kind:'bmenu',anchor:'[data-a=bmenu]'};render();break;
     case 'members':V.pop=V.pop&&V.pop.kind==='members'?null:{kind:'members',anchor:'[data-a=members]'};render();break;
@@ -1340,7 +1642,7 @@ document.addEventListener('click',e=>{
       if(v!=='changes'&&!c.done){c.done=true;c.doneAt=Date.now();logTo(c,{k:'l_done'});afterDone(c,true)}else if(v==='changes'&&c.done){c.done=false;c.doneAt=null}
       save();render();break}
     case 'subadd':addSub();break;
-    case 'subck':commitModalFields();c.subs[+a.dataset.i].done=a.checked;save();render();break;
+    case 'subck':{commitModalFields();const sb=c.subs[+a.dataset.i];sb.done=a.checked;sb.doneAt=a.checked?Date.now():null;save();render();break}
     case 'subdel':commitModalFields();c.subs.splice(+a.dataset.i,1);save();render();break;
     case 'waitadd':{commitModalFields();const w=D.cards[document.getElementById('wadd').value];if(!w)break;if(w.id===c.id||waitsOn(w,c)){flash(t('waitLoop'));break}
       (c.waits=c.waits||[]).push(w.id);logTo(c,{k:'l_wait',a:w.title});save();render();break}
@@ -1390,6 +1692,7 @@ document.addEventListener('keydown',e=>{
   if(id==='secname'&&e.key==='Enter'){e.preventDefault();saveSec();return}
   if(id==='mt'&&e.key==='Enter'){e.preventDefault();e.target.blur();return}
   if(e.key==='Enter'&&e.target.classList&&e.target.classList.contains('card')){V.card=e.target.dataset.card||e.target.dataset.id;render();return}
+  if(e.key==='Escape'&&V.gf){V.gf=null;render();return}
   if(e.key==='Escape'){if(V.secEdit){V.secEdit=null;render()}else if(ASK){ASK=null;render()}else if(V.nt){V.nt=null;render()}else if(V.pop){V.pop=null;render()}else if(V.card){commitModalFields();V.card=null;render()}else if(V.comp){V.comp=null;render()}else if(V.addList){V.addList=false;render()}else if(V.editList){V.editList=null;render()}else if(V.editBoard){V.editBoard=false;render()}else if(V.side){V.side=false;render()}}
 });
 document.addEventListener('input',e=>{
@@ -1410,6 +1713,10 @@ document.addEventListener('change',e=>{
     if(e.target.id==='nt-board'){n.board=e.target.value;n.list=null;n.members=n.members.filter(m=>ntPool(Object.assign({},n)).includes(m))}
     if(e.target.id==='nt-list')n.list=e.target.value;
     ntDefaults(n);n.members=n.members.filter(m=>ntPool(n).includes(m));render();return}
+  if(V.gf&&e.target.id==='gf-lvl'){gfSync();V.gf.boards=V.gf.boards.filter(id=>{const b=D.boards[id];return b&&(V.gf.lvl==='company'||b.dept===V.gf.lvl)});render();return}
+  if(e.target.classList&&e.target.classList.contains('ppri')){const x=(D.ports||[]).find(q=>q.id===V.port),i=x&&x.items.find(q=>q.b===e.target.dataset.b);if(i){i.pri=e.target.value;save()}return}
+  if(e.target.id==='padd'&&e.target.value){const x=(D.ports||[]).find(q=>q.id===V.port);x.items.push({b:e.target.value,pri:'normal'});save();render();return}
+  if(e.target.classList&&e.target.classList.contains('capin')){const n=Math.max(1,Math.min(40,+e.target.value||6));(D.cap=D.cap||{})[e.target.dataset.p]=n;save();render();return}
   if(e.target.id&&e.target.id.startsWith('pf-')){V.pf[e.target.id.slice(3)]=e.target.value;render();return}
   if(e.target.classList&&e.target.classList.contains('msec')){myState().at[e.target.dataset.k]=e.target.value;save();render();return}
   if(e.target.classList&&(e.target.classList.contains('fname')||e.target.classList.contains('ftype')||e.target.classList.contains('fopts'))){const b=B(),f=(b.fields||[]).find(x=>x.id===e.target.dataset.f);if(!f)return;
