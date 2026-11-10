@@ -137,13 +137,14 @@ body.dragging,body.dragging *{cursor:grabbing!important}
 
 /* card details */
 .ov{position:fixed;inset:0;z-index:30;background:rgba(0,0,0,.6);display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;padding:48px 14px}
-.md{width:100%;max-width:760px;background:var(--modal);color:var(--text);border-radius:16px;box-shadow:0 20px 50px rgba(0,0,0,.55);position:relative}
+.md{width:100%;max-width:860px;background:var(--modal);color:var(--text);border-radius:16px;box-shadow:0 20px 50px rgba(0,0,0,.55);position:relative}
 .mhead{display:flex;gap:10px;align-items:flex-start;padding:22px 22px 8px}
 .mt{flex:1;font-family:var(--serif);font-size:24px;font-weight:600;line-height:1.25;background:transparent;border:0;outline:none;resize:none;padding:2px 6px;border-radius:6px;width:100%;overflow:hidden}
 .mt:focus{background:#fff;color:var(--charcoal)}
 .msub{padding:0 28px 6px;color:var(--muted);font-size:13.5px}
 .msub b{color:var(--text);text-decoration:underline;text-underline-offset:3px;font-weight:600}
-.mbody{display:grid;grid-template-columns:1fr 200px;gap:22px;padding:10px 28px 26px}
+.mbody{display:grid;grid-template-columns:minmax(0,1fr) 210px;gap:22px;padding:10px 28px 26px}
+.mbody>div{min-width:0}
 .sec{margin-top:18px}
 .sec:first-child{margin-top:4px}
 .sh{display:flex;align-items:center;gap:8px;font-weight:700;font-size:15px;margin-bottom:8px}
@@ -186,7 +187,8 @@ html[dir=rtl] .pchip{padding:0 3px 0 10px}
 .x{position:absolute;top:14px;inset-inline-end:14px}
 
 @media (max-width:760px){
-  .mbody{grid-template-columns:1fr}
+  .mbody{grid-template-columns:minmax(0,1fr);padding:10px 16px 26px}
+  .mbody>div,.kv>div{min-width:0;max-width:100%}
   .brand span{display:none}
   .search{max-width:none}
   .bname{font-size:19px;max-width:52vw}
@@ -335,6 +337,73 @@ fieldset.ro{border:0;padding:0;margin:0;min-width:0}
 .side2 .row select{flex:1 1 100%!important}
 .side2 .row .btn{flex:1 1 100%;justify-content:center}
 .sm-only{display:none}
+/* Phase 1: owner, milestones, approvals, waiting on, subtasks, custom fields, projects, my sections */
+.av.own{box-shadow:0 0 0 2px var(--bronze-l)}
+.card.ms{border-inline-start:4px solid var(--bronze)}
+.msd{color:var(--bronze-l);display:inline-flex;vertical-align:-2px}
+.msd svg{width:14px;height:14px}
+.card .bd .wt,.wt{background:#f8e1dc;color:#8a2c1e;padding:2px 7px;border-radius:5px;font-weight:600}
+.board:not(.light) .wt{background:#40211b;color:#f0a597}
+.ap{white-space:nowrap;display:inline-flex;align-items:center;gap:4px;padding:2px 7px;border-radius:5px;font-weight:600;font-size:12.5px;background:#fbefd6;color:#7a4f06}
+.ap svg{width:13px;height:13px}
+.ap.approved{background:#e3eedb;color:#35571f}.ap.changes{background:#e2e7ec;color:#2f4a66}.ap.rejected{background:#f8e1dc;color:#8a2c1e}
+.board:not(.light) .ap{background:#3d2f12;color:#f0c674}.board:not(.light) .ap.approved{background:#2b3a24;color:#b9d9a3}.board:not(.light) .ap.changes{background:#22303d;color:#a9c4de}.board:not(.light) .ap.rejected{background:#40211b;color:#f0a597}
+.apbox{border:1px solid var(--line);border-radius:10px;padding:12px;margin:4px 0 6px;background:var(--soft)}
+.apbox .row{margin:10px 0 0;flex-wrap:wrap}
+.apbox .sm{color:var(--muted);font-size:12.5px}
+.btn.okb{background:var(--ok);color:#fff;display:inline-flex;align-items:center;gap:6px}
+.fcs{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}
+.fch{display:inline-flex;align-items:center;gap:5px;font-size:12px;padding:2px 7px;border-radius:5px;background:var(--soft);color:var(--muted)}
+.fch i{width:8px;height:8px;border-radius:2px;flex:none}
+.fch b{color:var(--text);font-weight:600}
+.chip i{display:inline-block;width:9px;height:9px;border-radius:2px}
+.cfg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.cfg label span{display:block;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:5px}
+.cfg .fld{width:100%}
+.subr{display:flex;align-items:center;gap:8px;padding:5px 4px;border-radius:7px;flex-wrap:wrap}
+.subr:hover{background:var(--soft)}
+.subr input[type=checkbox]{width:17px;height:17px;accent-color:var(--bronze)}
+.subr span{flex:1 1 140px;font-size:14px;min-width:0}
+.subr.done span{text-decoration:line-through;color:var(--muted)}
+.subr .fld{height:30px;font-size:13px;padding:0 6px;max-width:150px}
+.subr .fld.late{border-color:var(--bad);color:var(--bad)}
+.subr .ib{width:26px;height:26px}
+.wrow{display:flex;align-items:center;gap:8px;padding:5px 4px;border-radius:7px;font-size:14px}
+.wrow:hover{background:var(--soft)}
+.wrow .okd{color:var(--ok)}.wrow .opn{color:var(--bad)}
+.wrow .lk{flex:1;text-align:start;text-decoration:underline;text-underline-offset:3px;min-width:0;overflow-wrap:anywhere}
+.wrow small{color:var(--muted);font-size:12px}
+.wrow .ib{width:26px;height:26px}
+.fols{display:flex;flex-direction:column;gap:4px}
+.fol{display:flex;align-items:center;gap:6px;font-size:13px}
+.fol span:not(.av){flex:1;min-width:0}
+.fol .ib{width:24px;height:24px}
+.fedit{border-bottom:1px solid var(--line);padding:8px 4px}
+.pfind{position:relative;max-width:640px;margin-bottom:10px}
+.pfind input{width:100%;height:38px;border-radius:999px;border:1px solid var(--line);background:var(--field);padding:0 14px 0 38px;outline:none;color:var(--text)}
+html[dir=rtl] .pfind input{padding:0 38px 0 14px}
+.pfind svg{position:absolute;top:11px;inset-inline-start:13px;color:var(--muted)}
+.pfil{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;align-items:center}
+.pfil .fld{border-radius:999px;max-width:200px}
+.sortl{margin-inline-start:auto;display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted)}
+.sech{border-bottom:1px solid var(--line);padding-bottom:6px}
+.sech .sp{flex:1}
+.sech .fld{height:30px;max-width:260px}
+.lk2{font-size:12.5px;color:var(--muted);font-weight:500;padding:2px 6px;border-radius:5px}
+.lk2:hover{background:var(--soft);color:var(--text)}
+.secadd{margin-top:18px;max-width:420px;align-items:center}
+.secadd .btn{margin:0;display:inline-flex;align-items:center;gap:6px}
+.secadd .fld{flex:1}
+.msc{width:170px}
+.msc .fld{width:100%;height:30px;font-size:13px}
+.subof{display:flex;align-items:center;gap:5px;color:var(--muted);font-size:12.5px;margin-top:3px}
+.subof svg{width:13px;height:13px}
+.mboard .canvas{padding:4px 0 20px;overflow-y:visible}
+.mboard .list{max-height:none}
+.page .cal{padding:0}
+.page .calbar{color:var(--text)}
+@media (max-width:760px){.mtbl,.mtbl tbody{display:block}.mtbl tr{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;padding:11px 12px;border-bottom:1px solid var(--line)}.mtbl tr:last-child{border-bottom:0}.mtbl td{display:block;border:0!important;padding:0!important}.mtbl td:first-child{flex:1 1 100%}.mtbl td.sm{flex:1 1 0;min-width:0}.mtbl td.msc{flex:1 1 100%}
+.cfg{grid-template-columns:minmax(0,1fr)}.msc{width:auto}.sortl{margin-inline-start:0}.pfil .fld{max-width:none;flex:1 1 140px}}
 @media (max-width:760px){
   .top{gap:8px;padding:0 10px}
   .top .brand,.top .viewas,.top label.hide-sm{display:none}
@@ -382,7 +451,12 @@ const ICON={
   chart:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',clip:'<path d="M21 11l-8.5 8.5a5 5 0 0 1-7-7L14 4a3.5 3.5 0 0 1 5 5l-8.5 8.5a2 2 0 0 1-3-3L15 7"/>',
   bell:'<path d="M18 8a6 6 0 1 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/>',cal:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
   archive:'<rect x="3" y="4" width="18" height="4" rx="1"/><path d="M5 8v12h14V8M10 12h4"/>',copy:'<rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/>',
-  left:'<path d="M15 6l-6 6 6 6"/>',right:'<path d="M9 6l6 6-6 6"/>', inbox:'<path d="M3 13h5l2 3h4l2-3h5"/><path d="M5 5h14l2 8v6H3v-6z"/>', menu:'<path d="M4 6h16M4 12h16M4 18h16"/>', flag:'<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>'
+  left:'<path d="M15 6l-6 6 6 6"/>',right:'<path d="M9 6l6 6-6 6"/>', inbox:'<path d="M3 13h5l2 3h4l2-3h5"/><path d="M5 5h14l2 8v6H3v-6z"/>', menu:'<path d="M4 6h16M4 12h16M4 18h16"/>', flag:'<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>',
+  diamond:'<path d="M12 3l9 9-9 9-9-9z"/>', subs:'<path d="M5 4v9a3 3 0 0 0 3 3h11"/><path d="M15 12l4 4-4 4"/>',
+  link:'<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',
+  folder:'<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>', eye:'<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+  grid:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>',
+  stamp:'<path d="M9 3h6l-1 7h-4z"/><path d="M5 14h14v3H5zM4 21h16"/>', list:'<path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/>'
 };
 const ic=(n,cls)=>`<svg viewBox="0 0 24 24"${cls?` class="${cls}"`:''} aria-hidden="true">${ICON[n]}</svg>`;
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -435,7 +509,22 @@ en:{app:'Boards',search:'Search this board',addCard:'Add a card',addCardBtn:'Add
   templates:'Templates',startFrom:'Start from',tpl_blank:'Blank (To do, In progress, Done)',tpl_weekly:'Weekly plan',tpl_opening:'Branch opening',tpl_hiring:'Hiring a role',tpl_maint:'Maintenance requests',
   saveTpl:'Save board as template',tplSaved:'Saved as a template. Use it when you create a board.',cardTpl:'Save card as template',cardTplSaved:'Saved. Pick it in New task, "Start from a template".',fromTpl:'Start from a template',none:'None',mineTpl:'Saved: {n}',
   copyTo:'Copy to board',copyBtn:'Copy',copied2:'Copied to {b}.',moveTo:'Move to board',moveBtn:'Move',moved:'Moved to {b}.',
-  mentionHint:'Type @ to mention someone.',fileGone:'This file is not in this browser.',colour:'Change colour'},
+  mentionHint:'Type @ to mention someone.',fileGone:'This file is not in this browser.',colour:'Change colour',
+  projectsNav:'Projects',projLead:'Every board you can see, in one list. Search, filter and sort.',findProj:'Find a project',anyDept:'All departments',anyOwner:'Any owner',anyMember:'Any member',anyStatus:'Any status',
+  sortMod:'Last changed',sortName:'Name',sortProg:'Progress',sortOver:'Most overdue',sortL:'Sort',t_owner:'Owner',t_last:'Last change',noProj:'No projects match.',
+  startD:'Start date',startAfter:'The start date is after the due date.',owner:'Owner',ownerHint:'The one person responsible.',followers:'Followers',follow:'Follow',unfollow:'Stop following',addFollower:'Add a follower',
+  followHint:'Followers get alerts on comments and when it is done.',type:'Type',ty_task:'Task',ty_milestone:'Milestone',ty_approval:'Approval',approvers:'Who approves',
+  ap_pending:'Waiting for approval',ap_approved:'Approved',ap_changes:'Changes requested',ap_rejected:'Rejected',approve:'Approve',reqChanges:'Request changes',reject:'Reject',
+  apOnly:'Only the people who approve, or the CEO, can decide.',apBy:'{s} by {p}',subtasks:'Subtasks',subPh:'Add a subtask',nobody:'Nobody yet',subOf:'in: {x}',
+  waitingOn:'Waiting on',waitHint:'This task cannot be completed until these are done.',addWait:'Add',blocking:'Other tasks waiting for this one',waitTag:'Waiting',
+  waitFirst:'Waiting on "{x}". Finish that first.',waitLoop:'That would make the two tasks wait for each other.',pickTask:'Choose a task…',
+  fields:'Custom fields',addField:'Add field',fieldName:'Field name',fieldsHint:'Your own fields for this board, such as Branch, Cost or Area. Choice fields can be used in the filter.',
+  fk_select:'Choice',fk_text:'Text',fk_number:'Number',optsPh:'Choices, separated by commas',delFieldQ:'Remove this field from the board and its cards?',
+  myList:'List',myBoard:'Board',myCal:'Calendar',myFiles:'Files',groupBy:'Group by',gSec:'My sections',gDue:'Due date',addSec:'Add section',secPh:'Section name',
+  sec_recent:'Recently assigned',sec_today:'Do today',sec_next:'Do next week',sec_later:'Do later',delSecQ:'Remove this section? Its tasks go back to Recently assigned.',moveSec:'Section',
+  noFiles:'No files on your tasks yet.',t_file:'File',t_task:'Task',emptySec:'Drag tasks here.',renameSec:'Rename',delSec:'Remove section',
+  n_comment:'{p} commented',n_unblocked:'Ready to start: "{x}" is done',n_subassign:'{p} gave you a subtask',n_ap_approved:'{p} approved it',n_ap_changes:'{p} asked for changes',n_ap_rejected:'{p} rejected it',n_fdone:'{p} completed a task you follow',
+  l_ap:'decided: {a}',l_wait:'set it to wait for "{a}"'},
 ar:{app:'اللوحات',search:'بحث في هذه اللوحة',addCard:'إضافة بطاقة',addCardBtn:'إضافة',cardPh:'اكتب عنوان البطاقة',addList:'إضافة قائمة أخرى',listPh:'اسم القائمة',addListBtn:'إضافة القائمة',cancel:'إلغاء',
   newBoard:'إنشاء لوحة',boardPh:'اسم اللوحة',create:'إنشاء',filter:'تصفية',clear:'مسح التصفية',members:'الأعضاء',labels:'التصنيفات',due:'تاريخ الاستحقاق',repeat:'التكرار',
   r_:'لا يتكرر',r_daily:'يومي',r_weekly:'أسبوعي',r_monthly:'شهري',desc:'الوصف',descPh:'أضف تفاصيل: ما المطلوب، من نتواصل معه، روابط…',checklist:'قائمة المهام',itemPh:'إضافة بند',
@@ -481,7 +570,22 @@ ar:{app:'اللوحات',search:'بحث في هذه اللوحة',addCard:'إض�
   templates:'القوالب',startFrom:'البدء من',tpl_blank:'فارغة (للعمل، قيد التنفيذ، منجز)',tpl_weekly:'خطة أسبوعية',tpl_opening:'افتتاح فرع',tpl_hiring:'توظيف لوظيفة',tpl_maint:'طلبات الصيانة',
   saveTpl:'حفظ اللوحة كقالب',tplSaved:'حُفظت كقالب. استخدمه عند إنشاء لوحة.',cardTpl:'حفظ البطاقة كقالب',cardTplSaved:'حُفظت. اخترها في مهمة جديدة، "البدء من قالب".',fromTpl:'البدء من قالب',none:'بدون',mineTpl:'محفوظة: {n}',
   copyTo:'نسخ إلى لوحة',copyBtn:'نسخ',copied2:'نُسخت إلى {b}.',moveTo:'نقل إلى لوحة',moveBtn:'نقل',moved:'نُقلت إلى {b}.',
-  mentionHint:'اكتب @ لذكر شخص.',fileGone:'هذا الملف غير موجود في هذا المتصفح.',colour:'تغيير اللون'}};
+  mentionHint:'اكتب @ لذكر شخص.',fileGone:'هذا الملف غير موجود في هذا المتصفح.',colour:'تغيير اللون',
+  projectsNav:'المشاريع',projLead:'كل اللوحات التي تراها في قائمة واحدة. ابحث وصفِّ ورتّب.',findProj:'ابحث عن مشروع',anyDept:'كل الأقسام',anyOwner:'أي مسؤول',anyMember:'أي عضو',anyStatus:'أي حالة',
+  sortMod:'آخر تغيير',sortName:'الاسم',sortProg:'التقدّم',sortOver:'الأكثر تأخراً',sortL:'الترتيب',t_owner:'المسؤول',t_last:'آخر تغيير',noProj:'لا توجد مشاريع مطابقة.',
+  startD:'تاريخ البدء',startAfter:'تاريخ البدء بعد تاريخ الاستحقاق.',owner:'المسؤول',ownerHint:'شخص واحد مسؤول عنها.',followers:'المتابعون',follow:'متابعة',unfollow:'إلغاء المتابعة',addFollower:'إضافة متابع',
+  followHint:'يصل للمتابعين تنبيه عند كل تعليق وعند الإنجاز.',type:'النوع',ty_task:'مهمة',ty_milestone:'محطة رئيسية',ty_approval:'موافقة',approvers:'من يوافق',
+  ap_pending:'بانتظار الموافقة',ap_approved:'تمت الموافقة',ap_changes:'مطلوب تعديلات',ap_rejected:'مرفوضة',approve:'موافقة',reqChanges:'طلب تعديلات',reject:'رفض',
+  apOnly:'فقط من يوافق، أو الرئيس التنفيذي، يستطيع القرار.',apBy:'{s} من {p}',subtasks:'المهام الفرعية',subPh:'إضافة مهمة فرعية',nobody:'لم يُحدد بعد',subOf:'ضمن: {x}',
+  waitingOn:'بانتظار',waitHint:'لا يمكن إنجاز هذه المهمة قبل إنجاز هذه.',addWait:'إضافة',blocking:'مهام أخرى تنتظر هذه المهمة',waitTag:'بانتظار',
+  waitFirst:'بانتظار "{x}". أنجزها أولاً.',waitLoop:'هذا سيجعل المهمتين تنتظر كل منهما الأخرى.',pickTask:'اختر مهمة…',
+  fields:'حقول مخصصة',addField:'إضافة حقل',fieldName:'اسم الحقل',fieldsHint:'حقولك الخاصة لهذه اللوحة، مثل الفرع أو التكلفة أو المنطقة. حقول الاختيار تظهر في التصفية.',
+  fk_select:'اختيار',fk_text:'نص',fk_number:'رقم',optsPh:'الخيارات، مفصولة بفواصل',delFieldQ:'إزالة هذا الحقل من اللوحة وبطاقاتها؟',
+  myList:'قائمة',myBoard:'لوحة',myCal:'التقويم',myFiles:'الملفات',groupBy:'التجميع حسب',gSec:'أقسامي',gDue:'تاريخ الاستحقاق',addSec:'إضافة قسم',secPh:'اسم القسم',
+  sec_recent:'أُسندت مؤخراً',sec_today:'لليوم',sec_next:'للأسبوع القادم',sec_later:'لاحقاً',delSecQ:'إزالة هذا القسم؟ تعود مهامه إلى "أُسندت مؤخراً".',moveSec:'القسم',
+  noFiles:'لا توجد ملفات على مهامك بعد.',t_file:'الملف',t_task:'المهمة',emptySec:'اسحب المهام إلى هنا.',renameSec:'إعادة تسمية',delSec:'إزالة القسم',
+  n_comment:'علّق {p}',n_unblocked:'جاهزة للبدء: أُنجزت "{x}"',n_subassign:'أسند إليك {p} مهمة فرعية',n_ap_approved:'وافق {p}',n_ap_changes:'طلب {p} تعديلات',n_ap_rejected:'رفض {p}',n_fdone:'أنجز {p} مهمة تتابعها',
+  l_ap:'قرّر: {a}',l_wait:'جعلها بانتظار "{a}"'}};
 let lang=(()=>{try{return localStorage.getItem('fb-lang')==='ar'?'ar':'en'}catch(e){return 'en'}})();
 const t=(k,v)=>{let s=(T[lang][k]??T.en[k]??k);if(v)Object.keys(v).forEach(x=>{s=s.split('{'+x+'}').join(v[x])});return s};
 
@@ -528,6 +632,9 @@ function seed(){
     lists.forEach(([ln,cards])=>{const l={id:uid('l'),name:ln,sys:sysKey(ln),cards:[],col:false};D.lists[l.id]=l;b.lists.push(l.id);
       cards.forEach(c=>{const o=Object.assign({id:uid('c'),title:'',desc:'',labels:[],members:[],due:null,done:false,doneAt:null,repeat:'',check:[],log:[]},typeof c==='string'?{title:c}:c);
         if(typeof o.due==='number'&&Math.abs(o.due)<400)o.due=today()+o.due*day;
+        if(typeof o.start==='number'&&Math.abs(o.start)<400)o.start=today()+o.start*day;
+        (o.subs||[]).forEach(s=>{s.id=s.id||uid('s');if(typeof s.due==='number'&&Math.abs(s.due)<400)s.due=today()+s.due*day});
+        if(!o.owner&&o.members.length)o.owner=o.members[0];
         if(DONE_RX.test(ln)&&!o.done){o.done=true}if(o.done&&!o.doneAt)o.doneAt=Date.now()-2*day;
         o.log=o.log.length?o.log:[{at:Date.now()-3*day,by:members[0]||'ka',k:'l_added',a:ln}];D.cards[o.id]=o;l.cards.push(o.id)})});return b};
   const st=(s,note,by,daysAgo)=>({s,note,by,at:Date.now()-(daysAgo||1)*day});
@@ -542,10 +649,14 @@ function seed(){
     ['Daily',[{title:'Daily Inbox Sweep',repeat:'daily',members:['os']},{title:'Daily Log - Operations',repeat:'daily',members:['os']}]],
     ['Weekly',[{title:'Weekly Forka Admins Meetings',repeat:'weekly',members:['ka']},{title:'Weekly Maintenance Meetings with Omar',repeat:'weekly',labels:['mnt'],members:['oh']}]],
     ['Monthly',[{title:'Monthly Forka Admin Meeting',repeat:'monthly',members:['ka']}]]]);
-  mk('ops','Ajman Branch Opening',['oh','os','nt'],st('risk','Kitchen hood delivery slipped one week.','oh',1),[
-    ['To do',[{title:'Staff rota for opening week',members:['os'],due:6},{title:'Hood installation sign-off',labels:['mnt','urg'],members:['nt'],due:-2}]],
-    ['In progress',[{title:'POS and printers set up',members:['os'],due:3},{title:'Opening stock order',labels:['proc'],members:['oh'],due:4}]],
+  const aj=mk('ops','Ajman Branch Opening',['oh','os','nt'],st('risk','Kitchen hood delivery slipped one week.','oh',1),[
+    ['To do',[{title:'Staff rota for opening week',members:['os'],due:6,f:{area:'foh'}},{title:'Hood installation sign-off',labels:['mnt','urg'],members:['nt'],due:-2,f:{area:'kit',cost:'4500'}},
+      {title:'Soft opening day',type:'milestone',members:['oh'],due:12},{title:'Approve the opening budget',type:'approval',members:['ka'],follow:['oh'],due:2,desc:'AED 85,000 for stock, uniforms and the first month of marketing.',f:{cost:'85000'}}]],
+    ['In progress',[{title:'POS and printers set up',members:['os'],start:-2,due:3,f:{area:'foh'}},{title:'Opening stock order',labels:['proc'],members:['oh'],start:0,due:4,f:{area:'store'},
+      subs:[{t:'Dry store order',who:'os',due:2,done:true},{t:'Chiller and freezer order',who:'oh',due:3},{t:'Cleaning supplies',who:'os',due:4}]}]],
     ['Done',[{title:'Trade licence renewed',members:['oh']},{title:'Signage approved',members:['oh']}]]]);
+  aj.fields=[{id:'area',name:'Area',type:'select',opts:[{id:'kit',name:'Kitchen',color:'#b8432f'},{id:'foh',name:'Front of house',color:'#3e6aa1'},{id:'store',name:'Store',color:'#9a6b3f'}]},{id:'cost',name:'Cost (AED)',type:'number'}];
+  {const byT=x=>aj.lists.flatMap(l=>D.lists[l].cards).map(id=>D.cards[id]).find(c=>c.title===x),so=byT('Soft opening day');so.waits=[byT('Hood installation sign-off').id,byT('POS and printers set up').id]}
   mk('mkt','December Campaign',['mh','md'],st('on','Visuals approved; posting starts 1 Dec.','mh',1),[
     ['To do',[{title:'Influencer shortlist',members:['mh'],due:5},{title:'Menu photos - new dishes',members:['md'],due:8}]],
     ['In progress',[{title:'Instagram posts - week 1',labels:['mkt'],members:['md'],due:2,check:[{t:'Post 1',d:true},{t:'Post 2',d:true},{t:'Post 3',d:false}]}]],
@@ -595,7 +706,7 @@ const depts=()=>DEPTS.filter(d=>isCEO()||headOf(d.id)||boards().some(b=>b.dept==
 const theme=()=>D.dark&&D.dark[ME()]?'dark':'light';
 
 /* ---------- view state ---------- */
-const V={view:null,dept:null,board:null,comp:null,addList:false,editList:null,editBoard:false,pop:null,card:null,filter:false,side:false,f:{q:'',members:[],labels:[],due:''}};
+const V={view:null,dept:null,board:null,comp:null,addList:false,editList:null,editBoard:false,pop:null,card:null,filter:false,side:false,f:{q:'',members:[],labels:[],due:'',fields:[]}};
 let ASK=null;
 function ask(msg,go){ASK={msg,go};V.pop=null;render();setTimeout(()=>{const b=document.querySelector('[data-a=ask-no]');b&&b.focus()},0)}
 function home(){V.view=isCEO()?'progress':'mine';V.board=null;V.dept=null}
@@ -629,8 +740,26 @@ function match(c){const f=V.f;
   if(f.labels.length&&!f.labels.some(l=>c.labels.includes(l)))return false;
   if(f.due==='week'&&!(c.due&&!c.done&&c.due>=today()&&c.due<today()+7*day))return false;
   if(f.due==='over'&&!(c.due&&!c.done&&c.due<today()))return false;
+  if((f.fields||[]).length&&!f.fields.some(k=>{const [fid,oid]=k.split(':');return (c.f||{})[fid]===oid}))return false;
   return true}
-const filtering=()=>{const f=V.f;return !!(f.q||f.members.length||f.labels.length||f.due)};
+const filtering=()=>{const f=V.f;return !!(f.q||f.members.length||f.labels.length||f.due||(f.fields||[]).length)};
+/* Owner, dates, waiting on, approvals, custom fields */
+const own=c=>c.owner&&c.members.includes(c.owner)?c.owner:c.members[0];
+const fmtRange=c=>c.start&&c.due&&c.start<c.due?fmtDay(c.start)+' – '+fmtDay(c.due):c.due?fmtDay(c.due):'';
+const openWaits=c=>(c.waits||[]).map(id=>D.cards[id]).filter(x=>x&&!x.done&&!x.archived);
+const blockingOf=c=>Object.values(D.cards).filter(x=>!x.archived&&(x.waits||[]).includes(c.id));
+function waitsOn(a,b,seen){seen=seen||{};if(!a||seen[a.id])return false;seen[a.id]=1;return (a.waits||[]).some(id=>id===b.id||waitsOn(D.cards[id],b,seen))}
+function canFinish(c){const w=openWaits(c);if(w.length){flash(t('waitFirst',{x:w[0].title}));return false}return true}
+function afterDone(c,quiet){if(!quiet){if(c.requester)notify(c.requester,'done',c.id);
+  (c.follow||[]).filter(f=>f!==c.requester&&!c.members.includes(f)).forEach(f=>notify(f,'fdone',c.id))}
+  blockingOf(c).forEach(w=>{if(!openWaits(w).length)w.members.forEach(m=>notify(m,'unblocked',w.id,{x:c.title}))})}
+const apS=c=>(c.appr&&c.appr.s)||'pending';
+const canDecide=c=>isCEO()||c.members.includes(ME());
+const apChip=c=>{const s=apS(c);return `<span class="ap ${s}">${ic('stamp')}${t('ap_'+s)}</span>`};
+const numFmt=v=>isNaN(+v)?v:Number(v).toLocaleString('en-GB');
+function fieldChips(c,b){return ((b&&b.fields)||[]).map(f=>{const v=(c.f||{})[f.id];if(v==null||v==='')return '';
+  if(f.type==='select'){const o=(f.opts||[]).find(o=>o.id===v);return o?`<span class="fch"><i style="background:${o.color}"></i>${esc(o.name)}</span>`:''}
+  return `<span class="fch">${esc(f.name)}: <b dir="auto">${esc(f.type==='number'?numFmt(v):v)}</b></span>`}).join('')}
 
 /* ---------- render ---------- */
 function render(){
@@ -652,7 +781,7 @@ function render(){
   </div>
   <div class="board ${theme()==='light'?'light':''} shell">
     ${sideHTML()}
-    <div class="main">${V.view==='board'?boardHTML():V.view==='progress'?progressHTML():V.view==='dept'?deptHTML():mineHTML()}</div>
+    <div class="main">${V.view==='board'?boardHTML():V.view==='progress'?progressHTML():V.view==='dept'?deptHTML():V.view==='projects'?projectsHTML():mineHTML()}</div>
     ${V.card&&D.cards[V.card]?modalHTML(D.cards[V.card]):''}
     ${V.nt?ntHTML():''}
     ${V.pop?popHTML():''}
@@ -672,6 +801,7 @@ function sideHTML(){
     <select class="viewas sm-only" id="viewas2" aria-label="${t('viewAs')}">${PEOPLE.map(p=>`<option value="${p.id}" ${p.id===ME()?'selected':''}>${esc(t('viewAs'))}: ${esc(pname(p.id))}</option>`).join('')}</select>
     <button class="btn newt" data-a="newtask">${ic('plus')}${t('newTask')}</button>
     <button class="nav ${V.view==='mine'?'on':''}" data-a="go" data-v="mine">${ic('inbox')}${t('mine')}<span class="n">${mineN||''}</span></button>
+    <button class="nav ${V.view==='projects'?'on':''}" data-a="go" data-v="projects">${ic('folder')}${t('projectsNav')}</button>
     ${isCEO()?`<button class="nav ${V.view==='progress'?'on':''}" data-a="go" data-v="progress">${ic('chart')}${t('progress')}</button>`:''}
     <h5>${t('departments')}</h5>
     ${depts().map(d=>{const bs=boards().filter(b=>b.dept===d.id),s=stats(bs.flatMap(cardsOf));
@@ -704,23 +834,71 @@ function progressHTML(){
     <p class="lead" style="margin-top:18px"><span class="note" style="margin:0">${t('preview')}</span></p>
   </div>`}
 
-/* My tasks */
-function mineHTML(){
-  const mine=allCards().filter(({c})=>!c.done&&c.members.includes(ME()));
-  const reqs=allCards().filter(({c})=>c.requester===ME()&&(!c.done||(c.doneAt||0)>Date.now()-14*day));
-  const t0=today(),G={over:[],today:[],week:[],later:[],none:[]};
-  mine.forEach(x=>{const d=x.c.due;G[!d?'none':d<t0?'over':d<t0+day?'today':d<t0+7*day?'week':'later'].push(x)});
-  Object.values(G).forEach(a=>a.sort((x,y)=>(x.c.due||0)-(y.c.due||0)));
-  const grp=(k,cls)=>G[k].length?`<div class="mine-g ${cls||''}">${t('g_'+k)} <span class="c">${G[k].length}</span></div><div class="tw"><table class="tbl">${G[k].map(({c,b})=>{const dc=dueCls(c);
-    return `<tr class="click" data-a="open" data-id="${c.id}"><td><b dir="auto">${esc(c.title)}</b>${c.labels.length?`<div style="display:flex;gap:4px;margin-top:5px">${c.labels.map(l=>`<span style="height:6px;width:28px;border-radius:3px;background:${(label(l,b)||{}).color||'#999'}"></span>`).join('')}</div>`:''}</td>
-      <td class="sm">${esc(bname(b))}<div>${esc(deptName(b.dept))} · ${esc(LN(listOf(c.id)))}</div></td><td class="num">${c.due?`<span class="due ${dc}" style="display:inline-flex;gap:4px;align-items:center">${ic('clock')}${fmtDay(c.due)}</span>`:''}</td></tr>`}).join('')}</table></div>`:'';
-  return `<div class="page"><h1>${t('mine')}</h1><p class="lead">${t('mineLead')}</p>
-    ${mine.length?grp('over','bad')+grp('today')+grp('week')+grp('later')+grp('none'):`<div class="empty-p">${t('nothingMine')}</div>`}
-    ${reqs.length?`<div class="mine-g">${ic('inbox')}${t('requested')} <span class="c">${reqs.length}</span></div><div class="tw"><table class="tbl" id="myreqs">${reqs.map(({c,b})=>`<tr class="click" data-a="open" data-id="${c.id}">
+/* My tasks: your own sections (like Asana), or grouped by due date. Subtasks given to you show here too. */
+const SECS0=['recent','today','next','later'];
+function myState(){D.my=D.my||{};return D.my[ME()]=D.my[ME()]||{secs:SECS0.map(k=>({id:k,sys:k})),at:{}}}
+const secName=s=>s.name||t('sec_'+s.sys);
+function myItems(){const me=ME(),out=[];allCards().forEach(({c,b})=>{if(c.done)return;if(c.members.includes(me))out.push({k:c.id,c,b,title:c.title,due:c.due});
+  (c.subs||[]).forEach(s=>{if(!s.done&&s.who===me)out.push({k:c.id+'~'+s.id,c,b,s,title:s.t,due:s.due})})});return out.sort((x,y)=>(x.due||9e15)-(y.due||9e15))}
+const itCls=x=>!x.due?'':x.due<today()?'over':x.due<today()+day?'soon':'';
+const itDate=x=>x.s?fmtDay(x.due):fmtRange(x.c);
+function myRow(x,secs){const M=myState(),cur=M.at[x.k];
+  return `<tr class="click" data-a="open" data-id="${x.c.id}"><td><b dir="auto">${!x.s&&x.c.type==='milestone'?`<span class="msd">${ic('diamond')}</span> `:''}${esc(x.title)}</b>${x.s?`<div class="sm subof" dir="auto">${ic('subs')}${esc(t('subOf',{x:x.c.title}))}</div>`:''}
+    ${!x.s&&x.c.labels.length?`<div style="display:flex;gap:4px;margin-top:5px">${x.c.labels.map(l=>`<span style="height:6px;width:28px;border-radius:3px;background:${(label(l,x.b)||{}).color||'#999'}"></span>`).join('')}</div>`:''}${!x.s&&x.c.type==='approval'?`<div style="margin-top:5px">${apChip(x.c)}</div>`:''}</td>
+    <td class="sm">${esc(bname(x.b))}<div>${esc(deptName(x.b.dept))} · ${esc(LN(listOf(x.c.id)))}</div></td>
+    <td class="num">${x.due?`<span class="due ${itCls(x)}" style="display:inline-flex;gap:4px;align-items:center">${ic('clock')}${itDate(x)}</span>`:''}</td>
+    ${secs?`<td class="msc"><select class="fld msec" data-k="${x.k}" aria-label="${t('moveSec')}">${M.secs.map(s=>`<option value="${s.id}" ${(cur||M.secs[0].id)===s.id?'selected':''}>${esc(secName(s))}</option>`).join('')}</select></td>`:''}</tr>`}
+function mineHTML(){const tab=V.mtab||'list',grp=V.mgrp||'sec',items=myItems(),M=myState();
+  const secOf=x=>M.secs.some(y=>y.id===M.at[x.k])?M.at[x.k]:M.secs[0].id;
+  const tabs=`<div class="tabs">${[['list','myList','list'],['board','myBoard','board'],['cal','myCal','cal'],['files','myFiles','clip']].map(([k,l,i])=>`<button class="tab ${tab===k?'on':''}" data-a="mtab" data-v="${k}">${ic(i)} ${t(l)}</button>`).join('')}</div>`;
+  let body='';
+  if(tab==='list'){
+    const reqs=allCards().filter(({c})=>c.requester===ME()&&(!c.done||(c.doneAt||0)>Date.now()-14*day));
+    let main='';
+    if(!items.length)main=`<div class="empty-p">${t('nothingMine')}</div>`;
+    else if(grp==='due'){const t0=today(),G={over:[],today:[],week:[],later:[],none:[]};
+      items.forEach(x=>{const d=x.due;G[!d?'none':d<t0?'over':d<t0+day?'today':d<t0+7*day?'week':'later'].push(x)});
+      main=['over','today','week','later','none'].map(k=>G[k].length?`<div class="mine-g ${k==='over'?'bad':''}">${t('g_'+k)} <span class="c">${G[k].length}</span></div><div class="tw"><table class="tbl mtbl">${G[k].map(x=>myRow(x,false)).join('')}</table></div>`:'').join('')}
+    else main=M.secs.map((s,i)=>{const its=items.filter(x=>secOf(x)===s.id);
+      return `<div class="mine-g sech" data-sec="${s.id}">${V.secEdit===s.id?`<input class="fld" id="secname" dir="auto" maxlength="40" value="${esc(secName(s))}" data-v="${s.id}">`:`<span dir="auto">${esc(secName(s))}</span>`} <span class="c">${its.length}</span>
+        <span class="sp"></span><button class="lk2" data-a="secren" data-v="${s.id}">${t('renameSec')}</button>${i?`<button class="lk2" data-a="secdel" data-v="${s.id}">${t('delSec')}</button>`:''}</div>
+        ${its.length?`<div class="tw"><table class="tbl mtbl">${its.map(x=>myRow(x,true)).join('')}</table></div>`:''}`}).join('')+
+      `<div class="row secadd"><input class="fld" id="secnew" dir="auto" maxlength="40" placeholder="${t('secPh')}"><button class="btn sec" data-a="secadd">${ic('plus')}${t('addSec')}</button></div>`;
+    body=`<div class="row" style="margin:0 0 6px;align-items:center;gap:8px"><span class="sm" style="color:var(--muted);font-size:13px">${t('groupBy')}</span><div class="vseg"><button data-a="mgrp" data-v="sec" class="${grp==='sec'?'on':''}">${t('gSec')}</button><button data-a="mgrp" data-v="due" class="${grp==='due'?'on':''}">${t('gDue')}</button></div></div>`+main+
+    (reqs.length?`<div class="mine-g">${ic('inbox')}${t('requested')} <span class="c">${reqs.length}</span></div><div class="tw"><table class="tbl" id="myreqs">${reqs.map(({c,b})=>`<tr class="click" data-a="open" data-id="${c.id}">
       <td><b dir="auto">${esc(c.title)}</b><div class="sm">${esc(deptName(b.dept))}</div></td>
       <td>${c.done?`<span class="st on"><i></i>${t('doneTag')}</span>`:`<span class="st none">${esc(LN(listOf(c.id)))}</span>`}</td>
       <td class="sm">${c.members.length?c.members.map(m=>esc(pname(m))).join(', '):''}</td>
-      <td class="num">${c.due?`<span class="due ${dueCls(c)}" style="display:inline-flex;gap:4px;align-items:center">${ic('clock')}${fmtDay(c.due)}</span>`:''}</td></tr>`).join('')}</table></div>`:''}</div>`}
+      <td class="num">${c.due?`<span class="due ${dueCls(c)}" style="display:inline-flex;gap:4px;align-items:center">${ic('clock')}${fmtDay(c.due)}</span>`:''}</td></tr>`).join('')}</table></div>`:'')}
+  else if(tab==='board'){
+    body=`<div class="mboard"><div class="canvas" id="canvas">${M.secs.map(s=>{const its=items.filter(x=>secOf(x)===s.id);
+      return `<div class="list" data-id="${s.id}"><div class="lhead nodrag"><div class="ltitle" dir="auto">${esc(secName(s))}</div><span class="lcount">${its.length}</span></div>
+        <div class="cards">${its.map(x=>`<div class="card ${!x.s&&x.c.type==='milestone'?'ms':''}" data-id="${x.k}" data-card="${x.c.id}" tabindex="0"><div class="ct" dir="auto">${!x.s&&x.c.type==='milestone'?`<span class="msd">${ic('diamond')}</span> `:''}${esc(x.title)}</div>
+          ${x.s?`<div class="subof" dir="auto">${ic('subs')}${esc(x.c.title)}</div>`:''}<div class="bd">${x.due?`<span class="due ${itCls(x)}">${ic('clock')}${itDate(x)}</span>`:''}<span>${esc(bname(x.b))}</span></div></div>`).join('')||`<div class="empty">${t('emptySec')}</div>`}</div><div style="height:10px"></div></div>`}).join('')}</div></div>`}
+  else if(tab==='cal')body=calHTML(items.map(x=>({id:x.c.id,title:x.title,due:x.due,cls:itCls(x),ms:!x.s&&x.c.type==='milestone'})));
+  else{const fl=allCards().filter(({c})=>c.members.includes(ME())||(c.follow||[]).includes(ME())||c.requester===ME()).flatMap(({c,b})=>(c.atts||[]).map(a=>({a,c,b}))).sort((x,y)=>y.a.at-x.a.at);
+    body=fl.length?`<div class="tw"><table class="tbl" id="myfiles"><tr><th>${t('t_file')}</th><th>${t('t_task')}</th><th></th></tr>${fl.map(({a,c,b})=>`<tr class="click" data-a="open" data-id="${c.id}">
+      <td><div class="att" style="border:0;padding:0;background:none">${/^image\//.test(a.type)?`<img class="th" data-att="${a.id}" alt="">`:`<span class="th">${esc((a.name.split('.').pop()||'').toUpperCase().slice(0,4))}</span>`}<div class="nm" dir="auto">${esc(a.name)}<small>${Math.max(1,Math.round(a.size/1024))} KB · ${esc(pname(a.by))} · ${ago(a.at)}</small></div></div></td>
+      <td class="sm"><b dir="auto" style="color:var(--text)">${esc(c.title)}</b><div>${esc(bname(b))}</div></td><td style="text-align:end"><button class="btn sec" data-a="attopen" data-v="${a.id}">${t('openF')}</button></td></tr>`).join('')}</table></div>`:`<div class="empty-p">${t('noFiles')}</div>`}
+  return `<div class="page"><h1>${t('mine')}</h1><p class="lead">${t('mineLead')}</p>${tabs}${body}</div>`}
+
+/* Projects: every board you can see, with search, filters and sorting */
+function lastMod(b){let m=(b.status&&b.status.at)||0;b.lists.forEach(l=>{const L=D.lists[l];if(L)L.cards.forEach(id=>{const c=D.cards[id];if(c)c.log.forEach(x=>{if(x.at>m)m=x.at})})});return m}
+const bOwner=b=>b.owner||(headOfDept(b.dept)||{}).id;
+function projectsHTML(){const P=V.pf=V.pf||{q:'',dept:'',owner:'',member:'',status:'',sort:'mod'};
+  let bs=boards().map(b=>({b,s:stats(cardsOf(b)),m:lastMod(b),o:bOwner(b)}));
+  const owners=[...new Set(bs.map(x=>x.o).filter(Boolean))],mem=[...new Set(bs.flatMap(x=>boardPeople(x.b)))];
+  bs=bs.filter(({b,o})=>(!P.q||bname(b).toLowerCase().includes(P.q.toLowerCase()))&&(!P.dept||b.dept===P.dept)&&(!P.owner||o===P.owner)&&(!P.member||boardPeople(b).includes(P.member))&&(!P.status||(b.kind?'':((b.status&&b.status.s)||'none'))===P.status));
+  const S={mod:(x,y)=>y.m-x.m,name:(x,y)=>bname(x.b).localeCompare(bname(y.b)),prog:(x,y)=>y.s.pct-x.s.pct,over:(x,y)=>y.s.over-x.s.over};bs.sort(S[P.sort]||S.mod);
+  const sel=(id,all,opts,v)=>`<select class="fld" id="${id}" aria-label="${esc(all)}"><option value="">${esc(all)}</option>${opts.map(([k,n])=>`<option value="${k}" ${v===k?'selected':''}>${esc(n)}</option>`).join('')}</select>`;
+  return `<div class="page"><h1>${t('projectsNav')}</h1><p class="lead">${t('projLead')}</p>
+    <div class="pfind">${ic('search')}<input id="pq" type="search" placeholder="${t('findProj')}" value="${esc(P.q)}" aria-label="${t('findProj')}"></div>
+    <div class="pfil">${sel('pf-dept',t('anyDept'),depts().map(d=>[d.id,d[lang]]),P.dept)}${sel('pf-owner',t('anyOwner'),owners.map(o=>[o,pname(o)]),P.owner)}${sel('pf-member',t('anyMember'),mem.map(o=>[o,pname(o)]),P.member)}
+      ${sel('pf-status',t('anyStatus'),['on','risk','off','none'].map(k=>[k,t('st_'+k)]),P.status)}
+      <label class="sortl">${t('sortL')} <select class="fld" id="pf-sort">${['mod','name','prog','over'].map(k=>`<option value="${k}" ${P.sort===k?'selected':''}>${t({mod:'sortMod',name:'sortName',prog:'sortProg',over:'sortOver'}[k])}</option>`).join('')}</select></label></div>
+    ${bs.length?`<div class="tw"><table class="tbl" id="projtbl"><tr><th>${t('t_board')}</th><th>${t('t_owner')}</th><th>${t('t_status')}</th><th>${t('t_prog')}</th><th class="num">${t('t_over')}</th><th>${t('t_members')}</th><th>${t('t_last')}</th></tr>
+    ${bs.map(({b,s,m,o})=>`<tr class="click" data-a="board" data-id="${b.id}"><td><div style="display:flex;align-items:center;gap:8px"><span style="display:inline-block;width:10px;height:10px;border-radius:3px;flex:none;background:${dept(b.dept).dot}"></span><span><b dir="auto">${esc(bname(b))}</b><div class="sm">${esc(deptName(b.dept))}</div></span></div></td>
+      <td class="sm">${o?esc(pname(o)):'-'}</td><td>${b.kind?'':stChip(b.status)}</td><td>${pbar(s.pct)}</td><td class="num ${s.over?'bad':''}">${s.over}</td><td><div style="display:flex">${boardPeople(b).slice(0,5).map(x=>av(x)).join('')}</div></td><td class="sm">${m?ago(m):'-'}</td></tr>`).join('')}</table></div>`:`<div class="empty-p">${t('noProj')}</div>`}</div>`}
 
 /* Department page */
 function teamHTML(d){const team=PEOPLE.filter(x=>x.dept===d.id),free=PEOPLE.filter(x=>!x.dept&&!x.ceo),iv=V.inv||{name:'',email:'',bad:[]},miss=k=>iv.bad.includes(k)?'miss':'';
@@ -769,16 +947,16 @@ function boardHTML(){const b=B(),d=dept(b.dept),admin=canAdmin(b);
       <button class="ib" data-a="bmenu" aria-label="${t('boardMenu')}" title="${t('boardMenu')}">${ic('dots')}</button>
     </div>
     ${V.filter?filterBar():''}
-    ${V.bview==='cal'?calHTML(b):`<div class="canvas" id="canvas">
+    ${V.bview==='cal'?calHTML(cardsOf(b).filter(match).map(c=>({id:c.id,title:c.title,due:c.due,cls:dueCls(c),ms:c.type==='milestone'}))):`<div class="canvas" id="canvas">
       ${liveLists(b).map(id=>listHTML(D.lists[id],admin)).join('')}
       ${admin?(V.addList?`<div class="addl open comp"><input id="newl" dir="auto" placeholder="${t('listPh')}" maxlength="60"><div class="row"><button class="btn" data-a="addl-go">${t('addListBtn')}</button><button class="ib" data-a="addl-x" aria-label="${t('cancel')}">${ic('x')}</button></div></div>`
         :`<button class="addl" data-a="addl">${ic('plus')}${t('addList')}</button>`):''}
     </div>`}</div>`}
 /* Calendar: the board's cards on their due dates. Weeks start on Monday. */
 const ymd=d=>{const x=new Date(d);return x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0')};
-function calHTML(b){const m0=V.calM?new Date(V.calM):new Date(),first=new Date(m0.getFullYear(),m0.getMonth(),1);
+function calHTML(cards){const m0=V.calM?new Date(V.calM):new Date(),first=new Date(m0.getFullYear(),m0.getMonth(),1);
   const start=new Date(first);start.setDate(1-((first.getDay()+6)%7));
-  const cards=cardsOf(b).filter(match),byDay={};cards.forEach(c=>{if(c.due){const k=ymd(c.due);(byDay[k]=byDay[k]||[]).push(c)}});
+  const byDay={};cards.forEach(c=>{if(c.due){const k=ymd(c.due);(byDay[k]=byDay[k]||[]).push(c)}});
   const loc=lang==='ar'?'ar-AE':'en-GB',heads=[...Array(7)].map((_,i)=>new Date(2026,10,9+i).toLocaleDateString(loc,{weekday:'short'}));
   const days=[...Array(42)].map((_,i)=>{const d=new Date(start);d.setDate(start.getDate()+i);return d});
   return `<div class="cal"><div class="calbar"><button class="ib" data-a="calm" data-v="-1" aria-label="-">${ic(lang==='ar'?'right':'left')}</button>
@@ -787,13 +965,14 @@ function calHTML(b){const m0=V.calM?new Date(V.calM):new Date(),first=new Date(m
     <div class="calg">${heads.map(h=>`<div class="calh">${h}</div>`).join('')}
     ${days.map(d=>{const k=ymd(d),cs=(byDay[k]||[]);return `<div class="cald ${d.getMonth()!==first.getMonth()?'out':''} ${k===ymd(Date.now())?'today':''}" data-day="${k}">
       <div class="dn">${d.getDate()}<button data-a="calnew" data-v="${k}" aria-label="${t('newTask')}">${ic('plus')}</button></div>
-      ${cs.map(c=>`<button class="cchip ${dueCls(c)}" data-a="open" data-id="${c.id}" dir="auto" title="${esc(c.title)}">${esc(c.title)}</button>`).join('')}</div>`}).join('')}</div></div>`}
+      ${cs.map(c=>`<button class="cchip ${c.cls}" data-a="open" data-id="${c.id}" dir="auto" title="${esc(c.title)}">${c.ms?ic('diamond'):''}${esc(c.title)}</button>`).join('')}</div>`}).join('')}</div></div>`}
 function filterBar(){const f=V.f,b=B();
   return `<div class="fbar">
     ${boardPeople(b).map(id=>`<button class="chip ${f.members.includes(id)?'on':''}" data-a="fm" data-v="${id}">${av(id)} ${esc(pname(id))}</button>`).join('')}
     ${labelsOf(b).map(l=>`<button class="chip ${f.labels.includes(l.id)?'on':''}" data-a="fl" data-v="${l.id}"><i style="background:${l.color}"></i>${esc(lname(l))}</button>`).join('')}
     <button class="chip ${f.due==='week'?'on':''}" data-a="fd" data-v="week">${ic('clock')} ${t('dueWeek')}</button>
     <button class="chip ${f.due==='over'?'on':''}" data-a="fd" data-v="over">${t('overdueF')}</button>
+    ${(b.fields||[]).filter(x=>x.type==='select').flatMap(x=>(x.opts||[]).map(o=>{const k=x.id+':'+o.id;return `<button class="chip ${(f.fields||[]).includes(k)?'on':''}" data-a="ff" data-v="${k}"><i style="background:${o.color}"></i>${esc(x.name)}: ${esc(o.name)}</button>`})).join('')}
     ${filtering()?`<button class="chip" data-a="fclear">${ic('x')} ${t('clear')}</button>`:''}
   </div>`}
 function listHTML(l,admin){
@@ -806,22 +985,26 @@ function listHTML(l,admin){
       <button class="ib" data-a="lcol" data-id="${l.id}" aria-label="${t('collapse')}" title="${t('collapse')}">${ic('collapse')}</button>
       <button class="ib" data-a="lmenu" data-id="${l.id}" aria-label="${t('listMenu')}" title="${t('listMenu')}">${ic('dots')}</button>
     </div>
-    <div class="cards">${shown.map(cardHTML).join('')}${filtering()&&!shown.length&&all.length?`<div class="empty">${t('noMatch')}</div>`:''}
+    <div class="cards">${shown.map(c=>cardHTML(c)).join('')}${filtering()&&!shown.length&&all.length?`<div class="empty">${t('noMatch')}</div>`:''}
       ${V.comp===l.id?`<div class="comp"><textarea id="newc" dir="auto" placeholder="${t('cardPh')}" maxlength="300"></textarea><div class="row"><button class="btn" data-a="addc-go" data-id="${l.id}">${t('addCardBtn')}</button><button class="ib" data-a="addc-x" aria-label="${t('cancel')}">${ic('x')}</button></div></div>`:''}
     </div>
     ${V.comp===l.id?'':`<div class="lfoot"><button class="addc" data-a="addc" data-id="${l.id}">${ic('plus')}${t('addCard')}</button></div>`}
   </div>`}
-function cardHTML(c){
-  const n=c.check.length,d=c.check.filter(x=>x.d).length,cm=c.log.filter(x=>x.c).length,dc=dueCls(c);
+function cardHTML(c){const b=B();
+  const n=c.check.length,d=c.check.filter(x=>x.d).length,cm=c.log.filter(x=>x.c).length,dc=dueCls(c),sn=(c.subs||[]).length,sd=(c.subs||[]).filter(x=>x.done).length,wt=!c.done&&openWaits(c).length;
   const pr=c.priority==='high'||c.priority==='urgent'?`<span class="pri ${c.priority}">${t('p_'+c.priority)}</span>`:'';
-  const fr=c.fromDept&&B()&&c.fromDept!==B().dept?`<span class="from">${ic('inbox')}${esc(t('fromD',{d:deptName(c.fromDept)}))}</span>`:'';
-  const badges=pr+fr+[c.due?`<span class="due ${dc}">${ic('clock')}${fmtDay(c.due)}</span>`:'',c.repeat?`<span title="${t('repeat')}">${ic('repeat')}${t('r_'+c.repeat)}</span>`:'',
-    c.desc?`<span title="${t('desc')}">${ic('desc')}</span>`:'',cm?`<span>${ic('chat')}${cm}</span>`:'',n?`<span class="ckc ${d===n?'full':''}">${ic('check')}${d}/${n}</span>`:'',(c.atts||[]).length?`<span title="${t('attach')}">${ic('clip')}${c.atts.length}</span>`:''].join('');
-  return `<div class="card ${c.done?'done':''}" data-id="${c.id}" tabindex="0">
+  const fr=c.fromDept&&b&&c.fromDept!==b.dept?`<span class="from">${ic('inbox')}${esc(t('fromD',{d:deptName(c.fromDept)}))}</span>`:'';
+  const o=own(c),who=c.members.length?[o].concat(c.members.filter(m=>m!==o)):[];
+  const badges=(c.type==='approval'?apChip(c):'')+(wt?`<span class="wt">${ic('link')}${t('waitTag')}</span>`:'')+pr+fr+[c.due?`<span class="due ${dc}">${ic('clock')}${fmtRange(c)}</span>`:'',c.repeat?`<span title="${t('repeat')}">${ic('repeat')}${t('r_'+c.repeat)}</span>`:'',
+    c.desc?`<span title="${t('desc')}">${ic('desc')}</span>`:'',cm?`<span>${ic('chat')}${cm}</span>`:'',n?`<span class="ckc ${d===n?'full':''}">${ic('check')}${d}/${n}</span>`:'',
+    sn?`<span class="ckc ${sd===sn?'full':''}" title="${t('subtasks')}">${ic('subs')}${sd}/${sn}</span>`:'',(c.atts||[]).length?`<span title="${t('attach')}">${ic('clip')}${c.atts.length}</span>`:''].join('');
+  const fc=fieldChips(c,b);
+  return `<div class="card ${c.done?'done':''} ${c.type==='milestone'?'ms':''}" data-id="${c.id}" tabindex="0">
     ${c.cover&&(c.atts||[]).some(x=>x.id===c.cover)?`<img class="cover" data-att="${c.cover}" alt="">`:''}
     ${c.labels.length?`<div class="lbs">${c.labels.map(id=>{const l=label(id);return l?`<span style="background:${l.color}" title="${esc(lname(l))}"></span>`:''}).join('')}</div>`:''}
-    <div class="ct" dir="auto">${c.done?`<span style="color:var(--ok)">${ic('tick')}</span> `:''}${esc(c.title)}</div>
-    ${badges||c.members.length?`<div class="bd">${badges}${c.members.length?`<span class="who">${c.members.map(m=>av(m)).join('')}</span>`:''}</div>`:''}
+    <div class="ct" dir="auto">${c.done?`<span style="color:var(--ok)">${ic('tick')}</span> `:''}${c.type==='milestone'?`<span class="msd" title="${t('ty_milestone')}">${ic('diamond')}</span> `:''}${esc(c.title)}</div>
+    ${fc?`<div class="fcs">${fc}</div>`:''}
+    ${badges||c.members.length?`<div class="bd">${badges}${who.length?`<span class="who">${who.map((m,i)=>av(m,i===0&&who.length>1?'own':'')).join('')}</span>`:''}</div>`:''}
   </div>`}
 function modalHTML(c){
   const l=listOf(c.id),b=boardOfList(l.id),admin=canAdmin(b),n=c.check.length,d=c.check.filter(x=>x.d).length,pc=n?Math.round(d/n*100):0;
@@ -830,19 +1013,46 @@ function modalHTML(c){
   const moveTo=admin?D.order.map(x=>D.boards[x]).filter(x=>x&&canAdmin(x)):[];
   const copyTo=boards();
   const log=c.log.slice().sort((x,y)=>y.at-x.at);
+  const subs=c.subs||[],sd=subs.filter(x=>x.done).length,sp=subs.length?Math.round(sd/subs.length*100):0;
+  const inL=x=>x&&listOf(x.id),waits=(c.waits||[]).map(id=>D.cards[id]).filter(inL),blk=blockingOf(c).filter(inL),fol=c.follow||[];
+  const cand=boards().map(x=>{const cs=cardsOf(x).filter(y=>y.id!==c.id&&!y.done&&!(c.waits||[]).includes(y.id)&&!waitsOn(y,c));
+    return cs.length?`<optgroup label="${esc(bname(x))}">${cs.map(y=>`<option value="${y.id}">${esc(y.title.slice(0,70))}</option>`).join('')}</optgroup>`:''}).join('');
+  const SL=(k,top)=>`<div class="sl" style="font-size:12px;font-weight:600;color:var(--muted);margin:${top?4:14}px 0 6px">${t(k)}</div>`;
+  const wrow=w=>`<div class="wrow"><span class="${w.done?'okd':'opn'}">${w.done?ic('tick'):ic('clock')}</span><button class="lk" data-a="open" data-id="${w.id}" dir="auto">${esc(w.title)}</button><small>${esc(bname(boardOfList(listOf(w.id).id)))}</small>`;
   return `<div class="ov" data-a="ov"><div class="md" role="dialog" aria-modal="true" aria-label="${esc(c.title)}">
     <button class="ib x" data-a="mclose" aria-label="${t('close')}">${ic('x')}</button>
-    <div class="mhead">${ic('card')}<textarea class="mt" dir="auto" id="mt" rows="1" maxlength="300" ${ro?'readonly':''}>${esc(c.title)}</textarea></div>
+    <div class="mhead">${ic(c.type==='milestone'?'diamond':c.type==='approval'?'stamp':'card')}<textarea class="mt" dir="auto" id="mt" rows="1" maxlength="300" ${ro?'readonly':''}>${esc(c.title)}</textarea></div>
     <div class="msub">${esc(bname(b))} · ${t('inList')} <b>${esc(LN(l))}</b>${c.requester?` · <span class="from">${esc(t('reqBy',{p:pname(c.requester),d:deptName(c.fromDept)}))}</span>`:''}</div>
     ${ro?`<div class="reqnote" style="margin:6px 28px 0">${ic('inbox')}${t('roNote')}</div>`:''}
     <div class="mbody"><div><fieldset class="ro" ${ro?'disabled':''}>
+      ${c.type==='approval'?`<div class="apbox ${apS(c)}"><div>${apChip(c)}${c.appr&&c.appr.by?` <span class="sm">${esc(t('apBy',{s:t('ap_'+apS(c)),p:pname(c.appr.by)}))} · ${ago(c.appr.at)}</span>`:''}</div>
+        ${canDecide(c)?`<div class="row"><button class="btn okb" data-a="appr" data-v="approved">${ic('tick')}${t('approve')}</button><button class="btn sec" data-a="appr" data-v="changes">${t('reqChanges')}</button><button class="btn dan" data-a="appr" data-v="rejected">${t('reject')}</button></div>`:`<div class="lock" style="padding:6px 0 0">${t('apOnly')}</div>`}</div>`:''}
       <div class="sec kv">
-        <div><label>${t('members')}</label><div class="lchips">${pool.map(p=>`<button class="pchip ${c.members.includes(p)?'on':''}" data-a="cm" data-v="${p}">${av(p)}${esc(pname(p))}</button>`).join('')}</div></div>
-        <div><label>${t('due')}</label><div class="row" style="margin:0"><input class="fld" type="date" id="cdue" value="${c.due?new Date(c.due-new Date(c.due).getTimezoneOffset()*6e4).toISOString().slice(0,10):''}">
+        <div><label>${t(c.type==='approval'?'approvers':'members')}</label><div class="lchips">${pool.map(p=>`<button class="pchip ${c.members.includes(p)?'on':''}" data-a="cm" data-v="${p}">${av(p)}${esc(pname(p))}</button>`).join('')}</div></div>
+      </div>
+      <div class="sec kv">
+        ${c.members.length?`<div><label>${t('owner')}</label><select class="fld" id="cown" title="${t('ownerHint')}">${c.members.map(m=>`<option value="${m}" ${own(c)===m?'selected':''}>${esc(pname(m))}</option>`).join('')}</select></div>`:''}
+        <div><label>${t('startD')}</label><input class="fld ${V.dateErr?'miss':''}" type="date" id="cstart" value="${V.dateErr?V.dateErr.s:c.start?ymd(c.start):''}"></div>
+        <div><label>${t('due')}</label><div class="row" style="margin:0"><input class="fld" type="date" id="cdue" value="${V.dateErr?V.dateErr.d:c.due?ymd(c.due):''}">
           <button class="donebx ${c.done?'on':''}" data-a="cdone">${ic('tick')}${t('complete')}</button></div></div>
       </div>
+      ${V.dateErr?`<div class="errbox">${t('startAfter')}</div>`:''}
       <div class="sec"><div class="sh">${ic('tag')}${t('labels')}</div><div class="lchips">${labelsOf(b).map(x=>`<button class="lchip ${c.labels.includes(x.id)?'on':''}" style="background:${x.color}" data-a="cl" data-v="${x.id}">${c.labels.includes(x.id)?ic('tick'):''}${esc(lname(x))}</button>`).join('')}</div></div>
+      ${(b.fields||[]).length?`<div class="sec"><div class="sh">${ic('grid')}${t('fields')}</div><div class="cfg">${b.fields.map(f=>{const v=(c.f||{})[f.id]??'';return `<label><span dir="auto">${esc(f.name)}</span>${f.type==='select'
+        ?`<select class="fld cf" data-f="${f.id}"><option value="">-</option>${(f.opts||[]).map(o=>`<option value="${o.id}" ${v===o.id?'selected':''}>${esc(o.name)}</option>`).join('')}</select>`
+        :`<input class="fld cf" data-f="${f.id}" type="${f.type==='number'?'number':'text'}" value="${esc(v)}" dir="auto" maxlength="120">`}</label>`}).join('')}</div></div>`:''}
       <div class="sec"><div class="sh">${ic('desc')}${t('desc')}</div><textarea class="desc" dir="auto" id="cdesc" placeholder="${t('descPh')}">${esc(c.desc)}</textarea></div>
+      <div class="sec"><div class="sh">${ic('subs')}${t('subtasks')}</div>
+        ${subs.length?`<div class="prog"><span>${sd}/${subs.length}</span><div class="bar"><i class="${sp===100?'full':''}" style="width:${sp}%"></i></div></div>`:''}
+        ${subs.map((s,i)=>`<div class="subr ${s.done?'done':''}"><input type="checkbox" data-a="subck" data-i="${i}" ${s.done?'checked':''} aria-label="${esc(s.t)}"><span dir="auto">${esc(s.t)}</span>
+          <select class="fld subw" data-i="${i}" aria-label="${t('assignTo')}"><option value="">${t('nobody')}</option>${pool.map(p=>`<option value="${p}" ${s.who===p?'selected':''}>${esc(pname(p))}</option>`).join('')}</select>
+          <input class="fld subd ${s.due&&!s.done&&s.due<today()?'late':''}" type="date" data-i="${i}" value="${s.due?ymd(s.due):''}" aria-label="${t('due')}">
+          <button class="ib" data-a="subdel" data-i="${i}" aria-label="${t('removeF')}">${ic('x')}</button></div>`).join('')}
+        <div class="row"><input class="fld" style="flex:1" dir="auto" id="subin" placeholder="${t('subPh')}" maxlength="200"><button class="btn sec" data-a="subadd">${t('add')}</button></div></div>
+      <div class="sec"><div class="sh">${ic('link')}${t('waitingOn')}</div><div class="lock" style="padding:0 0 6px">${t('waitHint')}</div>
+        ${waits.map(w=>wrow(w)+`<button class="ib" data-a="waitdel" data-v="${w.id}" aria-label="${t('removeF')}">${ic('x')}</button></div>`).join('')}
+        <div class="row"><select class="fld" style="flex:1;min-width:0" id="wadd" aria-label="${t('waitingOn')}"><option value="">${t('pickTask')}</option>${cand}</select><button class="btn sec" data-a="waitadd">${t('addWait')}</button></div>
+        ${blk.length?`<div class="lock" style="padding:12px 0 4px">${t('blocking')}</div>${blk.map(w=>wrow(w)+'</div>').join('')}`:''}</div>
       <div class="sec"><div class="sh">${ic('clip')}${t('attach')}<span class="sp"></span><label class="btn sec upl">${ic('plus')}${t('addFile')}<input type="file" id="fileup" multiple accept="image/*,application/pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx"></label></div>
         <div class="atts">${(c.atts||[]).map(x=>`<div class="att">${/^image\//.test(x.type)?`<img class="th" data-att="${x.id}" alt="">`:`<span class="th">${esc((x.name.split('.').pop()||'').toUpperCase().slice(0,4))}</span>`}
           <div class="nm" dir="auto">${esc(x.name)}<small>${Math.max(1,Math.round(x.size/1024))} KB · ${esc(pname(x.by))} · ${ago(x.at)}</small></div>
@@ -861,17 +1071,24 @@ function modalHTML(c){
       </div>
     </div>
     <div class="side2"><fieldset class="ro" ${ro?'disabled':''}>
-      <div class="sl" style="font-size:12px;font-weight:600;color:var(--muted);margin:4px 0 6px">${t('priority')}</div>
+      ${SL('type',1)}
+      <select class="fld" style="width:100%" id="ctype">${['task','milestone','approval'].map(r=>`<option value="${r}" ${(c.type||'task')===r?'selected':''}>${t('ty_'+r)}</option>`).join('')}</select>
+      ${SL('priority')}
       <select class="fld" style="width:100%" id="cpri">${['low','normal','high','urgent'].map(r=>`<option value="${r}" ${(c.priority||'normal')===r?'selected':''}>${t('p_'+r)}</option>`).join('')}</select>
-      <div class="sl" style="font-size:12px;font-weight:600;color:var(--muted);margin:14px 0 6px">${t('repeat')}</div>
+      ${SL('followers')}
+      <div class="fols">${fol.map(f=>`<span class="fol">${av(f)}<span>${esc(pname(f))}</span><button class="ib" data-a="fdel" data-v="${f}" aria-label="${t('removeF')}">${ic('x')}</button></span>`).join('')}</div>
+      <button class="btn sec" style="width:100%;display:flex;align-items:center;gap:8px;margin:6px 0" data-a="follow">${ic('eye')}${fol.includes(ME())?t('unfollow'):t('follow')}</button>
+      <select class="fld" style="width:100%" id="fadd" aria-label="${t('addFollower')}"><option value="">${t('addFollower')}</option>${PEOPLE.filter(p=>!fol.includes(p.id)&&!p.invited).map(p=>`<option value="${p.id}">${esc(pname(p.id))}</option>`).join('')}</select>
+      <div class="lock" style="padding:6px 0 0">${t('followHint')}</div>
+      ${SL('repeat')}
       <select class="fld" style="width:100%" id="crep">${['','daily','weekly','monthly'].map(r=>`<option value="${r}" ${c.repeat===r?'selected':''}>${t('r_'+r)}</option>`).join('')}</select>
-      <div class="sl" style="font-size:12px;font-weight:600;color:var(--muted);margin:14px 0 6px">${t('move')}</div>
+      ${SL('move')}
       <select class="fld" style="width:100%" id="cmove">${b.lists.map(id=>`<option value="${id}" ${l&&l.id===id?'selected':''}>${esc(LN(D.lists[id]))}</option>`).join('')}</select>
-      <div class="sl" style="font-size:12px;font-weight:600;color:var(--muted);margin:14px 0 6px">${t('copyTo')}</div>
+      ${SL('copyTo')}
       <div class="row" style="margin:0"><select class="fld" style="flex:1;min-width:0" id="ccopy">${copyTo.map(x=>`<option value="${x.id}" ${x.id===b.id?'selected':''}>${esc(bname(x))}</option>`).join('')}</select><button class="btn sec" data-a="ccopy">${ic('copy')}${t('copyBtn')}</button></div>
-      ${moveTo.length>1?`<div class="sl" style="font-size:12px;font-weight:600;color:var(--muted);margin:14px 0 6px">${t('moveTo')}</div>
+      ${moveTo.length>1?`${SL('moveTo')}
       <div class="row" style="margin:0"><select class="fld" style="flex:1;min-width:0" id="cboard">${moveTo.map(x=>`<option value="${x.id}" ${x.id===b.id?'selected':''}>${esc(bname(x))}</option>`).join('')}</select><button class="btn sec" data-a="cboardgo">${t('moveBtn')}</button></div>`:''}
-      <div class="sl" style="font-size:12px;font-weight:600;color:var(--muted);margin:14px 0 6px">${t('actions')}</div>
+      ${SL('actions')}
       <button class="btn sec" style="width:100%;display:flex;align-items:center;gap:8px;margin-bottom:6px" data-a="ctpl">${ic('copy')}${t('cardTpl')}</button>
       <button class="btn dan" style="width:100%;display:flex;align-items:center;gap:8px" data-a="carch">${ic('archive')}${t('archiveCard')}</button>
     </fieldset></div></div>
@@ -881,8 +1098,8 @@ function modalHTML(c){
 function ntTargets(dep){return boards().filter(b=>b.dept===dep&&(b.kind!=='requests'||headOf(dep)))}
 function ntDefaults(n){const ts=ntTargets(n.dept).filter(b=>!b.kind);if(!n.board||(n.board!=='__req'&&!ts.some(b=>b.id===n.board)))n.board=ts.length?ts[0].id:'__req';
   const b=D.boards[n.board];if(b&&!b.lists.includes(n.list))n.list=b.lists[0];return n}
-function openNew(o){V.nt=ntDefaults(Object.assign({dept:myDept()==='ceo'?'ops':myDept(),board:null,list:null,title:'',members:[],due:'',pri:'normal',labels:[],desc:'',check:'',bad:[],tpl:''},o||{}));V.pop=null;V.side=false;render();focusSel('#nt-title')}
-function ntSync(){const n=V.nt;if(!n)return;const g=id=>document.getElementById(id);if(g('nt-title')){n.title=g('nt-title').value;n.due=g('nt-due').value;n.pri=g('nt-pri').value;n.desc=g('nt-desc').value;n.check=g('nt-check').value}}
+function openNew(o){V.nt=ntDefaults(Object.assign({dept:myDept()==='ceo'?'ops':myDept(),board:null,list:null,title:'',members:[],due:'',start:'',type:'task',pri:'normal',labels:[],desc:'',check:'',bad:[],tpl:''},o||{}));V.pop=null;V.side=false;render();focusSel('#nt-title')}
+function ntSync(){const n=V.nt;if(!n)return;const g=id=>document.getElementById(id);if(g('nt-title')){n.title=g('nt-title').value;n.due=g('nt-due').value;n.start=g('nt-start').value;n.type=g('nt-type').value;n.pri=g('nt-pri').value;n.desc=g('nt-desc').value;n.check=g('nt-check').value}}
 function ntPool(n){const req=n.board==='__req',b=D.boards[n.board];return req?PEOPLE.filter(x=>x.dept===n.dept).map(x=>x.id):[...new Set(boardPeople(b).concat(PEOPLE.filter(x=>x.dept===n.dept&&x.role==='head').map(x=>x.id)))]}
 function ntHTML(){const n=V.nt,req=n.board==='__req',b=D.boards[n.board],miss=k=>n.bad.includes(k)?'miss':'',dn=deptName(n.dept);
   const ts=ntTargets(n.dept).filter(x=>!x.kind);
@@ -892,6 +1109,7 @@ function ntHTML(){const n=V.nt,req=n.board==='__req',b=D.boards[n.board],miss=k=
     <div class="ntf">
       ${n.bad.length?`<div class="errbox">${t('need')}</div>`:''}
       ${(D.cardTpl||[]).length?`<label class="fl" for="nt-tpl">${t('fromTpl')}</label><select class="fld" id="nt-tpl" style="width:100%"><option value="">${t('none')}</option>${D.cardTpl.map(x=>`<option value="${x.id}" ${n.tpl===x.id?'selected':''}>${esc(x.title)}</option>`).join('')}</select>`:''}
+      <label class="fl" for="nt-type">${t('type')}</label><select class="fld" id="nt-type" style="width:100%">${['task','milestone','approval'].map(r=>`<option value="${r}" ${n.type===r?'selected':''}>${t('ty_'+r)}</option>`).join('')}</select>
       <label class="fl" for="nt-title">${t('ntTitle')} <b>*</b></label>
       <textarea id="nt-title" class="desc ${miss('title')}" style="min-height:54px" dir="auto" maxlength="300" placeholder="${t('ntTitlePh')}">${esc(n.title)}</textarea>
       <div class="g3">
@@ -900,36 +1118,46 @@ function ntHTML(){const n=V.nt,req=n.board==='__req',b=D.boards[n.board],miss=k=
         <div><label class="fl" for="nt-list">${t('inListL')}</label><select class="fld" id="nt-list" ${req?'disabled':''}>${req?`<option>${esc(SYS.newreq[lang==='ar'?1:0])}</option>`:b.lists.map(id=>`<option value="${id}" ${id===n.list?'selected':''}>${esc(LN(D.lists[id]))}</option>`).join('')}</select></div>
       </div>
       ${req?`<div class="reqnote">${ic('inbox')}<span>${esc(t('reqNote',{d:dn}))}</span></div>`:''}
-      <label class="fl">${t('assignTo')} ${req?'':'<b>*</b>'}</label>
+      <label class="fl">${t(n.type==='approval'?'approvers':'assignTo')} ${req?'':'<b>*</b>'}</label>
       <div class="lchips ${miss('members')}" style="padding:2px">${ntPool(n).map(p=>`<button class="pchip ${n.members.includes(p)?'on':''}" data-a="ntm" data-v="${p}">${av(p)}${esc(pname(p))}</button>`).join('')}</div>
       ${req?`<div class="lock" style="padding:6px 0 0">${esc(t('assignHint',{d:dn}))}</div>`:''}
       <div class="g3">
+        <div><label class="fl" for="nt-start">${t('startD')}</label><input class="fld ${miss('start')}" type="date" id="nt-start" value="${esc(n.start)}"></div>
         <div><label class="fl" for="nt-due">${t('due')} <b>*</b></label><input class="fld ${miss('due')}" type="date" id="nt-due" value="${esc(n.due)}"></div>
         <div><label class="fl" for="nt-pri">${t('priority')}</label><select class="fld" id="nt-pri">${['low','normal','high','urgent'].map(r=>`<option value="${r}" ${n.pri===r?'selected':''}>${t('p_'+r)}</option>`).join('')}</select></div>
       </div>
+      ${n.bad.includes('start')?`<div class="errbox">${t('startAfter')}</div>`:''}
       <label class="fl">${t('labels')}</label><div class="lchips">${labelsOf(b).map(x=>`<button class="lchip ${n.labels.includes(x.id)?'on':''}" style="background:${x.color}" data-a="ntl" data-v="${x.id}">${n.labels.includes(x.id)?ic('tick'):''}${esc(lname(x))}</button>`).join('')}</div>
       <label class="fl" for="nt-desc">${t('desc')}</label><textarea class="desc" id="nt-desc" dir="auto" style="min-height:70px" placeholder="${t('descPh')}">${esc(n.desc)}</textarea>
       <label class="fl" for="nt-check">${t('checkLines')}</label><textarea class="desc" id="nt-check" dir="auto" style="min-height:60px">${esc(n.check)}</textarea>
       <div class="row" style="justify-content:flex-end;margin-top:18px"><button class="btn sec" data-a="ntx">${t('cancel')}</button><button class="btn" data-a="ntgo">${t('createTask')}</button></div>
     </div></div></div>`}
 function ntCreate(){ntSync();const n=V.nt,req=n.board==='__req',bad=[];
-  if(!n.title.trim())bad.push('title');if(!n.due)bad.push('due');if(!req&&!n.members.length)bad.push('members');
+  if(!n.title.trim())bad.push('title');if(!n.due)bad.push('due');if(!req&&!n.members.length)bad.push('members');if(n.start&&n.due&&n.start>n.due)bad.push('start');
   n.bad=bad;if(bad.length){render();const el=document.querySelector('.ntf .miss');if(el&&el.focus)el.focus();return}
   const b=req?reqBoard(n.dept,true):D.boards[n.board],l=req?D.lists[b.lists[0]]:(D.lists[n.list]||D.lists[b.lists[0]]);
   const c={id:uid('c'),title:n.title.trim().replace(/\s+/g,' '),desc:n.desc.trim(),labels:n.labels.slice(),members:n.members.slice(),due:new Date(n.due+'T00:00:00').getTime(),
-    done:DONE_RX.test(l.name),doneAt:DONE_RX.test(l.name)?Date.now():null,repeat:'',priority:n.pri,check:n.check.split('\n').map(x=>x.trim()).filter(Boolean).map(x=>({t:x,d:false})),log:[]};
+    done:DONE_RX.test(l.name),doneAt:DONE_RX.test(l.name)?Date.now():null,repeat:'',priority:n.pri,check:n.check.split('\n').map(x=>x.trim()).filter(Boolean).map(x=>({t:x,d:false})),log:[],
+    start:n.start?new Date(n.start+'T00:00:00').getTime():null,by:ME(),owner:n.members[0]||null,follow:[ME()]};
+  if(n.type!=='task')c.type=n.type;
   if(req||myDept()!==b.dept){c.requester=ME();c.fromDept=myDept()}
+  if(c.members.includes(ME()))c.follow=[];
   logTo(c,req?{k:'l_req',a:deptName(myDept())}:{k:'l_added',a:LN(l)});D.cards[c.id]=c;l.cards.push(c.id);V.nt=null;
   c.members.forEach(m=>notify(m,'assign',c.id));if(req){const h=headOfDept(n.dept);if(h)notify(h.id,'req',c.id,{d:n.dept})}
   save();render()}
 function popHTML(){const p=V.pop,b=B();
   if(p.kind==='bmenu')return `<div class="pop" id="pop"><h4>${t('theme')}</h4><div class="seg" style="margin:0 4px 8px;background:var(--soft)"><button style="flex:1" data-a="theme" data-v="light" class="${theme()==='light'?'on':''}">${t('light')}</button><button style="flex:1" data-a="theme" data-v="dark" class="${theme()==='dark'?'on':''}">${t('dark')}</button></div>
     <hr><button class="mi" data-a="archv">${ic('archive')}${t('archived')}</button>
-    ${b&&canAdmin(b)?`<button class="mi" data-a="labels">${ic('tag')}${t('editLabels')}</button><button class="mi" data-a="btpl">${ic('copy')}${t('saveTpl')}</button>`:''}
+    ${b&&canAdmin(b)?`<button class="mi" data-a="labels">${ic('tag')}${t('editLabels')}</button><button class="mi" data-a="fieldsed">${ic('grid')}${t('fields')}</button><button class="mi" data-a="btpl">${ic('copy')}${t('saveTpl')}</button>`:''}
     <hr><button class="mi" data-a="reset">${ic('repeat')}${t('reset')}</button>${b&&canAdmin(b)?`<button class="mi dan" data-a="bdel">${ic('trash')}${t('deleteBoard')}</button>`:''}</div>`;
   if(p.kind==='labels')return `<div class="pop wide" id="pop"><h4>${t('editLabels')}</h4><div class="lock">${t('labelsHint')}</div>
     ${labelsOf(b).map(l=>`<div class="labrow"><button class="sw" style="background:${l.color}" data-a="labcol" data-v="${l.id}" aria-label="${t('colour')}" title="${t('colour')}"></button><input class="labname" data-lab="${l.id}" dir="auto" maxlength="30" value="${esc(lname(l))}" aria-label="${t('labelName')}"><button class="ib" data-a="labdel" data-v="${l.id}" aria-label="${t('removeF')}">${ic('x')}</button></div>`).join('')}
     <button class="mi" data-a="labadd">${ic('plus')}${t('addLabel')}</button></div>`;
+  if(p.kind==='fields')return `<div class="pop wide" id="pop" style="width:390px"><h4>${t('fields')}</h4><div class="lock">${t('fieldsHint')}</div>
+    ${(b.fields||[]).map(f=>`<div class="fedit"><div class="row" style="margin:0"><input class="fld fname" data-f="${f.id}" dir="auto" maxlength="30" value="${esc(f.name)}" placeholder="${t('fieldName')}" aria-label="${t('fieldName')}" style="flex:1;min-width:0">
+      <select class="fld ftype" data-f="${f.id}" aria-label="${t('type')}">${['select','text','number'].map(k=>`<option value="${k}" ${f.type===k?'selected':''}>${t('fk_'+k)}</option>`).join('')}</select><button class="ib" data-a="fdelf" data-v="${f.id}" aria-label="${t('removeF')}">${ic('x')}</button></div>
+      ${f.type==='select'?`<input class="fld fopts" data-f="${f.id}" dir="auto" value="${esc((f.opts||[]).map(o=>o.name).join(', '))}" placeholder="${t('optsPh')}" aria-label="${t('optsPh')}" style="width:100%;margin-top:6px">`:''}</div>`).join('')}
+    <button class="mi" data-a="faddf">${ic('plus')}${t('addField')}</button></div>`;
   if(p.kind==='archive'){const ac=b.lists.flatMap(l=>D.lists[l]?D.lists[l].cards.map(id=>D.cards[id]).filter(c=>c&&c.archived&&!(D.lists[l].archived)):[]),al=b.lists.map(id=>D.lists[id]).filter(l=>l&&l.archived),adm=canAdmin(b);
     return `<div class="pop wide" id="pop" style="width:360px"><h4>${t('archived')}</h4>${!ac.length&&!al.length?`<div class="lock">${t('noArch')}</div>`:''}
       ${al.map(l=>`<div class="arch"><span dir="auto"><b>${esc(LN(l))}</b><small>${t('archiveList')} · ${l.cards.length} ${t('cards')}</small></span>${adm?`<button class="btn sec" data-a="lrestore" data-v="${l.id}">${t('restore')}</button><button class="btn dan" data-a="lgone" data-v="${l.id}">${t('delForever')}</button>`:''}</div>`).join('')}
@@ -964,7 +1192,7 @@ function logTo(c,e){c.log.push(Object.assign({at:Date.now(),by:ME()},e))}
 /* Alerts: stored ones (assigned, mentioned, request, done) plus "due soon" worked out live. In the live app they are emailed too. */
 function notify(to,k,card,x){if(!to||to===ME())return;(D.notes=D.notes||[]).push(Object.assign({id:uid('n'),to,by:ME(),k,card,at:Date.now(),read:false},x||{}));if(D.notes.length>500)D.notes=D.notes.slice(-500)}
 function notesFor(){const me=ME(),out=(D.notes||[]).filter(x=>x.to===me&&D.cards[x.card]).map(x=>Object.assign({},x,{title:D.cards[x.card].title,
-    txt:t('n_'+x.k,{p:pname(x.by),d:deptName(x.d||'')})}));
+    txt:t('n_'+x.k,{p:pname(x.by),d:deptName(x.d||''),x:x.x||''})}));
   const t0=today();allCards().forEach(({c})=>{if(!c.done&&c.due&&c.members.includes(me)&&c.due<t0+2*day){const w=c.due<t0?'w_over':c.due<t0+day?'w_today':'w_tomorrow';
     out.push({card:c.id,k:'due',title:c.title,txt:t('n_due',{w:t(w)}),at:0,read:true,by:me})}});
   return out.sort((a,b)=>(b.at||0)-(a.at||0)).slice(0,60)}
@@ -1000,9 +1228,11 @@ function copyCard(c,b2){const l2=D.lists[liveLists(b2).find(id=>D.lists[id].name
   logTo(x,{k:'l_added',a:l2.name});D.cards[x.id]=x;l2.cards.push(x.id);return x}
 function addCard(lid,title){title=title.trim();if(!title)return;const l=D.lists[lid];const c={id:uid('c'),title,desc:'',labels:[],members:[],due:null,done:DONE_RX.test(l.name),doneAt:DONE_RX.test(l.name)?Date.now():null,repeat:'',check:[],log:[]};
   logTo(c,{k:'l_added',a:LN(l)});D.cards[c.id]=c;l.cards.push(c.id);save()}
-function moveCard(cid,toL,idx){const from=listOf(cid);if(!from)return;from.cards.splice(from.cards.indexOf(cid),1);const to=D.lists[toL];idx=Math.max(0,Math.min(idx,to.cards.length));to.cards.splice(idx,0,cid);
+function moveCard(cid,toL,idx){const from=listOf(cid);if(!from)return;
+  if(from.id!==toL&&DONE_RX.test(D.lists[toL].name)&&!D.cards[cid].done&&!canFinish(D.cards[cid]))return false;
+  from.cards.splice(from.cards.indexOf(cid),1);const to=D.lists[toL];idx=Math.max(0,Math.min(idx,to.cards.length));to.cards.splice(idx,0,cid);
   const c=D.cards[cid];if(from.id!==toL){logTo(c,{k:'l_moved',a:LN(from),b:LN(to)});
-    if(DONE_RX.test(to.name)&&!c.done){c.done=true;c.doneAt=Date.now();logTo(c,{k:'l_done'})}else if(DONE_RX.test(from.name)&&!DONE_RX.test(to.name)&&c.done){c.done=false;c.doneAt=null;logTo(c,{k:'l_undone'})}}save()}
+    if(DONE_RX.test(to.name)&&!c.done){c.done=true;c.doneAt=Date.now();logTo(c,{k:'l_done'});afterDone(c)}else if(DONE_RX.test(from.name)&&!DONE_RX.test(to.name)&&c.done){c.done=false;c.doneAt=null;logTo(c,{k:'l_undone'})}}save()}
 function commitModalFields(){const c=D.cards[V.card];if(!c)return;const mt=document.getElementById('mt'),de=document.getElementById('cdesc');
   if(mt&&mt.value.trim())c.title=mt.value.trim().replace(/\s+/g,' ');if(de)c.desc=de.value;save()}
 
@@ -1011,8 +1241,9 @@ document.addEventListener('click',e=>{
   if(DR.justDropped){DR.justDropped=false;return}
   const a=e.target.closest('[data-a]');
   if(V.side&&!e.target.closest('.side')&&!(a&&a.dataset.a==='side')){V.side=false;render();if(!a)return}
-  if(V.pop&&!e.target.closest('#pop')&&!(a&&['bmenu','lmenu','members','status','bell','labels','archv'].includes(a.dataset.a))){V.pop=null;render();if(!a)return}
-  if(!a){const card=e.target.closest('.card[data-id]');if(card&&!V.nt){V.card=card.dataset.id;V.comp=null;render()}
+  if(V.pop&&!e.target.closest('#pop')&&!(a&&['bmenu','lmenu','members','status','bell','labels','archv','fieldsed'].includes(a.dataset.a))){V.pop=null;render();if(!a)return}
+  if(e.target.closest('select.msec'))return;
+  if(!a){const card=e.target.closest('.card[data-id]');if(card&&!V.nt){V.card=card.dataset.card||card.dataset.id;V.comp=null;render()}
     if(V.editList&&!e.target.closest('.lhead'))saveListName();
     return}
   const k=a.dataset.a,id=a.dataset.id,v=a.dataset.v;
@@ -1023,8 +1254,8 @@ document.addEventListener('click',e=>{
     case 'lang':lang=v;try{localStorage.setItem('fb-lang',v)}catch(x){}render();break;
     case 'go':V.view=v;V.dept=null;V.board=null;V.side=false;render();break;
     case 'dept':V.view='dept';if(V.dept!==id)V.dtab='boards';V.dept=id;V.board=null;V.side=false;V.newBoard=false;V.inv=null;render();break;
-    case 'board':V.view='board';V.board=id;V.dept=D.boards[id].dept;V.side=false;V.f={q:'',members:[],labels:[],due:''};V.filter=false;V.comp=null;render();break;
-    case 'open':V.card=id;render();break;
+    case 'board':V.view='board';V.board=id;V.dept=D.boards[id].dept;V.side=false;V.f={q:'',members:[],labels:[],due:'',fields:[]};V.filter=false;V.comp=null;render();break;
+    case 'open':if(V.card)commitModalFields();V.card=id;V.dateErr=false;render();break;
     case 'bname':V.editBoard=true;render();focusSel('#bname');break;
     case 'bmenu':V.pop=V.pop&&V.pop.kind==='bmenu'?null:{kind:'bmenu',anchor:'[data-a=bmenu]'};render();break;
     case 'members':V.pop=V.pop&&V.pop.kind==='members'?null:{kind:'members',anchor:'[data-a=members]'};render();break;
@@ -1049,7 +1280,7 @@ document.addEventListener('click',e=>{
       const b=makeBoard(V.dept,n,tp);V.newBoard=false;V.view='board';V.board=b.id;V.bview='board';save();render();break}
     case 'bview':V.bview=v;render();break;
     case 'calm':{const m=V.calM?new Date(V.calM):new Date();V.calM=v==='0'?null:new Date(m.getFullYear(),m.getMonth()+(+v),1).getTime();render();break}
-    case 'calnew':{const b=B();openNew({dept:b.dept,board:b.kind?null:b.id,due:v});break}
+    case 'calnew':{if(V.view==='mine'){openNew({due:v});break}const b=B();openNew({dept:b.dept,board:b.kind?null:b.id,due:v});break}
     case 'bell':V.pop=V.pop&&V.pop.kind==='notes'?null:{kind:'notes',anchor:'[data-a=bell]'};render();break;
     case 'nopen':{const x=(D.notes||[]).find(n=>n.id===v);if(x)x.read=true;V.pop=null;V.card=id;save();render();break}
     case 'nread':(D.notes||[]).forEach(x=>{if(x.to===ME())x.read=true});save();render();break;
@@ -1082,7 +1313,8 @@ document.addEventListener('click',e=>{
     case 'fm':V.f.members=V.f.members.includes(v)?V.f.members.filter(x=>x!==v):V.f.members.concat(v);render();break;
     case 'fl':V.f.labels=V.f.labels.includes(v)?V.f.labels.filter(x=>x!==v):V.f.labels.concat(v);render();break;
     case 'fd':V.f.due=V.f.due===v?'':v;render();break;
-    case 'fclear':V.f={q:'',members:[],labels:[],due:''};render();break;
+    case 'fclear':V.f={q:'',members:[],labels:[],due:'',fields:[]};render();break;
+    case 'ff':V.f.fields=(V.f.fields||[]).includes(v)?V.f.fields.filter(x=>x!==v):(V.f.fields||[]).concat(v);render();break;
     case 'addl':V.addList=true;render();focusSel('#newl');break;
     case 'addl-x':V.addList=false;render();break;
     case 'addl-go':addList();break;
@@ -1099,15 +1331,37 @@ document.addEventListener('click',e=>{
     case 'lmenu':V.pop=V.pop&&V.pop.kind==='lmenu'&&V.pop.id===id?null:{kind:'lmenu',id,anchor:`.list[data-id="${id}"] [data-a=lmenu]`};render();break;
     case 'lsort':D.lists[id].cards.sort((x,y)=>(D.cards[x].due||9e15)-(D.cards[y].due||9e15));V.pop=null;save();render();break;
     case 'ldel':ask(t('delListQ'),()=>{D.lists[id].cards.forEach(cid=>delete D.cards[cid]);delete D.lists[id];B().lists=B().lists.filter(x=>x!==id);save()});break;
-    case 'ov':if(e.target===a){commitModalFields();V.card=null;render()}break;
-    case 'mclose':commitModalFields();V.card=null;render();break;
-    case 'cm':commitModalFields();if(c.members.includes(v))c.members=c.members.filter(x=>x!==v);else{c.members=c.members.concat(v);notify(v,'assign',c.id)}save();render();break;
+    case 'ov':if(e.target===a){commitModalFields();V.card=null;V.dateErr=false;render()}break;
+    case 'mclose':commitModalFields();V.card=null;V.dateErr=false;render();break;
+    case 'cm':commitModalFields();if(c.members.includes(v))c.members=c.members.filter(x=>x!==v);else{c.members=c.members.concat(v);notify(v,'assign',c.id)}
+      if(!c.members.includes(c.owner))c.owner=c.members[0]||null;save();render();break;
+    case 'appr':{commitModalFields();if(!canDecide(c))break;c.appr={s:v,by:ME(),at:Date.now()};logTo(c,{k:'l_ap',a:t('ap_'+v)});
+      [c.by,c.requester].concat(c.follow||[]).filter((x,i,arr)=>x&&arr.indexOf(x)===i).forEach(m=>notify(m,'ap_'+v,c.id));
+      if(v!=='changes'&&!c.done){c.done=true;c.doneAt=Date.now();logTo(c,{k:'l_done'});afterDone(c,true)}else if(v==='changes'&&c.done){c.done=false;c.doneAt=null}
+      save();render();break}
+    case 'subadd':addSub();break;
+    case 'subck':commitModalFields();c.subs[+a.dataset.i].done=a.checked;save();render();break;
+    case 'subdel':commitModalFields();c.subs.splice(+a.dataset.i,1);save();render();break;
+    case 'waitadd':{commitModalFields();const w=D.cards[document.getElementById('wadd').value];if(!w)break;if(w.id===c.id||waitsOn(w,c)){flash(t('waitLoop'));break}
+      (c.waits=c.waits||[]).push(w.id);logTo(c,{k:'l_wait',a:w.title});save();render();break}
+    case 'waitdel':commitModalFields();c.waits=(c.waits||[]).filter(x=>x!==v);save();render();break;
+    case 'follow':commitModalFields();c.follow=(c.follow||[]).includes(ME())?c.follow.filter(x=>x!==ME()):(c.follow||[]).concat(ME());save();render();break;
+    case 'fdel':commitModalFields();c.follow=(c.follow||[]).filter(x=>x!==v);save();render();break;
+    case 'fieldsed':V.pop={kind:'fields',anchor:'[data-a=bmenu]'};render();break;
+    case 'faddf':{const b=B();(b.fields=b.fields||[]).push({id:uid('f'),name:'',type:'select',opts:[]});save();render();setTimeout(()=>{const i=[...document.querySelectorAll('.fname')].pop();i&&i.focus()},0);break}
+    case 'fdelf':{const b=B();ask(t('delFieldQ'),()=>{b.fields=(b.fields||[]).filter(x=>x.id!==v);cardsOf(b).forEach(x=>{if(x.f)delete x.f[v]});V.f.fields=(V.f.fields||[]).filter(k=>!k.startsWith(v+':'));save();V.pop={kind:'fields',anchor:'[data-a=bmenu]'}});break}
+    case 'mtab':V.mtab=v;render();break;
+    case 'mgrp':V.mgrp=v;render();break;
+    case 'secadd':{const inp=document.getElementById('secnew'),n=inp&&inp.value.trim();if(!n){focusSel('#secnew');break}myState().secs.push({id:uid('s'),name:n});save();render();break}
+    case 'secren':V.secEdit=v;render();focusSel('#secname');break;
+    case 'secdel':ask(t('delSecQ'),()=>{const M=myState();M.secs=M.secs.filter(x=>x.id!==v);Object.keys(M.at).forEach(k=>{if(M.at[k]===v)delete M.at[k]});save()});break;
     case 'cl':commitModalFields();c.labels=c.labels.includes(v)?c.labels.filter(x=>x!==v):c.labels.concat(v);save();render();break;
-    case 'cdone':commitModalFields();c.done=!c.done;c.doneAt=c.done?Date.now():null;logTo(c,{k:c.done?'l_done':'l_undone'});if(c.done&&c.requester)notify(c.requester,'done',c.id);save();render();break;
+    case 'cdone':commitModalFields();if(!c.done&&!canFinish(c))break;c.done=!c.done;c.doneAt=c.done?Date.now():null;logTo(c,{k:c.done?'l_done':'l_undone'});if(c.done)afterDone(c);save();render();break;
     case 'ck':commitModalFields();c.check[+a.dataset.i].d=a.checked;save();render();break;
     case 'ckdel':commitModalFields();c.check.splice(+a.dataset.i,1);save();render();break;
     case 'ckadd':addCheck();break;
-    case 'cmt':{const tx=document.getElementById('cmt').value.trim();if(!tx)return;commitModalFields();logTo(c,{c:tx});mentioned(tx).forEach(m=>notify(m,'mention',c.id));save();render();break}
+    case 'cmt':{const tx=document.getElementById('cmt').value.trim();if(!tx)return;commitModalFields();logTo(c,{c:tx});const ms=mentioned(tx);ms.forEach(m=>notify(m,'mention',c.id));
+      [...new Set(c.members.concat(c.follow||[],c.requester?[c.requester]:[]))].filter(m=>!ms.includes(m)).forEach(m=>notify(m,'comment',c.id));save();render();break}
     case 'ment':{const ta=document.getElementById('cmt'),pos=ta.selectionStart,before=ta.value.slice(0,pos).replace(/@[^@\n]{0,30}$/,''),after=ta.value.slice(pos);ta.value=before+'@'+pname(v)+' '+after;V.pop=null;
       const keep=ta.value;render();const t2=document.getElementById('cmt');t2.value=keep;t2.focus();t2.setSelectionRange(before.length+pname(v).length+2,before.length+pname(v).length+2);break}
     case 'cdel':commitModalFields();ask(t('delQ'),()=>{const l=listOf(c.id);if(l)l.cards.splice(l.cards.indexOf(c.id),1);delete D.cards[c.id];V.card=null;save()});break;
@@ -1118,6 +1372,8 @@ function flash(m){V.toast=m;render();clearTimeout(flash.t);flash.t=setTimeout(()
 function focusSel(s){const el=document.querySelector(s);if(el){el.focus();if(el.select&&el.tagName==='INPUT')el.select()}}
 function scrollListEnd(id){const el=document.querySelector(`.list[data-id="${id}"] .cards`);if(el)el.scrollTop=el.scrollHeight}
 function addList(){const inp=document.getElementById('newl');const n=inp&&inp.value.trim();if(!n)return;const l={id:uid('l'),name:n,cards:[],col:false};D.lists[l.id]=l;B().lists.push(l.id);save();render();focusSel('#newl');const cv=document.querySelector('.canvas');cv.scrollLeft=lang==='ar'?-cv.scrollWidth:cv.scrollWidth}
+function addSub(){const inp=document.getElementById('subin'),v=inp&&inp.value.trim();if(!v)return;commitModalFields();const c=D.cards[V.card];(c.subs=c.subs||[]).push({id:uid('s'),t:v,who:'',due:null,done:false});save();render();focusSel('#subin')}
+function saveSec(){const inp=document.getElementById('secname');if(inp){const s=myState().secs.find(x=>x.id===inp.dataset.v);if(s&&inp.value.trim()){s.name=inp.value.trim()}}V.secEdit=null;save();render()}
 function addCheck(){const inp=document.getElementById('ckin');const v=inp&&inp.value.trim();if(!v)return;commitModalFields();D.cards[V.card].check.push({t:v,d:false});save();render();focusSel('#ckin')}
 function saveListName(){const inp=document.getElementById('lname'),l=V.editList&&D.lists[V.editList];if(inp&&l&&inp.value.trim()&&inp.value.trim()!==LN(l)){l.name=inp.value.trim();delete l.sys}V.editList=null;save();render()}
 function saveBoardName(){const inp=document.getElementById('bname');if(inp&&inp.value.trim())B().name=inp.value.trim();V.editBoard=false;save();render()}
@@ -1129,9 +1385,12 @@ document.addEventListener('keydown',e=>{
   if(id==='lname'&&e.key==='Enter'){e.preventDefault();saveListName();return}
   if(id==='bname'&&e.key==='Enter'){e.preventDefault();saveBoardName();return}
   if(id==='ckin'&&e.key==='Enter'){e.preventDefault();addCheck();return}
+  if(id==='subin'&&e.key==='Enter'){e.preventDefault();addSub();return}
+  if(id==='secnew'&&e.key==='Enter'){e.preventDefault();document.querySelector('[data-a=secadd]').click();return}
+  if(id==='secname'&&e.key==='Enter'){e.preventDefault();saveSec();return}
   if(id==='mt'&&e.key==='Enter'){e.preventDefault();e.target.blur();return}
-  if(e.key==='Enter'&&e.target.classList&&e.target.classList.contains('card')){V.card=e.target.dataset.id;render();return}
-  if(e.key==='Escape'){if(ASK){ASK=null;render()}else if(V.nt){V.nt=null;render()}else if(V.pop){V.pop=null;render()}else if(V.card){commitModalFields();V.card=null;render()}else if(V.comp){V.comp=null;render()}else if(V.addList){V.addList=false;render()}else if(V.editList){V.editList=null;render()}else if(V.editBoard){V.editBoard=false;render()}else if(V.side){V.side=false;render()}}
+  if(e.key==='Enter'&&e.target.classList&&e.target.classList.contains('card')){V.card=e.target.dataset.card||e.target.dataset.id;render();return}
+  if(e.key==='Escape'){if(V.secEdit){V.secEdit=null;render()}else if(ASK){ASK=null;render()}else if(V.nt){V.nt=null;render()}else if(V.pop){V.pop=null;render()}else if(V.card){commitModalFields();V.card=null;render()}else if(V.comp){V.comp=null;render()}else if(V.addList){V.addList=false;render()}else if(V.editList){V.editList=null;render()}else if(V.editBoard){V.editBoard=false;render()}else if(V.side){V.side=false;render()}}
 });
 document.addEventListener('input',e=>{
   if(e.target.id==='cmt'){const m=e.target.value.slice(0,e.target.selectionStart).match(/@([^@\n]{0,30})$/);
@@ -1140,15 +1399,24 @@ document.addEventListener('input',e=>{
       el.innerHTML=L.length?L.map(id=>`<button class="mrow" data-a="ment" data-v="${id}">${av(id)}<span>${esc(pname(id))}</span></button>`).join(''):'';
       const r=e.target.getBoundingClientRect();el.style.left=Math.max(8,lang==='ar'?r.right-270:r.left)+'px';el.style.top=(r.bottom+4)+'px';el.style.display=L.length?'block':'none'}
     else{const el=document.getElementById('mentpop');if(el)el.remove()}}
+  if(e.target.id==='pq'){V.pf.q=e.target.value;const pos=e.target.selectionStart;render();const q=document.getElementById('pq');q.focus();q.setSelectionRange(pos,pos)}
   if(e.target.id==='q'){V.f.q=e.target.value;const pos=e.target.selectionStart;render();const q=document.getElementById('q');q.focus();q.setSelectionRange(pos,pos)}
   if(e.target.id==='mt'){e.target.style.height='auto';e.target.style.height=e.target.scrollHeight+'px'}});
 document.addEventListener('change',e=>{
   if(e.target.id==='viewas'||e.target.id==='viewas2'){D.me=e.target.value;V.side=false;V.card=null;V.pop=null;V.nt=null;home();save();render();return}
+  if(V.nt&&e.target.id==='nt-type'){ntSync();render();return}
   if(V.nt&&['nt-dept','nt-board','nt-list'].includes(e.target.id)){ntSync();const n=V.nt;
     if(e.target.id==='nt-dept'){n.dept=e.target.value;n.board=null;n.members=[]}
     if(e.target.id==='nt-board'){n.board=e.target.value;n.list=null;n.members=n.members.filter(m=>ntPool(Object.assign({},n)).includes(m))}
     if(e.target.id==='nt-list')n.list=e.target.value;
     ntDefaults(n);n.members=n.members.filter(m=>ntPool(n).includes(m));render();return}
+  if(e.target.id&&e.target.id.startsWith('pf-')){V.pf[e.target.id.slice(3)]=e.target.value;render();return}
+  if(e.target.classList&&e.target.classList.contains('msec')){myState().at[e.target.dataset.k]=e.target.value;save();render();return}
+  if(e.target.classList&&(e.target.classList.contains('fname')||e.target.classList.contains('ftype')||e.target.classList.contains('fopts'))){const b=B(),f=(b.fields||[]).find(x=>x.id===e.target.dataset.f);if(!f)return;
+    if(e.target.classList.contains('fname'))f.name=e.target.value.trim();
+    if(e.target.classList.contains('ftype')){f.type=e.target.value;f.opts=f.opts||[]}
+    if(e.target.classList.contains('fopts')){const old=f.opts||[];f.opts=[...new Set(e.target.value.split(/[,،]/).map(x=>x.trim()).filter(Boolean))].map((nm,i)=>{const o=old.find(y=>y.name===nm);return o||{id:uid('o'),name:nm,color:PALETTE[(old.length+i)%PALETTE.length]}})}
+    save();render();return}
   if(e.target.id==='emailme'){D.emailOff=D.emailOff||{};D.emailOff[ME()]=!e.target.checked;save();return}
   if(e.target.classList&&e.target.classList.contains('labname')){const L=ensureLabels(B()),l=L.find(x=>x.id===e.target.dataset.lab);if(l){l.name=e.target.value.trim()}save();render();return}
   if(V.nt&&e.target.id==='nt-tpl'){ntSync();const x=(D.cardTpl||[]).find(k=>k.id===e.target.value),n=V.nt;n.tpl=e.target.value;
@@ -1157,22 +1425,31 @@ document.addEventListener('change',e=>{
   if(e.target.id==='fileup'){commitModalFields();const fs=[...e.target.files];(async()=>{for(const f of fs){if(f.size>5*1024*1024){flash(t('tooBig',{f:f.name}));continue}
       const id=uid('f');if(await FILES.put(id,f)){(c.atts=c.atts||[]).push({id,name:f.name,type:f.type||'application/octet-stream',size:f.size,by:ME(),at:Date.now()});if(!c.cover&&/^image\//.test(f.type))c.cover=id}}
     save();render()})();return}
-  if(e.target.id==='cdue'){commitModalFields();c.due=e.target.value?new Date(e.target.value+'T00:00:00').getTime():null;save();render()}
+  if(e.target.id==='cdue'||e.target.id==='cstart'){commitModalFields();const sv=document.getElementById('cstart').value,dv=document.getElementById('cdue').value,tm=x=>x?new Date(x+'T00:00:00').getTime():null;
+    if(sv&&dv&&sv>dv){V.dateErr={s:sv,d:dv};render();return}V.dateErr=false;c.start=tm(sv);c.due=tm(dv);save();render()}
+  if(e.target.id==='cown'){commitModalFields();c.owner=e.target.value;save();render()}
+  if(e.target.id==='ctype'){commitModalFields();if(e.target.value==='task')delete c.type;else c.type=e.target.value;save();render()}
+  if(e.target.id==='fadd'&&e.target.value){commitModalFields();(c.follow=c.follow||[]).push(e.target.value);save();render()}
+  if(e.target.classList&&e.target.classList.contains('cf')){commitModalFields();(c.f=c.f||{})[e.target.dataset.f]=e.target.value.trim();save();render()}
+  if(e.target.classList&&e.target.classList.contains('subw')){commitModalFields();const sb=c.subs[+e.target.dataset.i];sb.who=e.target.value;if(sb.who)notify(sb.who,'subassign',c.id);save();render()}
+  if(e.target.classList&&e.target.classList.contains('subd')){commitModalFields();c.subs[+e.target.dataset.i].due=e.target.value?new Date(e.target.value+'T00:00:00').getTime():null;save();render()}
   if(e.target.id==='crep'){commitModalFields();c.repeat=e.target.value;save();render()}
   if(e.target.id==='cpri'){commitModalFields();c.priority=e.target.value;save();render()}
   if(e.target.id==='cmove'){commitModalFields();const to=D.lists[e.target.value];moveCard(c.id,to.id,to.cards.length);render()}
   if(e.target.id==='mt'||e.target.id==='cdesc'){commitModalFields()}});
 document.addEventListener('focusout',e=>{
   if(e.target.id==='lname')setTimeout(()=>{if(V.editList&&document.activeElement.id!=='lname')saveListName()},0);
-  if(e.target.id==='bname')setTimeout(()=>{if(V.editBoard)saveBoardName()},0)});
+  if(e.target.id==='bname')setTimeout(()=>{if(V.editBoard)saveBoardName()},0);
+  if(e.target.id==='secname')setTimeout(()=>{if(V.secEdit&&document.activeElement.id!=='secname')saveSec()},0)});
 
 /* ---------- drag and drop (mouse: move a little; touch: press and hold). Lists move only for the department head. ---------- */
 const DR={d:null,justDropped:false,timer:null,auto:null,x:0,y:0};
 document.addEventListener('pointerdown',e=>{
-  if(e.button!==0||V.card||V.view!=='board')return;
+  const myB=V.view==='mine'&&V.mtab==='board';
+  if(e.button!==0||V.card||(V.view!=='board'&&!myB))return;
   if(e.target.closest('input,textarea,button,select'))return;
   const card=e.target.closest('.card[data-id]'),head=e.target.closest('.lhead'),col=e.target.closest('.list.col');
-  let type,el;if(card){type='card';el=card}else if((head||col)&&canAdmin(B())){type='list';el=(head||col).closest('.list')}else return;
+  let type,el;if(card){type='card';el=card}else if(!myB&&(head||col)&&canAdmin(B())){type='list';el=(head||col).closest('.list')}else return;
   DR.d={type,id:el.dataset.id,el,sx:e.clientX,sy:e.clientY,started:false,touch:e.pointerType!=='mouse'};DR.x=e.clientX;DR.y=e.clientY;
   if(DR.d.touch)DR.timer=setTimeout(()=>{if(DR.d&&!DR.d.started)start()},300);
 });
@@ -1204,7 +1481,8 @@ function autoScroll(){const d=DR.d;if(!d||!d.started)return;const cv=document.ge
   if(d.type==='card'){const box=d.ph&&d.ph.closest('.cards');if(box){const b=box.getBoundingClientRect();if(DR.y<b.top+40)box.scrollTop-=10;else if(DR.y>b.bottom-40)box.scrollTop+=10}}
   over()}
 function end(){clearTimeout(DR.timer);const d=DR.d;DR.d=null;if(!d||!d.started)return;clearInterval(DR.auto);document.body.classList.remove('dragging');
-  if(d.type==='card'){const L=d.ph.closest('.list');if(L){const idsInDom=[...L.querySelectorAll('.cards > .card[data-id], .cards > .ph')].filter(x=>x!==d.el);const vis=idsInDom.indexOf(d.ph);
+  if(d.type==='card'&&V.view==='mine'){const L=d.ph.closest('.list');if(L){myState().at[d.id]=L.dataset.id;save()}}
+  else if(d.type==='card'){const L=d.ph.closest('.list');if(L){const idsInDom=[...L.querySelectorAll('.cards > .card[data-id], .cards > .ph')].filter(x=>x!==d.el);const vis=idsInDom.indexOf(d.ph);
       const list=D.lists[L.dataset.id],visIds=idsInDom.filter(x=>x!==d.ph).map(x=>x.dataset.id);const after=visIds[vis-1];
       const full=list.cards.filter(cid=>cid!==d.id);const idx=after?full.indexOf(after)+1:(visIds[0]?full.indexOf(visIds[0]):full.length);
       moveCard(d.id,list.id,idx<0?full.length:idx)}}
