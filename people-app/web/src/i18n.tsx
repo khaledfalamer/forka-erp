@@ -1,10 +1,12 @@
 import { store } from './api';
+import { modsEn, modsAr } from './strings';
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 
 export type Lang = 'en' | 'ar';
 export type Bi = { en: string | null; ar: string | null } | null | undefined;
 
 const en = {
+  m: modsEn,
   appName: 'Forka People',
   signIn: 'Sign in',
   demoNotice: 'Demo only. Every person here is made up. Real sign-in (Google account or phone code) comes in Phase 1.',
@@ -107,6 +109,7 @@ const en = {
 };
 
 const ar: typeof en = {
+  m: modsAr,
   appName: 'Forka People',
   signIn: 'تسجيل الدخول',
   demoNotice: 'نسخة تجريبية فقط. جميع الأشخاص هنا غير حقيقيين. تسجيل الدخول الفعلي (حساب Google أو رمز عبر الجوال) في المرحلة الأولى.',

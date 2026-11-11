@@ -2,6 +2,7 @@
 // It mirrors server/src/access.ts and server/src/app.ts on made-up data. The real protection
 // (database row-level security, logs that cannot be edited) lives in the server and its tests.
 import raw from './data.json';
+import { makeModules } from './modules';
 
 type Any = Record<string, any>;
 const D: Any = JSON.parse(JSON.stringify(raw));
@@ -188,8 +189,15 @@ function handle(method: string, path: string, body: Any): any {
       return { id: created.id, scheduled: f.effectiveFrom > today(), payrollFlag: f.effectiveFrom < today() };
     }
   }
+  const out = mods().handle(method, seg, new URLSearchParams(qs || ''), body || {}, m);
+  if (out !== undefined) return out;
   throw new E(404, 'not_found');
 }
+
+let _mods: ReturnType<typeof makeModules> | null = null;
+const mods = () => (_mods ??= makeModules({ D, E, me, rows, row, can, has, isSelf, publicWork, today, addDay, byId, log, current }));
+export type Ctx = { D: Any; E: typeof E; me: typeof me; rows: typeof rows; row: typeof row; can: typeof can; has: typeof has; isSelf: typeof isSelf;
+  publicWork: typeof publicWork; today: typeof today; addDay: typeof addDay; byId: typeof byId; log: typeof log; current: typeof current };
 
 export async function mockFetch(method: string, path: string, body?: unknown): Promise<{ status: number; data: any }> {
   await new Promise(r => setTimeout(r, 60));

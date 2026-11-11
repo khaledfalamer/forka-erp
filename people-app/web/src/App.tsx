@@ -1,62 +1,131 @@
 import { useEffect, useState } from 'react';
-import { api, ApiError, useRoute, go, DEMO } from './api';
+import { api, useRoute, go, DEMO } from './api';
 import { useI18n } from './i18n';
 import { Login } from './pages/Login';
 import { Home } from './pages/Home';
 import { People } from './pages/People';
 import { Profile } from './pages/Profile';
 import { Org } from './pages/Org';
+import { Leave } from './pages/Leave';
+import { Requests } from './pages/Requests';
+import { MyTime, Roster, Attendance } from './pages/Time';
+import { Documents, Lifecycle, Payroll, Payslips } from './pages/Hr';
+import { Performance, Learning, Desk, Policies, Reports, Settings } from './pages/More';
 
 export type Me = { user: { id: string; name: string; email: string; employmentId: string | null }; roles: string[]; can: { isHr: boolean; isManager: boolean } };
+
+// Menu. "live" = also served by the real server today; the others exist in the preview build only until their server part is built.
+type Item = { key: string; label: (t: any) => string; group: 'me' | 'team' | 'hr' | 'company'; show: (m: Me) => boolean; live?: boolean };
+const isPayroll = (m: Me) => m.roles.some(r => ['CEO', 'HR_MANAGER', 'PAYROLL'].includes(r));
+const ITEMS: Item[] = [
+  { key: '', label: t => t.m.nav.home, group: 'me', show: () => true, live: true },
+  { key: 'requests', label: t => t.m.nav.requests, group: 'me', show: () => true },
+  { key: 'leave', label: t => t.m.nav.leave, group: 'me', show: m => !!m.user.employmentId },
+  { key: 'time', label: t => t.m.nav.time, group: 'me', show: m => !!m.user.employmentId },
+  { key: 'payslips', label: t => t.m.nav.payslips, group: 'me', show: m => !!m.user.employmentId },
+  { key: 'learning', label: t => t.m.nav.learning, group: 'me', show: () => true },
+  { key: 'policies', label: t => t.m.nav.policies, group: 'me', show: () => true },
+  { key: 'people', label: t => t.m.nav.people, group: 'team', show: () => true, live: true },
+  { key: 'approvals', label: t => t.m.nav.approvals, group: 'team', show: m => m.can.isManager },
+  { key: 'roster', label: t => t.m.nav.roster, group: 'team', show: m => m.can.isManager },
+  { key: 'attendance', label: t => t.m.nav.attendance, group: 'team', show: m => m.can.isManager },
+  { key: 'performance', label: t => t.m.nav.performance, group: 'team', show: () => true },
+  { key: 'documents', label: t => t.m.nav.documents, group: 'hr', show: () => true },
+  { key: 'lifecycle', label: t => t.m.nav.lifecycle, group: 'hr', show: m => m.can.isManager },
+  { key: 'payroll', label: t => t.m.nav.payroll, group: 'hr', show: isPayroll },
+  { key: 'desk', label: t => t.m.nav.desk, group: 'hr', show: () => true },
+  { key: 'reports', label: t => t.m.nav.reports, group: 'hr', show: m => m.can.isManager },
+  { key: 'settings', label: t => t.m.nav.settings, group: 'company', show: m => m.can.isHr },
+  { key: 'org', label: t => t.m.nav.org, group: 'company', show: () => true, live: true },
+];
 
 export function App() {
   const { t, lang, setLang } = useI18n();
   const [me, setMe] = useState<Me | null | undefined>(undefined);
+  const [more, setMore] = useState(false);
+  const [approvals, setApprovals] = useState(0);
   const [, force] = useState(0);
   useEffect(() => {
-    const on = () => force(x => x + 1);
+    const on = () => { force(x => x + 1); setMore(false); };
     window.addEventListener('hashchange', on);
     window.addEventListener('fp-route', on);
     return () => { window.removeEventListener('hashchange', on); window.removeEventListener('fp-route', on); };
   }, []);
-  const load = () => api<Me>('/me').then(setMe).catch(e => (e instanceof ApiError && e.status === 401 ? setMe(null) : setMe(null)));
+  const load = () => api<Me>('/me').then(setMe).catch(() => setMe(null));
   useEffect(() => { load(); }, []);
   const route = useRoute();
+  const tab = route[0] || '';
+  useEffect(() => {
+    if (me?.can.isManager && DEMO) api<any[]>('/requests?box=approve').then(l => setApprovals(l.length)).catch(() => {});
+  }, [me, tab]);
 
   if (me === undefined) return <div className="center muted">{t.loading}</div>;
   if (me === null) return <Login onDone={load} />;
 
+  const items = ITEMS.filter(i => i.show(me) && (DEMO || i.live));
   const signOut = async () => { await api('/logout', { method: 'POST' }); setMe(null); go(''); };
-  const tab = route[0] || '';
-  const Nav = ({ to, label }: { to: string; label: string }) => (
-    <a href={'#/' + to} className={'nav-link' + (tab === to ? ' active' : '')}>{label}</a>
+  const groups: [Item['group'], string][] = [['me', t.m.nav.me], ['team', t.m.nav.team], ['hr', t.m.nav.hr], ['company', t.m.nav.company]];
+  const Link = ({ i }: { i: Item }) => (
+    <a href={'#/' + i.key} className={'side-link' + (tab === i.key ? ' active' : '')}>
+      <span>{i.label(t)}</span>{i.key === 'approvals' && approvals > 0 && <span className="badge">{approvals}</span>}
+    </a>
   );
+  const bottom = items.filter(i => ['', 'requests', 'time', 'people'].includes(i.key)).slice(0, 3);
+  const page = (() => {
+    switch (tab) {
+      case '': return <Home me={me} />;
+      case 'people': return route[1] ? <Profile id={route[1]} key={route[1]} /> : <People />;
+      case 'org': return <Org />;
+      case 'requests': return <Requests me={me} key="mine" />;
+      case 'approvals': return <Requests me={me} start="approve" key="approve" />;
+      case 'leave': return <Leave me={me} />;
+      case 'time': return <MyTime />;
+      case 'roster': return <Roster />;
+      case 'attendance': return <Attendance />;
+      case 'payslips': return <Payslips />;
+      case 'documents': return <Documents me={me} />;
+      case 'lifecycle': return <Lifecycle />;
+      case 'payroll': return <Payroll id={route[1]} key={route[1] || 'list'} />;
+      case 'performance': return <Performance me={me} id={route[1]} key={route[1] || 'list'} />;
+      case 'learning': return <Learning me={me} />;
+      case 'desk': return <Desk me={me} />;
+      case 'policies': return <Policies />;
+      case 'reports': return <Reports />;
+      case 'settings': return <Settings />;
+      default: return <p className="muted">{t.notFound}</p>;
+    }
+  })();
   return (
     <div className="shell">
       <header className="top">
         <div className="brand">Forka <span>People</span>{DEMO && <em className="demo-pill">{t.demo}</em>}</div>
-        <nav className="nav">
-          <Nav to="" label={t.home} />
-          <Nav to="people" label={t.people} />
-          <Nav to="org" label={t.org} />
-        </nav>
         <div className="top-right">
           <button className="link-btn" onClick={() => setLang(lang === 'en' ? 'ar' : 'en')}>{t.language}</button>
           <span className="who" title={me.user.email}>{me.user.name}<small>{me.roles.map(r => t.roles[r] || r).join(' · ')}</small></span>
           <button className="link-btn" onClick={signOut}>{t.signOut}</button>
         </div>
       </header>
-      <main className="page">
-        {tab === '' && <Home me={me} />}
-        {tab === 'people' && !route[1] && <People />}
-        {tab === 'people' && route[1] && <Profile id={route[1]} key={route[1]} />}
-        {tab === 'org' && <Org />}
-      </main>
+      <div className="layout">
+        <nav className="side" aria-label="Main">
+          {groups.map(([g, label]) => { const list = items.filter(i => i.group === g); return list.length ? (
+            <div key={g} className="side-group"><div className="side-head">{label}</div>{list.map(i => <Link key={i.key} i={i} />)}</div>) : null; })}
+        </nav>
+        <main className="page">{page}</main>
+      </div>
       <nav className="bottom-nav">
-        <Nav to="" label={t.home} />
-        <Nav to="people" label={t.people} />
-        <Nav to="org" label={t.org} />
+        {bottom.map(i => <a key={i.key} href={'#/' + i.key} className={'nav-link' + (tab === i.key ? ' active' : '')}>{i.label(t)}</a>)}
+        {me.can.isManager && DEMO && <a href="#/approvals" className={'nav-link' + (tab === 'approvals' ? ' active' : '')}>{t.m.nav.approvals}{approvals > 0 && <span className="badge">{approvals}</span>}</a>}
+        <button className={'nav-link' + (more ? ' active' : '')} onClick={() => setMore(!more)} aria-expanded={more}>{t.m.nav.more}</button>
       </nav>
+      {more && (
+        <div className="sheet-back" onClick={() => setMore(false)}>
+          <div className="sheet" onClick={e => e.stopPropagation()}>
+            {groups.map(([g, label]) => { const list = items.filter(i => i.group === g); return list.length ? (
+              <div key={g} className="side-group"><div className="side-head">{label}</div><div className="sheet-grid">{list.map(i => <Link key={i.key} i={i} />)}</div></div>) : null; })}
+            <div className="sheet-foot"><span>{me.user.name}</span><button className="link-btn" onClick={signOut}>{t.signOut}</button></div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
