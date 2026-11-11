@@ -74,7 +74,7 @@ Each has a default we will use if there is no answer, so work is not blocked.
 | Q5 | **Who runs payroll today, and should Forka People calculate payroll or prepare checked inputs for an existing provider?** | Calculating payroll is a much larger, higher-risk scope (WPS files, end-of-service, social insurance). | Release 1 prepares approved payroll inputs and exports. Calculation per country comes later, only after local advisers validate the rules. |
 | Q6 | **Approximate number of employees per entity and per country,** and expected growth in 2 to 3 years? | Sizing, licensing of any managed identity service, and whether entities need separate payroll groups. | About 120 total, up to 400 in 3 years. |
 | Q7 | **Does the CEO (or anyone at group level) need to see salary and personal data across all entities**, or should group reports be anonymised or aggregated by default? | Decides the default for group reporting and the entity separation rules. | CEO and Group HR Director see everything. Other group roles see aggregated figures only. |
-| Q8 | **Monthly budget for hosting and services.** | Decides the managed-service choices in [05](05-architecture.md). | Up to about USD 300 per month for production, staging and backups at this size. |
+| Q8 | **Monthly budget for hosting and services.** | Decides the managed-service choices in [05](05-architecture.md). | Up to about USD 450 per month for production, staging and backups at this size (see the estimate in 05). |
 
 ## 4. Assumptions (until confirmed)
 
