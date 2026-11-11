@@ -24,7 +24,9 @@ jobs:
       - name: Install browser for tests
         run: |
           pip install playwright==1.48.0
-          python -m playwright install --with-deps chromium
+          python -m playwright install chromium
+          # extra system packages (fonts): optional, so an Ubuntu mirror outage cannot block publishing
+          timeout 180 python -m playwright install-deps chromium || echo "System packages unavailable right now; using what the runner already has"
       - name: Server checks (accounts, sign-in, clearance)
         run: node tests/server_test.js
       - name: Page checks (preview mode, desktop, phone, Arabic)
