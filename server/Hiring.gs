@@ -12,6 +12,7 @@
  *     Send that URL to Claude: it goes into config.js as HIRING_URL.
  *  Optional Script properties: HR_EMAILS (comma separated) = who gets an email for each new application.
  *                              ANTHROPIC_API_KEY = turns on the AI buttons (CV summary, job ads, interview questions).
+ *                              ANTHROPIC_WORKSPACE_ID = only if the key is not tied to one workspace (starts with wrkspc_).
  */
 const ACCOUNTS_URL = 'https://script.google.com/macros/s/AKfycbwUO5mC1oZrKiSJfF-kpeIFUPjfzB5VToNVn9EH-ecmDadFs9xsU1oDFHTgJ2FSg6vP/exec';
 // Each kind of record has its own tab. "apps" = applications sent from apply.forka.com.
@@ -427,10 +428,12 @@ function claude_(content, schema, maxTokens) {
   const body = { model: AI_MODEL, max_tokens: maxTokens || 8000, system: AI_SYSTEM, fallbacks: 'default',
     output_config: schema ? { effort: 'medium', format: { type: 'json_schema', schema: schema } } : { effort: 'medium' },
     messages: [{ role: 'user', content: content }] };
+  const headers = { 'x-api-key': key, 'anthropic-version': '2026-10-21', 'anthropic-beta': 'server-side-fallback-2026-07-01' };
+  const ws = String(props_().getProperty('ANTHROPIC_WORKSPACE_ID') || '').trim();   // a key for all workspaces must say which one to use
+  if (ws) headers['anthropic-workspace-id'] = ws;
   let r;
   try {
-    r = UrlFetchApp.fetch(AI_URL, { method: 'post', contentType: 'application/json', muteHttpExceptions: true, payload: JSON.stringify(body),
-      headers: { 'x-api-key': key, 'anthropic-version': '2026-10-21', 'anthropic-beta': 'server-side-fallback-2026-07-01' } });
+    r = UrlFetchApp.fetch(AI_URL, { method: 'post', contentType: 'application/json', muteHttpExceptions: true, payload: JSON.stringify(body), headers: headers });
   } catch (e) { return { ok: false, error: 'aitimeout' }; }
   const code = r.getResponseCode();
   let j = null; try { j = JSON.parse(r.getContentText()); } catch (e) {}
