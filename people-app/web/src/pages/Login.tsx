@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { api } from '../api';
+import { api, DEMO } from '../api';
 import { useI18n } from '../i18n';
 
 type U = { email: string; display_name: string; roles: string };
@@ -20,7 +20,7 @@ export function Login({ onDone }: { onDone: () => void }) {
           <button className="link-btn dark" onClick={() => setLang(lang === 'en' ? 'ar' : 'en')}>{t.language}</button>
         </div>
         <h1>{t.signIn}</h1>
-        <p className="notice">{t.demoNotice}</p>
+        <p className="notice">{t.demoNotice}{DEMO ? ' ' + t.demoBrowser : ''}</p>
         <h2>{t.chooseAccount}</h2>
         {err && <p className="error">{err}</p>}
         <ul className="pick">

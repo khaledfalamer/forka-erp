@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { api, ApiError, go } from '../api';
+import { api, ApiError, go, back } from '../api';
 import { useI18n } from '../i18n';
 import { tone } from './People';
 
@@ -24,7 +24,7 @@ export function Profile({ id }: { id: string }) {
   ];
   return (
     <div className="stack">
-      <button className="link-btn back" onClick={() => history.length > 1 ? history.back() : go('people')}>{t.backArrow} {t.back}</button>
+      <button className="link-btn back" onClick={() => back()}>{t.backArrow} {t.back}</button>
       <div className="profile-head">
         <span className={'avatar big ' + tone(p.name.en)} aria-hidden>{(p.name.en || '?').split(' ').map((s: string) => s[0]).slice(0, 2).join('')}</span>
         <div>

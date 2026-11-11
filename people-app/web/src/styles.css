@@ -131,3 +131,4 @@ input, select { font: inherit; padding: 10px 12px; border: 1px solid var(--line)
 .hero p { margin: 4px 0 0; }
 .login { background: radial-gradient(1200px 600px at 50% -10%, #FFF6E6 0%, var(--paper) 60%); }
 .login-card { box-shadow: 0 10px 40px rgba(43,43,43,.08); }
+.demo-pill { font: 600 11px/1 var(--font); font-style: normal; letter-spacing: .04em; text-transform: uppercase; background: var(--saffron); color: var(--charcoal); padding: 4px 7px; border-radius: 999px; margin-inline-start: 8px; vertical-align: middle; }

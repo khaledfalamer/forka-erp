@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { api, ApiError, useRoute, go } from './api';
+import { api, ApiError, useRoute, go, DEMO } from './api';
 import { useI18n } from './i18n';
 import { Login } from './pages/Login';
 import { Home } from './pages/Home';
@@ -16,7 +16,8 @@ export function App() {
   useEffect(() => {
     const on = () => force(x => x + 1);
     window.addEventListener('hashchange', on);
-    return () => window.removeEventListener('hashchange', on);
+    window.addEventListener('fp-route', on);
+    return () => { window.removeEventListener('hashchange', on); window.removeEventListener('fp-route', on); };
   }, []);
   const load = () => api<Me>('/me').then(setMe).catch(e => (e instanceof ApiError && e.status === 401 ? setMe(null) : setMe(null)));
   useEffect(() => { load(); }, []);
@@ -33,7 +34,7 @@ export function App() {
   return (
     <div className="shell">
       <header className="top">
-        <div className="brand">Forka <span>People</span></div>
+        <div className="brand">Forka <span>People</span>{DEMO && <em className="demo-pill">{t.demo}</em>}</div>
         <nav className="nav">
           <Nav to="" label={t.home} />
           <Nav to="people" label={t.people} />

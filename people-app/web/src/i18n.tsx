@@ -1,3 +1,4 @@
+import { store } from './api';
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 
 export type Lang = 'en' | 'ar';
@@ -8,6 +9,8 @@ const en = {
   signIn: 'Sign in',
   demoNotice: 'Demo only. Every person here is made up. Real sign-in (Google account or phone code) comes in Phase 1.',
   chooseAccount: 'Choose a demo account',
+  demo: 'Demo',
+  demoBrowser: 'This preview runs in your browser: changes you make are kept until you reload the page.',
   signOut: 'Sign out',
   home: 'Home',
   people: 'People',
@@ -108,6 +111,8 @@ const ar: typeof en = {
   signIn: 'تسجيل الدخول',
   demoNotice: 'نسخة تجريبية فقط. جميع الأشخاص هنا غير حقيقيين. تسجيل الدخول الفعلي (حساب Google أو رمز عبر الجوال) في المرحلة الأولى.',
   chooseAccount: 'اختر حساباً تجريبياً',
+  demo: 'تجريبي',
+  demoBrowser: 'هذه المعاينة تعمل داخل المتصفح: التغييرات تبقى حتى إعادة تحميل الصفحة.',
   signOut: 'تسجيل الخروج',
   home: 'الرئيسية',
   people: 'الموظفون',
@@ -208,11 +213,11 @@ type Ctx = { lang: Lang; t: typeof en; setLang: (l: Lang) => void; bi: (v: Bi) =
 const I18n = createContext<Ctx>(null as unknown as Ctx);
 
 export function I18nProvider({ children }: { children: ReactNode }) {
-  const [lang, setLang] = useState<Lang>(() => (localStorage.getItem('fp_lang') as Lang) || 'en');
+  const [lang, setLang] = useState<Lang>(() => (store.get('fp_lang') as Lang) || 'en');
   useEffect(() => {
     document.documentElement.lang = lang;
     document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
-    localStorage.setItem('fp_lang', lang);
+    store.set('fp_lang', lang);
   }, [lang]);
   const locale = lang === 'ar' ? 'ar-AE-u-nu-latn' : 'en-GB';
   const value: Ctx = {
