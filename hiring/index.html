@@ -142,7 +142,7 @@ pre.out{white-space:pre-wrap;background:#fff;border:1px solid var(--line);border
 /* ============ Language layer: English / العربية (display only — stored data and logic stay in English) ============ */
 let LANG=(()=>{try{return localStorage.getItem("forkaHireLang")==="ar"?"ar":"en"}catch(e){return "en"}})();
 const AR={
-"Guidance for AI":"إرشادات للذكاء الاصطناعي","Summarise CV":"تلخيص السيرة الذاتية","Role":"الوظيفة","Years":"سنوات الخبرة","Languages":"اللغات","Visa / notice":"الإقامة / فترة الإشعار","Recent employers":"آخر جهات العمل","Must-have":"الشرط الأساسي","AI score":"درجة الذكاء الاصطناعي","Evidence in the CV":"الدليل في السيرة","Summarise again":"تلخيص مرة أخرى","Submit my scorecard":"إرسال تقييمي","AI summary":"ملخص الذكاء الاصطناعي","Suggestion — check it against the CV":"اقتراح — تحقق منه مقابل السيرة الذاتية","Check with the candidate":"تحقق مع المرشح","Questions about this CV":"أسئلة عن هذه السيرة","Summarise CV and suggest scores":"تلخيص السيرة واقتراح الدرجات","Save guidance":"حفظ الإرشادات",
+"Guidance for AI":"إرشادات للذكاء الاصطناعي","Work type":"نوع العمل","On site":"في الفرع","Remote":"عن بُعد","Hybrid":"مختلط (في الفرع وعن بُعد)","Remote: the branch is optional (the team it reports to)":"للعمل عن بُعد: الفرع اختياري (الفريق الذي يتبع له)","Summarise CV":"تلخيص السيرة الذاتية","Role":"الوظيفة","Years":"سنوات الخبرة","Languages":"اللغات","Visa / notice":"الإقامة / فترة الإشعار","Recent employers":"آخر جهات العمل","Must-have":"الشرط الأساسي","AI score":"درجة الذكاء الاصطناعي","Evidence in the CV":"الدليل في السيرة","Summarise again":"تلخيص مرة أخرى","Submit my scorecard":"إرسال تقييمي","AI summary":"ملخص الذكاء الاصطناعي","Suggestion — check it against the CV":"اقتراح — تحقق منه مقابل السيرة الذاتية","Check with the candidate":"تحقق مع المرشح","Questions about this CV":"أسئلة عن هذه السيرة","Summarise CV and suggest scores":"تلخيص السيرة واقتراح الدرجات","Save guidance":"حفظ الإرشادات",
 "The AI follows this every time it drafts a job description or job ad. Write it like a note to a new HR assistant: tone, what to always include, what never to say.":"يلتزم الذكاء الاصطناعي بهذه الإرشادات في كل مرة يكتب فيها وصفاً وظيفياً أو إعلان وظيفة. اكتبها كأنها ملاحظة لمساعد موارد بشرية جديد: الأسلوب، وما يجب ذكره دائماً، وما لا يُذكر أبداً.",
 "Notes for the AI, for this job only":"ملاحظات للذكاء الاصطناعي لهذه الوظيفة فقط","Draft JD + ads with AI":"كتابة الوصف والإعلانات بالذكاء الاصطناعي",
 // nav, roles, header
@@ -284,6 +284,9 @@ function restoreEn(){ const w=document.createTreeWalker(document.body,NodeFilter
 const PASS = 3.5;               // proposed pass mark (1–5 scale)
 const DEPTS = ["Operations","Kitchen","Service","Marketing","Finance","HR","Procurement & Store","Administration"];
 const BRANCHES = ["Sharjah","Fujairah","Umm Al Quwain","Mayar Cafe","Oman","Ajman Central Store","Head Office"];
+const WORK = ["On site","Remote","Hybrid"];
+// where the job is: "Sharjah", "Remote", "Remote · Head Office" (the team it reports to), "Sharjah · Hybrid"
+const place = r => !r ? "" : r.work==="Remote" ? ["Remote",r.branch].filter(Boolean).join(" · ") : r.work==="Hybrid" ? [r.branch,"Hybrid"].filter(Boolean).join(" · ") : (r.branch||"");
 const PRACTICAL = ["Trial shift","Cooking test","Barista test","Case study","Presentation","Excel exercise","Operations scenario"];
 const TRAITS = [["Reliability and discipline","Follows SOPs, on time, finishes tasks"],["Calm under pressure","Steady in a rush, a complaint or an audit"],["Team cooperation","Helps others, handles conflict well"],["Energy with people","Warm, confident with guests and staff"],["Openness to change","Learns fast, adapts, takes on new tasks"]];
 const COMPETENCY = ["Leadership","Problem solving","Accountability","Communication","Teamwork","Commercial awareness"];
@@ -532,14 +535,14 @@ function pDash(C){
 function pApprovals(C){
   const rq=Object.values(S.reqs).filter(r=>r.status==="requested"), fc=Object.values(C).filter(c=>c.stage==="approval");
   return `<div class="top"><div><h1>CEO approvals</h1><p>Two working days on each — vacancies and final candidates.</p></div></div>
-  <div class="card"><h3>Vacancies to approve (step 2)</h3>${rq.length?`<table><tr><th>Role</th><th>Dept / branch</th><th>Salary range</th><th>Raised</th><th></th></tr>${rq.map(r=>`<tr class="click" onclick="openReq('${r.id}')"><td><b>${esc(r.title)}</b> × ${r.headcount||1}<div class="small muted">${esc(r.reason)}</div></td><td>${esc(r.dept)} · ${esc(r.branch)}</td><td>${fmtN(r.salMin)}–${fmtN(r.salMax)}</td><td>${sla(r.createdAt)}</td><td class="right"><button class="btn sm ok" onclick="event.stopPropagation();reqAct('${r.id}','approve')">Approve</button></td></tr>`).join("")}</table>`:`<div class="empty">No vacancies waiting.</div>`}</div>
+  <div class="card"><h3>Vacancies to approve (step 2)</h3>${rq.length?`<table><tr><th>Role</th><th>Dept / branch</th><th>Salary range</th><th>Raised</th><th></th></tr>${rq.map(r=>`<tr class="click" onclick="openReq('${r.id}')"><td><b>${esc(r.title)}</b> × ${r.headcount||1}<div class="small muted">${esc(r.reason)}</div></td><td>${esc(r.dept)} · ${esc(place(r))}</td><td>${fmtN(r.salMin)}–${fmtN(r.salMax)}</td><td>${sla(r.createdAt)}</td><td class="right"><button class="btn sm ok" onclick="event.stopPropagation();reqAct('${r.id}','approve')">Approve</button></td></tr>`).join("")}</table>`:`<div class="empty">No vacancies waiting.</div>`}</div>
   <div class="card" style="margin-top:14px"><h3>Final candidates to approve (step 14)</h3>${fc.length?`<table><tr><th>Candidate</th><th>Role</th><th>Scores</th><th>Package</th><th>Waiting</th></tr>${fc.map(c=>{const r=reqOf(c);return `<tr class="click" onclick="openCand('${c.id}')"><td><b>${esc(c.name)}</b></td><td>${esc(r.title)}</td><td>Screen ${f1(scr(c,r))} · Interview ${f1(ivAvg(c))}</td><td>${fmtN(c.fin?.total)} <span class="muted small">(basic ${fmtN(c.fin?.basic)})</span></td><td>${sla(c.stageAt)}</td></tr>`}).join("")}</table>`:`<div class="empty">No candidates waiting.</div>`}</div>`;
 }
 const sla=t=>{const d=workDaysSince(t);return `<span class="tag ${d>2?"bad":d>1?"warn":"ok"}">${d} / 2 days</span>`};
 function pReqs(){
   const L=Object.values(S.reqs).filter(headSees).sort((a,b)=>b.createdAt-a.createdAt);
   return `<div class="top"><div><h1>Hiring requests</h1><p>${V.role==="head"?"One form, about 10 minutes. From the second hire of the same role, start from the last request.":"Department heads raise them; CEO approves; HR builds the scorecard; head approves; HR posts."}</p></div><button class="btn br" onclick="reqForm()">+ New hiring request</button></div>
-  <div class="card">${L.length?`<table><tr><th>Req ID</th><th>Role</th><th>Dept · branch</th><th>Joining</th><th>Candidates</th><th>Status</th></tr>${L.map(r=>{const n=Object.values(allCands()).filter(c=>c.req===r.id);const s=REQ_STATUS[r.status]||[r.status,""];return `<tr class="click" onclick="openReq('${r.id}')"><td class="muted">${esc(r.reqId||"—")}</td><td><b>${esc(r.title)}</b> × ${r.headcount||1}</td><td>${esc(r.dept)} · ${esc(r.branch)}</td><td>${fmtD(r.joinBy)}</td><td>${n.length} <span class="muted small">${n.filter(c=>c.stage==="hired").length} hired</span></td><td><span class="tag ${s[1]}">${s[0]}</span></td></tr>`}).join("")}</table>`:`<div class="empty">No hiring requests yet. ${V.role!=="candidate"?"Raise the first one.":""}</div>`}</div>`;
+  <div class="card">${L.length?`<table><tr><th>Req ID</th><th>Role</th><th>Dept · branch</th><th>Joining</th><th>Candidates</th><th>Status</th></tr>${L.map(r=>{const n=Object.values(allCands()).filter(c=>c.req===r.id);const s=REQ_STATUS[r.status]||[r.status,""];return `<tr class="click" onclick="openReq('${r.id}')"><td class="muted">${esc(r.reqId||"—")}</td><td><b>${esc(r.title)}</b> × ${r.headcount||1}</td><td>${esc(r.dept)} · ${esc(place(r))}</td><td>${fmtD(r.joinBy)}</td><td>${n.length} <span class="muted small">${n.filter(c=>c.stage==="hired").length} hired</span></td><td><span class="tag ${s[1]}">${s[0]}</span></td></tr>`}).join("")}</table>`:`<div class="empty">No hiring requests yet. ${V.role!=="candidate"?"Raise the first one.":""}</div>`}</div>`;
 }
 function pPipeline(C){
   let L=Object.values(C).filter(c=>headSees(reqOf(c)));
@@ -549,7 +552,7 @@ function pPipeline(C){
   const head=`<div class="top"><div><h1>Candidates</h1><p>${V.role==="head"?"Shortlisted candidates for your roles. Score each interview on your own before discussing.":"Every move is logged the same day. Every rejection names the criterion it failed."}</p></div>
    <div class="row">${V.role==="hr"?`<button class="btn sec" onclick="addApplicant()">+ Add applicant</button>`:""}<button class="btn sec sm" onclick="V.pv=V.pv==='board'?'list':'board';render()">${V.pv==="board"?"List view":"Board view"}</button></div></div>
    <div class="row" style="margin-bottom:12px"><input style="max-width:280px" placeholder="Search name, email, CV text…" value="${esc(f.q)}" oninput="V.filter.q=this.value;clearTimeout(window._qt);window._qt=setTimeout(()=>{render();const i=document.querySelector('main input');i.focus();i.setSelectionRange(i.value.length,i.value.length)},250)">
-   <select style="max-width:260px" onchange="V.filter.req=this.value;render()"><option value="">All roles</option>${reqs.map(r=>`<option value="${r.id}" ${f.req===r.id?"selected":""}>${esc(r.title)} · ${esc(r.branch)}</option>`).join("")}</select></div>`;
+   <select style="max-width:260px" onchange="V.filter.req=this.value;render()"><option value="">All roles</option>${reqs.map(r=>`<option value="${r.id}" ${f.req===r.id?"selected":""}>${esc(r.title)} · ${esc(place(r))}</option>`).join("")}</select></div>`;
   const live=L.filter(c=>!["rejected","pool"].includes(c.stage));
   if(V.pv==="board"){
     const cols=STAGES.filter(s=>V.role!=="head"||SI[s[0]]>=SI.shortlist);
@@ -564,7 +567,7 @@ function pPipeline(C){
 window.L_all=v=>{const C=allCands();Object.values(C).forEach(c=>v?V.sel.add(c.id):V.sel.delete(c.id));render()};
 function stageTag(c){ if(c.stage==="rejected")return `<span class="tag bad">Rejected</span>`; if(c.stage==="pool")return `<span class="tag blue">Talent pool</span>`; if(c.stage==="hired")return `<span class="tag ok">Hired</span>`; return `<span class="tag">${STAGES[SI[c.stage]][1]}</span>` }
 function card(c){const r=reqOf(c);const s=scr(c,r),iv=ivAvg(c);const wait=["shortlist","approval"].includes(c.stage)?workDaysSince(c.stageAt):0;
-  return `<div class="cc" onclick="openCand('${c.id}')"><b>${esc(c.name)}</b><div class="small muted">${esc(r.title||"")}${r.branch?" · "+esc(r.branch):""}</div><div class="row small" style="margin-top:5px;gap:5px">${s!=null?`<span class="tag ${s>=PASS?"ok":"warn"}">S ${f1(s)}</span>`:""}${iv!=null?`<span class="tag ${iv>=PASS?"ok":"warn"}">I ${f1(iv)}</span>`:""}${c.cvFile?`<span class="tag">CV</span>`:""}${c.online&&c.unsaved?`<span class="tag br">new online</span>`:""}${wait>2?`<span class="tag bad">${wait}d waiting</span>`:""}</div></div>`}
+  return `<div class="cc" onclick="openCand('${c.id}')"><b>${esc(c.name)}</b><div class="small muted">${esc(r.title||"")}${place(r)?" · "+esc(place(r)):""}</div><div class="row small" style="margin-top:5px;gap:5px">${s!=null?`<span class="tag ${s>=PASS?"ok":"warn"}">S ${f1(s)}</span>`:""}${iv!=null?`<span class="tag ${iv>=PASS?"ok":"warn"}">I ${f1(iv)}</span>`:""}${c.cvFile?`<span class="tag">CV</span>`:""}${c.online&&c.unsaved?`<span class="tag br">new online</span>`:""}${wait>2?`<span class="tag bad">${wait}d waiting</span>`:""}</div></div>`}
 function pPool(C){
   const L=Object.values(C).filter(c=>["rejected","pool"].includes(c.stage));
   const old=L.filter(c=>c.personality&&c.personality.summary&&workDaysSince(c.reject?.at||c.stageAt)>130);
@@ -595,14 +598,14 @@ function pTeam(){
 }
 function pJobs(){
   const J=Object.values(S.jobs).filter(j=>j.open).sort((a,b)=>b.postedAt-a.postedAt);
-  return heroHtml(brand())+`<h2 style="margin-bottom:10px">Open roles</h2>${J.length?`<div class="grid">${J.map(j=>`<div class="card job"><div style="flex:1"><h3>${esc(j.title)}</h3><div class="small muted">${esc(j.branch)} · ${esc(j.dept)} · posted ${fmtD(j.postedAt)}</div><p class="small" style="margin:8px 0 0">${esc((j.summary||"").slice(0,220))}</p></div><button class="btn br" onclick="viewJob('${j.id}')">View & apply</button></div>`).join("")}</div>`:`<div class="card empty">No open roles right now — check back soon.</div>`}`;
+  return heroHtml(brand())+`<h2 style="margin-bottom:10px">Open roles</h2>${J.length?`<div class="grid">${J.map(j=>`<div class="card job"><div style="flex:1"><h3>${esc(j.title)}</h3><div class="small muted">${esc(place(j))} · ${esc(j.dept)} · posted ${fmtD(j.postedAt)}</div><p class="small" style="margin:8px 0 0">${esc((j.summary||"").slice(0,220))}</p></div><button class="btn br" onclick="viewJob('${j.id}')">View & apply</button></div>`).join("")}</div>`:`<div class="card empty">No open roles right now — check back soon.</div>`}`;
 }
 function pMine(){
   const mine=Object.entries((S.apps[V.me]||{}).list||{}).map(([id,a])=>({...a,id}));
   const C=allCands();
   return `<div class="top"><div><h1>My applications</h1><p>We reply to every applicant. You'll see each step here.</p></div><button class="btn sec" onclick="go('jobs')">Browse open roles</button></div>
   ${mine.length?mine.sort((a,b)=>b.createdAt-a.createdAt).map(a=>{const c={stage:(C[a.id]&&!C[a.id].unsaved)?C[a.id].stage:(a.status||((a.knockout||[]).length?"rejected":"applied"))};const pub=PUBLIC[c.stage]||"Received";const idx=PUB_TRACK.indexOf(pub);const j=S.jobs[a.req]||{};
-   return `<div class="card" style="margin-bottom:12px"><div class="row"><div><h3>${esc(j.title||a.jobTitle||"Role")}</h3><div class="small muted">${esc(j.branch||"")} · applied ${fmtD(a.createdAt)}${a.cvFile?" · CV: "+esc(a.cvFile.name):""}</div></div><span class="sp"></span><span class="tag ${c.stage==="rejected"?"bad":c.stage==="hired"||c.stage==="offer"?"ok":"br"}">${pub}</span></div>
+   return `<div class="card" style="margin-bottom:12px"><div class="row"><div><h3>${esc(j.title||a.jobTitle||"Role")}</h3><div class="small muted">${esc(place(j))} · applied ${fmtD(a.createdAt)}${a.cvFile?" · CV: "+esc(a.cvFile.name):""}</div></div><span class="sp"></span><span class="tag ${c.stage==="rejected"?"bad":c.stage==="hired"||c.stage==="offer"?"ok":"br"}">${pub}</span></div>
    ${idx>=0?`<div class="track">${PUB_TRACK.map((p,i)=>`<div class="${i<idx?"done":i===idx?"cur":""}">${p}</div>`).join("")}</div>`:""}
    ${c.stage==="rejected"?`<p class="small">Thank you for applying. This time we've gone with candidates whose experience matched the role more closely. We'll keep your details for future roles if you agreed to that.</p>`:""}
    ${c.stage==="interview"?`<p class="small">You've been invited to interview. HR will contact you with the time and the practical test (${esc((S.reqs[a.req]||{}).practical||"practical test")}).</p>`:""}
@@ -617,6 +620,7 @@ function reqForm(copyId){
   openModal(`<div class="hd"><div><h2>New hiring request</h2><div class="small muted">Step 1 of the Hiring Guide · about 10 minutes · CEO approves within 2 working days</div></div><button class="x" onclick="closeModal()">×</button></div>
   <div class="bd">${prev.length?`<div class="note info">Same role as before? <select style="width:auto;margin-left:6px" onchange="this.value&&reqForm(this.value)"><option value="">Start from a previous request…</option>${prev.map(p=>`<option value="${p.id}">${esc(p.title)} · ${esc(p.branch)} · ${fmtD(p.createdAt)}</option>`).join("")}</select></div>`:""}
   <div class="grid g3"><div><label>Role title</label><input id="f_title" value="${esc(r.title)}"></div><div><label>Department</label>${V.role==="head"&&V.dept?sel("f_dept",[V.dept],V.dept):sel("f_dept",DEPTS,r.dept)}</div><div><label>Branch / location</label>${sel("f_branch",BRANCHES,r.branch)}</div>
+  <div><label>Work type</label>${sel("f_work",WORK,r.work||"On site")}<div class="small muted">Remote: the branch is optional (the team it reports to)</div></div>
   <div><label>Headcount</label><input id="f_hc" type="number" min="1" value="${r.headcount||1}"></div><div><label>New or replacement</label>${sel("f_reason",["New position","Replacement"],r.reason)}</div><div><label>Target joining date</label><input id="f_join" type="date" value="${r.joinBy?new Date(r.joinBy).toISOString().slice(0,10):""}"></div>
   <div><label>Salary range — min (total package)</label><input id="f_smin" type="number" value="${r.salMin||""}"></div><div><label>Salary range — max</label><input id="f_smax" type="number" value="${r.salMax||""}"></div><div><label>Currency</label>${sel("f_cur",["AED","OMR"],r.cur||"AED")}</div></div>
   <label>Role purpose <span class="hint">one or two lines</span></label><textarea id="f_purpose">${esc(r.purpose)}</textarea>
@@ -630,10 +634,10 @@ function reqForm(copyId){
 }
 async function saveReq(){
   const v=id=>$("#"+id).value.trim();
-  const r={id:uid(),title:v("f_title"),dept:v("f_dept"),branch:v("f_branch"),headcount:+v("f_hc")||1,reason:v("f_reason"),joinBy:v("f_join")?new Date(v("f_join")).getTime():null,salMin:+v("f_smin")||null,salMax:+v("f_smax")||null,cur:v("f_cur")||"AED",purpose:v("f_purpose"),duties:v("f_duties"),
+  const r={id:uid(),title:v("f_title"),dept:v("f_dept"),branch:v("f_branch"),work:v("f_work")||"On site",headcount:+v("f_hc")||1,reason:v("f_reason"),joinBy:v("f_join")?new Date(v("f_join")).getTime():null,salMin:+v("f_smin")||null,salMax:+v("f_smax")||null,cur:v("f_cur")||"AED",purpose:v("f_purpose"),duties:v("f_duties"),
     mustHaves:[0,1,2].map(i=>v("f_mh"+i)).filter(Boolean),testQs:[0,1,2].map(i=>v("f_tq"+i)).filter(Boolean),practicals:[...document.querySelectorAll(".f_pr:checked")].map(x=>x.value).concat(v("f_prother")?v("f_prother").split(",").map(x=>x.trim()).filter(Boolean):[]),criticals:[...document.querySelectorAll(".f_cr:checked")].map(x=>x.value),traits:[...document.querySelectorAll(".f_tr:checked")].map(x=>x.value),
     status:"requested",createdBy:V.me,createdAt:now(),knockout:[],history:[{t:now(),by:V.me,m:"Hiring request raised"}]};
-  const miss=[!r.title&&"role title",!r.dept&&"department",!r.branch&&"branch",!r.salMax&&"salary range",r.mustHaves.length<3&&"3 must-haves",!r.practicals.length&&"practical test",r.criticals.some(c=>!r.traits.includes(c))&&"critical traits must also be ticked as traits",(r.traits.length<2||r.traits.length>3)&&"2–3 traits"].filter(Boolean);
+  const miss=[!r.title&&"role title",!r.dept&&"department",!r.branch&&r.work!=="Remote"&&"branch",!r.salMax&&"salary range",r.mustHaves.length<3&&"3 must-haves",!r.practicals.length&&"practical test",r.criticals.some(c=>!r.traits.includes(c))&&"critical traits must also be ticked as traits",(r.traits.length<2||r.traits.length>3)&&"2–3 traits"].filter(Boolean);
   r.practical=r.practicals.join(" + "); r.critical=r.criticals.join(", ");
   if(miss.length) return toast("Missing: "+miss.join(", "));
   await store.put("reqs",r.id,r); closeModal(); toast("Sent to Khaled for approval"); go("reqs");
@@ -643,7 +647,7 @@ function openReq(id){
   const isHR=V.role==="hr", canHead=V.role==="head"||isHR;
   const cands=Object.values(allCands()).filter(c=>c.req===id);
   const steps=["requested","approved","review","ready","open"]; const si=steps.indexOf(r.status);
-  openModal(`<div class="hd"><div><div class="small muted">${esc(r.reqId||"Not yet approved")} · raised by ${esc(nm(r.createdBy))} ${fmtD(r.createdAt)}</div><h2>${esc(r.title)} × ${r.headcount}</h2><div class="small">${esc(r.dept)} · ${esc(r.branch)} · ${esc(r.reason)} · join by ${fmtD(r.joinBy)}</div></div><span class="tag ${s[1]}" style="margin-left:auto">${s[0]}</span><button class="x" onclick="closeModal()">×</button></div>
+  openModal(`<div class="hd"><div><div class="small muted">${esc(r.reqId||"Not yet approved")} · raised by ${esc(nm(r.createdBy))} ${fmtD(r.createdAt)}</div><h2>${esc(r.title)} × ${r.headcount}</h2><div class="small">${esc(r.dept)} · ${esc(place(r))} · ${esc(r.reason)} · join by ${fmtD(r.joinBy)}</div></div><span class="tag ${s[1]}" style="margin-left:auto">${s[0]}</span><button class="x" onclick="closeModal()">×</button></div>
   <div class="bd"><div class="steps">${["Request","CEO approves","HR scorecard","Head approves","Posted"].map((t,i)=>`<span class="${si>i||r.status==="filled"?"done":si===i?"cur":""}">${t}</span>`).join("")}</div>
   <div class="grid g2" style="margin-top:12px"><div class="card"><h3>The role</h3><p class="small"><b>Purpose:</b> ${esc(r.purpose||"—")}</p><p class="small"><b>Duties:</b> ${esc(r.duties||"—")}</p>${isHR||V.ceo?`<p class="small"><b>Salary range:</b> ${fmtN(r.salMin)}–${fmtN(r.salMax)} ${r.cur} total package · basic = 30%</p>`:`<p class="small"><b>Salary range:</b> ${fmtN(r.salMin)}–${fmtN(r.salMax)} ${r.cur}</p>`}</div>
   <div class="card"><h3>Scorecard inputs</h3><p class="small"><b>Must-haves:</b> ${r.mustHaves.map(esc).join(" · ")}</p><p class="small"><b>Test in interview:</b> ${r.testQs.map(esc).join(" · ")}</p><p class="small"><b>Practical:</b> ${esc(r.practical)} · <b>Traits:</b> ${r.traits.map(esc).join(", ")}${r.critical?` · <b>critical:</b> ${esc(r.critical)}`:""}</p></div></div>
@@ -674,7 +678,7 @@ async function reqAct(id,a){
   if(a==="headok"){ r.status="ready"; log("Department head approved the scorecard") }
   if(a==="changes"){ const why=await ask("What should HR change?"); if(!why)return; r.status="approved"; log("Head asked for changes: "+why) }
   if(a==="post"){ r.status="open"; r.postedAt=now(); log("Job posted");
-    await store.put("jobs",id,{id,title:r.title,dept:r.dept,branch:r.branch,summary:r.purpose,jd:r.jd||"",knockout:r.knockout||[],open:true,postedAt:r.postedAt}); }
+    await store.put("jobs",id,{id,title:r.title,dept:r.dept,branch:r.branch,work:r.work||"On site",summary:r.purpose,jd:r.jd||"",knockout:r.knockout||[],open:true,postedAt:r.postedAt}); }
   if(a==="close"){ r.status=Object.values(allCands()).filter(c=>c.req===id&&c.stage==="hired").length>=r.headcount?"filled":"closed"; log("Role closed"); if(S.jobs[id]) await store.put("jobs",id,{...S.jobs[id],open:false}); }
   await store.put("reqs",id,r); toast("Saved"); openReq(id);
 }
@@ -691,7 +695,7 @@ async function saveJD(id,next){ const r=JSON.parse(JSON.stringify(S.reqs[id])); 
 
 /* ---------------- candidate apply ---------------- */
 function viewJob(id){ const j=S.jobs[id]; if(!j)return;
-  openModal(`<div class="hd"><div><div class="small muted">${esc(j.dept)} · ${esc(j.branch)}</div><h2>${esc(j.title)}</h2></div><button class="x" onclick="closeModal()">×</button></div>
+  openModal(`<div class="hd"><div><div class="small muted">${esc(j.dept)} · ${esc(place(j))}</div><h2>${esc(j.title)}</h2></div><button class="x" onclick="closeModal()">×</button></div>
   <div class="bd"><pre class="out">${esc(j.jd||j.summary)}</pre>
   <h3 style="margin-top:16px">Apply</h3><div class="grid g2"><div><label>Full name</label><input id="a_name"></div><div><label>Email</label><input id="a_email" type="email"></div><div><label>Phone / WhatsApp</label><input id="a_phone"></div><div><label>Current location</label><input id="a_loc"></div>
   <div><label>Years of relevant experience</label><input id="a_yrs" type="number" min="0"></div><div><label>Notice period (days)</label><input id="a_notice" type="number" min="0"></div>
@@ -721,7 +725,7 @@ function addApplicant(reqId){
   const R=Object.values(S.reqs).filter(r=>["open","ready"].includes(r.status));
   if(!R.length) return toast("Post a role first — no open roles yet");
   openModal(`<div class="hd"><div><h2>Add applicant</h2><div class="small muted">From hr@forka.com, LinkedIn, Indeed, referral or walk-in</div></div><button class="x" onclick="closeModal()">×</button></div>
-  <div class="bd"><div class="grid g2"><div><label>Role</label><select id="n_req">${R.map(r=>`<option value="${r.id}" ${r.id===reqId?"selected":""}>${esc(r.title)} · ${esc(r.branch)}</option>`).join("")}</select></div><div><label>Source</label><select id="n_src">${["Email (hr@forka.com)","LinkedIn","Indeed","Referral","Walk-in","Talent pool","Agency"].map(s=>`<option>${s}</option>`).join("")}</select></div></div>
+  <div class="bd"><div class="grid g2"><div><label>Role</label><select id="n_req">${R.map(r=>`<option value="${r.id}" ${r.id===reqId?"selected":""}>${esc(r.title)} · ${esc(place(r))}</option>`).join("")}</select></div><div><label>Source</label><select id="n_src">${["Email (hr@forka.com)","LinkedIn","Indeed","Referral","Walk-in","Talent pool","Agency"].map(s=>`<option>${s}</option>`).join("")}</select></div></div>
   <label>CV file <span class="hint">PDF or photo, from the email</span></label><input type="file" id="n_file" accept=".pdf,application/pdf,image/*">
   <label>CV text <span class="hint">paste it — ${AI_ON()?"AI can fill the fields below":"then fill the fields"}</span></label><textarea id="n_cv" style="min-height:120px"></textarea>${AI_ON()?`<button class="btn sm ai" style="margin-top:6px" onclick="aiParse()">Fill fields from CV</button>`:""}
   <div class="grid g3"><div><label>Name</label><input id="n_name"></div><div><label>Email</label><input id="n_email"></div><div><label>Phone</label><input id="n_phone"></div><div><label>Location</label><input id="n_loc"></div><div><label>Years experience</label><input id="n_yrs" type="number"></div><div><label>Expected salary</label><input id="n_sal" type="number"></div></div>
@@ -804,7 +808,7 @@ function openCand(id){
   if(isHR&&st==="offer") A.push(`<button class="btn ok" ${d.offer?.accepted&&d.offer?.join&&DOCS.every((x,i)=>(d.offer?.docs||{})[i])?"":"disabled"} onclick="move('hired')">Mark hired → onboarding</button>`);
   if(isHR&&(st==="rejected"||st==="pool")) A.push(`<button class="btn sec" onclick="move('applied','Reopened')">Reopen</button>`);
   const rej=!["hired","rejected","pool"].includes(st)&&(isHR||(isHead&&["shortlist","interview"].includes(st)));
-  openModal(`<div class="hd"><div><div class="small muted">${esc(r.reqId||"")} · ${esc(r.title||"")} · ${esc(r.branch||"")}</div><h2>${esc(d.name)}</h2></div>${stageTag(d)}<button class="x" onclick="closeModal();DRAFT=null">×</button></div>
+  openModal(`<div class="hd"><div><div class="small muted">${esc(r.reqId||"")} · ${esc(r.title||"")} · ${esc(place(r))}</div><h2>${esc(d.name)}</h2></div>${stageTag(d)}<button class="x" onclick="closeModal();DRAFT=null">×</button></div>
   <div class="bd">${body}</div>
   <div class="ft">${rej?`<button class="btn bad" onclick="rejectC()">Reject with reason</button>`:""}${isHR&&rej?`<button class="btn sec" onclick="toPool()">Talent pool</button>`:""}<span class="sp"></span>${(isHR||isHead)&&!["hired"].includes(st)?`<button class="btn sec" onclick="saveDraft()">Save</button>`:""}${A.join("")}</div>`);
 }
@@ -878,7 +882,7 @@ async function inviteIv(){ await move("interview"); schedDlg("interview") }
 function schedDlg(kind){ const d=DRAFT, r=reqOf(d);
   if(!HURL&&!DEMO){ toast("Booking links work on the live app (erp.forka.com/hiring)"); return }
   if(!d.email){ toast("Add the candidate's email first"); return }
-  SCH={kind,slots:new Set(),mins:kind==="call"?30:45,mode:kind==="call"?"Phone":"In person",place:kind==="call"?"":(r.branch?r.branch+" branch":""),note:"",sent:null};
+  SCH={kind,slots:new Set(),mins:kind==="call"?30:45,mode:kind==="call"?"Phone":r.work==="Remote"?"Video call":"In person",place:kind==="call"||r.work==="Remote"?"":(r.branch?r.branch+" branch":""),note:"",sent:null};
   schedRender() }
 function schedRender(){ const d=DRAFT, S2=SCH, days=[]; const t0=uaeParts(Date.now());
   for(let i=1;days.length<10&&i<16;i++){ const base=uaeTime(t0.y,t0.m,t0.d+i,0); days.push(uaeParts(base)) }
@@ -930,7 +934,7 @@ async function bulk(kind){ const C=allCands(); let why="";
     else { d.reject={reason:why,at:now(),by:V.me}; if(kind==="pool")d.poolNote=why; d.stage=kind==="pool"?"pool":"rejected"; d.stageAt=now(); await persist(d,(kind==="pool"?"Talent pool — ":"Rejected — ")+why) } }
   V.sel.clear(); toast("Done"); render() }
 async function reconsider(id){ const R=Object.values(S.reqs).filter(r=>r.status==="open"); if(!R.length)return toast("No open roles");
-  const pick=await ask("Which open role?",R.map(r=>r.title+" · "+r.branch)); if(!pick)return; const r=R.find(x=>x.title+" · "+x.branch===pick);
+  const pick=await ask("Which open role?",R.map(r=>r.title+" · "+place(r))); if(!pick)return; const r=R.find(x=>x.title+" · "+place(x)===pick);
   const d=JSON.parse(JSON.stringify(allCands()[id])); d.req=r.id; d.stage="applied"; d.stageAt=now(); d.reject=null; d.source="Talent pool"; d.cv={}; d.call={}; d.iv={}; await persist(d,"Reconsidered from talent pool for "+r.title); toast("Moved to "+r.title) }
 async function purgeOld(){ const C=allCands(); for(const c of Object.values(C)){ if(["rejected","pool"].includes(c.stage)&&c.personality&&c.personality.summary&&workDaysSince(c.reject?.at||c.stageAt)>130){ const d=JSON.parse(JSON.stringify(c)); d.personality={deleted:true}; await persist(d,"Personality report deleted (6-month retention)") } } toast("Deleted"); render() }
 
@@ -1009,7 +1013,7 @@ function aiGuide(){ const g=((S.aiguide&&S.aiguide.text)||"").trim(), n=(($("#r_
   return (g?`Forka HR's standing guidance. Follow it. Where it conflicts with the general instructions below, it wins:\n<guidance>\n${g}\n</guidance>\n\n`:"")+(n?`Extra notes for this job only (follow them too):\n<notes>\n${n}\n</notes>\n\n`:"") }
 function aiJD(id){ const btn=event.target; aiBusy(btn,async()=>{ const r=S.reqs[id];
   const o=await askJSON(aiGuide()+`You write hiring material for Forka Collective, an F&B operating group running restaurants in the UAE and Oman (Kuwaiti Kitchen, Mayar Cafe). Plain English, many readers use English as a second language. No hype.
-Role: ${r.title} · ${r.dept} · ${r.branch}. Purpose: ${r.purpose}. Duties: ${r.duties}. Must-haves: ${r.mustHaves.join("; ")}. Practical test: ${r.practical}. Traits: ${r.traits.join(", ")}.
+Role: ${r.title} · ${r.dept} · ${place(r)}.${r.work==="Remote"?" This is a remote job: say so clearly in the JD and ads, and do not ask candidates to come to a branch.":r.work==="Hybrid"?" This is a hybrid job (part in the branch, part remote): say so in the JD and ads.":""} Purpose: ${r.purpose}. Duties: ${r.duties}. Must-haves: ${r.mustHaves.join("; ")}. Practical test: ${r.practical}. Traits: ${r.traits.join(", ")}.
 Return {"jd": "job description with sections: About the role, What you'll do, What you need (must-haves), Nice to have, How we hire (CV screen, HR call, short online assessment, interview + ${r.practical}, references, offer). Include a line that the role may include other duties as assigned.", "ad":"LinkedIn post, max 120 words, tells people to email hr@forka.com with '${r.title}' in the subject", "adAr":"the same ad in natural Gulf-friendly Modern Standard Arabic", "knockout":["3 yes/no knock-out questions built from the must-haves, phrased so the right answer is Yes"]}`);
   $("#r_jd").value=o.jd||""; $("#r_ad").value=o.ad||""; $("#r_adar").value=o.adAr||""; if(o.knockout) $("#r_ko").value=o.knockout.join("\n"); toast("Draft ready — review, then Save") }) }
 /* CV summary: the Hiring server sends the CV file (PDF, Word or photo) to Claude with the job's must-haves. Suggestions only. */
