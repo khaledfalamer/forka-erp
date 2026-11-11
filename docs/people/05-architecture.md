@@ -45,7 +45,7 @@ flowchart TB
 | Layer | Choice | Why |
 |-------|--------|-----|
 | Language | TypeScript everywhere | One language for server and app; strong typing for a data-heavy system; easy to hire for in the region |
-| Server | Node.js LTS, NestJS (modules match the domains above), Kysely for SQL | Clear module boundaries; SQL stays explicit, which matters for row-level security and reporting |
+| Server | Node.js LTS, Fastify, plain SQL through `pg` (updated 11 Nov 2026 when the skeleton was built: lighter than NestJS + Kysely for a small team) | Few moving parts; SQL stays explicit, which matters for row-level security and reporting |
 | Database | PostgreSQL 16, managed (Amazon RDS), Multi-AZ | Transactions, enforced relationships, row-level security for entity separation, mature backups |
 | Files | Amazon S3, private bucket, KMS encryption, versioning, signed short-lived links | Documents never public; old versions kept |
 | Mobile and web app | Installable web app (PWA): React, Vite, offline store for clock-in and drafts | One app for phones, tablets and laptops; no app store needed; works on low bandwidth; installs to the home screen on Android and iPhone |

@@ -1,0 +1,22 @@
+{
+  "name": "forka-people",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Forka People: the group's own HR and people platform (skeleton, demo data only)",
+  "workspaces": [
+    "server",
+    "web"
+  ],
+  "scripts": {
+    "db:reset": "npm run -w server db:reset",
+    "db:setup": "npm run -w server db:setup",
+    "db:migrate": "npm run -w server db:migrate",
+    "db:seed": "npm run -w server db:seed",
+    "dev:server": "npm run -w server dev",
+    "dev:web": "npm run -w web dev",
+    "build": "npm run -w web build && npm run -w server build",
+    "start": "npm run -w server start",
+    "test": "npm run -w server test",
+    "typecheck": "npm run -w server typecheck && npm run -w web typecheck"
+  }
+}

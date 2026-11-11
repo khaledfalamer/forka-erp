@@ -1,0 +1,39 @@
+import { useEffect, useState } from 'react';
+import { api } from '../api';
+import { useI18n } from '../i18n';
+
+type U = { email: string; display_name: string; roles: string };
+
+export function Login({ onDone }: { onDone: () => void }) {
+  const { t, lang, setLang } = useI18n();
+  const [users, setUsers] = useState<U[]>([]);
+  const [err, setErr] = useState('');
+  useEffect(() => { api<U[]>('/dev/users').then(setUsers).catch(() => setErr(t.error)); }, []);
+  const pick = async (email: string) => {
+    try { await api('/dev/login', { method: 'POST', body: { email } }); onDone(); } catch { setErr(t.error); }
+  };
+  return (
+    <div className="login">
+      <div className="login-card">
+        <div className="login-head">
+          <div className="brand dark">Forka <span>People</span></div>
+          <button className="link-btn dark" onClick={() => setLang(lang === 'en' ? 'ar' : 'en')}>{t.language}</button>
+        </div>
+        <h1>{t.signIn}</h1>
+        <p className="notice">{t.demoNotice}</p>
+        <h2>{t.chooseAccount}</h2>
+        {err && <p className="error">{err}</p>}
+        <ul className="pick">
+          {users.map(u => (
+            <li key={u.email}>
+              <button onClick={() => pick(u.email)}>
+                <strong>{u.display_name}</strong>
+                <span>{u.roles.split(',').map(r => t.roles[r] || r).join(' · ')}</span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+}
