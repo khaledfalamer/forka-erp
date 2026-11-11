@@ -337,6 +337,11 @@ fieldset.ro{border:0;padding:0;margin:0;min-width:0}
 .side2 .row select{flex:1 1 100%!important}
 .side2 .row .btn{flex:1 1 100%;justify-content:center;display:flex;align-items:center;gap:6px}
 .sm-only{display:none}
+.h5r{display:flex;align-items:center}.h5b{margin-inline-start:auto;width:22px;height:22px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;color:var(--muted)}.h5b:hover{background:var(--hover);color:var(--text)}.h5b svg{width:14px;height:14px}
+.spc{display:flex;gap:8px;flex-wrap:wrap}.spsw{width:34px;height:34px;border-radius:8px;color:#fff;display:inline-flex;align-items:center;justify-content:center;outline:2px solid transparent;outline-offset:2px}.spsw.on{outline-color:var(--text)}
+.prds{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 14px}.prds label{display:flex;align-items:center;gap:8px;justify-content:space-between;font-size:13.5px}.prds label span{display:flex;align-items:center;gap:6px;min-width:0}.prds i{width:10px;height:10px;border-radius:3px;flex:none}.prds .fld{height:30px;font-size:13px;width:120px}
+@media (max-width:760px){.prds{grid-template-columns:minmax(0,1fr)}}
+
 .sync{font-size:12px;color:#a9a196;white-space:nowrap}.sync.saving{color:#e0a23a}.sync.off{color:#e08b7d}
 .gate{max-width:440px;margin:14vh auto;padding:30px;background:#fffdf9;color:#23211f;border-radius:14px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px}
 .gate .brand b{font-family:var(--serif);letter-spacing:.32em;font-size:22px}.gate .brand span{color:var(--bronze);font-weight:600;margin-inline-start:8px}
@@ -607,7 +612,7 @@ en:{app:'Boards',search:'Search this board',addCard:'Add a card',addCardBtn:'Add
   fromD:'From {d}',reqBy:'requested by {p} ({d})',moveBoard:'Move to board',l_req:'sent this request from {a}',roNote:'You asked for this task. You can follow it and comment.',
   stateL:'Where it is',doneTag:'Done',
   teamTab:'Team',teamLead:'Everyone in {d}. Add someone who already uses Forka Apps, or invite someone new. They see only the boards you add them to, or boards open to everyone in {d}.',
-  addExisting:'Add someone who already uses Forka Apps',addExistingHint:'People with a Forka Apps account who are not in a department yet.',addToTeam:'Add to team',noFree:'Everyone with an account is already in a department. Invite someone new instead.',
+  addExisting:'Add someone who already uses Forka Apps',addExistingHint:'Anyone with a Forka Apps account who is not in {d} yet. They stay in their other departments too.',addToTeam:'Add to team',noFree:'Everyone with an account is already in a department. Invite someone new instead.',
   inviteNew:'Invite someone new',inviteHint:'Their name and company email. They sign in at erp.forka.com with Google.',fullName:'Full name',sendInvite:'Send invite',inviteAuto:'In the live app the invite email is sent automatically.',
   roleL:'Role',emailL:'Email',statusL:'Status',invited:'Invite sent',active:'Active',copyInvite:'Copy invite',remove:'Remove',copied:'Invite copied. Paste it in WhatsApp or email.',
   inviteText:'Hello {p}, you have been added to Forka Boards ({d}). Open https://erp.forka.com and sign in with Google using {e}.',
@@ -663,7 +668,7 @@ en:{app:'Boards',search:'Search this board',addCard:'Add a card',addCardBtn:'Add
   chat:'Chat',channels:'Channels',dms:'Direct messages',everyone:'Everyone',newDm:'Message someone…',msgPh:'Write a message… (type @ to mention someone)',sendB:'Send',
   chatLead:'Channel for {d}',chatAll:'For everyone at Forka',noMsgs:'No messages yet. Say hello.',pickChat:'Choose a channel or a person.',
   chatNote:'Preview: messages stay in this browser. In the live app everyone in the channel sees them straight away.',n_chat:'{p} mentioned you in {x}',n_dm:'{p} sent you a message',
-  today2:'Today',yesterday:'Yesterday',lblNames:'Show label names on cards',lblColours:'Show label colours only',
+  today2:'Today',yesterday:'Yesterday',lblNames:'Show label names on cards',lblColours:'Show label colours only',newSpace:'New space',spLead:'A space is a department or team of its own: its boards, its team and its chat channel. You become its head.',spName:'Name (English)',spNamePh:'For example: Events, Central Kitchen',spNameAr:'Name (Arabic)',spColour:'Colour',spCreate:'Create space',editSpace:'Edit space',delSpace:'Remove space',delSpaceQ:'Remove this space? People stay in their other departments.',spHasBoards:'Delete or move its boards first.',pDepts:'Departments and role',pDeptsH:'Someone can be in several departments. Heads manage their department\'s boards and team.',notIn:'Not in it',alsoIn:'Also in: {d}',fromL:'Sent from',
   sSaved:'Saved',sSaving:'Saving…',sOff:'Offline: changes will be sent when the connection is back',notAllowed:'You cannot change this. It was put back as it was.',
   signinNeed:'Please sign in at Forka Apps first, then open Boards from there.',signinBtn:'Sign in at Forka Apps',netErr:'Boards could not reach the server. Check the connection and try again.',retry:'Try again',loading:'Opening your boards…',
   noDept:'Not in a department yet',inviteLive:'They are added to Forka Apps as "To confirm". The CEO confirms them, then they sign in with Google.',
@@ -696,7 +701,7 @@ ar:{app:'اللوحات',search:'بحث في هذه اللوحة',addCard:'إض�
   fromD:'من {d}',reqBy:'طلبها {p} ({d})',moveBoard:'نقل إلى لوحة',l_req:'أرسل هذا الطلب من {a}',roNote:'أنت طلبت هذه المهمة. يمكنك متابعتها والتعليق.',
   stateL:'أين وصلت',doneTag:'منجزة',
   teamTab:'الفريق',teamLead:'كل أعضاء {d}. أضف شخصاً يستخدم تطبيقات فوركا، أو ادعُ شخصاً جديداً. يرون فقط اللوحات التي تضيفهم إليها، أو اللوحات المفتوحة لكل {d}.',
-  addExisting:'أضف شخصاً يستخدم تطبيقات فوركا',addExistingHint:'أشخاص لديهم حساب في تطبيقات فوركا وليسوا في قسم بعد.',addToTeam:'أضف إلى الفريق',noFree:'كل من لديه حساب موجود في قسم. ادعُ شخصاً جديداً بدلاً من ذلك.',
+  addExisting:'أضف شخصاً يستخدم تطبيقات فوركا',addExistingHint:'أي شخص لديه حساب في تطبيقات فوركا وليس في {d} بعد. يبقى في أقسامه الأخرى أيضاً.',addToTeam:'أضف إلى الفريق',noFree:'كل من لديه حساب موجود في قسم. ادعُ شخصاً جديداً بدلاً من ذلك.',
   inviteNew:'ادعُ شخصاً جديداً',inviteHint:'الاسم وبريد الشركة. يدخل إلى erp.forka.com بحساب Google.',fullName:'الاسم الكامل',sendInvite:'إرسال الدعوة',inviteAuto:'في التطبيق الفعلي تُرسل رسالة الدعوة تلقائياً.',
   roleL:'الدور',emailL:'البريد',statusL:'الحالة',invited:'أُرسلت الدعوة',active:'نشط',copyInvite:'نسخ الدعوة',remove:'إزالة',copied:'تم نسخ الدعوة. الصقها في واتساب أو البريد.',
   inviteText:'مرحباً {p}، تمت إضافتك إلى لوحات فوركا ({d}). افتح https://erp.forka.com وادخل بحساب Google باستخدام {e}.',
@@ -752,7 +757,7 @@ ar:{app:'اللوحات',search:'بحث في هذه اللوحة',addCard:'إض�
   chat:'المحادثة',channels:'القنوات',dms:'رسائل مباشرة',everyone:'الجميع',newDm:'راسل شخصاً…',msgPh:'اكتب رسالة… (اكتب @ لذكر شخص)',sendB:'إرسال',
   chatLead:'قناة {d}',chatAll:'لكل فريق فوركا',noMsgs:'لا رسائل بعد. ابدأ بالتحية.',pickChat:'اختر قناة أو شخصاً.',
   chatNote:'معاينة: الرسائل تبقى في هذا المتصفح. في التطبيق الفعلي يراها كل أعضاء القناة فوراً.',n_chat:'ذكرك {p} في {x}',n_dm:'أرسل لك {p} رسالة',
-  today2:'اليوم',yesterday:'أمس',lblNames:'إظهار أسماء التصنيفات على البطاقات',lblColours:'إظهار ألوان التصنيفات فقط',
+  today2:'اليوم',yesterday:'أمس',lblNames:'إظهار أسماء التصنيفات على البطاقات',lblColours:'إظهار ألوان التصنيفات فقط',newSpace:'مساحة جديدة',spLead:'المساحة قسم أو فريق مستقل: لوحاته وفريقه وقناة محادثته. ستكون أنت المسؤول عنها.',spName:'الاسم (بالإنجليزية)',spNamePh:'مثال: الفعاليات، المطبخ المركزي',spNameAr:'الاسم (بالعربية)',spColour:'اللون',spCreate:'إنشاء المساحة',editSpace:'تعديل المساحة',delSpace:'إزالة المساحة',delSpaceQ:'إزالة هذه المساحة؟ يبقى الأشخاص في أقسامهم الأخرى.',spHasBoards:'احذف لوحاتها أو انقلها أولاً.',pDepts:'الأقسام والدور',pDeptsH:'يمكن أن يكون الشخص في أكثر من قسم. مسؤول القسم يدير لوحات القسم وفريقه.',notIn:'ليس فيه',alsoIn:'أيضاً في: {d}',fromL:'مُرسل من',
   sSaved:'تم الحفظ',sSaving:'جارٍ الحفظ…',sOff:'غير متصل: ستُرسل التعديلات عند عودة الاتصال',notAllowed:'لا يمكنك تغيير هذا. أُعيد كما كان.',
   signinNeed:'يرجى تسجيل الدخول في تطبيقات فوركا أولاً، ثم افتح اللوحات من هناك.',signinBtn:'تسجيل الدخول في تطبيقات فوركا',netErr:'تعذّر الوصول إلى الخادم. تحقق من الاتصال وحاول مرة أخرى.',retry:'حاول مرة أخرى',loading:'جارٍ فتح لوحاتك…',
   noDept:'ليس في قسم بعد',inviteLive:'يُضاف إلى تطبيقات فوركا بحالة "للتأكيد". يؤكده الرئيس التنفيذي ثم يدخل بحساب Google.',
@@ -761,17 +766,29 @@ let lang=(()=>{try{return localStorage.getItem('fb-lang')==='ar'?'ar':'en'}catch
 const t=(k,v)=>{let s=(T[lang][k]??T.en[k]??k);if(v)Object.keys(v).forEach(x=>{s=s.split('{'+x+'}').join(v[x])});return s};
 
 /* ---------- departments and people ---------- */
-const DEPTS=[{id:'adm',en:'Executive & Administration',ar:'الإدارة التنفيذية',tint:'#ece6dc',dot:'#7a6a55'},{id:'ops',en:'Operations',ar:'العمليات',tint:'#e3e8dc',dot:'#6f8a5a'},{id:'mkt',en:'Marketing',ar:'التسويق',tint:'#e2e7ec',dot:'#5b7896'},
+const DEPTS0=[{id:'adm',en:'Executive & Administration',ar:'الإدارة التنفيذية',tint:'#ece6dc',dot:'#7a6a55'},{id:'ops',en:'Operations',ar:'العمليات',tint:'#e3e8dc',dot:'#6f8a5a'},{id:'mkt',en:'Marketing',ar:'التسويق',tint:'#e2e7ec',dot:'#5b7896'},
   {id:'proc',en:'Procurement',ar:'المشتريات',tint:'#ebe1d1',dot:'#9a6b3f'},{id:'fin',en:'Finance',ar:'المالية',tint:'#e7e4ee',dot:'#6d5f8f'},
   {id:'hr',en:'HR',ar:'الموارد البشرية',tint:'#efe3df',dot:'#a8655a'},{id:'mnt',en:'Maintenance',ar:'الصيانة',tint:'#dfe7e5',dot:'#4f7f78'},
   {id:'dev',en:'Development',ar:'التطوير',tint:'#e4e5ec',dot:'#5c6680'},{id:'oman',en:'Oman',ar:'عُمان',tint:'#eee6d5',dot:'#a88a4a'}];
+let DEPTS=DEPTS0.slice();
+/* Spaces: extra departments a head (or the CEO) creates. Whoever creates one becomes its head. */
+const SPCOL=[['#e9e3f0','#7a5aa6'],['#e1ecea','#2f8a85'],['#f1e4dc','#b05a3a'],['#e6e9df','#6b7d3a'],['#e3e6ee','#3e6aa1'],['#efe6d6','#a8732c'],['#ece2e8','#9a4f78'],['#e4e4e4','#5f5f5f']];
+function rebuildDepts(){DEPTS=DEPTS0.concat(((typeof D!=='undefined'&&D&&D.spaces)||[]).filter(x=>!x.off).map(x=>({id:x.id,en:x.en,ar:x.ar||x.en,tint:x.tint,dot:x.dot,space:true,by:x.by})))}
+/* A person can be in several departments, with a role in each: p.depts = {ops:'staff', mkt:'head'} */
+const pD=p=>(p&&p.depts)||{};
+const inD=(p,d)=>!!pD(p)[d];
+const isHd=(p,d)=>pD(p)[d]==='head';
+const headAny=p=>Object.values(pD(p)).includes('head');
+const dlist=p=>Object.keys(pD(p)).filter(d=>DEPTS.some(x=>x.id===d));
+const dnames=p=>dlist(p).map(d=>deptName(d)).join(', ');
+function normP(p){if(!p.depts){p.depts={};if(p.dept)p.depts[p.dept]=p.role||'staff'}delete p.dept;delete p.role;return p}
 const deptName=id=>{if(id==='ceo')return t('ceoRole');const d=DEPTS.find(x=>x.id===id);return d?d[lang]:id};
 const dept=id=>DEPTS.find(x=>x.id===id)||DEPTS[0];
 /* Preview people are roles, not real staff. The live version takes everyone from Forka Apps > People and access. */
 const PEOPLE0=[
   {id:'ka',en:'Khaled Alamer',ar:'خالد العامر',ini:'KA',color:'#c27a2c',ceo:true},
   {id:'ea',en:'Executive Administrator',ar:'المسؤولة الإدارية التنفيذية',ini:'EA',dept:'adm',role:'head',color:'#7a6a55'},
-  {id:'oh',en:'Operations Head',ar:'مسؤول العمليات',ini:'OH',dept:'ops',role:'head',color:'#6f8a5a'},{id:'os',en:'Operations Supervisor',ar:'مشرف العمليات',ini:'OS',dept:'ops',role:'staff',color:'#869b74'},
+  {id:'oh',en:'Operations Head',ar:'مسؤول العمليات',ini:'OH',dept:'ops',role:'head',color:'#6f8a5a'},{id:'os',en:'Operations Supervisor',ar:'مشرف العمليات',ini:'OS',depts:{ops:'staff',adm:'staff'},color:'#869b74'},
   {id:'mh',en:'Marketing Head',ar:'مسؤول التسويق',ini:'MH',dept:'mkt',role:'head',color:'#5b7896'},{id:'md',en:'Designer',ar:'المصمم',ini:'DS',dept:'mkt',role:'staff',color:'#7891ab'},
   {id:'ph',en:'Procurement Head',ar:'مسؤول المشتريات',ini:'PH',dept:'proc',role:'head',color:'#9a6b3f'},{id:'pb',en:'Buyer',ar:'المشتري',ini:'BY',dept:'proc',role:'staff',color:'#b0855a'},
   {id:'fh',en:'Finance Head',ar:'مسؤول المالية',ini:'FH',dept:'fin',role:'head',color:'#6d5f8f'},{id:'fa',en:'Accountant',ar:'المحاسب',ini:'AC',dept:'fin',role:'staff',color:'#8678a6'},
@@ -783,7 +800,7 @@ const PEOPLE0=[
 let PEOPLE=PEOPLE0.map(p=>Object.assign({},p));
 const person=id=>PEOPLE.find(p=>p.id===id)||{id,en:id,ar:id,ini:'?',color:'#777'};
 const pname=id=>{const p=person(id);return p[lang]||p.en};
-const headOfDept=d=>PEOPLE.find(p=>p.dept===d&&p.role==='head');
+const headOfDept=d=>PEOPLE.find(p=>isHd(p,d));
 const LABELS=[{id:'fin',color:'#4f8a3c'},{id:'proc',color:'#9a6b3f'},{id:'mnt',color:'#3e6aa1'},{id:'hr',color:'#7a5aa6'},{id:'urg',color:'#b8432f'},{id:'mkt',color:'#2f8a85'}];
 // Each board can rename and recolour its labels; until it does, it uses these six.
 const labelsOf=b=>(b&&b.labels)||LABELS;
@@ -896,17 +913,17 @@ const KEY='forka-boards-preview-v5';
 const CFG=window.FORKA_APPS||{};
 const LIVE=!!CFG.BOARDS_URL&&!/^(127\.0\.0\.1|localhost)$/.test(location.hostname)&&!/[?&]demo\b/.test(location.search);
 let D=(()=>{if(LIVE)return {boards:{},lists:{},cards:{},order:[],me:'',people:[]};try{const d=JSON.parse(localStorage.getItem(KEY)||'null');if(d&&d.boards&&d.me)return d}catch(e){}return seed()})();
-if(!D.people)D.people=PEOPLE0.map(p=>Object.assign({},p));PEOPLE=D.people;
+if(!D.people)D.people=PEOPLE0.map(p=>Object.assign({},p));PEOPLE=D.people;PEOPLE.forEach(normP);rebuildDepts();
 function save(){if(LIVE){syncQueue();return}try{localStorage.setItem(KEY,JSON.stringify(D))}catch(e){}}
 
 /* ---------- who may do what ---------- */
 const ME=()=>D.me, meP=()=>person(D.me), isCEO=()=>!!meP().ceo;
-const headOf=dep=>isCEO()||(meP().role==='head'&&meP().dept===dep);
-const canSee=b=>!!b&&(isCEO()||headOf(b.dept)||b.members.includes(ME())||(b.allDept&&meP().dept===b.dept));
-const boardPeople=b=>[...new Set((b.allDept?PEOPLE.filter(p=>p.dept===b.dept&&!p.ceo).map(p=>p.id):[]).concat(b.members))];
+const headOf=dep=>isCEO()||isHd(meP(),dep);
+const canSee=b=>!!b&&(isCEO()||headOf(b.dept)||b.members.includes(ME())||(b.allDept&&inD(meP(),b.dept)));
+const boardPeople=b=>[...new Set((b.allDept?PEOPLE.filter(p=>inD(p,b.dept)&&!p.ceo).map(p=>p.id):[]).concat(b.members))];
 const canAdmin=b=>!!b&&headOf(b.dept);
 const boards=()=>D.order.map(id=>D.boards[id]).filter(canSee);
-const depts=()=>DEPTS.filter(d=>isCEO()||headOf(d.id)||boards().some(b=>b.dept===d.id));
+const depts=()=>DEPTS.filter(d=>isCEO()||inD(meP(),d.id)||boards().some(b=>b.dept===d.id));
 const theme=()=>D.dark&&D.dark[ME()]?'dark':'light';
 
 /* ---------- view state ---------- */
@@ -916,7 +933,7 @@ function ask(msg,go){ASK={msg,go};V.pop=null;render();setTimeout(()=>{const b=do
 function home(){V.view=isCEO()?'progress':'mine';V.board=null;V.dept=null}
 home();
 const B=()=>D.boards[V.board];
-const myDept=()=>meP().ceo?'ceo':meP().dept;
+const myDept=()=>meP().ceo?'ceo':(V.nt&&V.nt.from&&inD(meP(),V.nt.from)?V.nt.from:dlist(meP())[0]||null);
 /* Each department has one "Requests to ..." board, made the first time someone sends it a request. Its head sees it and assigns the work. */
 function reqBoard(dep,create,X){X=X||D;let b=Object.values(X.boards).find(x=>x.dept===dep&&x.kind==='requests');
   if(!b&&create){b={id:uid('b'),dept:dep,name:'',kind:'requests',members:[],status:null,lists:[]};['newreq','acc','done'].forEach(k=>{const l={id:uid('l'),name:SYS[k][0],sys:k,cards:[],col:false};X.lists[l.id]=l;b.lists.push(l.id)});X.boards[b.id]=b;X.order.unshift(b.id)}
@@ -991,6 +1008,7 @@ function render(){
     ${V.nt?ntHTML():''}
     ${V.gf?goalFormHTML():''}
     ${V.prof?profHTML():''}
+    ${V.sp?spaceHTML():''}
     ${V.pop?popHTML():''}
     ${V.toast?`<div class="toast" role="status">${esc(V.toast)}</div>`:''}
     ${ASK?`<div class="ov" style="z-index:60;align-items:center"><div class="md" role="alertdialog" aria-modal="true" style="max-width:400px;padding:22px"><p style="margin:0 0 18px;font-size:15px;line-height:1.45">${esc(ASK.msg)}</p><div class="row" style="justify-content:flex-end"><button class="btn sec" data-a="ask-no">${t('cancel')}</button><button class="btn" style="background:#a33a2c" data-a="ask-yes">${t('yes')}</button></div></div></div>`:''}
@@ -1018,7 +1036,7 @@ function sideHTML(){
     ${lead()?`<button class="nav ${V.view==='ports'?'on':''}" data-a="go" data-v="ports">${ic('folders')}${t('ports')}</button>
     <button class="nav ${V.view==='report'?'on':''}" data-a="go" data-v="report">${ic('chart')}${t('report')}</button>
     <button class="nav ${V.view==='res'?'on':''}" data-a="go" data-v="res">${ic('users')}${t('resourcing')}</button>`:''}
-    <h5>${t('departments')}</h5>
+    <h5 class="h5r">${t('departments')}${isCEO()||headAny(meP())?`<button class="h5b" data-a="spnew" title="${t('newSpace')}" aria-label="${t('newSpace')}">${ic('plus')}</button>`:''}</h5>
     ${depts().map(d=>{const bs=boards().filter(b=>b.dept===d.id),s=stats(bs.flatMap(cardsOf));
       return `<button class="nav ${V.view==='dept'&&V.dept===d.id?'on':''}" data-a="dept" data-id="${d.id}"><span class="dot" style="background:${d.dot}"></span>${esc(d[lang])}<span class="n ${s.over?'bad':''}">${s.over?s.over:''}</span></button>
         ${(V.dept===d.id||(V.view==='board'&&B()&&B().dept===d.id))?bs.map(b=>`<button class="nav sub ${V.view==='board'&&V.board===b.id?'on':''}" data-a="board" data-id="${b.id}">${esc(bname(b))}${b.kind?`<span class="n">${D.lists[b.lists[0]].cards.length||''}</span>`:''}</button>`).join(''):''}`}).join('')}
@@ -1036,7 +1054,7 @@ function progressHTML(){
       <td class="sm" style="max-width:280px">${b.status&&b.status.note?esc(b.status.note)+`<div>${esc(pname(b.status.by))} · ${ago(b.status.at)}</div>`:'-'}</td>
       <td>${pbar(s.pct)}</td><td class="num ${s.over?'bad':''}">${s.over}</td><td><div style="display:flex">${boardPeople(b).slice(0,5).map(m=>av(m)).join('')}</div></td></tr>`}).join('');
   const load=PEOPLE.map(p=>{const cs=all.flatMap(cardsOf).filter(c=>c.members.includes(p.id));return {p,s:stats(cs)}}).filter(x=>x.s.total).sort((a,b)=>b.s.over-a.s.over||b.s.open-a.s.open)
-    .map(({p,s})=>`<tr><td><div style="display:flex;align-items:center;gap:8px">${av(p.id)}<span>${esc(pname(p.id))}</span></div></td><td class="sm">${p.ceo?t('ceoRole'):esc(deptName(p.dept))}</td><td class="num">${s.open}</td><td class="num ${s.over?'bad':''}">${s.over}</td><td class="num">${s.week}</td><td class="num">${s.doneW}</td></tr>`).join('');
+    .map(({p,s})=>`<tr><td><div style="display:flex;align-items:center;gap:8px">${av(p.id)}<span>${esc(pname(p.id))}</span></div></td><td class="sm">${p.ceo?t('ceoRole'):esc(dnames(p))}</td><td class="num">${s.open}</td><td class="num ${s.over?'bad':''}">${s.over}</td><td class="num">${s.week}</td><td class="num">${s.doneW}</td></tr>`).join('');
   return `<div class="page">
     <h1>${t('progress')}</h1><p class="lead">${t('progLead')}</p>
     <div class="kpis"><div class="kpi"><b>${S.open}</b><span>${t('k_open')}</span></div><div class="kpi ${S.over?'bad':''}"><b>${S.over}</b><span>${t('k_over')}</span></div>
@@ -1116,15 +1134,15 @@ function projectsHTML(){const P=V.pf=V.pf||{q:'',dept:'',owner:'',member:'',stat
       <td class="sm">${o?esc(pname(o)):'-'}</td><td>${b.kind?'':stChip(b.status)}</td><td>${pbar(s.pct)}</td><td class="num ${s.over?'bad':''}">${s.over}</td><td><div style="display:flex">${boardPeople(b).slice(0,5).map(x=>av(x)).join('')}</div></td><td class="sm">${m?ago(m):'-'}</td></tr>`).join('')}</table></div>`:`<div class="empty-p">${t('noProj')}</div>`}</div>`}
 
 /* ---------- Strategy: goals, portfolios, timeline, reporting, resourcing and performance ---------- */
-const lead=()=>isCEO()||meP().role==='head';
-const scopeD=()=>isCEO()?DEPTS.map(d=>d.id):meP().role==='head'?[meP().dept]:[];
+const lead=()=>isCEO()||headAny(meP());
+const scopeD=()=>isCEO()?DEPTS.map(d=>d.id):dlist(meP()).filter(d=>isHd(meP(),d));
 const scopeBoards=()=>boards().filter(b=>scopeD().includes(b.dept));
-const scopePeople=()=>PEOPLE.filter(p=>!p.ceo&&!p.invited&&scopeD().includes(p.dept));
+const scopePeople=()=>PEOPLE.filter(p=>!p.ceo&&!p.invited&&dlist(p).some(d=>scopeD().includes(d)));
 const pct=(a,b)=>b?Math.round(a/b*100):0;
 const mondayOf=ts=>{const d=new Date(ts);d.setHours(0,0,0,0);d.setDate(d.getDate()-((d.getDay()+6)%7));return d.getTime()};
 const legend=items=>`<div class="legend">${items.map(([cls,txt])=>`<span><i class="${cls}"></i>${txt}</span>`).join('')}</div>`;
 /* Goals */
-const goalsSeen=()=>(D.goals||[]).filter(g=>isCEO()||g.lvl==='company'||g.lvl===meP().dept);
+const goalsSeen=()=>(D.goals||[]).filter(g=>isCEO()||g.lvl==='company'||inD(meP(),g.lvl));
 const canGoal=g=>isCEO()||(g.lvl!=='company'&&headOf(g.lvl));
 function goalPct(g){const bs=(g.boards||[]).map(id=>D.boards[id]).filter(Boolean);if(!bs.length)return Math.max(0,Math.min(100,+g.pct||0));return stats(bs.flatMap(cardsOf)).pct}
 function goalRow(g){const bs=(g.boards||[]).map(id=>D.boards[id]).filter(Boolean);
@@ -1132,12 +1150,12 @@ function goalRow(g){const bs=(g.boards||[]).map(id=>D.boards[id]).filter(Boolean
     <td>${stChip(g.status)}</td><td>${pbar(goalPct(g))}</td><td class="sm">${g.owner?`<div style="display:flex;align-items:center;gap:6px">${av(g.owner)}${esc(pname(g.owner))}</div>`:'-'}</td>
     <td class="sm">${g.due?fmtDay(g.due):'-'}</td><td class="sm">${bs.length?bs.map(b=>esc(bname(b))).join(', '):'-'}</td></tr>`}
 function goalsHTML(){const G=goalsSeen(),groups=[['company',t('companyGoals')]].concat(DEPTS.filter(d=>G.some(g=>g.lvl===d.id)).map(d=>[d.id,d[lang]]));
-  const can=isCEO()||meP().role==='head';
+  const can=isCEO()||headAny(meP());
   return `<div class="page"><div class="phead"><div><h1>${t('goals')}</h1><p class="lead">${t('goalsLead')}</p></div>${can?`<button class="btn" data-a="gnew">${ic('plus')}${t('newGoal')}</button>`:''}</div>
     ${G.length?groups.map(([k,n])=>{const gs=G.filter(g=>g.lvl===k);return gs.length?`<div class="h2">${k==='company'?ic('target'):`<span class="dot" style="width:10px;height:10px;border-radius:3px;background:${dept(k).dot}"></span>`}${esc(n)}</div>
       <div class="tw"><table class="tbl goaltbl"><tr><th>${t('gTitle')}</th><th>${t('gStatus')}</th><th>${t('t_prog')}</th><th>${t('gOwner')}</th><th>${t('gDue')}</th><th>${t('gBoards').split(' (')[0]}</th></tr>${gs.map(goalRow).join('')}</table></div>`:''}).join(''):`<div class="empty-p">${t('noGoals')}</div>`}</div>`}
 function goalFormHTML(){const f=V.gf,g=f.id&&(D.goals||[]).find(x=>x.id===f.id),ro=g&&!canGoal(g),miss=k=>f.bad.includes(k)?'miss':'';
-  const lvls=(isCEO()?['company'].concat(DEPTS.map(d=>d.id)):[meP().dept]);
+  const lvls=(isCEO()?['company'].concat(DEPTS.map(d=>d.id)):scopeD());
   const bs=boards().filter(b=>f.lvl==='company'||b.dept===f.lvl);
   return `<div class="ov"><div class="md" role="dialog" aria-modal="true" aria-label="${t('editGoal')}" style="max-width:640px">
     <button class="ib x" data-a="gx" aria-label="${t('close')}">${ic('x')}</button>
@@ -1147,7 +1165,7 @@ function goalFormHTML(){const f=V.gf,g=f.id&&(D.goals||[]).find(x=>x.id===f.id),
       <label class="fl" for="gf-title">${t('gTitle')} <b>*</b></label><input class="fld ${miss('title')}" id="gf-title" dir="auto" maxlength="160" style="width:100%" placeholder="${t('gTitlePh')}" value="${esc(f.title)}">
       <div class="g3">
         <div><label class="fl" for="gf-lvl">${t('gLevel')}</label><select class="fld" id="gf-lvl">${lvls.map(k=>`<option value="${k}" ${f.lvl===k?'selected':''}>${k==='company'?t('companyLvl'):esc(deptName(k))}</option>`).join('')}</select></div>
-        <div><label class="fl" for="gf-owner">${t('gOwner')} <b>*</b></label><select class="fld ${miss('owner')}" id="gf-owner"><option value="">-</option>${PEOPLE.filter(p=>!p.invited&&(f.lvl==='company'||p.dept===f.lvl||p.ceo)).map(p=>`<option value="${p.id}" ${f.owner===p.id?'selected':''}>${esc(pname(p.id))}</option>`).join('')}</select></div>
+        <div><label class="fl" for="gf-owner">${t('gOwner')} <b>*</b></label><select class="fld ${miss('owner')}" id="gf-owner"><option value="">-</option>${PEOPLE.filter(p=>!p.invited&&(f.lvl==='company'||inD(p,f.lvl)||p.ceo)).map(p=>`<option value="${p.id}" ${f.owner===p.id?'selected':''}>${esc(pname(p.id))}</option>`).join('')}</select></div>
         <div><label class="fl" for="gf-due">${t('gDue')} <b>*</b></label><input class="fld ${miss('due')}" type="date" id="gf-due" value="${esc(f.due)}"></div>
       </div>
       <label class="fl">${t('gBoards')}</label><div class="lchips">${bs.map(b=>`<button class="pchip ${f.boards.includes(b.id)?'on':''}" style="padding:0 12px" data-a="gfb" data-v="${b.id}">${f.boards.includes(b.id)?ic('tick'):''}${esc(bname(b))}</button>`).join('')}</div>
@@ -1159,7 +1177,7 @@ function goalFormHTML(){const f=V.gf,g=f.id&&(D.goals||[]).find(x=>x.id===f.id),
 function gfSync(){const f=V.gf,g=id=>document.getElementById(id);if(!f||!g('gf-title'))return;f.title=g('gf-title').value;f.lvl=g('gf-lvl').value;f.owner=g('gf-owner').value;f.due=g('gf-due').value;f.s=g('gf-s').value;f.note=g('gf-note').value;if(g('gf-pct'))f.pct=g('gf-pct').value}
 function gfOpen(id){const g=id&&(D.goals||[]).find(x=>x.id===id);
   V.gf=g?{id:g.id,title:g.title,lvl:g.lvl,owner:g.owner||'',due:g.due?ymd(g.due):'',boards:(g.boards||[]).slice(),pct:g.pct||'',s:(g.status&&g.status.s)||'on',note:(g.status&&g.status.note)||'',bad:[]}
-    :{id:null,title:'',lvl:isCEO()?'company':meP().dept,owner:ME(),due:'',boards:[],pct:'',s:'on',note:'',bad:[]};render();focusSel('#gf-title')}
+    :{id:null,title:'',lvl:isCEO()?'company':scopeD()[0],owner:ME(),due:'',boards:[],pct:'',s:'on',note:'',bad:[]};render();focusSel('#gf-title')}
 function gfSave(){gfSync();const f=V.gf,bad=[];if(!f.title.trim())bad.push('title');if(!f.owner)bad.push('owner');if(!f.due)bad.push('due');f.bad=bad;if(bad.length){render();return}
   D.goals=D.goals||[];let g=D.goals.find(x=>x.id===f.id);if(!g){g={id:uid('g')};D.goals.push(g)}
   const old=g.status||{};Object.assign(g,{title:f.title.trim(),lvl:f.lvl,owner:f.owner,due:new Date(f.due+'T00:00:00').getTime(),boards:f.boards.slice(),pct:+f.pct||0,
@@ -1217,7 +1235,7 @@ function reportHTML(){const bs=scopeBoards(),all=bs.flatMap(b=>cardsOf(b).map(c=
   const pri=['urgent','high','normal','low'].map(k=>({l:t('p_'+k),v:all.filter(x=>!x.c.done&&(x.c.priority||'normal')===k).length,cls:k==='urgent'?'lg-over':'lg-one'}));
   const op=scopePeople().map(p=>({l:pname(p.id),v:all.filter(x=>!x.c.done&&x.c.due&&x.c.due<t0&&x.c.members.includes(p.id)).length,cls:'lg-over'})).filter(r=>r.v).sort((a,b)=>b.v-a.v).slice(0,8);
   const loc=lang==='ar'?'ar-AE':'en-GB',wl=w=>new Date(w).toLocaleDateString(loc,{day:'numeric',month:'short'});
-  return `<div class="page rep"><div class="phead"><div><h1>${t('report')}</h1><p class="lead">${isCEO()?t('reportLead'):t('reportLeadHead',{d:deptName(meP().dept)})}</p></div>
+  return `<div class="page rep"><div class="phead"><div><h1>${t('report')}</h1><p class="lead">${isCEO()?t('reportLead'):t('reportLeadHead',{d:scopeD().map(deptName).join(', ')})}</p></div>
     <div class="row noprint" style="margin:0;flex-wrap:wrap"><button class="btn sec" data-a="csv">${ic('download')}${t('exportCsv')}</button><button class="btn sec" data-a="print">${ic('print')}${t('printB')}</button></div></div>
     <div class="kpis"><div class="kpi"><b>${S.open}</b><span>${t('k_open')}</span></div><div class="kpi ${S.over?'bad':''}"><b>${S.over}</b><span>${t('k_over')}</span></div>
       <div class="kpi"><b>${d30.length}</b><span>${t('k_done30')}</span></div><div class="kpi"><b>${dd.length?pct(ot,dd.length)+'%':'-'}</b><span>${t('k_ontime')}</span></div></div>
@@ -1250,7 +1268,7 @@ function resHTML(){const tab=V.rtab||'wl',P=scopePeople(),t0=today(),w0=mondayOf
     body=`<p class="lead">${t('wlLead')}</p><div class="tw"><table class="tbl" id="wltbl"><tr><th>${t('t_person')}</th>${isCEO()?`<th>${t('t_dept')}</th>`:''}<th class="num">${t('overdueCol')}</th>${W.map((w,i)=>`<th class="num">${i?new Date(w).toLocaleDateString(loc,{day:'numeric',month:'short'}):t('thisWeek')}</th>`).join('')}<th class="num">${t('limitL')}</th></tr>
       ${P.map(p=>{const it=wlItems(p.id),cap=(D.cap||{})[p.id]||6,over=it.filter(x=>x.due&&x.due<t0).length;
         const cell=(n,k)=>`<td class="num"><button class="wlc ${n>cap?'hi':n>=Math.ceil(cap*.8)&&n?'mid':''} ${n?'':'z'}" data-a="wlc" data-v="${p.id}|${k}" data-wl="${p.id}|${k}" ${n?'':'disabled'}>${n}</button></td>`;
-        return `<tr><td><div style="display:flex;align-items:center;gap:8px">${av(p.id)}<span>${esc(pname(p.id))}</span></div></td>${isCEO()?`<td class="sm">${esc(deptName(p.dept))}</td>`:''}
+        return `<tr><td><div style="display:flex;align-items:center;gap:8px">${av(p.id)}<span>${esc(pname(p.id))}</span></div></td>${isCEO()?`<td class="sm">${esc(dnames(p))}</td>`:''}
           <td class="num"><button class="wlc ${over?'hi':'z'}" data-a="wlc" data-v="${p.id}|over" data-wl="${p.id}|over" ${over?'':'disabled'}>${over}</button></td>
           ${W.map((w,i)=>cell(it.filter(x=>x.due&&x.due>=Math.max(w,t0)&&x.due<w+7*day).length,i)).join('')}
           <td class="num"><input class="fld capin" type="number" min="1" max="40" data-p="${p.id}" value="${cap}" aria-label="${t('limitL')}"></td></tr>`}).join('')}</table></div>`}
@@ -1259,7 +1277,7 @@ function resHTML(){const tab=V.rtab||'wl',P=scopePeople(),t0=today(),w0=mondayOf
     body=`<div class="reqnote" style="margin:0 0 14px">${ic('chart')}<span>${t('perfLead')}</span></div>
       <div class="row" style="margin:0 0 12px;align-items:center;gap:8px"><span class="sm" style="color:var(--muted)">${t('period')}</span><div class="vseg">${['30','90','month'].map(k=>`<button data-a="pper" data-v="${k}" class="${per===k?'on':''}">${t(k==='month'?'pmonth':'p'+k)}</button>`).join('')}</div></div>
       <div class="tw"><table class="tbl" id="perftbl"><tr><th>${t('t_person')}</th>${isCEO()?`<th>${t('t_dept')}</th>`:''}<th class="num">${t('pf_done')}</th><th class="num">${t('pf_ontime')}</th><th class="num">${t('pf_late')}</th><th class="num">${t('pf_avgLate')}</th><th class="num">${t('pf_overNow')}</th><th class="num">${t('pf_subs')}</th></tr>
-      ${rows.map(({p,a,b})=>`<tr class="click" data-a="pfp" data-v="${p.id}"><td><div style="display:flex;align-items:center;gap:8px">${av(p.id)}<span>${esc(pname(p.id))}</span></div></td>${isCEO()?`<td class="sm">${esc(deptName(p.dept))}</td>`:''}
+      ${rows.map(({p,a,b})=>`<tr class="click" data-a="pfp" data-v="${p.id}"><td><div style="display:flex;align-items:center;gap:8px">${av(p.id)}<span>${esc(pname(p.id))}</span></div></td>${isCEO()?`<td class="sm">${esc(dnames(p))}</td>`:''}
         <td class="num">${a.n}${delta(a.n,b.n,true)}</td><td class="num">${a.rate==null?'-':`<span class="rt ${a.rate>=80?'g':a.rate>=60?'m':'b'}">${a.rate}%</span>`}${delta(a.rate,b.rate,true,'%')}</td><td class="num">${a.late}</td><td class="num">${a.late?a.avgLate:'-'}</td>
         <td class="num ${a.over?'bad':''}">${a.over}</td><td class="num">${a.subs}</td></tr>`).join('')}</table></div>
       ${V.perfP?perfDetail(V.perfP,f,to):''}`}
@@ -1277,18 +1295,18 @@ const lblNames=()=>!(D.lblOff||{})[ME()];
 const prof=id=>(D.prof||{})[id]||{};
 const away=id=>{const o=prof(id).ooo;return o&&o.to&&o.from&&today()>=new Date(o.from+'T00:00:00').getTime()&&today()<=new Date(o.to+'T00:00:00').getTime()?o:null};
 const awayTag=id=>{const o=away(id);return o?`<span class="awt">${esc(t('awayUntil',{d:fmtDay(new Date(o.to+'T00:00:00').getTime())}))}</span>`:''};
-function peopleHTML(){const q=(V.pq2||'').toLowerCase(),L=PEOPLE.filter(p=>!p.invited||isCEO()).filter(p=>!q||pname(p.id).toLowerCase().includes(q)||(p.dept&&deptName(p.dept).toLowerCase().includes(q)));
-  const grp=[['ceo',L.filter(p=>p.ceo)]].concat(DEPTS.map(d=>[d.id,L.filter(p=>p.dept===d.id)]),[['none',L.filter(p=>!p.ceo&&!p.dept)]]).filter(g=>g[1].length);
+function peopleHTML(){const q=(V.pq2||'').toLowerCase(),L=PEOPLE.filter(p=>!p.invited||isCEO()).filter(p=>!q||pname(p.id).toLowerCase().includes(q)||dlist(p).some(d=>deptName(d).toLowerCase().includes(q)));
+  const grp=[['ceo',L.filter(p=>p.ceo)]].concat(DEPTS.map(d=>[d.id,L.filter(p=>inD(p,d.id))]),[['none',L.filter(p=>!p.ceo&&!dlist(p).length)]]).filter(g=>g[1].length);
   return `<div class="page"><h1>${t('people')}</h1><p class="lead">${t('peopleLead')}</p>
     <div class="pfind">${ic('search')}<input id="pq2" type="search" placeholder="${t('findPerson')}" value="${esc(V.pq2||'')}" aria-label="${t('findPerson')}"></div>
     ${grp.map(([k,ps])=>`<div class="h2">${k==='ceo'?esc(t('ceoRole')):k==='none'?esc(t('noDept')):`<span style="width:10px;height:10px;border-radius:3px;background:${dept(k).dot}"></span>${esc(deptName(k))}`}</div>
       <div class="ppl">${ps.map(p=>{const n=allCards().filter(({c})=>!c.done&&c.members.includes(p.id)).length;return `<button class="pcard" data-a="prof" data-v="${p.id}">${av(p.id,'lg')}<span><b dir="auto">${esc(pname(p.id))}</b>
-        <small>${p.ceo?t('ceoRole'):p.role==='head'?t('headLabel'):t('staff')}${n?' · '+t('openN',{n}):''}</small>${awayTag(p.id)}</span></button>`}).join('')}</div>`).join('')}</div>`}
+        <small>${p.ceo?t('ceoRole'):k!=='none'&&isHd(p,k)?t('headLabel'):t('staff')}${n?' · '+t('openN',{n}):''}</small>${awayTag(p.id)}</span></button>`}).join('')}</div>`).join('')}</div>`}
 function profHTML(){const id=V.prof,p=person(id),me=id===ME(),ed=me&&V.profEdit,P=ed&&V.prDraft?V.prDraft:prof(id),o=P.ooo||{};
   const open=allCards().filter(({c})=>!c.done&&c.members.includes(id)),email=p.email||P.email||'',ph=(P.phone||'').replace(/[^\d+]/g,'');
   return `<div class="ov" data-a="profx"><div class="md" role="dialog" aria-modal="true" aria-label="${esc(pname(id))}" style="max-width:560px">
     <button class="ib x" data-a="profx" aria-label="${t('close')}">${ic('x')}</button>
-    <div class="profh">${av(id,'xl')}<div><h2 dir="auto">${esc(pname(id))}</h2><div class="sm">${p.ceo?t('ceoRole'):(p.role==='head'?t('headLabel'):t('staff'))+(p.dept?' · '+esc(deptName(p.dept)):'')}</div>${awayTag(id)}</div></div>
+    <div class="profh">${av(id,'xl')}<div><h2 dir="auto">${esc(pname(id))}</h2><div class="sm">${p.ceo?t('ceoRole'):dlist(p).length?dlist(p).map(d=>esc(deptName(d))+(isHd(p,d)?' ('+t('head')+')':'')).join(' · '):t('noDept')}</div>${awayTag(id)}</div></div>
     <div class="ntf">${ed?`<label class="fl" for="pr-phone">${t('phone')}</label><input class="fld" id="pr-phone" dir="ltr" maxlength="30" value="${esc(P.phone||'')}" style="width:100%" placeholder="+971 5x xxx xxxx">
       <label class="fl" for="pr-about">${t('about')}</label><textarea class="desc" id="pr-about" dir="auto" maxlength="300" style="min-height:70px" placeholder="${t('aboutPh')}">${esc(P.about||'')}</textarea>
       <label class="fl">${t('ooo')}</label><div class="g3"><div><label class="fl" for="pr-from" style="margin-top:0">${t('oooFrom')}</label><input class="fld" type="date" id="pr-from" value="${esc(o.from||'')}"></div><div><label class="fl" for="pr-to" style="margin-top:0">${t('oooTo')}</label><input class="fld ${V.oooBad?'miss':''}" type="date" id="pr-to" value="${esc(o.to||'')}"></div><div><label class="fl" for="pr-note" style="margin-top:0">${t('oooNote')}</label><input class="fld" id="pr-note" dir="auto" maxlength="80" value="${esc(o.note||'')}"></div></div>
@@ -1300,11 +1318,10 @@ function profHTML(){const id=V.prof,p=person(id),me=id===ME(),ed=me&&V.profEdit,
       ${!email&&!ph?`<div class="lock" style="padding:8px 0 0">${t('noContact')}</div>`:''}
       <div class="h2" style="margin-top:18px">${t('openTasks')} <span class="sm" style="color:var(--muted);font-weight:500">${open.length}</span></div>
       ${open.length?`<div class="tw"><table class="tbl">${open.slice(0,8).map(({c,b})=>`<tr class="click" data-a="open" data-id="${c.id}"><td><b dir="auto">${esc(c.title)}</b><div class="sm">${esc(bname(b))}</div></td><td class="num">${c.due?`<span class="due ${dueCls(c)}">${fmtDay(c.due)}</span>`:''}</td></tr>`).join('')}</table></div>`:''}
-      ${isCEO()&&!p.ceo?`<div class="g3" style="margin-top:14px"><div><label class="fl" for="prdept">${t('t_dept')}</label><select class="fld" id="prdept"><option value="">${t('noDept')}</option>${DEPTS.map(d=>`<option value="${d.id}" ${p.dept===d.id?'selected':''}>${esc(d[lang])}</option>`).join('')}</select></div>
-        <div><label class="fl" for="prrole">${t('roleL')}</label><select class="fld" id="prrole" ${p.dept?'':'disabled'}><option value="staff">${t('staff')}</option><option value="head" ${p.role==='head'?'selected':''}>${t('headLabel')}</option></select></div></div>`:''}
+      ${isCEO()&&!p.ceo?`<div class="h2" style="margin-top:16px">${t('pDepts')}</div><div class="lock" style="padding:0 0 6px">${t('pDeptsH')}</div><div class="prds">${DEPTS.map(d=>`<label><span><i style="background:${d.dot}"></i>${esc(d[lang])}</span><select class="fld prd" data-d="${d.id}"><option value="">${t('notIn')}</option><option value="staff" ${pD(p)[d.id]==='staff'?'selected':''}>${t('staff')}</option><option value="head" ${isHd(p,d.id)?'selected':''}>${t('headLabel')}</option></select></label>`).join('')}</div>`:''}
       ${me?`<div class="lock" style="padding:10px 0 0">${t('myProfileHint')}</div>`:''}`}</div></div></div>`}
 /* Chat */
-const chMembers=k=>k==='all'?PEOPLE.filter(p=>!p.invited).map(p=>p.id):k.startsWith('dm:')?k.slice(3).split('|'):PEOPLE.filter(p=>p.dept===k||p.ceo).map(p=>p.id);
+const chMembers=k=>k==='all'?PEOPLE.filter(p=>!p.invited).map(p=>p.id):k.startsWith('dm:')?k.slice(3).split('|'):PEOPLE.filter(p=>inD(p,k)||p.ceo).map(p=>p.id);
 const canCh=k=>chMembers(k).includes(ME());
 const myChans=()=>['all'].concat(DEPTS.map(d=>d.id).filter(canCh));
 const dmKey=(a,b)=>'dm:'+[a,b].sort().join('|');
@@ -1337,7 +1354,7 @@ function scrollChat(){const el=document.getElementById('chs');if(el)el.scrollTop
    Everything is kept on the server, one row per board, list, card, message, goal… Each change is sent within half a second;
    other people's changes arrive every 20 seconds. If the connection drops, changes wait and are sent again. */
 const SV={tok:'',snap:{},docs:{},pend:{},since:0,t:null,busy:false,ready:false,people:[],me:{email:''}};
-const DELETABLE=['board','list','card','goal','port','tpl','ctpl'];
+const DELETABLE=['board','list','card','goal','port','tpl','ctpl','space'];
 const iniOf=n=>String(n||'').split(/[\s@._-]+/).filter(Boolean).map(w=>w[0]).join('').slice(0,2).toUpperCase()||'?';
 const HCOL=['#6f8a5a','#5b7896','#9a6b3f','#6d5f8f','#a8655a','#4f7f78','#5c6680','#a88a4a','#7a6a55'];
 const hcol=s=>HCOL[[...String(s)].reduce((a,c)=>a+c.charCodeAt(0),0)%HCOL.length];
@@ -1352,7 +1369,8 @@ function toDocs(){const out={},put=(id,kind,json)=>{out[id]={kind,json}},cl={},m
   (D.notes||[]).forEach(n=>put('note:'+n.id,'note',n));
   if(me)put('user:'+me,'user',{my:(D.my||{})[me]||null,seen:(D.seen||{})[me]||null,dark:!!(D.dark||{})[me],lblOff:!!(D.lblOff||{})[me],emailOff:!!(D.emailOff||{})[me]});
   Object.keys(D.prof||{}).forEach(e=>put('prof:'+e,'prof',D.prof[e]));Object.keys(D.cap||{}).forEach(e=>put('cap:'+e,'cap',{n:D.cap[e]}));
-  PEOPLE.forEach(p=>{if(p.ceo)return;const id='member:'+p.id,j={dept:p.dept||null,role:p.role||'staff'};if(p.inv)j.inv=p.inv;if(SV.snap[id]||j.dept||j.role!=='staff'||j.inv)put(id,'member',j)});
+  PEOPLE.forEach(p=>{if(p.ceo)return;const id='member:'+p.id,j={depts:Object.assign({},pD(p))};if(p.inv)j.inv=p.inv;if(SV.snap[id]||Object.keys(j.depts).length||j.inv)put(id,'member',j)});
+  (D.spaces||[]).forEach(x=>put('space:'+x.id,'space',x));
   (D.tpls||[]).forEach(x=>put('tpl:'+x.id,'tpl',x));(D.cardTpl||[]).forEach(x=>put('ctpl:'+x.id,'ctpl',x));
   return out}
 function syncQueue(){if(!SV.ready)return;const cur=toDocs();
@@ -1375,21 +1393,22 @@ async function pull(delta){syncQueue();if(SV.pulling)return;SV.pulling=true;cons
     const s=JSON.stringify(d.json);if(SV.snap[d.id]===s)return;SV.docs[d.id]={kind:d.kind,json:d.json};SV.snap[d.id]=s;ch=true});
   if(ch){fromDocs();soft()}
   setSync(Object.keys(SV.pend).length?'saving':'ok')}
+const mDepts=m=>m&&m.depts?Object.assign({},m.depts):m&&m.dept?{[m.dept]:m.role||'staff'}:{};
 function fromDocs(){const me=SV.me.email,N={boards:{},lists:{},cards:{},order:[],me,dark:{},lblOff:{},emailOff:{},my:{},seen:{},goals:[],ports:[],msgs:{},notes:[],prof:{},cap:{},tpls:[],cardTpl:[]},bs=[],mem={};
   Object.keys(SV.docs).forEach(id=>{const d=SV.docs[id],j=JSON.parse(JSON.stringify(d.json));
     switch(d.kind){case 'board':N.boards[id]=j;bs.push(Object.assign({},j,{id}));break;case 'list':N.lists[id]=j;break;case 'card':N.cards[id]=j;break;
       case 'goal':N.goals.push(j);break;case 'port':N.ports.push(j);break;case 'msg':(N.msgs[j.k]=N.msgs[j.k]||[]).push(j);break;case 'note':N.notes.push(j);break;
       case 'user':if(id==='user:'+me){if(j.my)N.my[me]=j.my;if(j.seen)N.seen[me]=j.seen;N.dark[me]=!!j.dark;N.lblOff[me]=!!j.lblOff;N.emailOff[me]=!!j.emailOff}break;
-      case 'prof':N.prof[id.slice(5)]=j;break;case 'cap':N.cap[id.slice(4)]=j.n;break;case 'member':mem[id.slice(7)]=j;break;case 'tpl':N.tpls.push(j);break;case 'ctpl':N.cardTpl.push(j);break}});
+      case 'prof':N.prof[id.slice(5)]=j;break;case 'cap':N.cap[id.slice(4)]=j.n;break;case 'member':mem[id.slice(7)]=j;break;case 'tpl':N.tpls.push(j);break;case 'ctpl':N.cardTpl.push(j);break;case 'space':(N.spaces=N.spaces||[]).push(j);break}});
   // a card belongs to the list it names, so two people moving cards at the same moment never lose one
   Object.keys(N.lists).forEach(id=>{const l=N.lists[id];l.cards=(l.cards||[]).filter(c=>N.cards[c]&&N.cards[c].l===id)});
   Object.keys(N.cards).forEach(id=>{const l=N.lists[N.cards[id].l];if(l&&!l.cards.includes(id))l.cards.push(id)});
   Object.values(N.msgs).forEach(a=>a.sort((x,y)=>x.at-y.at));N.notes.sort((x,y)=>x.at-y.at);
   N.order=bs.sort((a,b)=>(a.ord??1e9)-(b.ord??1e9)).map(b=>b.id);
-  N.people=SV.people.map(p=>{const m=mem[p.email]||{},nm=p.name||p.email;return {id:p.email,en:nm,ar:nm,ini:iniOf(nm),color:p.ceo?'#c27a2c':m.dept?dept(m.dept).dot:hcol(p.email),
-    dept:p.ceo?null:(m.dept||null),role:p.ceo?'staff':(m.role||'staff'),email:p.email,ceo:!!p.ceo,invited:!!p.invited,title:p.title||''}});
-  Object.keys(mem).forEach(e=>{if(mem[e].inv&&!N.people.some(p=>p.id===e)){const nm=mem[e].inv.name||e;N.people.push({id:e,en:nm,ar:nm,ini:iniOf(nm),color:hcol(e),dept:mem[e].dept,role:'staff',email:e,invited:true,inv:mem[e].inv})}});
-  D=N;PEOPLE=D.people}
+  N.people=SV.people.map(p=>{const m=mem[p.email]||{},nm=p.name||p.email;return {id:p.email,en:nm,ar:nm,ini:iniOf(nm),color:p.ceo?'#c27a2c':dlist({depts:mDepts(m)}).length?dept(dlist({depts:mDepts(m)})[0]).dot:hcol(p.email),
+    depts:p.ceo?{}:mDepts(m),email:p.email,ceo:!!p.ceo,invited:!!p.invited,title:p.title||''}});
+  Object.keys(mem).forEach(e=>{if(mem[e].inv&&!N.people.some(p=>p.id===e)){const nm=mem[e].inv.name||e;N.people.push({id:e,en:nm,ar:nm,ini:iniOf(nm),color:hcol(e),depts:mDepts(mem[e]),email:e,invited:true,inv:mem[e].inv})}});
+  D=N;PEOPLE=D.people;rebuildDepts()}
 /* Don't redraw under someone's fingers: wait until they leave the box they are typing in. */
 function soft(){const a=document.activeElement;if(DR.d||ASK||(a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)&&!['q','pq','pq2'].includes(a.id))){V.stale=true;return}render()}
 function setSync(s){SV.state=s;const el=document.getElementById('sync');if(el){el.className='sync '+s;el.textContent=s==='ok'?t('sSaved'):s==='saving'?t('sSaving'):t('sOff')}}
@@ -1408,29 +1427,48 @@ async function bootLive(){try{SV.tok=localStorage.getItem('fa-token')||''}catch(
   window.addEventListener('beforeunload',e=>{if(Object.keys(SV.pend).length){flush();e.preventDefault();e.returnValue=''}})}
 const b64=f=>new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(String(r.result).split(',')[1]||'');r.onerror=rej;r.readAsDataURL(f)});
 
+/* New space (or edit one): name in English and Arabic, and a colour */
+function spaceHTML(){const f=V.sp,miss=f.bad.includes('en')?'miss':'';
+  return `<div class="ov"><div class="md" role="dialog" aria-modal="true" aria-label="${t('newSpace')}" style="max-width:520px">
+    <button class="ib x" data-a="spx" aria-label="${t('close')}">${ic('x')}</button>
+    <div class="mhead">${ic('board')}<div class="mt" style="cursor:default">${f.id?t('editSpace'):t('newSpace')}</div></div>
+    <div class="ntf">${f.id?'':`<p class="lock" style="padding:0">${t('spLead')}</p>`}${f.bad.length?`<div class="errbox">${t('need')}</div>`:''}
+      <label class="fl" for="sp-en">${t('spName')} <b>*</b></label><input class="fld ${miss}" id="sp-en" dir="auto" maxlength="40" style="width:100%" value="${esc(f.en)}" placeholder="${t('spNamePh')}">
+      <label class="fl" for="sp-ar">${t('spNameAr')}</label><input class="fld" id="sp-ar" dir="rtl" maxlength="40" style="width:100%" value="${esc(f.ar)}">
+      <label class="fl">${t('spColour')}</label><div class="spc">${SPCOL.map((c,i)=>`<button class="spsw ${f.col===i?'on':''}" style="background:${c[1]}" data-a="spcol" data-v="${i}" aria-label="${t('spColour')} ${i+1}">${f.col===i?ic('tick'):''}</button>`).join('')}</div>
+      <div class="row" style="justify-content:flex-end;margin-top:18px">${f.id&&isCEO()?`<button class="btn dan" data-a="spdel" style="margin-inline-end:auto">${t('delSpace')}</button>`:''}<button class="btn sec" data-a="spx">${t('cancel')}</button><button class="btn" data-a="spsave">${f.id?t('saveB'):t('spCreate')}</button></div>
+    </div></div></div>`}
+function spSync(){const f=V.sp,g=id=>document.getElementById(id);if(f&&g('sp-en')){f.en=g('sp-en').value;f.ar=g('sp-ar').value}}
+function spSave(){spSync();const f=V.sp;f.bad=f.en.trim()?[]:['en'];if(f.bad.length){render();focusSel('#sp-en');return}
+  D.spaces=D.spaces||[];const c=SPCOL[f.col]||SPCOL[0];
+  if(f.id){const x=D.spaces.find(z=>z.id===f.id);if(x)Object.assign(x,{en:f.en.trim(),ar:f.ar.trim(),tint:c[0],dot:c[1]})}
+  else{const id='sp'+Date.now().toString(36)+Math.random().toString(36).slice(2,5);D.spaces.push({id,en:f.en.trim(),ar:f.ar.trim(),tint:c[0],dot:c[1],by:ME(),at:Date.now()});
+    if(!isCEO())meP().depts=Object.assign({},pD(meP()),{[id]:'head'});V.view='dept';V.dept=id;V.dtab='team';V.board=null}
+  rebuildDepts();V.sp=null;save();render()}
+
 /* Department page */
-function teamHTML(d){const team=PEOPLE.filter(x=>x.dept===d.id),free=PEOPLE.filter(x=>!x.dept&&!x.ceo),iv=V.inv||{name:'',email:'',bad:[]},miss=k=>iv.bad.includes(k)?'miss':'';
+function teamHTML(d){const team=PEOPLE.filter(x=>inD(x,d.id)),free=PEOPLE.filter(x=>!x.ceo&&!inD(x,d.id)&&!x.invited),iv=V.inv||{name:'',email:'',bad:[]},miss=k=>iv.bad.includes(k)?'miss':'';
   const nb=id=>D.order.map(x=>D.boards[x]).filter(b=>b&&b.dept===d.id&&!b.kind&&boardPeople(b).includes(id)).length;
   return `<p class="lead">${esc(t('teamLead',{d:d[lang]}))}</p>
     <div class="teamadd">
-      <div class="box"><h4>${t('addExisting')}</h4><p>${t('addExistingHint')}</p>
-        ${free.length?`<div class="row" style="margin:0"><select class="fld" id="addp" style="flex:1">${free.map(x=>`<option value="${x.id}">${esc(pname(x.id))}</option>`).join('')}</select><button class="btn" data-a="addp">${t('addToTeam')}</button></div>`:`<p style="margin:0">${t('noFree')}</p>`}</div>
+      <div class="box"><h4>${t('addExisting')}</h4><p>${esc(t('addExistingHint',{d:d[lang]}))}</p>
+        ${free.length?`<div class="row" style="margin:0"><select class="fld" id="addp" style="flex:1">${free.map(x=>`<option value="${x.id}">${esc(pname(x.id))}${dlist(x).length?' ('+esc(dnames(x))+')':''}</option>`).join('')}</select><button class="btn" data-a="addp" style="white-space:nowrap">${t('addToTeam')}</button></div>`:`<p style="margin:0">${t('noFree')}</p>`}</div>
       <div class="box"><h4>${t('inviteNew')}</h4><p>${t('inviteHint')}</p>
         ${iv.bad.length?`<div class="errbox" style="margin:0 0 8px">${t('need')}</div>`:''}
         <div class="g3" style="grid-template-columns:1fr 1fr"><input class="fld ${miss('name')}" id="ivname" dir="auto" placeholder="${t('fullName')}" value="${esc(iv.name)}" maxlength="80"><input class="fld ${miss('email')}" id="ivemail" type="email" dir="ltr" placeholder="name@forka.com" value="${esc(iv.email)}" maxlength="120"></div>
         <div class="row"><button class="btn" data-a="invite">${t('sendInvite')}</button><span class="lock" style="padding:0">${t(LIVE?'inviteLive':'inviteAuto')}</span></div></div>
     </div>
     <div class="tw"><table class="tbl" id="teamtbl"><tr><th>${t('t_person')}</th><th>${t('roleL')}</th><th>${t('emailL')}</th><th class="num">${t('t_boards')}</th><th>${t('statusL')}</th><th></th></tr>
-      ${team.map(x=>`<tr><td><div style="display:flex;align-items:center;gap:8px">${av(x.id)}<b>${esc(pname(x.id))}</b></div></td><td class="sm">${x.role==='head'?t('headLabel'):t('staff')}</td>
+      ${team.map(x=>`<tr><td><div style="display:flex;align-items:center;gap:8px">${av(x.id)}<b>${esc(pname(x.id))}</b></div></td><td class="sm">${isHd(x,d.id)?t('headLabel'):t('staff')}${dlist(x).length>1?`<div>${esc(t('alsoIn',{d:dlist(x).filter(z=>z!==d.id).map(deptName).join(', ')}))}</div>`:''}</td>
         <td class="sm" dir="ltr">${esc(x.email||'-')}</td><td class="num">${nb(x.id)}</td>
         <td>${x.invited?`<span class="st risk"><i></i>${t('invited')}</span>`:`<span class="st on"><i></i>${t('active')}</span>`}</td>
-        <td style="text-align:end;white-space:nowrap">${x.invited?`<button class="btn sec" style="height:30px;font-size:13px" data-a="copyinv" data-v="${x.id}">${t('copyInvite')}</button> `:''}${x.role!=='head'?`<button class="btn dan" style="height:30px;font-size:13px" data-a="rmteam" data-v="${x.id}">${t('remove')}</button>`:''}</td></tr>`).join('')}
+        <td style="text-align:end;white-space:nowrap">${x.invited?`<button class="btn sec" style="height:30px;font-size:13px" data-a="copyinv" data-v="${x.id}">${t('copyInvite')}</button> `:''}${!isHd(x,d.id)||isCEO()&&x.id!==ME()?`<button class="btn dan" style="height:30px;font-size:13px" data-a="rmteam" data-v="${x.id}">${t('remove')}</button>`:''}</td></tr>`).join('')}
     </table></div>`}
 function deptHTML(){
   const d=dept(V.dept),bs=boards().filter(b=>b.dept===d.id),admin=headOf(d.id),h=headOfDept(d.id),tab=admin&&V.dtab==='team'?'team':'boards';
   return `<div class="page" style="background:${theme()==='light'?d.tint:'var(--pagebg)'}">
-    <h1>${esc(d[lang])}</h1><p class="lead">${admin?t('deptLead',{n:bs.length}):t('deptLeadStaff')}${h?` · ${t('headLabel')}: <b style="color:var(--text)">${esc(pname(h.id))}</b>`:''}</p>
-    ${admin?`<div class="tabs"><button class="tab ${tab==='boards'?'on':''}" data-a="dtab" data-v="boards">${t('t_boards')}</button><button class="tab ${tab==='team'?'on':''}" data-a="dtab" data-v="team">${t('teamTab')} <span class="c">${PEOPLE.filter(x=>x.dept===d.id).length}</span></button></div>`:''}
+    <div class="phead"><h1 style="flex:1">${esc(d[lang])}</h1>${d.space&&headOf(d.id)?`<button class="btn sec" data-a="spedit">${t('editSpace')}</button>`:''}</div><p class="lead">${admin?t('deptLead',{n:bs.length}):t('deptLeadStaff')}${h?` · ${t('headLabel')}: <b style="color:var(--text)">${esc(pname(h.id))}</b>`:''}</p>
+    ${admin?`<div class="tabs"><button class="tab ${tab==='boards'?'on':''}" data-a="dtab" data-v="boards">${t('t_boards')}</button><button class="tab ${tab==='team'?'on':''}" data-a="dtab" data-v="team">${t('teamTab')} <span class="c">${PEOPLE.filter(x=>inD(x,d.id)).length}</span></button></div>`:''}
     ${tab==='team'?teamHTML(d):`<div class="tiles">${bs.map(b=>{const s=stats(cardsOf(b));return `<button class="tile" data-a="board" data-id="${b.id}"><span class="band" style="background:${d.dot}"></span>
         <h3>${esc(bname(b))}</h3><div>${b.kind?'':stChip(b.status)}</div>
         <div class="meta"><span>${t('openN',{n:s.open})}</span>${s.over?`<span class="bad">${t('overN',{n:s.over})}</span>`:''}</div>
@@ -1517,7 +1555,7 @@ function cardHTML(c){const b=B();
 function modalHTML(c){
   const l=listOf(c.id),b=boardOfList(l.id),admin=canAdmin(b),n=c.check.length,d=c.check.filter(x=>x.d).length,pc=n?Math.round(d/n*100):0;
   const ro=!canSee(b)&&!c.members.includes(ME());
-  const pool=[...new Set(boardPeople(b).concat(c.members,PEOPLE.filter(x=>x.dept===b.dept).map(x=>x.id)))];
+  const pool=[...new Set(boardPeople(b).concat(c.members,PEOPLE.filter(x=>inD(x,b.dept)).map(x=>x.id)))];
   const moveTo=admin?D.order.map(x=>D.boards[x]).filter(x=>x&&canAdmin(x)):[];
   const copyTo=boards();
   const log=c.log.slice().sort((x,y)=>y.at-x.at);
@@ -1606,9 +1644,9 @@ function modalHTML(c){
 function ntTargets(dep){return boards().filter(b=>b.dept===dep&&(b.kind!=='requests'||headOf(dep)))}
 function ntDefaults(n){const ts=ntTargets(n.dept).filter(b=>!b.kind);if(!n.board||(n.board!=='__req'&&!ts.some(b=>b.id===n.board)))n.board=ts.length?ts[0].id:'__req';
   const b=D.boards[n.board];if(b&&!b.lists.includes(n.list))n.list=b.lists[0];return n}
-function openNew(o){V.nt=ntDefaults(Object.assign({dept:myDept()==='ceo'?'ops':myDept(),board:null,list:null,title:'',members:[],due:'',start:'',type:'task',pri:'normal',labels:[],desc:'',check:'',bad:[],tpl:''},o||{}));V.pop=null;V.side=false;render();focusSel('#nt-title')}
-function ntSync(){const n=V.nt;if(!n)return;const g=id=>document.getElementById(id);if(g('nt-title')){n.title=g('nt-title').value;n.due=g('nt-due').value;n.start=g('nt-start').value;n.type=g('nt-type').value;n.pri=g('nt-pri').value;n.desc=g('nt-desc').value;n.check=g('nt-check').value}}
-function ntPool(n){const req=n.board==='__req',b=D.boards[n.board];return req?PEOPLE.filter(x=>x.dept===n.dept).map(x=>x.id):[...new Set(boardPeople(b).concat(PEOPLE.filter(x=>x.dept===n.dept&&x.role==='head').map(x=>x.id)))]}
+function openNew(o){V.nt=null;const md=myDept();V.nt=ntDefaults(Object.assign({dept:md==='ceo'||!md?'ops':md,from:md,board:null,list:null,title:'',members:[],due:'',start:'',type:'task',pri:'normal',labels:[],desc:'',check:'',bad:[],tpl:''},o||{}));V.pop=null;V.side=false;render();focusSel('#nt-title')}
+function ntSync(){const n=V.nt;if(!n)return;const g=id=>document.getElementById(id);if(g('nt-title')){n.title=g('nt-title').value;n.due=g('nt-due').value;if(g('nt-from'))n.from=g('nt-from').value;n.start=g('nt-start').value;n.type=g('nt-type').value;n.pri=g('nt-pri').value;n.desc=g('nt-desc').value;n.check=g('nt-check').value}}
+function ntPool(n){const req=n.board==='__req',b=D.boards[n.board];return req?PEOPLE.filter(x=>inD(x,n.dept)).map(x=>x.id):[...new Set(boardPeople(b).concat(PEOPLE.filter(x=>isHd(x,n.dept)).map(x=>x.id)))]}
 function ntHTML(){const n=V.nt,req=n.board==='__req',b=D.boards[n.board],miss=k=>n.bad.includes(k)?'miss':'',dn=deptName(n.dept);
   const ts=ntTargets(n.dept).filter(x=>!x.kind);
   return `<div class="ov"><div class="md" role="dialog" aria-modal="true" aria-label="${t('newTask')}" style="max-width:660px">
@@ -1626,6 +1664,7 @@ function ntHTML(){const n=V.nt,req=n.board==='__req',b=D.boards[n.board],miss=k=
         <div><label class="fl" for="nt-list">${t('inListL')}</label><select class="fld" id="nt-list" ${req?'disabled':''}>${req?`<option>${esc(SYS.newreq[lang==='ar'?1:0])}</option>`:b.lists.map(id=>`<option value="${id}" ${id===n.list?'selected':''}>${esc(LN(D.lists[id]))}</option>`).join('')}</select></div>
       </div>
       ${req?`<div class="reqnote">${ic('inbox')}<span>${esc(t('reqNote',{d:dn}))}</span></div>`:''}
+      ${req&&!isCEO()&&dlist(meP()).length>1?`<label class="fl" for="nt-from">${t('fromL')}</label><select class="fld" id="nt-from">${dlist(meP()).map(d=>`<option value="${d}" ${n.from===d?'selected':''}>${esc(deptName(d))}</option>`).join('')}</select>`:''}
       <label class="fl">${t(n.type==='approval'?'approvers':'assignTo')} ${req?'':'<b>*</b>'}</label>
       <div class="lchips ${miss('members')}" style="padding:2px">${ntPool(n).map(p=>`<button class="pchip ${n.members.includes(p)?'on':''}" data-a="ntm" data-v="${p}">${av(p)}${esc(pname(p))}</button>`).join('')}</div>
       ${req?`<div class="lock" style="padding:6px 0 0">${esc(t('assignHint',{d:dn}))}</div>`:''}
@@ -1648,7 +1687,7 @@ function ntCreate(){ntSync();const n=V.nt,req=n.board==='__req',bad=[];
     done:DONE_RX.test(l.name),doneAt:DONE_RX.test(l.name)?Date.now():null,repeat:'',priority:n.pri,check:n.check.split('\n').map(x=>x.trim()).filter(Boolean).map(x=>({t:x,d:false})),log:[],
     start:n.start?new Date(n.start+'T00:00:00').getTime():null,by:ME(),owner:n.members[0]||null,follow:[ME()]};
   if(n.type!=='task')c.type=n.type;
-  if(req||myDept()!==b.dept){c.requester=ME();c.fromDept=myDept()}
+  if(req||(isCEO()?true:!inD(meP(),b.dept))){c.requester=ME();c.fromDept=myDept()}
   if(c.members.includes(ME()))c.follow=[];
   logTo(c,req?{k:'l_req',a:deptName(myDept())}:{k:'l_added',a:LN(l)});D.cards[c.id]=c;l.cards.push(c.id);V.nt=null;
   c.members.forEach(m=>notify(m,'assign',c.id));if(req){const h=headOfDept(n.dept);if(h)notify(h.id,'req',c.id,{d:n.dept})}
@@ -1683,9 +1722,9 @@ function popHTML(){const p=V.pop,b=B();
     <button class="mi" data-a="lcol" data-id="${p.id}">${ic('collapse')}${t('collapse')}</button>
     <button class="mi" data-a="lsort" data-id="${p.id}">${ic('clock')}${t('sortDue')}</button>
     ${admin?`<hr><button class="mi dan" data-a="larch" data-id="${p.id}">${ic('archive')}${t('archiveList')}</button>`:''}</div>`}
-  if(p.kind==='members'){const own=PEOPLE.filter(x=>x.dept===b.dept),oth=PEOPLE.filter(x=>x.dept!==b.dept&&x.dept);
-    const row=x=>{const fixed=x.ceo||(x.dept===b.dept&&x.role==='head')||(b.allDept&&x.dept===b.dept);const on=fixed||b.members.includes(x.id);
-      return `<button class="mrow" ${fixed?'disabled style="opacity:.7;cursor:default"':`data-a="mtoggle" data-v="${x.id}"`}>${av(x.id)}<span><span>${esc(pname(x.id))}</span><div class="r">${x.ceo?t('ceoRole'):esc(deptName(x.dept))+(x.role==='head'?' · '+t('head'):'')}</div></span><span class="tk">${on?ic('tick'):''}</span></button>`};
+  if(p.kind==='members'){const own=PEOPLE.filter(x=>inD(x,b.dept)),oth=PEOPLE.filter(x=>!inD(x,b.dept)&&!x.ceo&&!x.invited);
+    const row=x=>{const fixed=x.ceo||isHd(x,b.dept)||(b.allDept&&inD(x,b.dept));const on=fixed||b.members.includes(x.id);
+      return `<button class="mrow" ${fixed?'disabled style="opacity:.7;cursor:default"':`data-a="mtoggle" data-v="${x.id}"`}>${av(x.id)}<span><span>${esc(pname(x.id))}</span><div class="r">${x.ceo?t('ceoRole'):(esc(dnames(x))||t('noDept'))+(isHd(x,b.dept)?' · '+t('head'):'')}</div></span><span class="tk">${on?ic('tick'):''}</span></button>`};
     return `<div class="pop wide" id="pop"><h4>${t('pickMembers')}</h4><div class="lock">${t('memberHint')}</div>
       <button class="mrow" data-a="alldept"><span class="av" style="background:${dept(b.dept).dot}">${ic('users')}</span><span><b>${esc(t('allDept',{d:deptName(b.dept)}))}</b><div class="r">${esc(t('allDeptHint',{n:own.filter(x=>!x.ceo).length}))}</div></span><span class="tk">${b.allDept?ic('tick'):''}</span></button><hr>
       ${own.map(row).join('')}
@@ -1770,6 +1809,13 @@ document.addEventListener('click',e=>{
     case 'lang':lang=v;try{localStorage.setItem('fb-lang',v)}catch(x){}render();break;
     case 'go':if(v==='chat'&&V.ch)markSeen(V.ch);V.view=v;V.dept=null;V.board=null;V.side=false;if(v==='ports')V.port=null;V.perfP=null;render();break;
     case 'gnew':gfOpen(null);break;
+    case 'spnew':V.sp={id:null,en:'',ar:'',col:(D.spaces||[]).length%SPCOL.length,bad:[]};V.side=false;render();focusSel('#sp-en');break;
+    case 'spedit':{const x=(D.spaces||[]).find(z=>z.id===V.dept);if(!x)break;V.sp={id:x.id,en:x.en,ar:x.ar||'',col:Math.max(0,SPCOL.findIndex(c=>c[1]===x.dot)),bad:[]};render();break}
+    case 'spcol':spSync();V.sp.col=+v;render();break;
+    case 'spx':V.sp=null;render();break;
+    case 'spsave':spSave();break;
+    case 'spdel':{const id=V.sp.id;if(Object.values(D.boards).some(b=>b.dept===id)){flash(t('spHasBoards'));break}
+      ask(t('delSpaceQ'),()=>{D.spaces=(D.spaces||[]).filter(z=>z.id!==id);PEOPLE.forEach(p=>{if(inD(p,id)){const z=Object.assign({},pD(p));delete z[id];p.depts=z}});V.sp=null;home();rebuildDepts();save()});break}
     case 'lbltog':D.lblOff=D.lblOff||{};D.lblOff[ME()]=lblNames();V.pop=null;save();render();break;
     case 'prof':V.prof=v;V.profEdit=false;V.oooBad=false;V.pop=null;render();break;
     case 'profx':if(k==='profx'&&a.classList.contains('ov')&&e.target!==a)break;V.prof=null;V.profEdit=false;render();break;
@@ -1806,14 +1852,14 @@ document.addEventListener('click',e=>{
     case 'alldept':{const b=B();b.allDept=!b.allDept;save();render();break}
     case 'goteam':V.pop=null;V.view='dept';V.dept=id;V.dtab='team';V.board=null;render();focusSel('#ivname');break;
     case 'dtab':V.dtab=v;render();break;
-    case 'addp':{const x=person(document.getElementById('addp').value);x.dept=V.dept;x.invited=false;save();flash(t('addedTo',{p:pname(x.id),d:deptName(V.dept)}));break}
+    case 'addp':{const x=person(document.getElementById('addp').value);x.depts=Object.assign({},pD(x),{[V.dept]:'staff'});if(!LIVE)x.invited=false;save();flash(t('addedTo',{p:pname(x.id),d:deptName(V.dept)}));break}
     case 'invite':{const nm=document.getElementById('ivname').value.trim(),em=document.getElementById('ivemail').value.trim().toLowerCase(),bad=[];
       if(!nm)bad.push('name');if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)||PEOPLE.some(x=>(x.email||'')===em))bad.push('email');
       if(bad.length){V.inv={name:nm,email:em,bad};render();return}
       const ini=nm.split(/\s+/).map(w=>w[0]).join('').slice(0,2).toUpperCase()||'?';
-      PEOPLE.push({id:LIVE?em:uid('p'),en:nm,ar:nm,ini,dept:V.dept,role:'staff',color:dept(V.dept).dot,email:em,invited:true,inv:LIVE?{name:nm}:undefined});V.inv=null;save();flash(t('inviteSent',{p:nm}));break}
-    case 'copyinv':{const x=person(v),txt=t('inviteText',{p:pname(v),d:deptName(x.dept),e:x.email});try{navigator.clipboard.writeText(txt).then(()=>flash(t('copied')),()=>flash(txt))}catch(err){flash(txt)}break}
-    case 'rmteam':{const x=person(v);ask(t('removeQ',{p:pname(v),d:deptName(x.dept)}),()=>{Object.values(D.boards).filter(b=>b.dept===x.dept).forEach(b=>{b.members=b.members.filter(m=>m!==v)});x.dept=null;save()});break}
+      PEOPLE.push({id:LIVE?em:uid('p'),en:nm,ar:nm,ini,depts:{[V.dept]:'staff'},color:dept(V.dept).dot,email:em,invited:true,inv:LIVE?{name:nm}:undefined});V.inv=null;save();flash(t('inviteSent',{p:nm}));break}
+    case 'copyinv':{const x=person(v),txt=t('inviteText',{p:pname(v),d:dnames(x),e:x.email});try{navigator.clipboard.writeText(txt).then(()=>flash(t('copied')),()=>flash(txt))}catch(err){flash(txt)}break}
+    case 'rmteam':{const x=person(v),dd=V.dept;ask(t('removeQ',{p:pname(v),d:deptName(dd)}),()=>{Object.values(D.boards).filter(b=>b.dept===dd).forEach(b=>{b.members=b.members.filter(m=>m!==v)});const z=Object.assign({},pD(x));delete z[dd];x.depts=z;save()});break}
     case 'mtoggle':{const b=B();b.members=b.members.includes(v)?b.members.filter(x=>x!==v):b.members.concat(v);save();render();break}
     case 'stset':{const b=B();b.status=Object.assign({},b.status||{},{s:v,by:ME(),at:Date.now()});save();render();break}
     case 'stsave':{const b=B(),n=document.getElementById('stnote').value.trim();b.status=Object.assign({s:'on'},b.status||{},{note:n,by:ME(),at:Date.now()});V.pop=null;save();render();break}
@@ -1842,7 +1888,7 @@ document.addEventListener('click',e=>{
     case 'ctpl':commitModalFields();(D.cardTpl=D.cardTpl||[]).push({id:uid('ct'),title:c.title,desc:c.desc,labels:c.labels.slice(),priority:c.priority||'normal',check:c.check.map(k=>k.t)});save();flash(t('cardTplSaved'));break;
     case 'ccopy':{commitModalFields();const b2=D.boards[document.getElementById('ccopy').value];if(b2&&copyCard(c,b2)){save();flash(t('copied2',{b:bname(b2)}))}break}
     case 'cboardgo':{commitModalFields();const nb=D.boards[document.getElementById('cboard').value],cur=listOf(c.id);if(!nb||nb.lists.includes(cur.id))return;
-      const same=liveLists(nb).find(id=>D.lists[id].name===cur.name)||liveLists(nb)[0];c.members=c.members.filter(m=>boardPeople(nb).includes(m)||nb.dept===person(m).dept);
+      const same=liveLists(nb).find(id=>D.lists[id].name===cur.name)||liveLists(nb)[0];c.members=c.members.filter(m=>boardPeople(nb).includes(m)||inD(person(m),nb.dept));
       c.labels=c.labels.filter(id=>labelsOf(nb).some(l=>l.id===id));moveCard(c.id,same,1e9);save();flash(t('moved',{b:bname(nb)}));break}
     case 'attopen':{const bl=await_(v);break}
     case 'attcover':commitModalFields();c.cover=c.cover===v?null:v;save();render();break;
@@ -1850,7 +1896,7 @@ document.addEventListener('click',e=>{
     case 'theme':D.dark=D.dark||{};D.dark[ME()]=v==='dark';save();render();break;
     case 'ask-no':ASK=null;render();break;
     case 'ask-yes':{const go=ASK&&ASK.go;ASK=null;if(go)go();render();break}
-    case 'reset':ask(t('resetQ'),()=>{const me=D.me;D=seed();PEOPLE=D.people;D.me=PEOPLE.some(x=>x.id===me)?me:'ka';V.card=null;home();save()});break;
+    case 'reset':ask(t('resetQ'),()=>{const me=D.me;D=seed();PEOPLE=D.people;PEOPLE.forEach(normP);rebuildDepts();D.me=PEOPLE.some(x=>x.id===me)?me:'ka';V.card=null;home();save()});break;
     case 'bdel':ask(t('deleteBoardQ'),()=>{const b=B();b.lists.forEach(lid=>{D.lists[lid].cards.forEach(cid=>delete D.cards[cid]);delete D.lists[lid]});delete D.boards[b.id];D.order=D.order.filter(x=>x!==b.id);V.view='dept';V.board=null;save()});break;
     case 'filter':V.filter=!V.filter;render();break;
     case 'fm':V.f.members=V.f.members.includes(v)?V.f.members.filter(x=>x!==v):V.f.members.concat(v);render();break;
@@ -1935,12 +1981,14 @@ document.addEventListener('keydown',e=>{
   if(id==='mt'&&e.key==='Enter'){e.preventDefault();e.target.blur();return}
   if(e.key==='Enter'&&e.target.classList&&e.target.classList.contains('card')){V.card=e.target.dataset.card||e.target.dataset.id;render();return}
   if(e.key==='Escape'&&V.gf){V.gf=null;render();return}
+  if(e.key==='Escape'&&V.sp){V.sp=null;render();return}
+  if(e.target.id==='sp-en'&&e.key==='Enter'){e.preventDefault();spSave();return}
   if(e.key==='Escape'&&V.prof){V.prof=null;V.profEdit=false;render();return}
   if(e.key==='Escape'){if(V.secEdit){V.secEdit=null;render()}else if(ASK){ASK=null;render()}else if(V.nt){V.nt=null;render()}else if(V.pop){V.pop=null;render()}else if(V.card){commitModalFields();V.card=null;render()}else if(V.comp){V.comp=null;render()}else if(V.addList){V.addList=false;render()}else if(V.editList){V.editList=null;render()}else if(V.editBoard){V.editBoard=false;render()}else if(V.side){V.side=false;render()}}
 });
 document.addEventListener('input',e=>{
   if(e.target.id==='cmt'||e.target.id==='chin'){const m=e.target.value.slice(0,e.target.selectionStart).match(/@([^@\n]{0,30})$/);V.mentIn=e.target.id;
-    if(m){const q=m[1].toLowerCase(),pool=e.target.id==='chin'?chMembers(V.ch).filter(x=>x!==ME()):(b=>[...new Set(boardPeople(b).concat(PEOPLE.filter(p=>p.dept===b.dept||p.ceo).map(p=>p.id)))])(boardOfList(listOf(V.card).id)),L=pool.filter(id=>pname(id).toLowerCase().includes(q)).slice(0,6);
+    if(m){const q=m[1].toLowerCase(),pool=e.target.id==='chin'?chMembers(V.ch).filter(x=>x!==ME()):(b=>[...new Set(boardPeople(b).concat(PEOPLE.filter(p=>inD(p,b.dept)||p.ceo).map(p=>p.id)))])(boardOfList(listOf(V.card).id)),L=pool.filter(id=>pname(id).toLowerCase().includes(q)).slice(0,6);
       let el=document.getElementById('mentpop');if(!el){el=document.createElement('div');el.id='mentpop';el.className='pop';document.querySelector('.shell').appendChild(el)}
       el.innerHTML=L.length?L.map(id=>`<button class="mrow" data-a="ment" data-v="${id}">${av(id)}<span>${esc(pname(id))}</span></button>`).join(''):'';
       const r=e.target.getBoundingClientRect();el.style.left=Math.max(8,lang==='ar'?r.right-270:r.left)+'px';el.style.display=L.length?'block':'none';el.style.top=(r.bottom+4+el.offsetHeight>innerHeight?r.top-el.offsetHeight-4:r.bottom+4)+'px'}
@@ -1957,7 +2005,7 @@ document.addEventListener('change',e=>{
     if(e.target.id==='nt-board'){n.board=e.target.value;n.list=null;n.members=n.members.filter(m=>ntPool(Object.assign({},n)).includes(m))}
     if(e.target.id==='nt-list')n.list=e.target.value;
     ntDefaults(n);n.members=n.members.filter(m=>ntPool(n).includes(m));render();return}
-  if((e.target.id==='prdept'||e.target.id==='prrole')&&V.prof&&isCEO()){const x=person(V.prof);if(e.target.id==='prdept'){x.dept=e.target.value||null;if(!x.dept)x.role='staff'}else x.role=e.target.value;save();render();return}
+  if(e.target.classList&&e.target.classList.contains('prd')&&V.prof&&isCEO()){const x=person(V.prof),dd=Object.assign({},pD(x));if(e.target.value)dd[e.target.dataset.d]=e.target.value;else delete dd[e.target.dataset.d];x.depts=dd;save();render();return}
   if(e.target.id==='dmnew'&&e.target.value){const k2=dmKey(ME(),e.target.value);V.ch=k2;markSeen(k2);save();render();focusSel('#chin');return}
   if(V.gf&&e.target.id==='gf-lvl'){gfSync();V.gf.boards=V.gf.boards.filter(id=>{const b=D.boards[id];return b&&(V.gf.lvl==='company'||b.dept===V.gf.lvl)});render();return}
   if(e.target.classList&&e.target.classList.contains('ppri')){const x=(D.ports||[]).find(q=>q.id===V.port),i=x&&x.items.find(q=>q.b===e.target.dataset.b);if(i){i.pri=e.target.value;save()}return}

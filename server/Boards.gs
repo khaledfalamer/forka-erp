@@ -18,8 +18,8 @@ const ACCOUNTS_SHEET_ID = '1YkqcYwtKcm4mOz-wJGLvSPAeEYGzPxqLep_SzRGOCCA';   // r
 const APP_URL = 'https://erp.forka.com/boards/';
 const DATA_TAB = 'Data';
 const D_HEAD = ['Id', 'Kind', 'Scope', 'Json', 'At', 'By', 'Deleted'];
-const KINDS = ['board', 'list', 'card', 'goal', 'port', 'msg', 'note', 'user', 'prof', 'member', 'cap', 'tpl', 'ctpl'];
-const DELETABLE = ['board', 'list', 'card', 'goal', 'port', 'tpl', 'ctpl'];
+const KINDS = ['board', 'list', 'card', 'goal', 'port', 'msg', 'note', 'user', 'prof', 'member', 'cap', 'tpl', 'ctpl', 'space'];
+const DELETABLE = ['board', 'list', 'card', 'goal', 'port', 'tpl', 'ctpl', 'space'];
 const DEPTS = ['adm', 'ops', 'mkt', 'proc', 'fin', 'hr', 'mnt', 'dev', 'oman'];
 const EMAIL_KINDS = { assign: 'gave you a task', mention: 'mentioned you', req: 'sent a request to your department', done: 'finished your request', subassign: 'gave you a subtask',
   unblocked: 'a task you were waiting for is done', ap_approved: 'approved', ap_changes: 'asked for changes', ap_rejected: 'rejected', chat: 'mentioned you in a chat' };
@@ -95,30 +95,33 @@ function writeRow_(sh, d) {
 }
 
 /* ---------------- who may see and change what ---------------- */
+/* A person can be in several departments, with a role in each: { ops: 'staff', mkt: 'head' }. Older rows had one dept + role. */
+function depts_(m) { if (!m) return {}; if (m.depts && typeof m.depts === 'object') return m.depts; return m.dept ? { [m.dept]: m.role === 'head' ? 'head' : 'staff' } : {}; }
+function deptOk_(x, id) { return DEPTS.indexOf(id) >= 0 || (!!x.all['space:' + id] && !x.all['space:' + id].del); }
 function ctx_(me, all) {
   const mem = {};
   Object.values(all).forEach(d => { if (d.kind === 'member' && !d.del && d.json) mem[d.scope] = d.json; });
-  const m = mem[me.email] || {};
-  const x = { me: me.email, ceo: !!me.ceo, dept: m.dept || null, head: m.role === 'head', mem, all, bol: {}, mine: {} };
+  const x = { me: me.email, ceo: !!me.ceo, depts: depts_(mem[me.email]), mem, all, bol: {}, mine: {} };
   Object.values(all).forEach(d => { if (d.kind === 'board' && !d.del && d.json) (d.json.lists || []).forEach(l => { x.bol[l] = d; }); });
   Object.values(all).forEach(d => { if (d.kind === 'card' && !d.del && d.json && cardMine_(x, d.json)) x.mine[d.json.l] = true; });
   return x;
 }
-const headOf_ = (x, dep) => x.ceo || (x.head && x.dept === dep);
+const headOf_ = (x, dep) => x.ceo || x.depts[dep] === 'head';
+const headAny_ = x => Object.keys(x.depts).some(k => x.depts[k] === 'head');
 function boardOk_(x, b) {
   if (!b) return false;
-  return x.ceo || headOf_(x, b.dept) || (b.members || []).indexOf(x.me) >= 0 || (!!b.allDept && x.dept === b.dept);
+  return x.ceo || headOf_(x, b.dept) || (b.members || []).indexOf(x.me) >= 0 || (!!b.allDept && !!x.depts[b.dept]);
 }
 function cardMine_(x, c) { return !!c && (c.requester === x.me || (c.members || []).indexOf(x.me) >= 0 || (c.follow || []).indexOf(x.me) >= 0); }
 function boardOfList_(x, lid) { return x.bol[lid] || null; }
-function chanOk_(x, k) { return k === 'all' || (k.indexOf('dm:') === 0 ? k.slice(3).split('|').indexOf(x.me) >= 0 : x.ceo || x.dept === k); }
+function chanOk_(x, k) { return k === 'all' || (k.indexOf('dm:') === 0 ? k.slice(3).split('|').indexOf(x.me) >= 0 : x.ceo || !!x.depts[k]); }
 function visible_(x, d) {
   const j = d.json || {};
   switch (d.kind) {
     case 'board': return boardOk_(x, j) || (j.lists || []).some(l => x.mine[l]);
     case 'list': { const b = boardOfList_(x, d.id); return (b && boardOk_(x, b.json)) || (j.cards || []).some(id => { const c = x.all[id]; return c && !c.del && cardMine_(x, c.json); }); }
     case 'card': { const b = boardOfList_(x, j.l); return (b && boardOk_(x, b.json)) || cardMine_(x, j); }
-    case 'goal': return x.ceo || j.lvl === 'company' || j.lvl === x.dept;
+    case 'goal': return x.ceo || j.lvl === 'company' || !!x.depts[j.lvl];
     case 'port': return x.ceo || j.owner === x.me;
     case 'msg': return chanOk_(x, d.scope);
     case 'note': case 'user': return d.scope === x.me;
@@ -129,7 +132,7 @@ function mayWrite_(x, d, old) {
   const j = d.json || {}, o = old && !old.del ? old.json || {} : null;
   switch (d.kind) {
     case 'board':
-      if (!o) return j.kind === 'requests' ? DEPTS.indexOf(j.dept) >= 0 : headOf_(x, j.dept);
+      if (!o) return j.kind === 'requests' ? deptOk_(x, j.dept) : headOf_(x, j.dept) && deptOk_(x, j.dept);
       return headOf_(x, o.dept) && (d.del || j.dept === o.dept || x.ceo);
     case 'list': {
       const b = boardOfList_(x, d.id);
@@ -147,13 +150,21 @@ function mayWrite_(x, d, old) {
     case 'note': return o ? d.scope === x.me : j.by === x.me;
     case 'user': return d.scope === x.me;
     case 'prof': return d.scope === x.me || x.ceo;
-    case 'cap': { const m = x.mem[d.scope] || {}; return x.ceo || headOf_(x, m.dept); }
+    case 'cap': { const m = depts_(x.mem[d.scope]); return x.ceo || Object.keys(m).some(k => headOf_(x, k)); }
     case 'member': {
       if (x.ceo) return true;
-      const was = o || {}, now = j;
-      if (now.role === 'head' || was.role === 'head') return false;                 // only the CEO makes department heads
-      return (!was.dept || headOf_(x, was.dept)) && (!now.dept || headOf_(x, now.dept));
+      /* Heads add or remove staff in the departments they lead. Only the CEO makes someone a head,
+         except that whoever creates a space becomes its head. */
+      const was = depts_(o), now = depts_(j), keys = Object.keys(Object.assign({}, was, now));
+      return keys.every(k => {
+        if (was[k] === now[k]) return true;
+        const sp = x.all['space:' + k];
+        if (d.scope === x.me && now[k] === 'head' && !was[k] && sp && !sp.del && sp.by === x.me) return true;
+        if (was[k] === 'head' || now[k] === 'head') return false;
+        return headOf_(x, k) && (!now[k] || now[k] === 'staff');
+      });
     }
+    case 'space': return o ? (x.ceo || headOf_(x, d.id.slice(6))) && (!d.del || x.ceo) : (x.ceo || headAny_(x)) && d.id === 'space:' + j.id && /^[a-z0-9]{3,30}$/.test(String(j.id)) && DEPTS.indexOf(j.id) < 0;
     case 'tpl': case 'ctpl': return !o || old.by === x.me || x.ceo;
   }
   return false;
@@ -196,7 +207,7 @@ function load_(x, since) {
     if (d.del) { if (since) docs.push({ id: d.id, kind: d.kind, del: true, at: d.at }); return; }
     if (visible_(x, d)) docs.push({ id: d.id, kind: d.kind, json: d.json, at: d.at, by: d.by });
   });
-  const o = { ok: true, now: Date.now(), docs, me: { email: x.me, ceo: x.ceo, dept: x.dept, role: x.head ? 'head' : 'staff' } };
+  const o = { ok: true, now: Date.now(), docs, me: { email: x.me, ceo: x.ceo, depts: x.depts } };
   if (!since) o.people = accounts_().map(p => ({ email: p.email, name: p.name, title: p.title, ceo: p.ceo, invited: p.status === 'pending' }));
   return o;
 }
@@ -204,7 +215,8 @@ function save_(x, docs) {
   const sh = tab_(DATA_TAB, D_HEAD), now = Date.now(), bad = [], mails = [];
   if (!Array.isArray(docs) || docs.length > 400) return { ok: false, error: 'bad' };
   // boards first, so a new board's lists and cards find it
-  docs = docs.slice().sort((p, q) => (p.kind === 'board' ? 0 : p.kind === 'list' ? 1 : 2) - (q.kind === 'board' ? 0 : q.kind === 'list' ? 1 : 2));
+  const rank = k => ({ space: 0, member: 1, board: 2, list: 3 })[k] ?? 4;   // a new space, then who is in it, then boards, lists and cards
+  docs = docs.slice().sort((p, q) => rank(p.kind) - rank(q.kind));
   docs.forEach(n => {
     const id = String(n.id || '').slice(0, 120), kind = String(n.kind || '');
     if (!id || KINDS.indexOf(kind) < 0) { bad.push(id); return; }
@@ -221,6 +233,7 @@ function save_(x, docs) {
     writeRow_(sh, d);
     x.all[id] = d;
     if (kind === 'board' && !del) (json.lists || []).forEach(l => { x.bol[l] = d; });
+    if (kind === 'member') { x.mem[d.scope] = json; if (d.scope === x.me) x.depts = depts_(json); }
     if (kind === 'card' && !del && cardMine_(x, json)) x.mine[json.l] = true;
     if (kind === 'member' && json && json.inv && !old) invite_(x, d.scope, json.inv);
     if (kind === 'note' && !old && json && EMAIL_KINDS[json.k]) mails.push(json);
