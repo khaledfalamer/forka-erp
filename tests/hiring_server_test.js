@@ -77,6 +77,8 @@ call({ action: 'put', token: JEN, col: 'jobs', id: 'r1', data: { title: 'Line Co
 call({ action: 'put', token: JEN, col: 'jobs', id: 'r2', data: { title: 'Old job', open: false } });
 r = get({ jobs: '1' });
 ck('Careers page sees only open jobs, with English and Arabic ads', r.ok && r.jobs.length === 1 && r.jobs[0].adAr === 'اطبخ معنا' && r.jobs[0].titleAr === 'طباخ' && r.jobs[0].knockoutAr[0] === 'سنتان في مطبخ؟', r);
+call({ action: 'put', token: JEN, col: 'jobs', id: 'rrem', data: { title: 'Social Media Coordinator', dept: 'Marketing', branch: '', work: 'Remote', open: true, postedAt: 2 } });
+{ const rj = get({ jobs: '1' }).jobs.find(j => j.id === 'rrem'); ck('Careers page is told a job is remote', rj && rj.work === 'Remote', rj); call({ action: 'put', token: JEN, col: 'jobs', id: 'rrem', data: { title: 'x', open: false } }); }
 ck('Careers page sees no candidates, scores or team', !JSON.stringify(r).match(/members|pipe|jennifer/));
 const pdf = Buffer.from('%PDF-1.4 test').toString('base64');
 r = call({ action: 'apply', job: 'r1', name: '', email: 'x', phone: '1', consent: false });

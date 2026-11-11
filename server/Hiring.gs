@@ -349,7 +349,7 @@ function publicJobs_() {
   Object.keys(jobs).forEach(id => {
     const j = jobs[id]; if (!j.open) return;
     const r = readOne_('reqs', id) || {};
-    out.push({ id: id, title: j.title || '', dept: j.dept || '', branch: j.branch || '', summary: j.summary || '', jd: j.jd || '',
+    out.push({ id: id, title: j.title || '', dept: j.dept || '', branch: j.branch || '', work: j.work || '', summary: j.summary || '', jd: j.jd || '',
       ad: r.ad || '', adAr: r.adAr || '', titleAr: r.titleAr || '', knockout: j.knockout || [], knockoutAr: r.knockoutAr || [], postedAt: j.postedAt || null });
   });
   out.sort((a, b) => (b.postedAt || 0) - (a.postedAt || 0));

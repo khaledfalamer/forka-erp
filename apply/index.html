@@ -125,7 +125,8 @@ const introOf=b=>lang==="ar"?(b.introAr||BRAND_AR.intro):b.intro;
 const valuesOf=b=>lang==="ar"?(b.valuesAr&&b.valuesAr.length?b.valuesAr:BRAND_AR.values):(b.values||[]);
 const DEPT_AR={"Operations":"العمليات","Kitchen":"المطبخ","Service":"الخدمة","Marketing":"التسويق","Finance":"المالية","HR":"الموارد البشرية","Procurement & Store":"المشتريات والمخزن","Administration":"الإدارة"};
 const BRANCH_AR={"Sharjah":"الشارقة","Fujairah":"الفجيرة","Umm Al Quwain":"أم القيوين","Mayar Cafe":"مقهى ميار","Oman":"عُمان","Ajman Central Store":"مخزن عجمان المركزي","Head Office":"المكتب الرئيسي"};
-const where=j=>[lang==="ar"?(DEPT_AR[j.dept]||j.dept):j.dept,lang==="ar"?(BRANCH_AR[j.branch]||j.branch):j.branch].filter(Boolean).join(" · ");
+const WORK_AR={"Remote":"عن بُعد","Hybrid":"مختلط (في الفرع وعن بُعد)"};
+const where=j=>[lang==="ar"?(DEPT_AR[j.dept]||j.dept):j.dept,j.work==="Remote"?null:(lang==="ar"?(BRANCH_AR[j.branch]||j.branch):j.branch),j.work==="Remote"||j.work==="Hybrid"?(lang==="ar"?WORK_AR[j.work]:j.work):null].filter(Boolean).join(" · ");
 const titleOf=j=>lang==="ar"&&j.titleAr?j.titleAr:j.title;
 const qOf=(j,i)=>lang==="ar"&&j.knockoutAr&&j.knockoutAr[i]?j.knockoutAr[i]:j.knockout[i];
 function adOf(j){return lang==="ar"&&j.adAr?j.adAr:(j.ad||j.summary||j.jd||"")}
