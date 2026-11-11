@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { api } from '../api';
 import { useI18n } from '../i18n';
 import type { Me } from '../App';
-import { ArtTeam, ArtAllClear } from '../art';
 
 export function Home({ me }: { me: Me }) {
   const { t, bi, date } = useI18n();
@@ -16,7 +15,6 @@ export function Home({ me }: { me: Me }) {
     <div className="stack">
       <div className="hero">
         <div><h1>{t.hello}{t.comma} {me.user.name.split(' ')[0]}</h1><p className="muted">{t.heroLine}</p></div>
-        <ArtTeam className="art-hero" />
       </div>
       <div className="cards">
         {d.me && (
@@ -35,7 +33,7 @@ export function Home({ me }: { me: Me }) {
       </div>
       <section className="panel">
         <h2>{t.expiringSoon}</h2>
-        {d.expiring.length === 0 ? <div className="empty"><ArtAllClear /><p className="muted">{t.noneExpiring}</p></div> : (
+        {d.expiring.length === 0 ? <p className="muted">{t.noneExpiring}</p> : (
           <ul className="rows">
             {d.expiring.map((x: any, i: number) => (
               <li key={i}>

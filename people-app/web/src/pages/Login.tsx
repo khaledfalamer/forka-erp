@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { api } from '../api';
 import { useI18n } from '../i18n';
-import { ArtLeft, ArtRight, ArtTeam } from '../art';
 
 type U = { email: string; display_name: string; roles: string };
 
@@ -15,9 +14,7 @@ export function Login({ onDone }: { onDone: () => void }) {
   };
   return (
     <div className="login">
-      <div className="login-art start"><ArtLeft /></div>
       <div className="login-card">
-        <ArtTeam className="art-strip phone-only" />
         <div className="login-head">
           <div className="brand dark">Forka <span>People</span></div>
           <button className="link-btn dark" onClick={() => setLang(lang === 'en' ? 'ar' : 'en')}>{t.language}</button>
@@ -37,7 +34,6 @@ export function Login({ onDone }: { onDone: () => void }) {
           ))}
         </ul>
       </div>
-      <div className="login-art end"><ArtRight /></div>
     </div>
   );
 }
