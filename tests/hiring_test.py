@@ -12,6 +12,8 @@ SESS = {'TOKCEO-0000000000000000000': {'email': 'ceo@forka.com', 'name': 'Khaled
 DATA = {'reqs': {}, 'pipe': {}, 'jobs': {}, 'apps': {}, 'config': {}}
 VER = [1]; CALLS = []; FAIL = [0]   # FAIL: how many applications the fake server refuses as busy before accepting
 DATA['reqs']['r1'] = {'id': 'r1', 'reqId': 'REQ-2611-01', 'title': 'Line Cook', 'dept': 'Kitchen', 'branch': 'Sharjah', 'status': 'open', 'headcount': 1, 'history': [], 'mustHaves': ['Kuwaiti dishes', 'Hygiene', 'Speed'], 'traits': ['Team cooperation'], 'knockout': ['2 years in a kitchen?'], 'ad': 'Cook with us', 'adAr': 'اطبخ معنا', 'titleAr': 'طباخ خط', 'knockoutAr': ['سنتان في مطبخ؟'], 'createdAt': 1793624193162, 'createdBy': 'ceo@forka.com', 'postedAt': 1793624734240, 'salMin': 3000, 'salMax': 4000, 'cur': 'AED'}
+DATA['reqs']['r2'] = {'id': 'r2', 'title': 'Cashier', 'dept': 'Front of house', 'branch': 'Ajman', 'status': 'review', 'headcount': 2, 'history': [], 'mustHaves': ['Cash handling'], 'testQs': [], 'practical': '', 'traits': [], 'createdBy': 'ceo@forka.com', 'createdAt': 0}
+DATA['jobs']['r2'] = {'id': 'r2', 'title': 'Cashier', 'dept': 'Front of house', 'branch': 'Ajman', 'open': False}
 DATA['jobs']['r1'] = {'id': 'r1', 'title': 'Line Cook', 'dept': 'Kitchen', 'branch': 'Sharjah', 'knockout': ['2 years in a kitchen?'], 'open': True, 'postedAt': 1793624734240}
 DATA['apps']['wabc'] = {'web': True, 'list': {'wabc': {'req': 'r1', 'jobTitle': 'Line Cook', 'name': 'Sara Ali', 'email': 'sara@mail.com', 'phone': '+971501234567', 'years': 3, 'answers': [['2 years in a kitchen?', 'Yes']], 'knockout': [], 'consent': True, 'cvFile': {'id': 'fileCV1234567890', 'drive': True, 'name': 'sara.pdf', 'size': 2048, 'type': 'application/pdf'}, 'source': 'Careers page', 'createdAt': 1793700000000, 'status': 'applied'}}}
 
@@ -47,6 +49,9 @@ def handle(b):
     if a == 'put':
         if b['col'] == 'config' and b['id'] == 'team' and not me['ceo']: return {'ok': False, 'error': 'role'}
         DATA[b['col']][b['id']] = b['data']; VER[0] += 1; return {'ok': True, 'ver': 'v%d' % VER[0]}
+    if a == 'del':
+        if not me['ceo'] and me['role'] != 'hr': return {'ok': False, 'error': 'role'}
+        DATA[b['col']].pop(b['id'], None); VER[0] += 1; return {'ok': True, 'ver': 'v%d' % VER[0]}
     if a == 'invite':
         bk = {'token': 'tok-new-0000000000000000', 'kind': b['kind'], 'slots': b['slots'], 'mins': b['mins'], 'mode': b['mode'], 'place': b['place'], 'by': me['email'], 'byName': me['name'], 'at': NOW, 'pick': None}
         DATA['pipe'][b['id']].setdefault('books', {})[b['kind']] = bk; VER[0] += 1
@@ -165,6 +170,19 @@ async def main():
             await pg.screenshot(path=str(ROOT / 'tests' / 'shots' / 'hiring_schedule_sent.png'))
             await pg.click('#dlg .btn.br'); await pg.wait_for_timeout(200)
             check('Candidate page shows "waiting for the candidate to pick"', 'waiting for the candidate' in await pg.inner_text('#dlg'))
+            await pg.evaluate("closeModal();openReq('r2')"); await pg.wait_for_timeout(200)
+            check('HR / CEO: every hiring request has Delete request, even before the scorecard is done', await pg.locator('#delreq').count() == 1)
+            await pg.click('#delreq'); await pg.wait_for_timeout(150)
+            box = await pg.inner_text('#askbox') if await pg.locator('#askbox').count() else ''
+            check('Delete asks first, naming the request', 'cannot be undone' in box and 'Cashier' in box, box)
+            await pg.screenshot(path=str(ROOT / 'tests' / 'shots' / 'hiring_delete_confirm.png'))
+            await pg.click('#sureNo'); await pg.wait_for_timeout(150)
+            check('Cancel keeps it', 'r2' in DATA['reqs'] and await pg.locator('#askbox').count() == 0)
+            await pg.click('#delreq'); await pg.click('#sureOk'); await pg.wait_for_timeout(500)
+            check('Yes, delete: the request is gone (and its job leaves the careers page)', 'r2' not in DATA['reqs'] and 'r2' not in DATA['jobs'] and await pg.locator('#dlg .hd').count() == 0, list(DATA['reqs']))
+            await pg.evaluate("Object.assign(S.reqs.r1,{testQs:['Grill station'],practical:'Cook two dishes',traits:S.reqs.r1.traits||[]});openReq('r1')"); await pg.wait_for_timeout(200); await pg.click('#delreq'); await pg.wait_for_timeout(200)
+            check('A request with candidates is not deleted (says to close the role instead)', 'r1' in DATA['reqs'] and await pg.locator('#askbox').count() == 0 and 'Close the role instead' in await pg.inner_text('#toast'))
+            await pg.evaluate("closeModal()")
             check('No page errors (CEO)', not errs, errs[:2])
             await ctx.close()
             ctx, pg, errs = await ctx_for(b, CFG, token='TOKCHEF-000000000000000000')
@@ -183,6 +201,8 @@ async def main():
             mine = put and put[-1]['data']['iv'].get('chef@kuwaitikitchen.com', {})
             check('Head: scorecard submitted with scores, a note per question and a recommendation', mine and mine.get('done') and mine.get('rec') == 'Hire' and mine['n']['comp.0'] == 'Led a team of 8' and mine['who'] == 'head', mine)
             await pg.locator('.card.sec', has=pg.locator('details')).screenshot(path=str(ROOT / 'tests' / 'shots' / 'hiring_head_card.png'))
+            await pg.evaluate("closeModal();Object.assign(S.reqs.r1,{testQs:['Grill station'],practical:'Cook two dishes',traits:S.reqs.r1.traits||[]});openReq('r1')"); await pg.wait_for_timeout(200)
+            check('Department heads do not get Delete request', await pg.locator('#delreq').count() == 0)
             check('No page errors (head)', not errs, errs[:2])
             await ctx.close()
             ctx, pg, errs = await ctx_for(b, CFG_PREVIEW, token='TOKCEO-0000000000000000000')
