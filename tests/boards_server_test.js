@@ -54,7 +54,7 @@ ck('CEO opens Boards: people come from Forka Apps (blocked people left out)', r.
 // the CEO sets departments and heads
 r = save('CEO', [{ id: 'member:admin@forka.com', kind: 'member', json: { dept: 'adm', role: 'head' } }, { id: 'member:mkt@forka.com', kind: 'member', json: { dept: 'mkt', role: 'head' } },
   { id: 'member:design@forka.com', kind: 'member', json: { dept: 'mkt', role: 'staff' } }, { id: 'member:mnt@forka.com', kind: 'member', json: { dept: 'mnt', role: 'head' } }]);
-ck('CEO makes Ruby head of Executive & Administration, and sets the Marketing team', r.ok && !r.rejected.length && load('RUBY').me.role === 'head' && load('RUBY').me.dept === 'adm', r);
+ck('CEO makes Ruby head of Executive & Administration, and sets the Marketing team (older one-department rows still work)', r.ok && !r.rejected.length && load('RUBY').me.depts.adm === 'head', load('RUBY').me);
 r = save('MKT', [{ id: 'member:store@kuwaitikitchen.com', kind: 'member', json: { dept: 'mkt', role: 'head' } }]);
 ck('A head cannot make someone else a head', r.rejected.length === 1, r);
 
@@ -127,6 +127,30 @@ save('MKT', [{ id: 'c2', kind: 'card', del: true }]);
 r = load('DES', t0);
 ck('Only what changed since last time comes back, including deletions', r.docs.length >= 1 && r.docs.every(d => d.at >= t0 - 5000) && r.docs.some(d => d.id === 'c2' && d.del) && !r.docs.some(d => d.id === 'b1'), r.docs);
 ck('Deleted cards are gone on a fresh load', !ids(load('DES')).includes('c2'));
+
+// several departments per person, and spaces
+r = save('CEO', [{ id: 'member:design@forka.com', kind: 'member', json: { depts: { mkt: 'staff', adm: 'staff' } } }]);
+ck('The CEO puts someone in two departments', !r.rejected.length && load('DES').me.depts.adm === 'staff' && load('DES').me.depts.mkt === 'staff');
+save('RUBY', [board('ba', 'adm', [], [], { allDept: true })]);
+ck('...they see boards open to everyone in either department', ids(load('DES')).includes('ba') && ids(load('DES')).includes('b1'));
+r = save('MKT', [{ id: 'member:design@forka.com', kind: 'member', json: { depts: { mkt: 'staff' } } }]);
+ck('A head cannot take someone out of another head\'s department', r.rejected.length === 1, r);
+r = save('RUBY', [{ id: 'member:store@kuwaitikitchen.com', kind: 'member', json: { depts: { adm: 'staff' } } }]);
+ck('A head adds someone to their own department', !r.rejected.length && load('STORE').me.depts.adm === 'staff', r);
+r = save('MKT', [{ id: 'space:events', kind: 'space', json: { id: 'events', en: 'Events', ar: 'الفعاليات', by: 'mkt@forka.com' } },
+  { id: 'member:mkt@forka.com', kind: 'member', json: { depts: { mkt: 'head', events: 'head' } } }, board('bev', 'events', [], [])]);
+ck('A head creates a new space, becomes its head and adds a board in it', !r.rejected.length && load('MKT').me.depts.events === 'head' && ids(load('MKT')).includes('bev'), r);
+r = save('DES', [{ id: 'space:mine', kind: 'space', json: { id: 'mine', en: 'Mine' } }]);
+ck('Staff cannot create spaces', r.rejected[0] === 'space:mine', r);
+r = save('RUBY', [{ id: 'member:admin@forka.com', kind: 'member', json: { depts: { adm: 'head', events: 'head' } } }]);
+ck('Nobody can make themselves head of a space someone else created', r.rejected.length === 1, r);
+r = save('RUBY', [{ id: 'space:events', kind: 'space', json: { id: 'events', en: 'Hacked' } }]);
+ck('Only the space\'s head (or the CEO) can rename it', r.rejected.length === 1 && !save('MKT', [{ id: 'space:events', kind: 'space', json: { id: 'events', en: 'Events & Catering', by: 'mkt@forka.com' } }]).rejected.length);
+r = save('STORE', [board('rq2', 'events', [], ['rq2l'], { kind: 'requests', name: '' }), { id: 'rq2l', kind: 'list', json: { id: 'rq2l', name: 'New requests', cards: [] } }]);
+ck('Anyone can send a request to a new space too', !r.rejected.length, r);
+ck('Everyone sees the list of spaces', ids(load('STORE')).includes('space:events'));
+r = save('MKT', [{ id: 'space:events', kind: 'space', del: true }]);
+ck('Only the CEO removes a space', r.rejected.length === 1 && !save('CEO', [{ id: 'space:events', kind: 'space', del: true }]).rejected.length);
 
 // files
 r = call({ action: 'upload', token: tok('DES'), card: 'c1', name: 'shot.png', type: 'image/png', data: Buffer.from('PNGDATA').toString('base64') });
