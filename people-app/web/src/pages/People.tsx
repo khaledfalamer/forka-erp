@@ -2,6 +2,9 @@ import { useEffect, useMemo, useState } from 'react';
 import { api } from '../api';
 import { useI18n } from '../i18n';
 
+const TONES = ['t-saffron', 't-sage', 't-sea', 't-terracotta', 't-bronze'];
+export const tone = (s: string | null) => TONES[[...(s || '')].reduce((a, c) => a + c.charCodeAt(0), 0) % TONES.length];
+
 export function People() {
   const { t, bi } = useI18n();
   const [rows, setRows] = useState<any[] | null>(null);
@@ -35,7 +38,7 @@ export function People() {
           {shown.map(r => (
             <li key={r.employmentId}>
               <a href={'#/people/' + r.employmentId} className="row-link">
-                <span className="avatar" aria-hidden>{(r.name.en || '?').split(' ').map((s: string) => s[0]).slice(0, 2).join('')}</span>
+                <span className={'avatar ' + tone(r.name.en)} aria-hidden>{(r.name.en || '?').split(' ').map((s: string) => s[0]).slice(0, 2).join('')}</span>
                 <span className="row-main">{bi(r.name)}<small>{bi(r.job)} · {bi(r.branch)}</small></span>
                 <span className="muted mono">{r.employeeNo}</span>
               </a>

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { api } from '../api';
 import { useI18n } from '../i18n';
 import type { Me } from '../App';
+import { ArtTeam, ArtAllClear } from '../art';
 
 export function Home({ me }: { me: Me }) {
   const { t, bi, date } = useI18n();
@@ -13,17 +14,20 @@ export function Home({ me }: { me: Me }) {
   const today = new Date().toISOString().slice(0, 10);
   return (
     <div className="stack">
-      <h1>{t.hello}{t.comma} {me.user.name.split(' ')[0]}</h1>
+      <div className="hero">
+        <div><h1>{t.hello}{t.comma} {me.user.name.split(' ')[0]}</h1><p className="muted">{t.heroLine}</p></div>
+        <ArtTeam className="art-hero" />
+      </div>
       <div className="cards">
         {d.me && (
-          <a className="card link" href={'#/people/' + d.me.employmentId}>
+          <a className="card link accent-sea" href={'#/people/' + d.me.employmentId}>
             <div className="card-label">{t.myJob}</div>
             <div className="card-main">{bi(d.me.job)}</div>
             <div className="muted">{bi(d.me.branch)} · {bi(d.me.department)}</div>
           </a>
         )}
         {(me.can.isManager || me.can.isHr) && (
-          <a className="card link" href="#/people">
+          <a className="card link accent-saffron" href="#/people">
             <div className="card-label">{t.teamCount}</div>
             <div className="card-number">{d.teamCount}</div>
           </a>
@@ -31,7 +35,7 @@ export function Home({ me }: { me: Me }) {
       </div>
       <section className="panel">
         <h2>{t.expiringSoon}</h2>
-        {d.expiring.length === 0 ? <p className="muted">{t.noneExpiring}</p> : (
+        {d.expiring.length === 0 ? <div className="empty"><ArtAllClear /><p className="muted">{t.noneExpiring}</p></div> : (
           <ul className="rows">
             {d.expiring.map((x: any, i: number) => (
               <li key={i}>
