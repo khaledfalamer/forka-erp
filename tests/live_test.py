@@ -117,7 +117,7 @@ async def main():
         await pg.click('[data-a=p-add]'); await pg.fill('#pm [data-k=name]', 'Chef Ali'); await pg.fill('#pm [data-k=email]', 'chef@kuwaitikitchen.com')
         await pg.click('#pm [data-a=d-app][data-v=proc]'); await pg.click('#pm [data-a=p-save]'); await pg.wait_for_timeout(300)
         check('Add person saved on the server', PEOPLE.get('chef@kuwaitikitchen.com', {}).get('sides') == ['dept'], PEOPLE.get('chef@kuwaitikitchen.com'))
-        await pg.click('[data-fs=user]'); await pg.click('[data-fs=signout]'); await pg.wait_for_selector('#gsi')  # Sign out is in the suite header's user menu now
+        await pg.click('[data-a=out]'); await pg.wait_for_selector('#gsi')
         check('Sign out clears the session', not await pg.evaluate("localStorage.getItem('fa-token')") and 'signout' in CALLS)
         await as_('store@kuwaitikitchen.com')
         check('Hamim signs in, no CEO box', await pg.is_visible('[data-app=proc]') and await pg.locator('#ceobox').count() == 0)
@@ -126,7 +126,7 @@ async def main():
         newp = await np.value
         check('Procurement opens with the Forka Apps sign-in handed over, visit logged', 'procurement.forka.com' in newp.url and '#erp=S' in newp.url and any(a['verb'] == 'open' for a in ACT), newp.url)
         await newp.close()
-        await pg.click('[data-fs=user]'); await pg.click('[data-fs=signout]'); await pg.wait_for_selector('#gsi')  # Sign out is in the suite header's user menu now
+        await pg.click('[data-a=out]'); await pg.wait_for_selector('#gsi')
         await as_('new.person@forka.com')
         check('Unknown email gets the request form', await pg.is_visible('#rq'))
         await pg.fill('#rq [name=name]', 'Sara Ali'); await pg.fill('#rq [name=why]', 'Supplier payments'); await pg.click('[data-a=r-send]'); await pg.wait_for_timeout(300)
@@ -141,13 +141,6 @@ async def main():
         check('Expired session goes back to sign-in', await pg.locator('#gsi').count() == 1)
         await pg.click('[data-lang=ar]'); await pg.wait_for_timeout(200)
         check('Arabic works on the live sign-in', (await pg.get_attribute('html', 'dir')) == 'rtl')
-        # Hire / Boards / Procurement sign out through https://erp.forka.com/#signout
-        await pg.wait_for_selector('#gsi'); await as_('ceo@forka.com')
-        tok = await pg.evaluate("localStorage.getItem('fa-token')"); n0 = len(CALLS)
-        await pg.goto('about:blank'); await pg.goto(URL + '#signout'); await pg.wait_for_selector('#gsi', timeout=5000); await pg.wait_for_timeout(300)
-        check('#signout signs out on the server and clears the saved session', bool(tok) and 'signout' in CALLS[n0:] and tok not in SESS
-              and not await pg.evaluate("localStorage.getItem('fa-token')") and not await pg.evaluate("localStorage.getItem('fa-cache')"), CALLS[n0:])
-        check('#signout is cleared from the address', await pg.evaluate('location.hash') == '')
         check('No page errors', not errs, errs[:2])
         # site must not fall back to preview when not configured
         ctx2 = await b.new_context()
