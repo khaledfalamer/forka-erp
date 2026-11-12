@@ -31,6 +31,7 @@ PN=$(gcloud projects describe forka-apps --format='value(projectNumber)')
 SA=$PN-compute@developer.gserviceaccount.com
 gcloud projects add-iam-policy-binding forka-apps --member=serviceAccount:$SA --role=roles/cloudsql.client
 gcloud projects add-iam-policy-binding forka-apps --member=serviceAccount:$SA --role=roles/secretmanager.secretAccessor
+gcloud projects add-iam-policy-binding forka-apps --member=serviceAccount:$SA --role=roles/run.builder
 git clone -b claude/zealous-clarke-ax4jbr https://github.com/khaledfalamer/forka-erp && cd forka-erp/platform
 gcloud run deploy forka-apps --source . --region me-central1 --allow-unauthenticated \
   --add-cloudsql-instances forka-apps:me-central1:forka-db \
@@ -38,6 +39,11 @@ gcloud run deploy forka-apps --source . --region me-central1 --allow-unauthentic
   --set-secrets PGPASSWORD=PGPASSWORD:latest
 ```
 Answer **Y** when it asks to enable services (Cloud Build, Artifact Registry, Cloud Run).
+forka.com's organisation policy does not allow "allUsers", so open the server with
+`gcloud run services update forka-apps --region=me-central1 --no-invoker-iam-check` (done 12 Nov 2026).
+The server checks every sign-in itself, like the Apps Script web apps set to "Anyone".
+
+**Online since 12 Nov 2026:** https://forka-apps-443945615318.me-central1.run.app (database connected, no people copied yet).
 On start the server creates its tables itself. It prints an address like `https://forka-apps-xxxx.me-central1.run.app`;
 opening `.../accounts` must show `{"ok":true,"service":"forka-apps-accounts"}`.
 The live site does not use this server until go-live.

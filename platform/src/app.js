@@ -19,7 +19,7 @@ export function buildApp({ accounts = makeAccounts(), logger = true } = {}) {
   app.options('/*', async (_req, reply) => reply.header('access-control-allow-methods', 'GET, POST').header('access-control-allow-headers', 'content-type').code(204).send());
 
   app.get('/', async () => ({ ok: true, service: 'forka-platform' }));
-  app.get('/healthz', async () => ({ ok: true }));
+  app.get('/health', async () => ({ ok: true }));   // (Cloud Run keeps /healthz for itself)
 
   const mount = (path, service, handle) => {
     app.get(path, async () => ({ ok: true, service }));
