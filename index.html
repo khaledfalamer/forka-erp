@@ -12,18 +12,26 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- fonts load without holding up the page; the system font shows for a moment if they are slow -->
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@500;600&family=Inter+Tight:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<!-- shared Forka suite: tokens and the suite header (same files as Hire, Boards and Procurement) -->
+<link rel="stylesheet" href="suite/suite.css">
 <style>
+/* The launcher's own names now point at the suite tokens (brief 1.1); launcher accent = bronze. */
 :root{
-  --fk-charcoal:#23211f;--fk-charcoal-dark:#171513;--fk-charcoal-soft:#3a3631;
-  --fk-paper:#f6f3ee;--fk-card:#fffdf9;--fk-line:#e5dfd5;
-  --fk-bronze:#9a6b3f;--fk-bronze-hover:#86592f;--fk-bronze-light:#b8875a;--fk-bronze-soft:#e9dccb;
-  --fk-text:#23211f;--fk-text-2:#5c5852;--fk-muted:#8d877e;
-  --fk-success:#4f7a3a;--fk-success-bg:#eef3e8;--fk-warning:#a8731c;--fk-warning-bg:#fbf2e2;
-  --fk-danger:#a33a2c;--fk-danger-bg:#f8e9e5;--fk-info:#3e5c8a;--fk-info-bg:#eaeff6;
-  --fk-radius:14px;--fk-radius-sm:10px;
+  --fs-accent:#8C6A3F;
+  --fk-charcoal:var(--fs-ink);--fk-charcoal-dark:#171513;--fk-charcoal-soft:#3a3631;
+  --fk-paper:var(--fs-canvas);--fk-card:var(--fs-surface);--fk-line:var(--fs-border);
+  --fk-bronze:var(--fs-bronze);--fk-bronze-hover:var(--fs-bronze-d);--fk-bronze-light:#b8875a;--fk-bronze-soft:#e9dccb;
+  --fk-text:var(--fs-ink);--fk-text-2:var(--fs-ink2);--fk-muted:#8d877e;
+  --fk-success:var(--fs-success);--fk-success-bg:var(--fs-success-bg);--fk-warning:var(--fs-warning);--fk-warning-bg:var(--fs-warning-bg);
+  --fk-danger:var(--fs-danger);--fk-danger-bg:var(--fs-danger-bg);--fk-info:var(--fs-info);--fk-info-bg:var(--fs-info-bg);
+  --fk-radius:var(--fs-r-lg);--fk-radius-sm:var(--fs-r);
   --fk-sans:'Inter Tight','IBM Plex Sans Arabic',system-ui,sans-serif;
   --fk-serif:'EB Garamond','IBM Plex Sans Arabic',serif;
 }
+/* App cards stay exactly as they were (Khaled, brief 2.2): they keep the launcher's original colour values. */
+.apps{--fk-charcoal:#23211f;--fk-text:#23211f;--fk-text-2:#5c5852;--fk-muted:#8d877e;--fk-line:#e5dfd5;--fk-danger:#a33a2c;color:#23211f}
+/* Suite header on the launcher: the bar keeps one layout in English and Arabic, so the language switch does not
+   jump to the other side when it is pressed (same rule as the old top bar); the words inside still read right-to-left. */
 *{box-sizing:border-box}
 html,body{margin:0}
 body{font-family:var(--fk-sans);background:var(--fk-paper);color:var(--fk-text);font-size:14px;line-height:1.45;min-height:100vh}
@@ -156,7 +164,7 @@ label.f{display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--fk
 .filters select{width:160px}
 .nw{white-space:nowrap}
 /* modal */
-.ov{position:fixed;inset:0;background:rgba(23,21,19,.55);display:flex;align-items:flex-start;justify-content:center;z-index:20;padding:30px 14px;overflow:auto}
+.ov{position:fixed;inset:0;background:rgba(23,21,19,.55);display:flex;align-items:flex-start;justify-content:center;z-index:50;padding:30px 14px;overflow:auto}
 .md{background:var(--fk-card);border-radius:16px;width:100%;max-width:620px;padding:22px;display:flex;flex-direction:column;gap:14px}
 .md h2{font-size:24px}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
@@ -198,6 +206,7 @@ label.f{display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--fk
 <body>
 <div id="app"></div>
 <script src="config.js"></script>
+<script src="suite/suite.js"></script>
 <script>
 'use strict';
 const CFG=window.FORKA_APPS||{};
@@ -461,7 +470,10 @@ function vGate(){
     body='<h2>'+t(m[0])+'</h2><div class="'+m[2]+'">'+t(m[1])+(g.step==='rejected'&&r&&r.reason?'<br><b>'+esc(r.reason)+'</b>':'')+'</div><div class="note">'+esc(g.email)+'</div><button class="lnk" data-a="g-start">'+t('back')+'</button>'}
   return '<div class="gate">'+langSw()+'<div class="brand">Forka</div><div class="brand-sub">'+t('apps')+'</div><div class="gcard">'+body+'</div><a class="plink" href="privacy.html">'+t('privacy')+'</a></div>'}
 
+/* Signed in: the shared suite header (app switcher, EN/AR, name and level, sign out in the user menu).
+   The old top bar stays only as a fallback in case suite/suite.js did not load. */
 function vTop(){const p=person(me);
+  if(window.FS)return FS.header({app:'home',lang,user:{name:p.name,role:lvName(p.level),email:p.method==='pin'?'':p.email}});
   return '<div class="top"><div class="logo" data-a="home">Forka</div><div class="sub">'+t('apps')+'</div><div class="sp"></div>'+
     '<div class="me"><div class="av">'+esc(initials(p.name))+'</div><div class="txt"><div class="nm">'+esc(p.name)+'</div><div class="lv">'+lvName(p.level)+'</div></div></div>'+
     '<button class="btn sm" data-a="out">'+t('out')+'</button>'+langSw()+'</div>'}
@@ -554,11 +566,22 @@ function render(){
     root.innerHTML=vTop()+(view==='home'?vHero()+'<div class="page lift">'+vHome()+'</div>':'<div class="page">'+(view==='people'?vPeople():vActivity())+'</div>')+vModal()}
   if(toastMsg)root.insertAdjacentHTML('beforeend','<div class="toast">'+esc(toastMsg)+'</div>');
   if(fq!=null){const f=document.getElementById('fq');if(f){f.focus();try{f.setSelectionRange(fq,fq)}catch(_){}}}
+  if(me&&window.FS)FS.after({app:'home'});
 }
+if(window.FS){
+  FS.onLang=l=>{lang=l;try{localStorage.setItem('fa-lang',lang)}catch(_){}render()};
+  FS.onSignOut=()=>signOut();
+}
+/* Hire, Boards and Procurement sign out through https://erp.forka.com/#signout: sign out here exactly like the Sign out button. */
+function hashSignout(){if(location.hash!=='#signout')return false;
+  try{history.replaceState(null,'',location.pathname+location.search)}catch(_){location.hash=''}
+  return true}
+window.addEventListener('hashchange',()=>{if(hashSignout()&&me)signOut()});
 
 /* ---------- events ---------- */
 document.addEventListener('click',e=>{
   const l=e.target.closest('[data-lang]');if(l){lang=l.dataset.lang;try{localStorage.setItem('fa-lang',lang)}catch(_){}render();return}
+  const hm=e.target.closest('.fs-mark,[data-fs-app=home],.fs-pop[data-fs-pop=user] a');if(hm&&me){e.preventDefault();view='home';modal=null;render();return}
   const ap=e.target.closest('[data-app]');if(ap){openApp(APPS.find(a=>a.id===ap.dataset.app));return}
   const b=e.target.closest('[data-a]');
   if(!b){const r=e.target.closest('tr.row');if(r&&!e.target.closest('button'))openPerson(r.dataset.pid);
@@ -677,8 +700,11 @@ if(LIVE){
   openApp=function(a){const p=person(me);if(!canOpen(a,p))return;const u=a.id==='proc'?a.url+'#erp='+encodeURIComponent(TOKEN):a.url;try{window.open(u,'_blank','noopener')}catch(_){}api('open',{app:a.id})};
 }
 (async()=>{
+  const wantOut=hashSignout();
   if(LIVE){
     let tok='';try{tok=localStorage.getItem('fa-token')||''}catch(_){}
+    let drawn=false;
+    if(wantOut&&tok){TOKEN=tok;signOut();tok='';drawn=true}   // server sign-out + clear the saved session, then the sign-in screen
     const refresh=async()=>{
       const r=await api('me',{ver:VER});
       if(r.ok){if(r.same){if(r.me&&me&&r.me.status!=='active')sessionGone('');return}
@@ -690,12 +716,13 @@ if(LIVE){
       if(c){applyBundle(Object.assign(c,{fromCache:true}));VER=c.ver||'';view='home';render()}   // open at once from the last visit
       else{gate.step='busy';render()}
       refresh()}
-    else{render();
+    else{if(!drawn)render();
       // wake the accounts server while the person reaches for the Google button
       try{fetch(CFG.ACCOUNTS_URL,{method:'GET'}).catch(()=>{})}catch(_){}}
     setInterval(()=>{if(!me||document.hidden||modal)return;refresh()},60000);
     document.addEventListener('visibilitychange',()=>{if(!document.hidden&&me&&!modal)refresh()});
     return}
+  if(wantOut&&me)signOut();
   render();
   try{
     let C=window.claude;for(let i=0;i<20&&!(C&&C.use);i++){await new Promise(r=>setTimeout(r,100));C=window.claude}
