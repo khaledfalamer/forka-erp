@@ -103,22 +103,36 @@ export function App() {
       default: return <p className="muted">{t.notFound}</p>;
     }
   })();
+  const D = t.dash;
+  const ws = me.roles.includes('CEO') ? D.workspace.ceo : me.can.isHr ? D.workspace.hr : me.can.isManager ? D.workspace.manager : D.workspace.employee;
+  const here = items.find(i => i.key === tab);
+  const initials = me.user.name.split(' ').map(s => s[0]).slice(0, 2).join('').toUpperCase();
   return (
-    <div className="shell">
-      <header className="top">
-        <a href="#/" className="brand-link"><Logo />{DEMO && <em className="demo-pill">{t.demo}</em>}</a>
-        <div className="top-right">
-          <LangPicker />
-          <span className="who" title={me.user.email}>{me.user.name}<small>{me.roles.map(r => t.roles[r] || r).join(' · ')}</small></span>
-          <button className="link-btn" onClick={signOut}>{t.signOut}</button>
-        </div>
-      </header>
-      <AutoNotice />
-      <div className="layout">
-        <nav className="side" aria-label="Main">
+    <div className="shell v2">
+      <aside className="side" aria-label="Main">
+        <a href="#/" className="side-brand"><Logo /></a>
+        <nav>
           {groups.map(([g, label]) => { const list = items.filter(i => i.group === g); return list.length ? (
             <div key={g} className="side-group"><div className="side-head">{label}</div>{list.map(i => <Link key={i.key} i={i} />)}</div>) : null; })}
         </nav>
+        <div className="side-foot">Forka People{DEMO ? ' · ' + t.demo : ''}</div>
+      </aside>
+      <div className="main-col">
+        <header className="top">
+          <a href="#/" className="brand-link mobile-only"><Logo dark /></a>
+          <div className="crumb"><span>{ws}</span>{here && tab !== '' && <><span aria-hidden="true">/</span><span>{here.label(t)}</span></>}{DEMO && <em className="demo-pill">{t.demo}</em>}</div>
+          <div className="top-right">
+            <LangPicker dark />
+            <details className="acct">
+              <summary aria-label={D.account} title={me.user.name}><span className="avatar-btn">{initials}</span></summary>
+              <div className="acct-menu">
+                <strong>{me.user.name}</strong><small>{me.user.email}</small><small>{me.roles.map(r => t.roles[r] || r).join(' · ')}</small>
+                <button className="btn ghost" onClick={signOut}>{t.signOut}</button>
+              </div>
+            </details>
+          </div>
+        </header>
+        <AutoNotice />
         <main className="page"><RouteCtx.Provider value={tab}>{page}</RouteCtx.Provider></main>
       </div>
       <nav className="bottom-nav">
