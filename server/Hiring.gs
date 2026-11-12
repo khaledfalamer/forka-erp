@@ -14,7 +14,7 @@
  *                              ANTHROPIC_API_KEY = turns on the AI buttons (CV summary, job ads, interview questions).
  *                              ANTHROPIC_WORKSPACE_ID = only if the key is not tied to one workspace (starts with wrkspc_).
  */
-const ACCOUNTS_URL = 'https://script.google.com/macros/s/AKfycbwUO5mC1oZrKiSJfF-kpeIFUPjfzB5VToNVn9EH-ecmDadFs9xsU1oDFHTgJ2FSg6vP/exec';
+const ACCOUNTS_URL = 'https://forka-apps-443945615318.me-central1.run.app/accounts';
 // Each kind of record has its own tab. "apps" = applications sent from apply.forka.com.
 const COLS = { reqs: 'Hiring requests', jobs: 'Posted jobs', pipe: 'Candidates', apps: 'Applications', config: 'Settings' };
 const HEAD = ['Id', 'Title / name', 'Status', 'Updated', 'Updated by', 'data (do not edit)'];
