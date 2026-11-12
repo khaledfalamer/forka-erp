@@ -196,7 +196,7 @@ async def main():
             return await pg.evaluate("[...document.querySelectorAll('" + sel + "')].map(b=>Math.round(b.getBoundingClientRect().x))")
         # home: the suite header mirrors fully in Arabic (brief 1.4), so the switch moves with it; it must stay whole and inside the header
         async def lang_box():
-            return await pg.evaluate("(()=>{const h=document.querySelector('.fs-head').getBoundingClientRect(),l=document.querySelector('.fs-lang').getBoundingClientRect(),m=document.querySelector('.fs-mark').getBoundingClientRect();return {inside:l.left>=h.left&&l.right<=h.right,w:Math.round(l.width),markRight:m.left>h.width/2}})()")
+            return await pg.evaluate("(()=>{const h=document.querySelector('.fs-head').getBoundingClientRect(),l=document.querySelector('.fs-lang').getBoundingClientRect(),m=document.querySelector('.fs-lock').getBoundingClientRect();return {inside:l.left>=h.left&&l.right<=h.right,w:Math.round(l.width),markRight:m.left>h.width/2}})()")
         b_en = await lang_box(); await pg.click('[data-fs-lang=ar]'); b_ar = await lang_box(); await pg.click('[data-fs-lang=en]')
         check('Language switch whole and inside the header in EN and AR; header mirrors in Arabic (home)', b_en['inside'] and b_ar['inside'] and b_en['w'] == b_ar['w'] and not b_en['markRight'] and b_ar['markRight'], f'{b_en} vs {b_ar}')
         await signout(pg)
