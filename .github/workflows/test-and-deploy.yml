@@ -37,6 +37,8 @@ jobs:
         run: node tests/hiring_server_test.js
       - name: Hiring and careers page checks
         run: python tests/hiring_test.py
+      - name: Hire left menu checks
+        run: python tests/hire_sidebar_test.py
       - name: Boards (preview) page checks
         run: python tests/boards_test.py
       - name: Boards server checks (who sees and changes what)

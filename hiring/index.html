@@ -46,17 +46,6 @@ main{max-width:1240px;margin:0 auto;padding:24px 22px 80px}
 .grid{display:grid;gap:14px}.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
 @media(max-width:860px){.g2,.g3,.g4{grid-template-columns:1fr 1fr}}
 @media(max-width:560px){.g2,.g3,.g4{grid-template-columns:1fr}}
-/* Phone: the top bar becomes three tidy rows - name + language, who you are + Forka Apps, then the menu (swipe sideways) */
-@media(max-width:720px){
-  header{height:auto;flex-wrap:wrap;padding:10px 14px;gap:8px 10px}
-  .logo{order:1;white-space:nowrap;font-size:21px}
-  #langSw{order:2;margin-inline-start:auto}
-  .who{order:3;flex-basis:100%;flex-wrap:nowrap;min-width:0}
-  .who .role{white-space:nowrap;flex:none}
-  .who select{flex:1;min-width:0;height:32px;padding:4px 8px;font-size:12px}
-  .who .btn{flex:none;margin:0!important}
-  nav{order:4;flex-basis:100%;margin:0 -14px;padding:0 10px 2px;scrollbar-width:none}
-  nav::-webkit-scrollbar{display:none}
 }
 .kpi .v{font-size:28px;font-weight:700;font-family:"EB Garamond",serif}.kpi .l{color:var(--mute);font-size:12px;font-weight:500}
 .tag{display:inline-block;border-radius:20px;padding:2px 9px;font-size:11px;font-weight:600;background:var(--soft);color:var(--ink2);white-space:nowrap}
@@ -139,20 +128,78 @@ pre.out{white-space:pre-wrap;background:#fff;border:1px solid var(--line);border
 @media (max-width:600px){.fk-lock.big{gap:12px}.fk-lock.big svg{width:52px;height:52px}.fk-lock.big .fk-k{font-size:14px}.fk-lock.big .fk-n{font-size:32px;white-space:normal}}
 /* Light header (paper) with the app colour line, and the app colour inside */
 header{background:#fdfbf7!important;color:#2b2b2b!important;border-bottom:3px solid #E0A037}header .fk-lock .fk-k{color:#8a7f72!important}.fk-lock .fk-n{color:#2b2b2b!important}
-nav a{color:#5e564d!important}nav a.on,nav a:hover{background:rgba(140,106,63,.12)!important;color:#2b2b2b!important}.who{color:#6f665c!important}
+.who{color:#6f665c!important}
 .who select{background:#fff!important;color:#2b2b2b!important;border:1px solid #e3d8c7!important}#langSw{border-color:#e3d8c7!important}#langSw button{color:#6f665c!important}#langSw button.on{color:#fff!important}
 :root{--bronze:#9C6914;--bronze2:#7f5510;--soft:#f8eed9}
+
+/* ===== Layout: left menu + simple top header (same shell as the other Forka apps) ===== */
+:root{--sw:250px;--sw-mini:72px;--acc:#E0A037;--acc-d:#9C6914;--acc-soft:#fbf1dc}
+#app{display:flex;min-height:100vh;direction:ltr}
+#side{position:sticky;top:0;height:100vh;width:var(--sw);flex:none;background:#fdfbf7;border-right:1px solid #ece4d6;display:flex;flex-direction:column;padding:16px 12px;z-index:30;transition:width .18s ease}
+[dir=rtl] #side{direction:rtl}
+.sd-top{display:flex;align-items:center;gap:8px;padding:2px 6px 18px;border-bottom:1px solid #efe8dc;margin-bottom:12px}
+.sd-top .fk-lock{flex:1;min-width:0}.sd-top .fk-lock .fk-k{color:#8a7f72}.sd-top .fk-lock .fk-n{color:#2b2b2b}
+.sd-mini{border:0;background:none;color:#8a7f72;width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none}
+.sd-mini:hover{background:#f3ece1;color:#2b2b2b}[dir=rtl] .sd-mini svg{transform:scaleX(-1)}
+#side nav{display:flex;flex-direction:column;gap:3px;flex:1;overflow-y:auto;overflow-x:hidden}
+#side nav a{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;color:#5e564d;font-weight:500;font-size:14px;text-decoration:none;cursor:pointer;white-space:nowrap;position:relative}
+#side nav a .ni{width:20px;height:20px;flex:none}
+#side nav a:hover{background:#f6efe3;color:#2b2b2b}
+#side nav a.on{background:var(--acc-soft);color:#2b2b2b;font-weight:600}
+#side nav a.on:before{content:"";position:absolute;inset-inline-start:0;top:8px;bottom:8px;width:3px;border-radius:3px;background:var(--acc)}
+#side nav a.on .ni{color:var(--acc-d)}
+#side nav a .n{margin-inline-start:auto;background:var(--acc-d);color:#fff;border-radius:9px;padding:0 7px;font-size:11px;font-weight:700;line-height:18px}
+#side nav a:focus-visible,.sd-apps:focus-visible,.sd-mini:focus-visible{outline:2px solid var(--acc);outline-offset:1px}
+.sd-foot{border-top:1px solid #efe8dc;padding-top:10px;margin-top:8px}
+.sd-apps{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;color:#5e564d;text-decoration:none;font-weight:500;white-space:nowrap}.sd-apps:hover{background:#f6efe3;color:#2b2b2b}
+#shell{flex:1;min-width:0;display:flex;flex-direction:column}
+[dir=rtl] #shell{direction:rtl}
+#shell>header{position:sticky;top:0;z-index:20;height:60px;display:flex;align-items:center;gap:14px;padding:0 24px;background:#fdfbf7;color:#2b2b2b;border-bottom:3px solid var(--acc)}
+.crumb{flex:1;min-width:0;display:flex;align-items:center;gap:8px;font-size:13px;color:#8a7f72;white-space:nowrap;overflow:hidden}
+.crumb .cr-pg{font:600 19px 'EB Garamond','IBM Plex Sans Arabic',serif;color:#2b2b2b;overflow:hidden;text-overflow:ellipsis}
+[dir=rtl] .crumb .cr-pg{font-family:'IBM Plex Sans Arabic',sans-serif;font-size:17px}.crumb .cr-sep{color:#c4b9a9}
+.sd-burger{display:none;border:0;background:none;color:#2b2b2b;width:38px;height:38px;border-radius:9px;align-items:center;justify-content:center;cursor:pointer;flex:none}.sd-burger:hover{background:#f3ece1}
+#shell>main{max-width:1240px;width:100%;box-sizing:border-box;margin:0 auto}
+#scrim{display:none}
+/* collapsed: icons only */
+body.side-mini #side{width:var(--sw-mini);padding-inline:10px}
+body.side-mini #side .lb,body.side-mini .sd-top .fk-lock>div{display:none}
+body.side-mini .sd-top{flex-direction:column;padding-inline:0;gap:10px}body.side-mini .sd-top .fk-lock{flex:none}
+body.side-mini .sd-mini svg{transform:scaleX(-1)}[dir=rtl] body.side-mini .sd-mini svg{transform:none}
+body.side-mini #side nav a,body.side-mini .sd-apps{justify-content:center;padding:11px 0}
+body.side-mini #side nav a .n{position:absolute;top:3px;right:6px;margin:0;padding:0 5px;font-size:10px;line-height:16px}
+/* phones: slide-out drawer */
+@media(max-width:860px){
+  #side{position:fixed;left:0;top:0;bottom:0;width:min(84vw,280px)!important;transform:translateX(-102%);transition:transform .22s ease;box-shadow:0 10px 40px rgba(0,0,0,.18);padding-inline:12px!important}
+  body.side-open #side{transform:none}
+  body.side-open #scrim{display:block;position:fixed;inset:0;background:rgba(35,33,31,.35);z-index:25}
+  body.side-mini #side .lb,body.side-mini .sd-top .fk-lock>div{display:revert}body.side-mini .sd-top{flex-direction:row}body.side-mini #side nav a,body.side-mini .sd-apps{justify-content:flex-start;padding:10px 12px}
+  .sd-mini{display:none}.sd-burger{display:flex}
+  #shell>header{height:auto;min-height:56px;flex-wrap:wrap;padding:8px 12px;gap:8px 10px}
+  .crumb{order:1;flex:1}.crumb .cr-app,.crumb .cr-sep{display:none}
+  #langSw{order:2}
+  .who{order:3;flex-basis:100%;flex-wrap:nowrap;min-width:0}.who .role{white-space:nowrap;flex:none}.who select{flex:1;min-width:0;height:32px;padding:4px 8px;font-size:12px}
+}
 </style>
 </head>
 <body>
-<header>
-  <div class="fk-lock"><svg viewBox="0 0 118 118" aria-hidden="true"><defs><mask id="fkm-h"><rect width="118" height="118" fill="#fff"/><circle cx="59" cy="59" r="22" fill="#000"/></mask></defs><g mask="url(#fkm-h)"><rect x="7" y="7" width="48" height="48" rx="12" fill="#E0A037"/><rect x="63" y="7" width="48" height="48" rx="12" fill="#E0A037" fill-opacity="0.85"/><rect x="7" y="63" width="48" height="48" rx="12" fill="#E0A037" fill-opacity="0.68"/><rect x="63" y="63" width="48" height="48" rx="12" fill="#E0A037" fill-opacity="0.95"/></g><circle cx="59" cy="59" r="15.8" fill="#E0A037"/></svg><div><span class="fk-k" data-noi18n>FORKA</span><span class="fk-n">Hire</span></div></div>
+<div id="app">
+<aside id="side" aria-label="Menu">
+  <div class="sd-top"><div class="fk-lock"><svg viewBox="0 0 118 118" aria-hidden="true"><defs><mask id="fkm-h"><rect width="118" height="118" fill="#fff"/><circle cx="59" cy="59" r="22" fill="#000"/></mask></defs><g mask="url(#fkm-h)"><rect x="7" y="7" width="48" height="48" rx="12" fill="#E0A037"/><rect x="63" y="7" width="48" height="48" rx="12" fill="#E0A037" fill-opacity="0.85"/><rect x="7" y="63" width="48" height="48" rx="12" fill="#E0A037" fill-opacity="0.68"/><rect x="63" y="63" width="48" height="48" rx="12" fill="#E0A037" fill-opacity="0.95"/></g><circle cx="59" cy="59" r="15.8" fill="#E0A037"/></svg><div><span class="fk-k" data-noi18n>FORKA</span><span class="fk-n">Hire</span></div></div><button class="sd-mini" id="sdMini" onclick="sideMini()" aria-label="Collapse menu" title="Collapse menu"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button></div>
   <nav id="nav"></nav>
+  <div class="sd-foot" id="sideFoot"></div>
+</aside>
+<div id="scrim" onclick="sideOpen(false)"></div>
+<div id="shell">
+<header>
+  <button class="sd-burger" onclick="sideOpen(true)" aria-label="Open menu"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  <div class="crumb" id="crumb"></div>
   <div id="langSw" data-noi18n><button data-l="en" onclick="setLang('en')">EN</button><button data-l="ar" onclick="setLang('ar')">عربي</button></div>
   <div class="who" id="who"></div>
 </header>
 <div class="banner" id="banner" style="display:none"></div>
 <main id="main"><div class="empty">Loading…</div></main>
+</div></div>
 <div id="modal"><div class="dlg" id="dlg"></div></div>
 <div class="toast" id="toast"></div>
 
@@ -449,6 +496,7 @@ function resolveRole(){
   if(!V.ceo) pages.splice(pages.indexOf("approvals"),pages.indexOf("approvals")>=0?1:0);
   V.pages=pages; if(!pages.includes(V.page)) V.page=pages[0];
 }
+const NAV_IC={dash:`<svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="8" rx="1.6"/><rect x="13.5" y="3.5" width="7" height="5" rx="1.6"/><rect x="13.5" y="11.5" width="7" height="9" rx="1.6"/><rect x="3.5" y="14.5" width="7" height="6" rx="1.6"/></svg>`,approvals:`<svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z"/><path d="M8.8 12l2.2 2.2 4.4-4.4"/></svg>`,reqs:`<svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1M9 10h6M9 14h6M9 18h4"/></svg>`,pipeline:`<svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19.5c.6-3.2 2.9-5 5.5-5s4.9 1.8 5.5 5"/><circle cx="17" cy="9" r="2.5"/><path d="M16 14.6c2.3.2 4 1.8 4.5 4.4"/></svg>`,pool:`<svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4" width="17" height="5" rx="1.5"/><path d="M5 9v9.5c0 .8.7 1.5 1.5 1.5h11c.8 0 1.5-.7 1.5-1.5V9M10 13h4"/></svg>`,careers:`<svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.5 2.6 3.6 5.5 3.6 8.5s-1.1 5.9-3.6 8.5c-2.5-2.6-3.6-5.5-3.6-8.5s1.1-5.9 3.6-8.5z"/></svg>`,team:`<svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="15" r="4"/><path d="M11 12l8-8M16 7l2 2M14 9l2 2"/></svg>`,jobs:`<svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="7" width="17" height="12.5" rx="2"/><path d="M9 7V5.5c0-.8.7-1.5 1.5-1.5h3c.8 0 1.5.7 1.5 1.5V7M3.5 12.5h17"/></svg>`,mine:`<svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3.5h7l4 4v13H7z"/><path d="M14 3.5v4h4M10 13h5M10 16.5h5"/></svg>`};
 const PAGE_LABEL={dash:"Dashboard",approvals:"CEO approvals",reqs:"Hiring requests",pipeline:"Candidates",pool:"Talent pool & compliance",careers:"Careers page",team:"Team & access",jobs:"Open roles",mine:"My applications"};
 
 /* ---------------- derived ---------------- */
@@ -508,16 +556,23 @@ function render(){
   const badge={approvals: Object.values(S.reqs).filter(r=>r.status==="requested").length+Object.values(C).filter(c=>c.stage==="approval").length,
     reqs: V.role==="head"?Object.values(S.reqs).filter(r=>r.status==="review"&&headSees(r)).length:Object.values(S.reqs).filter(r=>r.status==="approved"||r.status==="ready").length,
     pipeline: V.role==="head"?Object.values(C).filter(c=>headSees(reqOf(c))&&(c.stage==="shortlist"||(c.stage==="interview"&&!(c.iv||{})[V.me]))).length:Object.values(C).filter(c=>c.stage==="applied").length};
-  $("#nav").innerHTML=V.pages.map(p=>`<a class="${p===V.page?"on":""}" onclick="go('${p}')">${PAGE_LABEL[p]}${badge[p]?`<span class="n">${badge[p]}</span>`:""}</a>`).join("");
+  $("#nav").innerHTML=V.pages.map(p=>`<a class="${p===V.page?"on":""}" onclick="go('${p}')" title="${esc(PAGE_LABEL[p])}"${p===V.page?' aria-current="page"':''}>${NAV_IC[p]||""}<span class="lb">${PAGE_LABEL[p]}</span>${badge[p]?`<span class="n">${badge[p]}</span>`:""}</a>`).join("");
+  $("#crumb").innerHTML=`<span class="cr-app">Hire</span><span class="cr-sep" aria-hidden="true">›</span><span class="cr-pg">${PAGE_LABEL[V.page]||""}</span>`;
   const roleName={hr:V.ceo?"CEO · HR":"HR",head:"Dept head"+(V.dept?" · "+V.dept:""),candidate:"Candidate"}[V.role];
   let sw="";
   if(DEMO) sw=`<select onchange="V.viewAs=this.value;V.page=null;afterData()">${Object.entries(DEMO_PEOPLE).map(([k,p])=>`<option value="${k}" ${k===V.viewAs?"selected":""}>${p.name}</option>`).join("")}</select>`;
   else if(OWNER) sw=`<select onchange="V.viewAs=this.value.split(':')[0];V.viewDept=this.value.split(':')[1]||null;V.page=null;afterData()"><option value="hr">View as: CEO · HR</option>${DEPTS.map(d=>`<option value="head:${d}" ${V.role==="head"&&V.dept===d?"selected":""}>View as: ${d} head</option>`).join("")}${HURL?"":`<option value="candidate" ${V.role==="candidate"?"selected":""}>View as: Candidate</option>`}</select>`;
-  $("#who").innerHTML=`<span class="role">${roleName}</span>${sw}${HURL?`<a class="btn sm sec" style="margin-left:8px" href="${esc(CFG.ERP_HOME||"/")}">Forka Apps</a>`:""}`;
+  $("#who").innerHTML=`<span class="role">${roleName}</span>${sw}`;
+  $("#sideFoot").innerHTML=HURL?`<a class="sd-apps" href="${esc(CFG.ERP_HOME||"/")}" title="Forka Apps"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="2"/><rect x="13" y="4" width="7" height="7" rx="2"/><rect x="4" y="13" width="7" height="7" rx="2"/><rect x="13" y="13" width="7" height="7" rx="2"/></svg><span class="lb">Forka Apps</span></a>`:"";
   const fn={dash:pDash,approvals:pApprovals,reqs:pReqs,pipeline:pPipeline,pool:pPool,careers:pCareers,team:pTeam,jobs:pJobs,mine:pMine}[V.page];
   $("#main").innerHTML=fn(C);
 }
-function go(p){V.page=p;V.sel.clear();render();window.scrollTo(0,0)}
+function go(p){V.page=p;V.sel.clear();sideOpen(false);render();window.scrollTo(0,0)}
+/* Left menu: stays on the LEFT in English and Arabic; collapses to icons (remembered); a slide-out drawer on phones */
+function sideMini(on){ const b=document.body; on=on===undefined?!b.classList.contains("side-mini"):on; b.classList.toggle("side-mini",on); try{localStorage.setItem("forkaHireSide",on?"mini":"full")}catch(e){} const m=$("#sdMini"); if(m){m.setAttribute("aria-label",on?"Expand menu":"Collapse menu");m.title=on?"Expand menu":"Collapse menu"} }
+function sideOpen(on){ document.body.classList.toggle("side-open",!!on) }
+(()=>{ let v=null; try{v=localStorage.getItem("forkaHireSide")}catch(e){} if(v==="mini"||(!v&&window.innerWidth<1100&&window.innerWidth>860)) document.body.classList.add("side-mini") })();
+document.addEventListener("keydown",e=>{ if(e.key==="Escape") sideOpen(false) });
 function openModal(html){$("#dlg").innerHTML=html;$("#modal").classList.add("on")}
 function closeModal(){$("#modal").classList.remove("on");$("#dlg").innerHTML=""}
 $("#modal").addEventListener("mousedown",e=>{if(e.target.id==="modal")closeModal()});
