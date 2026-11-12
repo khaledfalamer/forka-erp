@@ -25,6 +25,7 @@ but does not copy the code, screens, wording, branding or materials of any vendo
 | 08 | [Delivery plan](08-delivery-plan.md) | Phases, what is needed at launch and what comes later, estimates, risks |
 | 09 | [Phase 1 feature specifications](09-phase1-specs.md) | User stories, acceptance criteria, edge cases, permissions, errors, audit and tests for each launch feature |
 | 10 | [Country rules register](10-country-rules-register.md) | Every UAE and Oman rule we plan to configure, with its source, effective date, owner and approval status |
+| 11 | [Feature map and build tracker](11-feature-map.md) | Every feature, its layer, phase, what is built at each level, dependencies and blockers. Diagram: `feature-map.html` |
 
 ## Decisions needed before Phase 1 starts
 

@@ -1,0 +1,774 @@
+{
+ "updated": "12 Nov 2026",
+ "features": [
+  {
+   "id": "signin",
+   "name": "Sign-in",
+   "phase": "1A",
+   "spec": "06 §1",
+   "depends": [],
+   "blocker": "How frontline staff sign in (question 3)",
+   "next": "Google sign-in for office staff; phone code + PIN for frontline",
+   "status": {
+    "spec": "done",
+    "db": "part",
+    "server": "part",
+    "screens": "part",
+    "live": "no"
+   }
+  },
+  {
+   "id": "org",
+   "name": "Organisation structure",
+   "phase": "1A",
+   "spec": "09 F1",
+   "depends": [],
+   "blocker": null,
+   "next": "Edit screens for HR; load real entities and branches",
+   "status": {
+    "spec": "done",
+    "db": "done",
+    "server": "part",
+    "screens": "done",
+    "live": "no"
+   }
+  },
+  {
+   "id": "records",
+   "name": "Employee records",
+   "phase": "1A",
+   "spec": "09 F2",
+   "depends": [
+    "org"
+   ],
+   "blocker": null,
+   "next": "Personal, bank, emergency contacts, dependants editing",
+   "status": {
+    "spec": "done",
+    "db": "done",
+    "server": "done",
+    "screens": "done",
+    "live": "no"
+   }
+  },
+  {
+   "id": "access",
+   "name": "Roles and access",
+   "phase": "1A",
+   "spec": "03, 09 F4",
+   "depends": [
+    "records"
+   ],
+   "blocker": null,
+   "next": "Screen to give and end roles",
+   "status": {
+    "spec": "done",
+    "db": "done",
+    "server": "done",
+    "screens": "part",
+    "live": "no"
+   }
+  },
+  {
+   "id": "audit",
+   "name": "Audit and access logs",
+   "phase": "1A",
+   "spec": "06 §4, 09 F5",
+   "depends": [
+    "access"
+   ],
+   "blocker": null,
+   "next": "Daily chain check and export",
+   "status": {
+    "spec": "done",
+    "db": "done",
+    "server": "done",
+    "screens": "done",
+    "live": "no"
+   }
+  },
+  {
+   "id": "hosting",
+   "name": "Hosting and encryption",
+   "phase": "1A",
+   "spec": "05, 06 §3",
+   "depends": [],
+   "blocker": "Where data may be stored (question 1)",
+   "next": "Cloud account owned by the group; field encryption",
+   "status": {
+    "spec": "done",
+    "db": "no",
+    "server": "no",
+    "screens": "no",
+    "live": "no",
+    "blocked": true
+   }
+  },
+  {
+   "id": "approvals",
+   "name": "Approvals engine",
+   "phase": "1A",
+   "spec": "02 §2.2, 09 F6",
+   "depends": [
+    "access"
+   ],
+   "blocker": null,
+   "next": "Server routes, delegation, escalation, tests",
+   "status": {
+    "spec": "done",
+    "db": "done",
+    "server": "no",
+    "screens": "done",
+    "live": "no"
+   }
+  },
+  {
+   "id": "notify",
+   "name": "Notifications",
+   "phase": "1A",
+   "spec": "07 §5",
+   "depends": [
+    "approvals"
+   ],
+   "blocker": null,
+   "next": "Email first, then app push; SMS for sign-in codes",
+   "status": {
+    "spec": "done",
+    "db": "part",
+    "server": "no",
+    "screens": "no",
+    "live": "no"
+   }
+  },
+  {
+   "id": "documents",
+   "name": "Documents, reminders",
+   "phase": "1A",
+   "spec": "09 F3",
+   "depends": [
+    "records"
+   ],
+   "blocker": null,
+   "next": "File upload, malware scan, daily reminder job",
+   "status": {
+    "spec": "done",
+    "db": "done",
+    "server": "part",
+    "screens": "done",
+    "live": "no"
+   }
+  },
+  {
+   "id": "import",
+   "name": "Import and export",
+   "phase": "1A",
+   "spec": "09 F11",
+   "depends": [
+    "records",
+    "documents"
+   ],
+   "blocker": "HR census clean-up (email sent)",
+   "next": "Templates, check-then-commit import",
+   "status": {
+    "spec": "done",
+    "db": "no",
+    "server": "no",
+    "screens": "no",
+    "live": "no"
+   }
+  },
+  {
+   "id": "hiring",
+   "name": "Hiring hand-off",
+   "phase": "1A",
+   "spec": "07 §1, 09 F12",
+   "depends": [
+    "records"
+   ],
+   "blocker": null,
+   "next": "Hired candidate creates a new employee",
+   "status": {
+    "spec": "done",
+    "db": "no",
+    "server": "no",
+    "screens": "no",
+    "live": "no"
+   }
+  },
+  {
+   "id": "settings",
+   "name": "Settings and rules",
+   "phase": "1A",
+   "spec": "10",
+   "depends": [
+    "access"
+   ],
+   "blocker": "Adviser approval for country rules",
+   "next": "Edit screens; rule approval workflow",
+   "status": {
+    "spec": "done",
+    "db": "done",
+    "server": "no",
+    "screens": "part",
+    "live": "no"
+   }
+  },
+  {
+   "id": "leave",
+   "name": "Leave",
+   "phase": "1B",
+   "spec": "02 §2.3, 09 F8",
+   "depends": [
+    "approvals",
+    "records"
+   ],
+   "blocker": null,
+   "next": "Ledger, accrual, carry-over on the server",
+   "status": {
+    "spec": "done",
+    "db": "done",
+    "server": "no",
+    "screens": "done",
+    "live": "no"
+   }
+  },
+  {
+   "id": "requests",
+   "name": "Requests and letters",
+   "phase": "1A",
+   "spec": "09 F7, F13",
+   "depends": [
+    "approvals"
+   ],
+   "blocker": null,
+   "next": "Letter PDFs from approved templates",
+   "status": {
+    "spec": "done",
+    "db": "done",
+    "server": "no",
+    "screens": "done",
+    "live": "no"
+   }
+  },
+  {
+   "id": "forms",
+   "name": "Request forms by HR",
+   "phase": "1B",
+   "spec": "new (Nov 2026)",
+   "depends": [
+    "approvals",
+    "notify"
+   ],
+   "blocker": null,
+   "next": "Write spec; server and automatic actions",
+   "status": {
+    "spec": "done",
+    "db": "done",
+    "server": "no",
+    "screens": "done",
+    "live": "no"
+   }
+  },
+  {
+   "id": "payslips",
+   "name": "Payslips",
+   "phase": "2",
+   "spec": "07 §3",
+   "depends": [
+    "payroll"
+   ],
+   "blocker": null,
+   "next": "Import payslips from the payroll provider",
+   "status": {
+    "spec": "done",
+    "db": "done",
+    "server": "no",
+    "screens": "done",
+    "live": "no"
+   }
+  },
+  {
+   "id": "roster",
+   "name": "Roster and shifts",
+   "phase": "1B",
+   "spec": "09 F9",
+   "depends": [
+    "records"
+   ],
+   "blocker": null,
+   "next": "Server, checks, publish notifications",
+   "status": {
+    "spec": "done",
+    "db": "done",
+    "server": "no",
+    "screens": "done",
+    "live": "no"
+   }
+  },
+  {
+   "id": "clock",
+   "name": "Clock-in (phone, tablet)",
+   "phase": "1B",
+   "spec": "09 F10",
+   "depends": [
+    "roster",
+    "signin"
+   ],
+   "blocker": null,
+   "next": "Real location check, offline punches",
+   "status": {
+    "spec": "done",
+    "db": "done",
+    "server": "no",
+    "screens": "part",
+    "live": "no"
+   }
+  },
+  {
+   "id": "attendance",
+   "name": "Attendance and corrections",
+   "phase": "1B",
+   "spec": "02 §2.4, 09 F10",
+   "depends": [
+    "clock",
+    "approvals"
+   ],
+   "blocker": null,
+   "next": "Match punches to shifts on the server",
+   "status": {
+    "spec": "done",
+    "db": "done",
+    "server": "no",
+    "screens": "done",
+    "live": "no"
+   }
+  },
+  {
+   "id": "biometric",
+   "name": "Biometric devices",
+   "phase": "2",
+   "spec": "07 §2",
+   "depends": [
+    "attendance"
+   ],
+   "blocker": "Device make and model (question 4)",
+   "next": "Device cloud API or branch connector",
+   "status": {
+    "spec": "done",
+    "db": "part",
+    "server": "no",
+    "screens": "no",
+    "live": "no",
+    "blocked": true
+   }
+  },
+  {
+   "id": "onboarding",
+   "name": "Onboarding and exits",
+   "phase": "1A",
+   "spec": "02 §2.1, 09 F12",
+   "depends": [
+    "records",
+    "documents"
+   ],
+   "blocker": null,
+   "next": "Checklist templates by role and country",
+   "status": {
+    "spec": "done",
+    "db": "done",
+    "server": "no",
+    "screens": "done",
+    "live": "no"
+   }
+  },
+  {
+   "id": "welcome",
+   "name": "New joiner portal",
+   "phase": "1A",
+   "spec": "new (Nov 2026)",
+   "depends": [
+    "onboarding",
+    "documents",
+    "policies",
+    "learning"
+   ],
+   "blocker": null,
+   "next": "Write spec; server",
+   "status": {
+    "spec": "done",
+    "db": "done",
+    "server": "no",
+    "screens": "done",
+    "live": "no"
+   }
+  },
+  {
+   "id": "changes",
+   "name": "Probation, promotions, exits",
+   "phase": "2",
+   "spec": "02 §2.1",
+   "depends": [
+    "records",
+    "approvals"
+   ],
+   "blocker": null,
+   "next": "Full change workflows with approval",
+   "status": {
+    "spec": "done",
+    "db": "done",
+    "server": "part",
+    "screens": "part",
+    "live": "no"
+   }
+  },
+  {
+   "id": "performance",
+   "name": "Performance reviews",
+   "phase": "4",
+   "spec": "08 Phase 4",
+   "depends": [
+    "records"
+   ],
+   "blocker": null,
+   "next": "Scorecards per role from department scorecards",
+   "status": {
+    "spec": "done",
+    "db": "done",
+    "server": "no",
+    "screens": "done",
+    "live": "no"
+   }
+  },
+  {
+   "id": "goals",
+   "name": "Goals and recognition",
+   "phase": "4",
+   "spec": "suggestion 5",
+   "depends": [
+    "performance"
+   ],
+   "blocker": null,
+   "next": "Suggested: branch goals and monthly recognition",
+   "status": {
+    "spec": "no",
+    "db": "part",
+    "server": "no",
+    "screens": "no",
+    "live": "no"
+   }
+  },
+  {
+   "id": "learning",
+   "name": "Learning and renewals",
+   "phase": "4",
+   "spec": "08 Phase 4",
+   "depends": [
+    "records"
+   ],
+   "blocker": null,
+   "next": "Required courses by role, certificates",
+   "status": {
+    "spec": "done",
+    "db": "done",
+    "server": "no",
+    "screens": "done",
+    "live": "no"
+   }
+  },
+  {
+   "id": "paybands",
+   "name": "Pay bands",
+   "phase": "3",
+   "spec": "suggestion 6",
+   "depends": [
+    "records"
+   ],
+   "blocker": null,
+   "next": "Suggested: salary ranges per level",
+   "status": {
+    "spec": "no",
+    "db": "no",
+    "server": "no",
+    "screens": "no",
+    "live": "no"
+   }
+  },
+  {
+   "id": "feed",
+   "name": "Team feed",
+   "phase": "2",
+   "spec": "new (Nov 2026)",
+   "depends": [
+    "access"
+   ],
+   "blocker": null,
+   "next": "Write spec; moderation by HR",
+   "status": {
+    "spec": "done",
+    "db": "done",
+    "server": "no",
+    "screens": "done",
+    "live": "no"
+   }
+  },
+  {
+   "id": "policies",
+   "name": "News and policy sign-off",
+   "phase": "1A",
+   "spec": "09 F7",
+   "depends": [
+    "records"
+   ],
+   "blocker": null,
+   "next": "Policy versions and acknowledgements",
+   "status": {
+    "spec": "done",
+    "db": "done",
+    "server": "no",
+    "screens": "done",
+    "live": "no"
+   }
+  },
+  {
+   "id": "desk",
+   "name": "HR desk and private cases",
+   "phase": "5",
+   "spec": "02 §2.7",
+   "depends": [
+    "access"
+   ],
+   "blocker": null,
+   "next": "Response targets, private case access",
+   "status": {
+    "spec": "done",
+    "db": "done",
+    "server": "no",
+    "screens": "done",
+    "live": "no"
+   }
+  },
+  {
+   "id": "surveys",
+   "name": "Pulse surveys (eNPS)",
+   "phase": "5",
+   "spec": "suggestion 2",
+   "depends": [
+    "access"
+   ],
+   "blocker": null,
+   "next": "Suggested: one question a month, anonymous",
+   "status": {
+    "spec": "no",
+    "db": "no",
+    "server": "no",
+    "screens": "no",
+    "live": "no"
+   }
+  },
+  {
+   "id": "payroll",
+   "name": "Payroll month-end",
+   "phase": "2",
+   "spec": "02 §2.6",
+   "depends": [
+    "attendance",
+    "leave",
+    "forms"
+   ],
+   "blocker": null,
+   "next": "Period lock, variance, approvals on the server",
+   "status": {
+    "spec": "done",
+    "db": "done",
+    "server": "no",
+    "screens": "done",
+    "live": "no"
+   }
+  },
+  {
+   "id": "wps",
+   "name": "Country payroll and WPS",
+   "phase": "3",
+   "spec": "10",
+   "depends": [
+    "payroll",
+    "settings"
+   ],
+   "blocker": "Adviser sign-off; WPS file formats",
+   "next": "UAE then Oman modules after approval",
+   "status": {
+    "spec": "done",
+    "db": "part",
+    "server": "no",
+    "screens": "no",
+    "live": "no",
+    "blocked": true
+   }
+  },
+  {
+   "id": "reports",
+   "name": "Reports and dashboards",
+   "phase": "5",
+   "spec": "08 Phase 5",
+   "depends": [
+    "records",
+    "attendance",
+    "leave"
+   ],
+   "blocker": null,
+   "next": "Server reports with export to Excel",
+   "status": {
+    "spec": "done",
+    "db": "no",
+    "server": "no",
+    "screens": "done",
+    "live": "no"
+   }
+  },
+  {
+   "id": "ceodash",
+   "name": "CEO dashboard",
+   "phase": "5",
+   "spec": "suggestion 7",
+   "depends": [
+    "reports"
+   ],
+   "blocker": null,
+   "next": "Suggested: key numbers on the home screen",
+   "status": {
+    "spec": "no",
+    "db": "no",
+    "server": "no",
+    "screens": "no",
+    "live": "no"
+   }
+  },
+  {
+   "id": "accounting",
+   "name": "Accounting export",
+   "phase": "3",
+   "spec": "07 §4",
+   "depends": [
+    "payroll"
+   ],
+   "blocker": "Accounting system details",
+   "next": "Payroll journal per entity and cost centre",
+   "status": {
+    "spec": "done",
+    "db": "no",
+    "server": "no",
+    "screens": "no",
+    "live": "no"
+   }
+  }
+ ],
+ "bands": [
+  {
+   "name": "Foundation",
+   "layout": "row",
+   "note": "Everything else depends on these.",
+   "arrow": "every feature reads people, roles and logs",
+   "groups": [
+    {
+     "name": "Foundation",
+     "features": [
+      "signin",
+      "org",
+      "records",
+      "access",
+      "audit",
+      "hosting"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Shared engines",
+   "layout": "row",
+   "note": "Used by many modules.",
+   "arrow": "requests route through approvals; alerts through notifications",
+   "groups": [
+    {
+     "name": "Engines",
+     "features": [
+      "approvals",
+      "notify",
+      "documents",
+      "import",
+      "hiring",
+      "settings"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Modules",
+   "note": "What staff, managers and HR use every day.",
+   "arrow": "approved leave, overtime and advances feed payroll; all data feeds reports",
+   "groups": [
+    {
+     "name": "Self-service",
+     "features": [
+      "leave",
+      "requests",
+      "forms",
+      "payslips"
+     ]
+    },
+    {
+     "name": "Time",
+     "features": [
+      "roster",
+      "clock",
+      "attendance",
+      "biometric"
+     ]
+    },
+    {
+     "name": "Lifecycle",
+     "features": [
+      "onboarding",
+      "welcome",
+      "changes"
+     ]
+    },
+    {
+     "name": "Talent",
+     "features": [
+      "performance",
+      "goals",
+      "learning",
+      "paybands"
+     ]
+    },
+    {
+     "name": "Communication",
+     "features": [
+      "feed",
+      "policies",
+      "desk",
+      "surveys"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Outputs",
+   "layout": "row",
+   "note": "Results that leave the system or go to leadership.",
+   "arrow": "",
+   "groups": [
+    {
+     "name": "Outputs",
+     "features": [
+      "payroll",
+      "wps",
+      "reports",
+      "ceodash",
+      "accounting"
+     ]
+    }
+   ]
+  }
+ ]
+}
