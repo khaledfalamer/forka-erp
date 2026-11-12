@@ -544,6 +544,16 @@ html[dir=rtl] .pfind input{padding:0 38px 0 14px}
   .viewas{max-width:120px}
   .crumb{display:none}
 }
+
+/* Forka app header: the four-petal mark, FORKA above the app name */
+.fk-lock{display:inline-flex;align-items:center;gap:10px;white-space:nowrap;text-decoration:none;color:inherit}
+.fk-lock>div{text-align:start}
+.fk-lock svg{width:30px;height:30px;flex:none;display:block}
+.fk-lock .fk-k{display:block;font:600 9.5px/1 'Inter Tight',system-ui,sans-serif;letter-spacing:.14em;color:#c8c3b9;text-transform:uppercase}
+.fk-lock .fk-n{display:block;font:600 20px/1.05 'EB Garamond','IBM Plex Sans Arabic',serif;color:#f6f3ee;margin-top:3px;letter-spacing:0;text-transform:none}
+.fk-lock.on-light .fk-k{color:#8a7f72}.fk-lock.on-light .fk-n{color:#2b2b2b}
+@media (max-width:600px){.fk-lock:not(.big){gap:8px}.fk-lock:not(.big) svg{width:26px;height:26px}.fk-lock:not(.big) .fk-n{font-size:17px}.fk-lock:not(.big) .fk-k{font-size:8.5px}}
+.fk-lock.big{gap:18px}.fk-lock.big svg{width:64px;height:64px}.fk-lock.big .fk-k{font-size:15px}.fk-lock.big .fk-n{font-size:46px;margin-top:6px}
 </style>
 </head>
 <body>
@@ -910,6 +920,8 @@ function seed(){
   return D;
 }
 const KEY='forka-boards-preview-v5';
+let fkI=0;function fkMark(){const m='fkm'+(++fkI);return `<svg viewBox="0 0 64 64" aria-hidden="true"><defs><mask id="${m}"><rect width="64" height="64" fill="#fff"/><circle cx="32" cy="32" r="12.5" fill="#000"/></mask></defs><g mask="url(#${m})"><rect width="30" height="30" rx="7" fill="#4d7b8a"/><rect x="34" width="30" height="30" rx="7" fill="#d9a650"/><rect y="34" width="30" height="30" rx="7" fill="#829980"/><rect x="34" y="34" width="30" height="30" rx="7" fill="#ba5c45"/></g><circle cx="32" cy="32" r="9" fill="#876b45"/></svg>`}
+function fkLock(name,cls,attrs){return `<div class="fk-lock ${cls||''}" ${attrs||''}>${fkMark()}<div><span class="fk-k">FORKA</span><span class="fk-n">${name}</span></div></div>`}
 const CFG=window.FORKA_APPS||{};
 const LIVE=!!CFG.BOARDS_URL&&!/^(127\.0\.0\.1|localhost)$/.test(location.hostname)&&!/[?&]demo\b/.test(location.search);
 let D=(()=>{if(LIVE)return {boards:{},lists:{},cards:{},order:[],me:'',people:[]};try{const d=JSON.parse(localStorage.getItem(KEY)||'null');if(d&&d.boards&&d.me)return d}catch(e){}return seed()})();
@@ -993,7 +1005,7 @@ function render(){
   document.getElementById('app').innerHTML=`
   <div class="top">
     <button class="ib menu-b" data-a="side" aria-label="${t('departments')}">${ic('menu')}</button>
-    <div class="brand"><b>FORKA</b><span>${t('app')}</span></div>
+    ${fkLock(t('app'))}
     <div class="search">${V.view==='board'?`${ic('search')}<input id="q" type="search" placeholder="${t('search')}" value="${esc(V.f.q)}" aria-label="${t('search')}">`:''}</div>
     ${LIVE?`<span id="sync" class="sync ${SV.state||'ok'}">${t(SV.state==='saving'?'sSaving':SV.state==='off'?'sOff':'sSaved')}</span>`:`<label class="hide-sm" style="font-size:12px;color:#a9a196">${t('viewAs')}</label>`}
     ${LIVE?'':`<select class="viewas" id="viewas" aria-label="${t('viewAs')}">${PEOPLE.map(p=>`<option value="${p.id}" ${p.id===ME()?'selected':''}>${esc(pname(p.id))}${p.ceo?' - '+t('ceoRole'):''}</option>`).join('')}</select>`}
@@ -1412,7 +1424,7 @@ function fromDocs(){const me=SV.me.email,N={boards:{},lists:{},cards:{},order:[]
 /* Don't redraw under someone's fingers: wait until they leave the box they are typing in. */
 function soft(){const a=document.activeElement;if(DR.d||ASK||(a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)&&!['q','pq','pq2'].includes(a.id))){V.stale=true;return}render()}
 function setSync(s){SV.state=s;const el=document.getElementById('sync');if(el){el.className='sync '+s;el.textContent=s==='ok'?t('sSaved'):s==='saving'?t('sSaving'):t('sOff')}}
-function gate(k){SV.ready=false;document.getElementById('app').innerHTML=`<div class="gate"><div class="brand"><b>FORKA</b><span>${t('app')}</span></div>
+function gate(k){SV.ready=false;document.getElementById('app').innerHTML=`<div class="gate">${fkLock(t('app'))}
   ${k==='load'?`<p>${t('loading')}</p>`:k==='signin'?`<p>${t('signinNeed')}</p><a class="btn" href="${esc(CFG.ERP_HOME||'../')}">${t('signinBtn')}</a>`:`<p>${t('netErr')}</p><button class="btn" onclick="location.reload()">${t('retry')}</button>`}
   <div class="seg" style="margin-top:18px"><button onclick="lang='en';try{localStorage.setItem('fb-lang','en')}catch(e){};gate('${k}')" class="${lang==='en'?'on':''}">EN</button><button onclick="lang='ar';try{localStorage.setItem('fb-lang','ar')}catch(e){};gate('${k}')" class="${lang==='ar'?'on':''}">عربي</button></div></div>`;
   document.documentElement.lang=lang;document.documentElement.dir=lang==='ar'?'rtl':'ltr'}
