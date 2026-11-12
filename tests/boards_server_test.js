@@ -168,5 +168,11 @@ ck('No upload to a card you cannot see', call({ action: 'upload', token: tok('ST
 ck('Too-big text is refused', save('MKT', [{ id: 'c9', kind: 'card', json: { l: 'l1', title: 'x'.repeat(50000) } }]).rejected[0] === 'c9');
 ck('Unknown kinds are refused', save('CEO', [{ id: 'x1', kind: 'secret', json: {} }]).rejected[0] === 'x1');
 
+// --- Apps Script bridge (this script only sends emails for the Forka Apps server now) ---
+mails.length = 0;
+ck('Bridge emails are refused without the right key', call({ action: 'bridgeMail', key: 'x', mails: [{ to: 'a@b.com', subject: 's', htmlBody: 'h' }] }).error === 'role' && mails.length === 0);
+props.BRIDGE_KEY = 'k-123';
+r = call({ action: 'bridgeMail', key: 'k-123', mails: [{ to: 'design@forka.com', subject: 'Forka Boards: test', htmlBody: '<p>x</p>' }, { to: 'not-an-email', subject: 's' }] });
+ck('...and sent with it (bad addresses skipped)', r.ok && r.sent === 1 && mails.length === 1 && mails[0].to === 'design@forka.com', r);
 console.log(`${res.filter(Boolean).length}/${res.length} boards server checks passed`);
 process.exit(res.every(Boolean) ? 0 : 1);

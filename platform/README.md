@@ -6,7 +6,7 @@ for all Forka apps (later also Forka People). Files (CVs, board attachments, doc
 | App | Today (Apps Script + Sheet) | New address | Status |
 |---|---|---|---|
 | Accounts (sign-in, People and access) | Forka Apps - Accounts server | `/accounts` | Built and tested (45 checks) |
-| Boards | Forka Boards server | `/boards` | Next. Goes live **together with Accounts**, because Boards reads and adds people in the accounts list |
+| Boards | Forka Boards server | `/boards` | Built and tested (51 checks, the same as the Apps Script ones). A chat refresh takes about 10 ms; the page checks every 3 s |
 | Hiring (and apply.forka.com) | Hiring script | `/hiring` | After Boards |
 | Procurement | Procurment script | `/procurement` | Last |
 
@@ -73,3 +73,31 @@ parallel saves cannot hand out the same PIN twice, broken requests, open to ever
 
 Cloud SQL smallest machine about USD 10 to 30, Cloud Run free tier at this size to about USD 5, Storage and backups a few dollars.
 About **USD 20 to 40 a month** to start; about USD 80 to 150 with a standby database copy once Forka People holds HR data.
+
+## Go-live for Boards, when Khaled says "go live"
+
+The old Boards Apps Script stays as a small helper: it sends Boards' alert emails (it has the Gmail permission) and
+copies the old files once. Both need the same **bridge key** on both sides.
+
+1. **Bridge key and permissions** (Cloud Shell, project forka-apps). The key shows on screen once: do not screenshot it.
+   ```
+   PN=$(gcloud projects describe forka-apps --format='value(projectNumber)'); SA=$PN-compute@developer.gserviceaccount.com
+   BK=$(openssl rand -hex 24); printf '%s' "$BK" | gcloud secrets create BRIDGE_KEY --data-file=-; echo "BRIDGE KEY: $BK"
+   gcloud storage buckets add-iam-policy-binding gs://forka-apps-files --member=serviceAccount:$SA --role=roles/storage.objectAdmin
+   ```
+2. **Server update** (from `~/forka-erp/platform` on main):
+   ```
+   gcloud run deploy forka-apps --source . --region me-central1 \
+     --add-cloudsql-instances forka-apps:me-central1:forka-db \
+     --set-env-vars PGHOST=/cloudsql/forka-apps:me-central1:forka-db,PGUSER=forka_app,PGDATABASE=Forka,FILES_BUCKET=forka-apps-files,BOARDS_MAIL_URL=https://script.google.com/macros/s/AKfycbzx4SO5yPavY7djHjoUQj6GIXxnrbbyGkmMJnf9HxQcOUJMypeej2aFEXF0LgdGDwm82w/exec \
+     --set-secrets PGPASSWORD=PGPASSWORD:latest,BRIDGE_KEY=BRIDGE_KEY:latest
+   ```
+3. **Boards Apps Script:** Project settings > Script properties > add `BRIDGE_KEY` = the key from step 1.
+   Paste the new server/Boards.gs > Save > Deploy > Manage deployments > pencil > New version.
+4. **Copy the data:** Sheet "Forka Boards", tab Data > File > Download > CSV, upload to Cloud Shell as `Data.csv`, then with the proxy running:
+   `PGHOST=127.0.0.1 PGPORT=5433 PGUSER=forka_app PGDATABASE=Forka node scripts/import-boards.js ~/Data.csv`
+5. **Copy the files:** in the Boards Apps Script editor choose `copyFilesToForkaApps` > Run. The log says "Copied N files".
+6. **Switch:** BOARDS_URL in config.js becomes `https://forka-apps-443945615318.me-central1.run.app/boards` (pushed by Claude).
+   Do steps 4 to 6 together at a quiet time: Boards changes made between the copy and the switch would be lost.
+
+**Way back:** put the old BOARDS_URL back in config.js. The old Sheet still has the data as it was at the copy.

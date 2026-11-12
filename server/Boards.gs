@@ -192,6 +192,7 @@ function doPost(e) {
 }
 function handle_(b) {
   const a = String(b.action || '');
+  if (a === 'bridgeMail') return bridgeMail_(b);   // emails for Boards on the Forka Apps server (needs the bridge key)
   const me = erpWho_(b.token);
   if (!me) return { ok: false, error: 'session' };
   const all = readAll_(), x = ctx_(me, all);
@@ -293,4 +294,38 @@ function file_(x, id) {
   if (!inFolder || !cardVisible_(x, cid)) return { ok: false, error: 'role' };
   const bl = f.getBlob();
   return { ok: true, type: bl.getContentType(), data: Utilities.base64Encode(bl.getBytes()) };
+}
+
+/* ---------------- bridge to the Forka Apps server (Google Cloud) ----------------
+   Since Boards moved to the Forka Apps server, this script only sends Boards' alert emails (it has the Gmail permission)
+   and copies the old files once. Both need BRIDGE_KEY in Project settings > Script properties (the same value as the
+   BRIDGE_KEY secret on Google Cloud). */
+function bridgeOk_(k) { const want = props_().getProperty('BRIDGE_KEY'); return !!want && String(k || '') === want; }
+function bridgeMail_(b) {
+  if (!bridgeOk_(b.key)) return { ok: false, error: 'role' };
+  let left = 0; try { left = MailApp.getRemainingDailyQuota(); } catch (e) { return { ok: false, error: 'mail' }; }
+  let sent = 0;
+  (Array.isArray(b.mails) ? b.mails : []).slice(0, 50).forEach(m => {
+    const to = key_(m.to);
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to) || left < 20) return;
+    try { MailApp.sendEmail({ to: to, subject: String(m.subject || '').slice(0, 200), htmlBody: String(m.htmlBody || '').slice(0, 5000), name: 'Forka Boards' }); left--; sent++; } catch (e) {}
+  });
+  return { ok: true, sent: sent };
+}
+/* Run once, from the editor, at the switch: copies every file of the private Boards folder to the Forka Apps server.
+   Safe to run again (files already copied are simply replaced). */
+const PLATFORM_BOARDS_URL = 'https://forka-apps-443945615318.me-central1.run.app/boards';
+function copyFilesToForkaApps() {
+  const k = props_().getProperty('BRIDGE_KEY');
+  if (!k) throw new Error('Set BRIDGE_KEY in Project settings > Script properties first.');
+  const it = folder_().getFiles(); let n = 0, bad = 0;
+  while (it.hasNext()) {
+    const f = it.next(), blob = f.getBlob();
+    const r = UrlFetchApp.fetch(PLATFORM_BOARDS_URL, { method: 'post', contentType: 'text/plain', muteHttpExceptions: true,
+      payload: JSON.stringify({ action: 'importFile', key: k, id: f.getId(), card: String(f.getDescription() || '').replace(/^card:/, ''),
+        type: blob.getContentType(), name: f.getName(), data: Utilities.base64Encode(blob.getBytes()) }) });
+    let j = {}; try { j = JSON.parse(r.getContentText()); } catch (e) {}
+    if (j.ok) n++; else bad++;
+  }
+  return 'Copied ' + n + ' files' + (bad ? ', ' + bad + ' failed' : '') + '.';
 }

@@ -2,9 +2,10 @@
 // and the same "POST one JSON body, get one JSON answer" style the websites already use with Apps Script.
 import Fastify from 'fastify';
 import { makeAccounts } from './accounts.js';
+import { makeBoards } from './boards.js';
 
-export function buildApp({ accounts = makeAccounts(), logger = true } = {}) {
-  const app = Fastify({ logger, bodyLimit: 1_000_000, trustProxy: true });
+export function buildApp({ accounts = makeAccounts(), boards = makeBoards(), logger = true } = {}) {
+  const app = Fastify({ logger, bodyLimit: 8_000_000, trustProxy: true });   // Boards files up to 5 MB (sent as base64)
 
   // The websites send JSON as text/plain (no CORS preflight, like Apps Script). Accept both.
   app.addContentTypeParser(['text/plain', 'application/json'], { parseAs: 'string' }, (_req, body, done) => {
@@ -30,5 +31,6 @@ export function buildApp({ accounts = makeAccounts(), logger = true } = {}) {
     });
   };
   mount('/accounts', 'forka-apps-accounts', accounts);
+  mount('/boards', 'forka-boards', boards);
   return app;
 }

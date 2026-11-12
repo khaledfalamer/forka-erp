@@ -1422,7 +1422,11 @@ async function bootLive(){try{SV.tok=localStorage.getItem('fa-token')||''}catch(
   const r=await api('load');if(!r.ok)return gate(r.error==='session'?'signin':'net');
   SV.people=r.people||[];SV.me=r.me;SV.since=r.now;r.docs.forEach(d=>{SV.docs[d.id]={kind:d.kind,json:d.json};SV.snap[d.id]=JSON.stringify(d.json)});
   fromDocs();SV.ready=true;home();openHash();render();setSync('ok');
-  setInterval(()=>{if(!document.hidden&&SV.ready)pull(true)},20000);
+  /* How often to look for new messages and changes: every 3 seconds on the Forka Apps server (a refresh costs it almost nothing),
+     every 20 seconds while Boards still runs on Apps Script. Also straight away when you come back to the tab. */
+  const EVERY=/script\.google\.com/.test(CFG.BOARDS_URL||'')?20000:3000;
+  setInterval(()=>{if(!document.hidden&&SV.ready)pull(true)},EVERY);
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden&&SV.ready)pull(true)});
   document.addEventListener('visibilitychange',()=>{if(!document.hidden&&SV.ready)pull(true)});
   window.addEventListener('beforeunload',e=>{if(Object.keys(SV.pend).length){flush();e.preventDefault();e.returnValue=''}})}
 const b64=f=>new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(String(r.result).split(',')[1]||'');r.onerror=rej;r.readAsDataURL(f)});

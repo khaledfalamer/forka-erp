@@ -14,20 +14,7 @@ const replace = process.argv.includes('--replace');
 if (args.length < 1) { console.log('usage: node scripts/import-accounts.js People.csv [Requests.csv] [Activity.csv] [--replace]'); process.exit(1); }
 if (!process.env.SALT) { console.error('Set SALT (from the Apps Script Script properties) so PINs keep working.'); process.exit(1); }
 
-// Small CSV reader (quotes, commas and line breaks inside quotes), enough for Google Sheets exports.
-function csv(text) {
-  const rows = []; let row = [], cell = '', inQ = false;
-  for (let i = 0; i < text.length; i++) {
-    const c = text[i];
-    if (inQ) { if (c === '"' && text[i + 1] === '"') { cell += '"'; i++; } else if (c === '"') inQ = false; else cell += c; }
-    else if (c === '"') inQ = true;
-    else if (c === ',') { row.push(cell); cell = ''; }
-    else if (c === '\n' || c === '\r') { if (c === '\r' && text[i + 1] === '\n') i++; row.push(cell); rows.push(row); row = []; cell = ''; }
-    else cell += c;
-  }
-  if (cell || row.length) { row.push(cell); rows.push(row); }
-  return rows.filter(r => r.some(x => x !== ''));
-}
+import { csv } from './csv.js';
 const read = f => { const r = csv(readFileSync(f, 'utf8')); return { head: r[0], rows: r.slice(1) }; };
 const yes = v => String(v).trim().toUpperCase() === 'TRUE';
 const when = v => { const d = new Date(v); return isNaN(d) ? new Date() : d; };

@@ -306,3 +306,25 @@ export async function seedIfEmpty() {
     values ($1,$2,$3,$4,$5,$6,$7,$8,$9,'google','Setup','Setup')`, [s[0], s[1], s[2], s[3], s[4], s[5], s[6] ? s[6].split(',') : [], s[7], s[8]]);
   return true;
 }
+
+// ---------------- for other apps on this server (Boards) ----------------
+export async function whoByToken(tok) {
+  const p = await sessionPerson(q, tok);
+  return p ? publicPerson(p) : null;
+}
+export async function directory() {
+  return (await people(q)).filter(p => p.status === 'active' || p.status === 'pending')
+    .map(p => ({ email: p.email, name: p.name, title: p.title, ceo: p.level === 'ceo', status: p.status }));
+}
+export async function inviteFrom(byEmail, email, name, title) {
+  email = key(email);
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.startsWith('pin-')) return false;
+  return tx(async db => {
+    if (await findPerson(db, email)) return false;
+    await writePerson(db, { email, name: String(name || '').trim().slice(0, 80) || email, title: String(title || '').trim().slice(0, 80),
+      level: 'staff', status: 'pending', apps: { proc: 0, hire: 0, branch: 0 }, sides: [], method: 'google', pinHash: '',
+      addedBy: 'Boards: ' + byEmail }, byEmail, true);
+    await log(db, byEmail, 'invite', email, 'Boards');
+    return true;
+  }, 'accounts');
+}
