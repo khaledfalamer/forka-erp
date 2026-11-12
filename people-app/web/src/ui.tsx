@@ -1,5 +1,8 @@
 // Shared building blocks for module pages.
-import { useEffect, useState, type ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
+import { Icon, GROUP_OF, iconFor } from './icons';
+
+export const RouteCtx = createContext<string>('');
 import { api, ApiError } from './api';
 import { useI18n, type Bi } from './i18n';
 
@@ -17,9 +20,10 @@ export function useApi<T>(path: string | null, deps: unknown[] = []) {
 }
 
 export function Page({ title, sub, actions, children }: { title: string; sub?: ReactNode; actions?: ReactNode; children: ReactNode }) {
+  const route = useContext(RouteCtx);
   return (
     <div className="stack">
-      <div className="page-head"><div><h1>{title}</h1>{sub && <p className="muted sub">{sub}</p>}</div>{actions && <div className="head-actions">{actions}</div>}</div>
+      <div className="page-head"><div className="title-wrap"><span className={'title-ico g-' + (GROUP_OF[route] || 'me')}><Icon name={iconFor(route)} size={24} /></span><div><h1>{title}</h1>{sub && <p className="muted sub">{sub}</p>}</div></div>{actions && <div className="head-actions">{actions}</div>}</div>
       {children}
     </div>
   );
@@ -88,3 +92,24 @@ export const daysBetween = (a: string, b: string) => Math.round((new Date(b).get
 
 // Keep times and number ranges left-to-right inside Arabic text (16:00–00:00 must not flip).
 export const ltr = (s: string) => '\u2066' + s + '\u2069';
+
+// Donut chart with a legend. Colours follow the Forka accents; every slice is also labelled with its number.
+const DONUT = ['#3D7C8C', '#E3A33B', '#7C9A7E', '#C8553D', '#8C6A3F', '#5E7FA3', '#B98A4B'];
+export function Donut({ rows, label, center }: { rows: { key: string; value: number; name: string }[]; label: string; center?: ReactNode }) {
+  const total = rows.reduce((s, r) => s + r.value, 0);
+  const R = 42, C = 2 * Math.PI * R; let off = 0;
+  return (
+    <div className="donut">
+      <svg viewBox="0 0 120 120" role="img" aria-label={label}>
+        <circle cx="60" cy="60" r={R} fill="none" stroke="#EEE9E1" strokeWidth="16" />
+        {total > 0 && rows.map((r, i) => { const len = (r.value / total) * C; const el = (
+          <circle key={r.key} cx="60" cy="60" r={R} fill="none" stroke={DONUT[i % DONUT.length]} strokeWidth="16"
+            strokeDasharray={`${Math.max(0, len - 1.5)} ${C}`} strokeDashoffset={-off} transform="rotate(-90 60 60)" />); off += len; return el; })}
+        <text x="60" y="60" textAnchor="middle" dominantBaseline="central" className="donut-num">{center ?? total}</text>
+      </svg>
+      <ul className="donut-legend">{rows.map((r, i) => (
+        <li key={r.key}><i style={{ background: DONUT[i % DONUT.length] }} /><span>{r.name}</span><strong>{r.value}</strong></li>
+      ))}</ul>
+    </div>
+  );
+}

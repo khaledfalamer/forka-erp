@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { api, DEMO } from '../api';
 import { useI18n } from '../i18n';
+import { Logo } from '../icons';
 
 type U = { email: string; display_name: string; roles: string };
 
@@ -16,7 +17,7 @@ export function Login({ onDone }: { onDone: () => void }) {
     <div className="login">
       <div className="login-card">
         <div className="login-head">
-          <div className="brand dark">Forka <span>People</span></div>
+          <Logo dark />
           <button className="link-btn dark" onClick={() => setLang(lang === 'en' ? 'ar' : 'en')}>{t.language}</button>
         </div>
         <h1>{t.signIn}</h1>

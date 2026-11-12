@@ -11,6 +11,8 @@ import { Requests } from './pages/Requests';
 import { MyTime, Roster, Attendance } from './pages/Time';
 import { Documents, Lifecycle, Payroll, Payslips } from './pages/Hr';
 import { Performance, Learning, Desk, Policies, Reports, Settings } from './pages/More';
+import { Icon, Logo, GROUP_OF, iconFor } from './icons';
+import { RouteCtx } from './ui';
 
 export type Me = { user: { id: string; name: string; email: string; employmentId: string | null }; roles: string[]; can: { isHr: boolean; isManager: boolean } };
 
@@ -66,8 +68,8 @@ export function App() {
   const signOut = async () => { await api('/logout', { method: 'POST' }); setMe(null); go(''); };
   const groups: [Item['group'], string][] = [['me', t.m.nav.me], ['team', t.m.nav.team], ['hr', t.m.nav.hr], ['company', t.m.nav.company]];
   const Link = ({ i }: { i: Item }) => (
-    <a href={'#/' + i.key} className={'side-link' + (tab === i.key ? ' active' : '')}>
-      <span>{i.label(t)}</span>{i.key === 'approvals' && approvals > 0 && <span className="badge">{approvals}</span>}
+    <a href={'#/' + i.key} className={'side-link g-' + i.group + (tab === i.key ? ' active' : '')}>
+      <span className="side-label"><Icon name={iconFor(i.key)} />{i.label(t)}</span>{i.key === 'approvals' && approvals > 0 && <span className="badge">{approvals}</span>}
     </a>
   );
   const bottom = items.filter(i => ['', 'requests', 'time', 'people'].includes(i.key)).slice(0, 3);
@@ -98,7 +100,7 @@ export function App() {
   return (
     <div className="shell">
       <header className="top">
-        <div className="brand">Forka <span>People</span>{DEMO && <em className="demo-pill">{t.demo}</em>}</div>
+        <a href="#/" className="brand-link"><Logo />{DEMO && <em className="demo-pill">{t.demo}</em>}</a>
         <div className="top-right">
           <button className="link-btn" onClick={() => setLang(lang === 'en' ? 'ar' : 'en')}>{t.language}</button>
           <span className="who" title={me.user.email}>{me.user.name}<small>{me.roles.map(r => t.roles[r] || r).join(' · ')}</small></span>
@@ -110,12 +112,12 @@ export function App() {
           {groups.map(([g, label]) => { const list = items.filter(i => i.group === g); return list.length ? (
             <div key={g} className="side-group"><div className="side-head">{label}</div>{list.map(i => <Link key={i.key} i={i} />)}</div>) : null; })}
         </nav>
-        <main className="page">{page}</main>
+        <main className="page"><RouteCtx.Provider value={tab}>{page}</RouteCtx.Provider></main>
       </div>
       <nav className="bottom-nav">
-        {bottom.map(i => <a key={i.key} href={'#/' + i.key} className={'nav-link' + (tab === i.key ? ' active' : '')}>{i.label(t)}</a>)}
-        {me.can.isManager && DEMO && <a href="#/approvals" className={'nav-link' + (tab === 'approvals' ? ' active' : '')}>{t.m.nav.approvals}{approvals > 0 && <span className="badge">{approvals}</span>}</a>}
-        <button className={'nav-link' + (more ? ' active' : '')} onClick={() => setMore(!more)} aria-expanded={more}>{t.m.nav.more}</button>
+        {bottom.map(i => <a key={i.key} href={'#/' + i.key} className={'nav-link g-' + i.group + (tab === i.key ? ' active' : '')}><Icon name={iconFor(i.key)} size={22} /><span>{i.label(t)}</span></a>)}
+        {me.can.isManager && DEMO && <a href="#/approvals" className={'nav-link g-team' + (tab === 'approvals' ? ' active' : '')}><Icon name="approvals" size={22} /><span>{t.m.nav.approvals}{approvals > 0 && <span className="badge">{approvals}</span>}</span></a>}
+        <button className={'nav-link' + (more ? ' active' : '')} onClick={() => setMore(!more)} aria-expanded={more}><svg className="ico" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true"><path d="M5 7h14M5 12h14M5 17h14" /></svg><span>{t.m.nav.more}</span></button>
       </nav>
       {more && (
         <div className="sheet-back" onClick={() => setMore(false)}>

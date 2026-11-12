@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { api } from '../api';
 import { useI18n } from '../i18n';
-import { Page, Loading, Tabs, Pill, statusTone, Empty, Modal, Field, useApi, errText, Person, Bar, ltr } from '../ui';
+import { Page, Loading, Tabs, Pill, statusTone, Empty, Modal, Field, useApi, errText, Person, Bar, ltr, Donut } from '../ui';
 import type { Me } from '../App';
 
 // ---------- Performance ----------
@@ -191,12 +191,12 @@ export function Reports() {
         <div className="card tone-sea"><div className="card-label">{RP.training}</div><div className="card-number sm">{r.training.total ? Math.round(r.training.done / r.training.total * 100) : 0}%</div></div>
       </div>
       <div className="grid-2">
-        <section className="panel"><h2>{RP.byEntity}</h2><Bars rows={r.headcountByEntity} /></section>
+        <section className="panel"><h2>{RP.byEntity}</h2><Donut label={RP.byEntity} rows={r.headcountByEntity.map((x: any) => ({ ...x, name: x.key.replace(' (demo)', '') }))} /></section>
         <section className="panel"><h2>{RP.byBranch}</h2><Bars rows={r.headcountByBranch} tone="sage" /></section>
-        <section className="panel"><h2>{RP.byLevel}</h2><Bars rows={r.headcountByLevel} tone="saffron" /></section>
-        <section className="panel"><h2>{RP.attendance}</h2><Bars rows={r.attendance} tone="terracotta" label={x => t.m.time.exc[x.key]} /></section>
+        <section className="panel"><h2>{RP.byLevel}</h2><Donut label={RP.byLevel} rows={r.headcountByLevel.map((x: any) => ({ ...x, name: bi({ en: x.key, ar: x.ar }) }))} /></section>
+        <section className="panel"><h2>{RP.attendance}</h2><Donut label={RP.attendance} rows={r.attendance.map((x: any) => ({ ...x, name: t.m.time.exc[x.key] }))} /></section>
         <section className="panel"><h2>{RP.documents}</h2><Bars rows={r.documents} tone="terracotta" label={x => RP.docBuckets[x.key]} /></section>
-        <section className="panel"><h2>{RP.leave}</h2><Bars rows={r.leave} tone="sea" label={x => x.key === 'annual' ? t.m.leave.kinds.taken + ' · ' + (bi({ en: 'Annual', ar: 'سنوية' })) : t.m.leave.kinds.taken + ' · ' + bi({ en: 'Sick', ar: 'مرضية' })} /></section>
+        <section className="panel"><h2>{RP.leave}</h2><Donut label={RP.leave} rows={r.leave.map((x: any) => ({ ...x, name: x.key === 'annual' ? bi({ en: 'Annual leave', ar: 'الإجازة السنوية' }) : bi({ en: 'Sick leave', ar: 'الإجازة المرضية' }) }))} /></section>
       </div>
       <section className="panel"><h2>{RP.hours}</h2>
         <div className="table-wrap"><table className="table"><thead><tr><th>{t.branch}</th><th className="num">{RP.scheduled}</th><th className="num">{RP.actual}</th><th className="num">{RP.overtime}</th><th /></tr></thead>

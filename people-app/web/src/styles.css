@@ -349,3 +349,52 @@ button, input, select, textarea, option { color: var(--charcoal); -webkit-text-f
 .shift-chip.terracotta { background: #A8432E; }
 .pick button strong, .pick button span { color: inherit; }
 .pick button span { color: var(--muted); }
+
+/* ===================== colour, logo and icons (Forka accents) ===================== */
+:root { --sea-soft: #DCEAEC; --sage-soft: #E2EBE2; --saffron-soft: #F8E9CC; --terracotta-soft: #F5DDD6; }
+.brand-link { display: inline-flex; align-items: center; gap: 10px; color: var(--paper); }
+.logo { display: inline-flex; align-items: center; gap: 9px; }
+.logo-text { display: grid; line-height: 1; }
+.logo-text small { font: 500 12px/1 var(--font); letter-spacing: .06em; color: #C9C3B8; text-transform: uppercase; margin-block-end: 2px; }
+.logo-text strong { font: 600 24px/1 'EB Garamond', Georgia, serif; color: #F6F3EE; letter-spacing: .005em; }
+.logo.on-light .logo-text small { color: var(--muted); } .logo.on-light .logo-text strong { color: var(--charcoal); font-size: 28px; }
+html[lang="ar"] .logo-text small { letter-spacing: .06em; }
+
+.ico { flex: none; }
+.side-label { display: inline-flex; align-items: center; gap: 10px; }
+.side-link.g-me .ico { color: var(--sea); } .side-link.g-team .ico { color: var(--sage); }
+.side-link.g-hr .ico { color: var(--terracotta); } .side-link.g-company .ico { color: #B37A16; }
+.side-link.active .ico { color: #fff; }
+.side-link.active.g-me { background: var(--sea); } .side-link.active.g-team { background: #5E7D60; }
+.side-link.active.g-hr { background: #A8432E; } .side-link.active.g-company { background: #8E6210; }
+.side-link.active .badge { background: #fff; color: var(--charcoal); }
+
+.title-wrap { display: flex; align-items: center; gap: 12px; }
+.title-ico { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; flex: none; }
+.title-ico.g-me { background: var(--sea-soft); color: var(--sea); } .title-ico.g-team { background: var(--sage-soft); color: #4F6D52; }
+.title-ico.g-hr { background: var(--terracotta-soft); color: #A8432E; } .title-ico.g-company { background: var(--saffron-soft); color: #8E6210; }
+
+/* soft colour bands behind key panels, like coloured stage areas */
+.hero { background: linear-gradient(115deg, #E9F2F3 0%, #F7F1E6 55%, #F6E7E1 100%); border: 0; }
+.clock-card { background: linear-gradient(120deg, #FFFFFF 0%, #EEF5F0 100%); }
+.report-meta { background: linear-gradient(110deg, #E9F2F3, #FAF8F4); }
+.panel h2 { display: flex; align-items: center; gap: 8px; }
+.cards .card { box-shadow: 0 1px 0 rgba(43,43,43,.03), 0 6px 18px rgba(43,43,43,.05); }
+
+/* donut charts */
+.donut { display: grid; grid-template-columns: 140px 1fr; gap: 14px; align-items: center; }
+.donut svg { width: 140px; height: 140px; }
+.donut-num { font: 600 22px var(--head); fill: var(--charcoal); }
+.donut-legend { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; font-size: 14px; }
+.donut-legend li { display: grid; grid-template-columns: 12px 1fr auto; gap: 8px; align-items: center; }
+.donut-legend i { width: 12px; height: 12px; border-radius: 3px; }
+
+/* bottom bar with icons */
+@media (max-width: 900px) {
+  .bottom-nav .nav-link { display: grid; justify-items: center; gap: 2px; font-size: 11.5px; padding: 6px 2px; }
+  .bottom-nav .nav-link.g-me .ico { color: var(--sea); } .bottom-nav .nav-link.g-team .ico { color: #5E7D60; } .bottom-nav .nav-link.g-hr .ico { color: #A8432E; }
+  .bottom-nav .nav-link span { display: inline-flex; align-items: center; }
+  .title-ico { width: 38px; height: 38px; } .title-wrap h1 { font-size: 22px; }
+  .logo-text strong { font-size: 21px; }
+}
+@media (max-width: 420px) { .donut { grid-template-columns: 1fr; justify-items: center; } }
