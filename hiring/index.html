@@ -128,17 +128,17 @@ pre.out{white-space:pre-wrap;background:#fff;border:1px solid var(--line);border
 /* Forka app header: the four-petal mark, FORKA above the app name */
 .fk-lock{display:inline-flex;align-items:center;gap:10px;white-space:nowrap;text-decoration:none;color:inherit}
 .fk-lock>div{text-align:start}
-.fk-lock svg{width:30px;height:30px;flex:none;display:block}
-.fk-lock .fk-k{display:block;font:600 9.5px/1 'Inter Tight',system-ui,sans-serif;letter-spacing:.14em;color:#c8c3b9;text-transform:uppercase}
+.fk-lock svg{width:34px;height:34px;flex:none;display:block}
+.fk-lock .fk-k{display:block;font:600 12px/1 'Inter Tight',system-ui,sans-serif;letter-spacing:.2em;color:#c8c3b9;text-transform:uppercase}
 .fk-lock .fk-n{display:block;font:600 20px/1.05 'EB Garamond','IBM Plex Sans Arabic',serif;color:#f6f3ee;margin-top:3px;letter-spacing:0;text-transform:none}
 .fk-lock.on-light .fk-k{color:#8a7f72}.fk-lock.on-light .fk-n{color:#2b2b2b}
-@media (max-width:600px){.fk-lock:not(.big){gap:8px}.fk-lock:not(.big) svg{width:26px;height:26px}.fk-lock:not(.big) .fk-n{font-size:17px}.fk-lock:not(.big) .fk-k{font-size:8.5px}}
-.fk-lock.big{gap:18px}.fk-lock.big svg{width:64px;height:64px}.fk-lock.big .fk-k{font-size:15px}.fk-lock.big .fk-n{font-size:46px;margin-top:6px}
+@media (max-width:600px){.fk-lock:not(.big){gap:8px}.fk-lock:not(.big) svg{width:26px;height:26px}.fk-lock:not(.big) .fk-n{font-size:17px}.fk-lock:not(.big) .fk-k{font-size:10.5px}}
+.fk-lock.big{gap:18px}.fk-lock.big svg{width:64px;height:64px}.fk-lock.big .fk-k{font-size:21px}.fk-lock.big .fk-n{font-size:46px;margin-top:6px}
 </style>
 </head>
 <body>
 <header>
-  <div class="fk-lock"><svg viewBox="0 0 64 64" aria-hidden="true"><defs><mask id="fkm-h"><rect width="64" height="64" fill="#fff"/><circle cx="32" cy="32" r="12.5" fill="#000"/></mask></defs><g mask="url(#fkm-h)"><rect width="30" height="30" rx="7" fill="#4d7b8a"/><rect x="34" width="30" height="30" rx="7" fill="#d9a650"/><rect y="34" width="30" height="30" rx="7" fill="#829980"/><rect x="34" y="34" width="30" height="30" rx="7" fill="#ba5c45"/></g><circle cx="32" cy="32" r="9" fill="#876b45"/></svg><div><span class="fk-k" data-noi18n>FORKA</span><span class="fk-n">Hiring</span></div></div>
+  <div class="fk-lock"><svg viewBox="0 0 118 118" aria-hidden="true"><defs><mask id="fkm-h"><rect width="118" height="118" fill="#fff"/><circle cx="59" cy="59" r="22" fill="#000"/></mask></defs><g mask="url(#fkm-h)"><rect x="7" y="7" width="48" height="48" rx="12" fill="#E0A037"/><rect x="63" y="7" width="48" height="48" rx="12" fill="#E0A037" fill-opacity="0.85"/><rect x="7" y="63" width="48" height="48" rx="12" fill="#E0A037" fill-opacity="0.68"/><rect x="63" y="63" width="48" height="48" rx="12" fill="#E0A037" fill-opacity="0.95"/></g><circle cx="59" cy="59" r="15.8" fill="#E0A037"/></svg><div><span class="fk-k" data-noi18n>FORKA</span><span class="fk-n">Hire</span></div></div>
   <nav id="nav"></nav>
   <div id="langSw" data-noi18n><button data-l="en" onclick="setLang('en')">EN</button><button data-l="ar" onclick="setLang('ar')">عربي</button></div>
   <div class="who" id="who"></div>
@@ -152,7 +152,7 @@ pre.out{white-space:pre-wrap;background:#fff;border:1px solid var(--line);border
 /* ============ Language layer: English / العربية (display only — stored data and logic stay in English) ============ */
 let LANG=(()=>{try{return localStorage.getItem("forkaHireLang")==="ar"?"ar":"en"}catch(e){return "en"}})();
 const AR={
-"Guidance for AI":"إرشادات للذكاء الاصطناعي","Hiring":"التوظيف","Work type":"نوع العمل","On site":"في الفرع","Remote":"عن بُعد","Hybrid":"مختلط (في الفرع وعن بُعد)","Remote: the branch is optional (the team it reports to)":"للعمل عن بُعد: الفرع اختياري (الفريق الذي يتبع له)","Summarise CV":"تلخيص السيرة الذاتية","Role":"الوظيفة","Years":"سنوات الخبرة","Languages":"اللغات","Visa / notice":"الإقامة / فترة الإشعار","Recent employers":"آخر جهات العمل","Must-have":"الشرط الأساسي","AI score":"درجة الذكاء الاصطناعي","Evidence in the CV":"الدليل في السيرة","Summarise again":"تلخيص مرة أخرى","Submit my scorecard":"إرسال تقييمي","AI summary":"ملخص الذكاء الاصطناعي","Suggestion — check it against the CV":"اقتراح — تحقق منه مقابل السيرة الذاتية","Check with the candidate":"تحقق مع المرشح","Questions about this CV":"أسئلة عن هذه السيرة","Summarise CV and suggest scores":"تلخيص السيرة واقتراح الدرجات","Save guidance":"حفظ الإرشادات",
+"Guidance for AI":"إرشادات للذكاء الاصطناعي","Hiring":"التوظيف","Hire":"التوظيف","Work type":"نوع العمل","On site":"في الفرع","Remote":"عن بُعد","Hybrid":"مختلط (في الفرع وعن بُعد)","Remote: the branch is optional (the team it reports to)":"للعمل عن بُعد: الفرع اختياري (الفريق الذي يتبع له)","Summarise CV":"تلخيص السيرة الذاتية","Role":"الوظيفة","Years":"سنوات الخبرة","Languages":"اللغات","Visa / notice":"الإقامة / فترة الإشعار","Recent employers":"آخر جهات العمل","Must-have":"الشرط الأساسي","AI score":"درجة الذكاء الاصطناعي","Evidence in the CV":"الدليل في السيرة","Summarise again":"تلخيص مرة أخرى","Submit my scorecard":"إرسال تقييمي","AI summary":"ملخص الذكاء الاصطناعي","Suggestion — check it against the CV":"اقتراح — تحقق منه مقابل السيرة الذاتية","Check with the candidate":"تحقق مع المرشح","Questions about this CV":"أسئلة عن هذه السيرة","Summarise CV and suggest scores":"تلخيص السيرة واقتراح الدرجات","Save guidance":"حفظ الإرشادات",
 "The AI follows this every time it drafts a job description or job ad. Write it like a note to a new HR assistant: tone, what to always include, what never to say.":"يلتزم الذكاء الاصطناعي بهذه الإرشادات في كل مرة يكتب فيها وصفاً وظيفياً أو إعلان وظيفة. اكتبها كأنها ملاحظة لمساعد موارد بشرية جديد: الأسلوب، وما يجب ذكره دائماً، وما لا يُذكر أبداً.",
 "Notes for the AI, for this job only":"ملاحظات للذكاء الاصطناعي لهذه الوظيفة فقط","Draft JD + ads with AI":"كتابة الوصف والإعلانات بالذكاء الاصطناعي",
 // nav, roles, header
