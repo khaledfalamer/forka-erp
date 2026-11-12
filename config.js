@@ -1,7 +1,7 @@
-// Forka Apps - public settings for erp.forka.com (no secrets here: PINs and people live in the accounts Google Sheet).
+// Forka Apps - public settings for erp.forka.com (no secrets here: people and PINs live in the Forka Apps database on Google Cloud).
 window.FORKA_APPS = {
   MODE: 'live',
-  ACCOUNTS_URL: 'https://script.google.com/macros/s/AKfycbwUO5mC1oZrKiSJfF-kpeIFUPjfzB5VToNVn9EH-ecmDadFs9xsU1oDFHTgJ2FSg6vP/exec',        // accounts server (Apps Script web app, ends with /exec)
+  ACCOUNTS_URL: 'https://forka-apps-443945615318.me-central1.run.app/accounts',   // accounts server (Forka Apps server on Google Cloud Run, since 12 Nov 2026; old Apps Script address in git history)
   GOOGLE_CLIENT_ID: '443945615318-21aveveme3c8n41fepp4gmof3vnrs8if.apps.googleusercontent.com',    // Google sign-in client id (ends with .apps.googleusercontent.com)
   PROCUREMENT_URL: 'https://procurement.forka.com/',
   PROCUREMENT_SERVER: 'https://script.google.com/macros/s/AKfycbzaeb4OB4VNk_Pz8-IGNrnLdUNFLVtdeqUIgrFFZyl_Nl11f-anrlxJJ2OiZsaJDmN22w/exec',   // Procurement's server: only woken up in the background
