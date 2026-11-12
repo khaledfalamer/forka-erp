@@ -4,6 +4,11 @@ Brief: "Forka ERP — UI Redesign Brief (approved by Khaled, 12 Nov 2026)". This
 Forka Hire (erp.forka.com/hiring), Forka Boards (erp.forka.com/boards) and Forka Procurement (procurement.forka.com).
 Forka People is out of scope (brief section 5). Nothing goes live until Khaled says "go live" for that phase.
 
+**Khaled, 12 Nov 2026: do not touch the headers and logos.** Every app keeps its live header and logo exactly as they are
+(the Forka brand family: light paper header with the app colour line, each app's own mark, App / Hire / Board / Procurement).
+The shared suite header, app switcher and header menus from Phase 1 are therefore dropped; the redesign changes only what is
+below the header (page content, tables, forms, dialogs, phone layout and Arabic of the content).
+
 Visual reference: `forka_audit_visual.html` (the audit's Now / Proposed sketches, saved next to this plan). Three of its
 panels are **not** built, by Khaled's decisions: the launcher "Workspaces" cards (2.2, cards stay as they are),
 Suppliers & ABC, and the Operations PIN screen (section 5). Its emojis are placeholders and become line icons.
