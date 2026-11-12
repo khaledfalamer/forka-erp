@@ -563,6 +563,32 @@ html[dir=rtl] .pfind input{padding:0 38px 0 14px}
 .top select{background:#fff!important;color:#2b2b2b!important;border:1px solid #e3d8c7!important}.top label,.top .sync{color:#6f665c!important}.top .ib,.top .bell,.top .bell svg{color:#2b2b2b!important;opacity:1!important}
 :root{--bronze:#397F8F;--bronze-l:#5a9aa8;--bronze-soft:#dcebee}
 .blogo{height:34px;width:auto;display:block;flex:none}@media(max-width:600px){.blogo{height:28px}}
+
+/* ===== Left menu, same look as Forka Hire: teal for the current item; collapses to icons; stays on the LEFT in Arabic ===== */
+.side{display:flex;flex-direction:column;background:#fdfbf7;border-inline-end:1px solid #ece4d6}@media(min-width:761px){.side{width:250px}}
+.side>*{flex-shrink:0}.bs-top{display:flex;justify-content:flex-end;margin:-4px 0 6px}
+.bs-mini{border:0;background:none;color:#8a7f72;width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer}.bs-mini:hover{background:#f3ece1;color:#2b2b2b}
+html[dir=rtl] .bs-mini svg{transform:scaleX(-1)}
+.side .nav{position:relative;padding:9px 12px;border-radius:10px;color:#5e564d}
+.side .nav:hover{background:#f6efe3;color:#2b2b2b}
+.side .nav.on{background:#e3eff1;color:#2b2b2b;font-weight:600}
+.side .nav.on:not(.sub):before{content:"";position:absolute;inset-inline-start:0;top:8px;bottom:8px;width:3px;border-radius:3px;background:#397F8F}
+.side .nav.on svg{color:#397F8F}
+.side .nav:focus-visible,.bs-apps:focus-visible,.bs-mini:focus-visible{outline:2px solid #397F8F;outline-offset:1px}
+.bs-foot{margin-top:auto;border-top:1px solid #efe8dc;padding-top:10px}
+.bs-apps{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:10px;color:#5e564d;text-decoration:none;font-weight:500;font-size:14px}.bs-apps:hover{background:#f6efe3;color:#2b2b2b}
+html[dir=rtl] .shell{direction:ltr}html[dir=rtl] .shell>*{direction:rtl}
+@media(min-width:761px){
+  body.bside-mini .side{width:72px;padding-inline:10px}
+  body.bside-mini .side h5,body.bside-mini .side .nav.sub,body.bside-mini .side .viewas{display:none}
+  body.bside-mini .side .nav,body.bside-mini .side .newt,body.bside-mini .bs-apps{font-size:0;justify-content:center;gap:0;padding:10px 0}
+  body.bside-mini .side .nav svg,body.bside-mini .side .newt svg,body.bside-mini .bs-apps svg{width:20px;height:20px}
+  body.bside-mini .side .nav .dot{width:12px;height:12px}
+  body.bside-mini .side .nav .n{position:absolute;top:2px;right:4px;font-size:10px}
+  body.bside-mini .side .lb{display:none}body.bside-mini .bs-top{justify-content:center}
+  body.bside-mini .bs-mini svg{transform:scaleX(-1)}html[dir=rtl] body.bside-mini .bs-mini svg{transform:none}
+}
+@media(max-width:760px){.bs-top{display:none}html[dir=rtl] .side{transform:translateX(-105%);left:0;right:auto}html[dir=rtl] .side.open{transform:none!important}}
 </style>
 </head>
 <body>
@@ -624,7 +650,7 @@ en:{app:'Boards',search:'Search this board',addCard:'Add a card',addCardBtn:'Add
   pickMembers:'People on this board',memberHint:'Only these people see this board. The department head and the CEO always do.',head:'Head',ceoRole:'CEO',staff:'Staff',
   headLabel:'Department head',onlyAdmin:'Only the department head can change this.',cards:'cards',openN:'{n} open',overN:'{n} overdue',updated:'Updated {t}',
   back:'Back',boardsOf:'{d} boards',you:'you',
-  newTask:'New task',ntTitle:'Task',ntTitlePh:'What needs to be done?',forDept:'Department',onBoard:'Board',inListL:'List',assignTo:'Who will do it',
+  newTask:'New task',collapse:'Collapse or expand the menu',ntTitle:'Task',ntTitlePh:'What needs to be done?',forDept:'Department',onBoard:'Board',inListL:'List',assignTo:'Who will do it',
   assignHint:'Leave empty and the {d} head will assign it.',priority:'Priority',p_low:'Low',p_normal:'Normal',p_high:'High',p_urgent:'Urgent',
   checkLines:'Checklist (one item per line)',createTask:'Create task',need:'Fill in the boxes in red.',reqBoard:'Requests to {d}',asReq:'Request to {d}',
   reqNote:'This goes to {d} as a request. Their head sees it first and assigns it. You can follow it in My tasks.',requested:'My requests to other departments',
@@ -713,7 +739,7 @@ ar:{app:'اللوحات',search:'بحث في هذه اللوحة',addCard:'إض�
   pickMembers:'فريق هذه اللوحة',memberHint:'هؤلاء فقط يرون هذه اللوحة. مسؤول القسم والرئيس التنفيذي يرونها دائماً.',head:'مسؤول',ceoRole:'الرئيس التنفيذي',staff:'موظف',
   headLabel:'مسؤول القسم',onlyAdmin:'مسؤول القسم فقط يستطيع تغيير هذا.',cards:'بطاقات',openN:'{n} مفتوحة',overN:'{n} متأخرة',updated:'تحديث {t}',
   back:'رجوع',boardsOf:'لوحات {d}',you:'أنت',
-  newTask:'مهمة جديدة',ntTitle:'المهمة',ntTitlePh:'ما المطلوب إنجازه؟',forDept:'القسم',onBoard:'اللوحة',inListL:'القائمة',assignTo:'من سينفّذها',
+  newTask:'مهمة جديدة',collapse:'طي القائمة أو فتحها',ntTitle:'المهمة',ntTitlePh:'ما المطلوب إنجازه؟',forDept:'القسم',onBoard:'اللوحة',inListL:'القائمة',assignTo:'من سينفّذها',
   assignHint:'اتركها فارغة وسيُسندها مسؤول {d}.',priority:'الأولوية',p_low:'منخفضة',p_normal:'عادية',p_high:'عالية',p_urgent:'عاجلة',
   checkLines:'قائمة المهام (بند في كل سطر)',createTask:'إنشاء المهمة',need:'عبّئ الخانات الحمراء.',reqBoard:'طلبات إلى {d}',asReq:'طلب إلى {d}',
   reqNote:'تُرسل إلى {d} كطلب. يراها مسؤول القسم أولاً ويُسندها. يمكنك متابعتها في مهامي.',requested:'طلباتي من الأقسام الأخرى',
@@ -1042,11 +1068,14 @@ function render(){
   hydrate();
   if(V.view==='chat'&&V.chScroll!==V.ch){V.chScroll=V.ch;scrollChat()}
 }
+function bMini(on){const b=document.body;on=on===undefined?!b.classList.contains('bside-mini'):on;b.classList.toggle('bside-mini',on);try{localStorage.setItem('fb-side',on?'mini':'full')}catch(_){}}
+try{if(localStorage.getItem('fb-side')==='mini')document.addEventListener('DOMContentLoaded',()=>document.body.classList.add('bside-mini'))}catch(_){}
 function sideHTML(){
   const mineN=allCards().filter(({c})=>!c.done&&c.members.includes(ME())).length;
   return `<nav class="side ${V.side?'open':''}" aria-label="${t('departments')}">
     ${LIVE?'':`<select class="viewas sm-only" id="viewas2" aria-label="${t('viewAs')}">${PEOPLE.map(p=>`<option value="${p.id}" ${p.id===ME()?'selected':''}>${esc(t('viewAs'))}: ${esc(pname(p.id))}</option>`).join('')}</select>`}
-    <button class="btn newt" data-a="newtask">${ic('plus')}${t('newTask')}</button>
+    <div class="bs-top"><button class="bs-mini" onclick="bMini()" aria-label="${t('collapse')}" title="${t('collapse')}"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button></div>
+    <button class="btn newt" data-a="newtask" title="${t('newTask')}">${ic('plus')}<span class="lb">${t('newTask')}</span></button>
     <button class="nav ${V.view==='mine'?'on':''}" data-a="go" data-v="mine">${ic('inbox')}${t('mine')}<span class="n">${mineN||''}</span></button>
     <button class="nav ${V.view==='projects'?'on':''}" data-a="go" data-v="projects">${ic('folder')}${t('projectsNav')}</button>
     <button class="nav ${V.view==='chat'?'on':''}" data-a="go" data-v="chat">${ic('chat')}${t('chat')}<span class="n">${chatUnread()||''}</span></button>
@@ -1061,6 +1090,7 @@ function sideHTML(){
     ${depts().map(d=>{const bs=boards().filter(b=>b.dept===d.id),s=stats(bs.flatMap(cardsOf));
       return `<button class="nav ${V.view==='dept'&&V.dept===d.id?'on':''}" data-a="dept" data-id="${d.id}"><span class="dot" style="background:${d.dot}"></span>${esc(d[lang])}<span class="n ${s.over?'bad':''}">${s.over?s.over:''}</span></button>
         ${(V.dept===d.id||(V.view==='board'&&B()&&B().dept===d.id))?bs.map(b=>`<button class="nav sub ${V.view==='board'&&V.board===b.id?'on':''}" data-a="board" data-id="${b.id}">${esc(bname(b))}${b.kind?`<span class="n">${D.lists[b.lists[0]].cards.length||''}</span>`:''}</button>`).join(''):''}`}).join('')}
+    <div class="bs-foot"><a class="bs-apps" href="${esc(CFG.ERP_HOME||'../')}" title="Forka Apps"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="2"/><rect x="13" y="4" width="7" height="7" rx="2"/><rect x="4" y="13" width="7" height="7" rx="2"/><rect x="13" y="13" width="7" height="7" rx="2"/></svg><span class="lb">Forka Apps</span></a></div>
   </nav>`}
 
 /* Company progress (CEO) */
