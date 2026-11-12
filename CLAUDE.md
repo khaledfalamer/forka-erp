@@ -11,6 +11,7 @@ Owner: Khaled Alamer, CEO of Forka Collective (F&B group: UAE branches Sharjah, 
 - Required fields show red when they block saving or the next step.
 - An active CEO opens every app and every section automatically (ceoAll_ in server/Accounts.gs). Never make the CEO tick access for himself.
 - Never put secrets in the repo. config.js holds public settings only.
+- Before any change or go-live: look at the live design first (header, logo, colours, fonts). If it differs from what the work was built on, change nothing and show Khaled side-by-side screenshots; he decides. Every change keeps the current colours and logo design (Khaled, 12 Nov 2026).
 
 ## What lives where
 - erp.forka.com = this repo on GitHub Pages (CNAME). Every push to main runs .github/workflows/test-and-deploy.yml. The site publishes only if all checks pass.
