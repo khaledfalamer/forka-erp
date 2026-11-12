@@ -316,3 +316,36 @@ textarea { padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px
   .clock-btn { width: 100%; }
   .bars li { grid-template-columns: 100px 1fr 30px; }
 }
+
+/* ---------- readable text everywhere ----------
+   Phones in dark mode (and iPhone Safari) give buttons and form fields their own light or blue text colour.
+   The app is always light, so every control uses the app's text colour unless it sets its own. */
+:root { color-scheme: light; }
+button, input, select, textarea, option { color: var(--charcoal); -webkit-text-fill-color: currentColor; }
+.seg-ctl button { color: var(--charcoal); }
+.seg-ctl button.on { color: var(--paper); }
+.tabs button { color: #5E5A54; }
+.tabs button.active { color: var(--charcoal); }
+.link-btn { color: inherit; }
+.side-link { color: var(--charcoal); }
+.side-link.active { color: var(--paper); }
+.bottom-nav .nav-link { color: #5E5A54; }
+.bottom-nav .nav-link.active { color: var(--charcoal); }
+.btn, a.btn { color: var(--paper); }
+.btn.ghost, a.btn.ghost { color: var(--charcoal); }
+.clock-btn { color: #fff; }
+.rating button { color: var(--charcoal); }
+.rating button.on { color: #fff; }
+.choice, .pick button, .payslip > button, .balance, .icon-btn { color: var(--charcoal); }
+/* stronger greys for small text */
+:root { --muted: #5E5A54; }
+.cell.rest { color: #7A746B; }
+.side-head { color: #6B665F; }
+.pill { color: #3F3B36; }
+.badge { background: #A8432E; }
+.pill.warn { color: #6F4A08; }
+.avatar.t-bronze { color: #6A4E2C; }
+.cell.rest { color: #66605A; }
+.shift-chip.terracotta { background: #A8432E; }
+.pick button strong, .pick button span { color: inherit; }
+.pick button span { color: var(--muted); }
