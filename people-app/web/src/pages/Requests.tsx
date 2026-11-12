@@ -3,6 +3,7 @@ import { api } from '../api';
 import { useI18n } from '../i18n';
 import { Page, Loading, Tabs, Pill, statusTone, Empty, Modal, Field, useApi, errText } from '../ui';
 import { LeaveForm } from './Leave';
+import { CustomForm, actionKey } from './Extra';
 import type { Me } from '../App';
 
 export function Requests({ me, start = 'mine' }: { me: Me; start?: 'mine' | 'approve' | 'all' }) {
@@ -41,7 +42,7 @@ export function RequestCard({ r, onChange, showEmployee }: { r: any; onChange: (
     <article className="req-card">
       <header>
         <div>
-          <strong>{r.type === 'leave' ? bi(r.leaveName) : R.types[r.type]}</strong>
+          <strong>{['leave', 'custom'].includes(r.type) ? bi(r.leaveName) : R.types[r.type]}</strong>
           {showEmployee && <span className="muted"> · {bi(r.employee.name)} · {bi(r.employee.branch)}</span>}
           <div className="muted small">{summary(r, t, bi, date)}</div>
         </div>
@@ -56,6 +57,7 @@ export function RequestCard({ r, onChange, showEmployee }: { r: any; onChange: (
           </li>
         ))}
       </ol>
+      {r.automation && <div className="auto-done"><strong>{t.m.forms.done}:</strong> {r.automation.map((a: any) => t.m.forms.act[actionKey(a)]).join(' · ')}</div>}
       <footer className="muted small">{date(r.createdAt.slice(0, 10))}{r.onBehalf ? ` · ${R.onBehalf} ${r.requestedBy}` : ''}</footer>
       {err && <p className="error">{err}</p>}
       {r.canAct && (
@@ -86,16 +88,20 @@ function summary(r: any, t: any, bi: any, date: any) {
   if (r.type === 'attendance_correction') return `${date(p.date)} · ${p.kind === 'in' ? R.clockIn : R.clockOut} ${p.time} · ${p.reason}`;
   if (r.type === 'schedule_change') return `${date(p.date)} · ${p.from} → ${p.to} · ${p.reason}`;
   if (r.type === 'profile_update') return `${R.fields[p.field] || p.field}`;
+  if (r.type === 'custom') return (p.fields || []).filter((f: any) => p.answers?.[f.key] !== undefined && p.answers[f.key] !== '').map((f: any) => `${bi(f.label)}: ${p.answers[f.key]}`).join(' · ');
   return p.subject || p.question || '';
 }
 
 function NewRequest({ me, onClose, onSaved }: { me: Me; onClose: () => void; onSaved: () => void }) {
-  const { t } = useI18n(); const R = t.m.req;
+  const { t, bi } = useI18n(); const R = t.m.req;
   const [type, setType] = useState('');
   const [p, setP] = useState<any>({});
   const [tried, setTried] = useState(false);
   const [err, setErr] = useState('');
+  const forms = useApi<any[]>('/forms');
   if (type === 'leave') return <LeaveForm me={me} onClose={onClose} onSaved={onSaved} />;
+  const custom = forms.data?.find(f => f.id === type);
+  if (custom) return <Modal title={R.newRequest} onClose={onClose}><CustomForm form={custom} onBack={() => setType('')} onSaved={onSaved} /></Modal>;
   const need: Record<string, string[]> = { letter: ['letter'], attendance_correction: ['date', 'kind', 'time', 'reason'], schedule_change: ['date', 'from', 'to', 'reason'], profile_update: ['field', 'value'], general: ['subject', 'question'] };
   const miss = (k: string) => tried && !p[k];
   const send = async () => {
@@ -112,6 +118,8 @@ function NewRequest({ me, onClose, onSaved }: { me: Me; onClose: () => void; onS
           {['leave', 'letter', 'attendance_correction', 'schedule_change', 'profile_update', 'general'].map(k => (
             <button key={k} className="choice" onClick={() => { setType(k); setP(k === 'letter' ? { letter: 'salary_certificate', language: 'en' } : k === 'attendance_correction' ? { kind: 'out' } : {}); }}>{R.types[k]}</button>
           ))}
+          {forms.data && forms.data.length > 0 && <p className="muted small">{t.m.forms.tab}</p>}
+          {forms.data?.map(f => <button key={f.id} className="choice sea" onClick={() => setType(f.id)}>{bi(f.name)}<small>{bi(f.description)}</small></button>)}
         </div>
       ) : (
         <div className="form">

@@ -398,3 +398,36 @@ html[lang="ar"] .logo-text small { letter-spacing: .06em; }
   .logo-text strong { font-size: 21px; }
 }
 @media (max-width: 420px) { .donut { grid-template-columns: 1fr; justify-items: center; } }
+
+/* ---------- feed, welcome portal, form builder ---------- */
+.composer { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px; display: grid; gap: 8px; }
+.composer textarea { width: 100%; }
+.post { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; display: grid; gap: 8px; }
+.post.kind-welcome { border-inline-start: 4px solid var(--sage); background: linear-gradient(110deg, #F1F6F2, #FFFFFF 60%); }
+.post.kind-announcement { border-inline-start: 4px solid var(--sea); }
+.post header { display: flex; align-items: center; gap: 10px; } .post header > div { flex: 1; }
+.post-text { margin: 0; font-size: 15.5px; }
+.post-actions { display: flex; gap: 14px; align-items: center; }
+.post-actions .link-btn { text-decoration: none; color: var(--muted); padding-inline-start: 0; }
+.post-actions .link-btn.liked { color: #A8432E; font-weight: 600; }
+.post-comment { background: #FAF8F4; border-radius: 8px; padding: 6px 10px; font-size: 14px; }
+.post-reply { display: flex; gap: 6px; } .post-reply input { flex: 1; min-height: 38px; }
+.welcome-hero { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; border-radius: 14px; padding: 18px 20px; background: linear-gradient(115deg, #E2EBE2 0%, #F8E9CC 100%); }
+.welcome-hero h2 { margin: 0 0 4px; font-size: 24px; } .welcome-hero p { margin: 0; }
+.welcome-grid { display: grid; grid-template-columns: 240px 1fr; gap: 14px; align-items: start; }
+.welcome-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.welcome-steps button { width: 100%; display: flex; align-items: center; gap: 10px; text-align: start; background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; min-height: 48px; color: var(--charcoal); }
+.welcome-steps button.on { border-color: var(--charcoal); box-shadow: 0 0 0 1px var(--charcoal); }
+.welcome-steps .dot { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; background: #EEE9E1; font-weight: 700; font-size: 13px; flex: none; }
+.welcome-steps button.done .dot { background: var(--good); color: #fff; }
+.team-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px; }
+.team-card { display: flex; gap: 10px; align-items: center; border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; }
+.mt { margin-block-start: 14px; }
+.form-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; }
+.form-card { background: var(--card); border: 1px solid var(--line); border-top: 4px solid var(--sea); border-radius: 12px; padding: 12px 14px; display: grid; gap: 6px; align-content: start; }
+.form-card.off { border-top-color: var(--line); opacity: .8; }
+.form-card header { display: flex; justify-content: space-between; gap: 8px; } .form-card p { margin: 0; }
+.field-row { display: grid; gap: 8px; border: 1px solid var(--line); border-radius: 10px; padding: 10px; background: #FAF8F4; }
+.approver-list { margin: 0; padding-inline-start: 22px; display: grid; gap: 6px; } .approver-list li > * { margin-inline-end: 8px; }
+.auto-done { font-size: 13px; background: #E9F2F3; border-radius: 8px; padding: 6px 10px; color: #245A63; }
+@media (max-width: 760px) { .welcome-grid { grid-template-columns: 1fr; } .welcome-steps { grid-template-columns: 1fr 1fr; } }

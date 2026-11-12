@@ -76,7 +76,7 @@ export function Lifecycle() {
           ))}</tbody></table></div>
       )) : runs.length === 0 ? <Empty>{t.noEntries}</Empty> : runs.map((run: any) => (
         <section key={run.id} className="panel">
-          <div className="row-between"><div><Person p={run.employee} /><div className="muted small">{LF.started} {date(run.start)}</div></div>
+          <div className="row-between"><div><Person p={run.employee} /><div className="muted small">{LF.started} {date(run.start)}{tab === 'onboarding' && <> · <a className="link-btn" href={'#/welcome/' + run.employee.employmentId}>{t.m.welcome.openPortal}</a></>}</div></div>
             <div className="progress-num"><strong>{run.done}/{run.total}</strong> <small className="muted">{LF.items}</small><Bar value={run.done} max={run.total} tone={tab === 'exits' ? 'terracotta' : 'sage'} /></div></div>
           <ul className="checklist">{run.items.map((it: any) => {
             const late = !it.done && it.due < new Date().toISOString().slice(0, 10);

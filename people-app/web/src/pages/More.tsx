@@ -3,6 +3,7 @@ import { api } from '../api';
 import { useI18n } from '../i18n';
 import { Page, Loading, Tabs, Pill, statusTone, Empty, Modal, Field, useApi, errText, Person, Bar, ltr, Donut } from '../ui';
 import type { Me } from '../App';
+import { FormsAdmin } from './Extra';
 
 // ---------- Performance ----------
 export function Performance({ me, id }: { me: Me; id?: string }) {
@@ -210,12 +211,13 @@ export function Reports() {
 export function Settings() {
   const { t, bi, date } = useI18n(); const S = t.m.set;
   const d = useApi<any>('/settings');
-  const [tab, setTab] = useState<'leave' | 'approvals' | 'holidays' | 'shifts' | 'docs' | 'access' | 'rules'>('leave');
+  const [tab, setTab] = useState<'forms' | 'leave' | 'approvals' | 'holidays' | 'shifts' | 'docs' | 'access' | 'rules'>('forms');
   if (!d.data) return <Page title={S.title}><Loading error={d.error} /></Page>;
   const s = d.data;
   return (
     <Page title={S.title} sub={S.readOnly}>
-      <Tabs value={tab} onChange={setTab} items={[['leave', S.leaveTypes], ['approvals', S.approvals], ['holidays', S.holidays], ['shifts', S.shifts], ['docs', S.docTypes], ['access', S.access], ['rules', S.rules]]} />
+      <Tabs value={tab} onChange={setTab} items={[['forms', t.m.forms.tab], ['leave', S.leaveTypes], ['approvals', S.approvals], ['holidays', S.holidays], ['shifts', S.shifts], ['docs', S.docTypes], ['access', S.access], ['rules', S.rules]]} />
+      {tab === 'forms' && <FormsAdmin />}
       {tab === 'leave' && <div className="table-wrap"><table className="table"><thead><tr><th>{t.m.common.type}</th><th>{t.company}</th><th className="num">{S.perYear}</th><th>{S.paid}</th><th>{S.halfDay}</th><th /></tr></thead>
         <tbody>{s.leaveTypes.map((l: any) => <tr key={l.country + l.code}><td>{bi(l.name)}</td><td>{l.country}</td><td className="num">{l.perYear ?? '—'}</td><td>{l.paid ? `${l.paid}%` : t.m.common.no}</td><td>{l.halfDay ? t.m.common.yes : t.m.common.no}</td>
           <td><Pill tone={l.note === 'to_confirm' ? 'warn' : ''}>{l.note === 'to_confirm' ? t.m.common.toConfirm : t.m.common.policy}</Pill></td></tr>)}</tbody></table></div>}

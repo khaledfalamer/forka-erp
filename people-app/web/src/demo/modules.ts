@@ -70,6 +70,7 @@ export function makeModules(x: Ctx) {
     if (type === 'leave') return (p.days > 5 || ['unpaid', 'maternity', 'hajj'].includes(p.leaveType)) ? ['line_manager', 'hr'] : ['line_manager'];
     if (type === 'attendance_correction' || type === 'schedule_change') return ['line_manager'];
     if (type === 'letter') return p.letter === 'salary_certificate' ? ['hr', 'hr_manager'] : ['hr'];
+    if (type === 'custom') return p.steps;
     return ['hr'];
   };
   const canAct = (m: Me, rule: string, r: Any) => {
@@ -78,18 +79,22 @@ export function makeModules(x: Ctx) {
     if (rule === 'line_manager') return m.employmentIds.includes(r.manager_employment_id) || m.grants.some((g: Any) => g.role === 'BRANCH_MANAGER' && g.scope_id === r.branch_id) || isHr(m, r.entity_id);
     if (rule === 'hr') return isHr(m, r.entity_id);
     if (rule === 'hr_manager') return has(m, ['HR_MANAGER'], r.entity_id);
+    if (rule === 'finance') return has(m, ['PAYROLL', 'HR_MANAGER'], r.entity_id);
     return false;
   };
   // Inbox: only the people the step is meant for (HR can still act on a manager step from "All in my scope").
   const inInbox = (m: Me, rule: string, r: Any) => {
     if (isSelf(m, r)) return false;
     if (rule === 'line_manager') return m.employmentIds.includes(r.manager_employment_id) || m.grants.some((g: Any) => g.role === 'BRANCH_MANAGER' && g.scope_id === r.branch_id) || (m.isCeo && !r.manager_employment_id);
+    if (rule === 'ceo') return m.isCeo;
     return canAct(m, rule, r) && (!m.isCeo || rule === 'hr_manager' || isHr(m, r.entity_id));
   };
   const ruleLabel = (rule: string, r: Any) => {
     if (rule === 'line_manager') return r.manager_en ? bi(r.manager_en, r.manager_ar || r.manager_en) : bi('Line manager', 'المدير المباشر');
     if (rule === 'hr') return bi('HR', 'الموارد البشرية');
     if (rule === 'hr_manager') return bi('HR Manager', 'مدير الموارد البشرية');
+    if (rule === 'finance') return bi('Finance', 'المالية');
+    if (rule === 'ceo') return bi('CEO', 'الرئيس التنفيذي');
     return bi(rule, rule);
   };
   function createRequest(by: Me | null, empId: string, type: string, payload: Any, createdAt?: string) {
@@ -106,6 +111,10 @@ export function makeModules(x: Ctx) {
     if (action === 'rejected') { req.status = 'rejected'; return; }
     if (req.currentStep < req.steps.length) { req.currentStep++; return; }
     req.status = 'approved';
+    if (req.type === 'custom') {
+      // Automatic actions set on the form (demo: recorded, not sent).
+      req.automation = (req.payload.actions || []).map((a: Any) => ({ ...a, at: at || now() }));
+    }
     if (req.type === 'leave') {
       const r = rowByEmp(req.employmentId);
       ledger.push({ emp: req.employmentId, code: req.payload.leaveType, cc: country(r), day: req.payload.start, days: -req.payload.days, kind: 'taken', note: req.id });
@@ -116,7 +125,8 @@ export function makeModules(x: Ctx) {
     const step = req.steps[req.currentStep - 1];
     return { id: req.id, type: req.type, status: req.status, createdAt: req.createdAt, requestedBy: req.requestedBy, onBehalf: req.onBehalf,
       employee: person(r), payload: req.payload, currentStep: req.currentStep,
-      leaveName: req.type === 'leave' ? lt(country(r), req.payload.leaveType).name : null,
+      leaveName: req.type === 'leave' ? lt(country(r), req.payload.leaveType).name : req.type === 'custom' ? req.payload.formName : null,
+      automation: req.automation || null,
       steps: req.steps.map((s: Any) => ({ ...s, who: ruleLabel(s.rule, r) })),
       canAct: req.status === 'pending' && !!step && canAct(m, step.rule, r), canWithdraw: req.status === 'pending' && isSelf(m, r) };
   };
@@ -154,6 +164,25 @@ export function makeModules(x: Ctx) {
     return n;
   };
 
+  // ---------- custom request forms (built by HR, no code) ----------
+  const F = (key: string, en: string, ar: string, type: string, required = true, options?: string[]) => ({ key, label: bi(en, ar), type, required, options });
+  const forms: Any[] = [
+    { id: 'f-uniform', active: true, name: bi('Uniform request', 'طلب زي موحد'), description: bi('New or replacement uniform', 'زي جديد أو بديل'),
+      fields: [F('item', 'Item', 'القطعة', 'select', true, ['Shirt', 'Trousers', 'Apron', 'Chef jacket', 'Shoes', 'Cap']), F('size', 'Size', 'المقاس', 'select', true, ['S', 'M', 'L', 'XL', 'XXL']), F('qty', 'Quantity', 'الكمية', 'number'), F('reason', 'Reason', 'السبب', 'text', false)],
+      steps: ['line_manager'], actions: [{ kind: 'email', to: 'store' }, { kind: 'notify_employee' }] },
+    { id: 'f-advance', active: true, name: bi('Salary advance', 'سلفة على الراتب'), description: bi('Advance repaid from the next salaries', 'سلفة تُسترد من الرواتب القادمة'),
+      fields: [F('amount', 'Amount', 'المبلغ', 'number'), F('months', 'Repay over (months)', 'السداد خلال (أشهر)', 'select', true, ['1', '2', '3']), F('reason', 'Reason', 'السبب', 'text')],
+      steps: ['line_manager', 'hr', 'finance'], actions: [{ kind: 'add_to_payroll' }, { kind: 'email', to: 'finance' }, { kind: 'notify_employee' }] },
+    { id: 'f-transport', active: true, name: bi('Transport request', 'طلب مواصلات'), description: bi('Pick-up or drop for a late shift', 'توصيل لوردية متأخرة'),
+      fields: [F('date', 'Date', 'التاريخ', 'date'), F('from', 'From', 'من', 'text'), F('to', 'To', 'إلى', 'text'), F('time', 'Time', 'الوقت', 'text')],
+      steps: ['line_manager'], actions: [{ kind: 'email', to: 'driver' }, { kind: 'notify_employee' }] },
+    { id: 'f-meal', active: false, name: bi('Staff meal change', 'تغيير وجبة الموظف'), description: bi('Dietary needs for staff meals', 'احتياجات غذائية لوجبات الموظفين'),
+      fields: [F('need', 'Dietary need', 'الاحتياج الغذائي', 'text'), F('from', 'Starting', 'ابتداءً من', 'date')],
+      steps: ['line_manager'], actions: [{ kind: 'email', to: 'kitchen' }] },
+  ];
+  const submitForm = (by: Me | null, empId: string, f: Any, answers: Any, at?: string) =>
+    createRequest(by, empId, 'custom', { formId: f.id, formName: f.name, answers, fields: f.fields, steps: f.steps, actions: f.actions }, at);
+
   // A few requests so the inboxes are not empty.
   const findEmp = (n: string) => allRows().find((r: Any) => r.name_en === n);
   const seedReq = () => {
@@ -168,6 +197,7 @@ export function makeModules(x: Ctx) {
     createRequest(null, john.employment_id, 'letter', { letter: 'salary_certificate', addressedTo: 'Bank', language: 'en' }, addDay(T, -2) + 'T12:00:00Z');
     createRequest(null, tes.employment_id, 'attendance_correction', { date: addDay(T, -2), kind: 'out', time: '23:05', reason: 'Forgot to clock out after closing' }, addDay(T, -1) + 'T09:30:00Z');
     createRequest(null, faisal.employment_id, 'schedule_change', { date: addDay(T, 3), from: 'Evening', to: 'Morning', reason: 'University exam' }, addDay(T, -1) + 'T11:00:00Z');
+    submitForm(null, findEmp('Hassan Ali').employment_id, forms[0], { item: 'Shirt', size: 'L', qty: 2, reason: 'Old ones are worn out' }, addDay(T, -1) + 'T15:00:00Z');
     const j = createRequest(null, joy.employment_id, 'leave', { leaveType: 'annual', start: addDay(T, -30), end: addDay(T, -27), days: 4, reason: 'Rest' }, addDay(T, -45) + 'T08:00:00Z');
     decide(j, 'Grace Santos', 'approved', undefined, addDay(T, -44) + 'T08:00:00Z');
   };
@@ -309,6 +339,45 @@ export function makeModules(x: Ctx) {
     { id: 'a1', at: addDay(T, -1), title: bi('Q4 reviews start on 20 November', 'تبدأ تقييمات الربع الرابع في 20 نوفمبر'), body: bi('Managers will receive the scorecards in the app. Please complete your self-assessment by 30 November.', 'سيستلم المدراء نماذج التقييم في التطبيق. يرجى إكمال التقييم الذاتي قبل 30 نوفمبر.') },
     { id: 'a2', at: addDay(T, -6), title: bi('Health cards: renew before expiry', 'البطاقات الصحية: جدّدها قبل انتهائها'), body: bi('Check the Documents section. HR will contact anyone whose card expires within 30 days.', 'راجع قسم المستندات. ستتواصل الموارد البشرية مع كل من تنتهي بطاقته خلال 30 يوماً.') },
   ];
+
+  // ---------- team feed ----------
+  const posts: Any[] = [];
+  const post = (author: string, role: string, kind: string, text: Any, at: string, likes: string[] = [], comments: Any[] = [], branch: string | null = null) =>
+    posts.push({ id: 'post-' + posts.length, author, role, kind, text, at, likes: new Set(likes), comments, branch });
+  post('Layla Haddad', 'HR Manager', 'welcome', bi('Please welcome Grace Santos, our new Café Supervisor at Mayar Café. Say hello when you visit!', 'لنرحّب بغريس سانتوس، مشرفة المقهى الجديدة في مقهى ميار. سلّموا عليها عند زيارتكم!'), addDay(T, -2) + 'T09:15:00Z',
+    ['Joy Reyes', 'Ahmad Sami', 'Ravi Menon', 'Demo CEO'], [{ by: 'Joy Reyes', text: 'Welcome Grace!', at: addDay(T, -2) + 'T10:00:00Z' }]);
+  post('Ravi Menon', 'Branch Manager', 'post', bi('Sharjah team beat last month\'s weekend sales. Thank you all for the extra effort on Friday night.', 'فريق الشارقة تجاوز مبيعات عطلة الأسبوع الماضي. شكراً للجميع على الجهد الإضافي ليلة الجمعة.'), addDay(T, -1) + 'T20:30:00Z',
+    ['Aisha Rahman', 'John Mensah', 'Hassan Ali', 'Layla Haddad'], [], null);
+  post('Demo CEO', 'CEO', 'announcement', bi('Q4 reviews start on 20 November. Managers: please book 20 minutes with each team member.', 'تبدأ تقييمات الربع الرابع في 20 نوفمبر. على المدراء حجز 20 دقيقة مع كل موظف.'), addDay(T, -4) + 'T07:00:00Z', ['Layla Haddad', 'Ravi Menon']);
+  const viewPost = (m: Me, p: Any) => ({ id: p.id, author: p.author, role: p.role, kind: p.kind, text: p.text, at: p.at, likes: p.likes.size, liked: p.likes.has(m.displayName), comments: p.comments });
+  const canPost = (m: Me) => m.isCeo || m.grants.some((g: Any) => ['HR_MANAGER', 'HR_OFFICER', 'BRANCH_MANAGER'].includes(g.role));
+
+  // ---------- new joiner portal ----------
+  const welcome = new Map<string, Set<string>>();
+  const portal = (m: Me, r: Any) => {
+    const done = welcome.get(r.employment_id) || new Set<string>();
+    const docsNeeded = (country(r) === 'OM' ? ['passport', 'oman_id', 'health_card'] : ['passport', 'emirates_id', 'health_card']).map(code => {
+      const d = D.documents.find((y: Any) => y.person_id === r.person_id && y.type_code === code && ['valid', 'pending_verification'].includes(y.status));
+      const t = D.documentTypes.find((y: Any) => y.code === code);
+      return { code, name: bi(t.name_en, t.name_ar), status: d ? d.status : 'missing' };
+    });
+    const pols = policies.map(p => ({ id: p.id, title: p.title, acked: acks.has(p.id + '|' + r.person_id) }));
+    const team = allRows().filter((z: Any) => z.branch_id === r.branch_id && z.employment_id !== r.employment_id).map(person);
+    const mgr = r.manager_employment_id ? rowByEmp(r.manager_employment_id) : null;
+    const trs = training.filter(t => t.emp === r.employment_id).map(t => ({ code: t.code, name: courses.find(c => c.code === t.code)!.name, status: t.status }));
+    const steps = [
+      { key: 'welcome', done: done.has('welcome') },
+      { key: 'forms', done: done.has('forms') },
+      { key: 'documents', done: docsNeeded.every(d => d.status !== 'missing') && pols.every(p => p.acked) },
+      { key: 'team', done: done.has('team') },
+      { key: 'company', done: done.has('company') },
+      { key: 'training', done: trs.length > 0 && trs.every(t => t.status === 'completed') || done.has('training') },
+    ];
+    const pct = Math.round(steps.filter(z => z.done).length / steps.length * 100);
+    return { employee: person(r), startDate: r.start_date, manager: mgr ? person(mgr) : null, steps, progress: pct, documents: docsNeeded, policies: pols, team,
+      training: trs, brands: D.brands.map((b: Any) => bi(b.name_en, b.name_ar)), branches: D.branches.filter((b: Any) => b.code !== 'HO').map((b: Any) => bi(b.name_en, b.name_ar)),
+      forms: { personal: done.has('forms'), bank: done.has('forms'), emergency: done.has('forms') }, isSelf: isSelf(m, r) };
+  };
 
   // ---------- handlers ----------
   function handle(method: string, seg: string[], q: URLSearchParams, body: Any, m: Me): any {
@@ -633,6 +702,51 @@ export function makeModules(x: Ctx) {
           { code: 'OM-LEAVE-ANNUAL', status: 'draft', source: 'Oman policy not yet shared' }, { code: 'OM-SPF', status: 'draft', source: 'To confirm with adviser' },
         ],
       };
+    }
+    // ----- custom forms -----
+    if (a === 'forms' && !b) {
+      if (method === 'POST') {
+        if (!isHrAny(m)) deny();
+        if (!body.name?.en || !body.fields?.length || !body.steps?.length || body.fields.some((f: Any) => !f.label?.en || !f.type)) throw new E(400, 'invalid');
+        const f = { id: body.id || 'f-' + Date.now().toString(36), active: body.active ?? true, name: body.name, description: body.description || bi('', ''),
+          fields: body.fields.map((x: Any, i: number) => ({ ...x, key: x.key || 'q' + i, label: { en: x.label.en, ar: x.label.ar || x.label.en } })), steps: body.steps, actions: body.actions || [] };
+        const i = forms.findIndex(z => z.id === f.id); if (i >= 0) forms[i] = f; else forms.push(f);
+        return f;
+      }
+      return forms.filter(f => f.active || (q.get('all') === '1' && isHrAny(m)));
+    }
+    if (a === 'forms' && b && c === 'toggle' && method === 'POST') { if (!isHrAny(m)) deny(); const f = forms.find(z => z.id === b); if (!f) throw new E(404, 'not_found'); f.active = !f.active; return f; }
+    if (a === 'forms' && b && c === 'submit' && method === 'POST') {
+      const f = forms.find(z => z.id === b && z.active); if (!f) throw new E(404, 'not_found');
+      const emp = body.employmentId || m.employmentIds[0]; const r = rowByEmp(emp); if (!r || !(isSelf(m, r) || isMgrOf(m, r))) deny();
+      const ans = body.answers || {};
+      if (f.fields.some((x: Any) => x.required && (ans[x.key] === undefined || ans[x.key] === ''))) throw new E(400, 'invalid');
+      return viewReq(m, submitForm(m, emp, f, ans));
+    }
+
+    // ----- team feed -----
+    if (a === 'feed' && !b) {
+      if (method === 'POST') {
+        if (!canPost(m)) deny(); if (!String(body.text || '').trim()) throw new E(400, 'invalid');
+        const role = m.isCeo ? 'CEO' : m.grants.some((g: Any) => g.role === 'HR_MANAGER') ? 'HR Manager' : m.grants.some((g: Any) => g.role === 'HR_OFFICER') ? 'HR Officer' : 'Branch Manager';
+        const txt = String(body.text).trim(); posts.unshift({ id: 'post-' + posts.length, author: m.displayName, role, kind: body.kind === 'welcome' ? 'welcome' : 'post', text: { en: txt, ar: txt }, at: now(), likes: new Set(), comments: [] });
+        return { ok: true };
+      }
+      return { canPost: canPost(m), posts: [...posts].sort((p, n) => n.at.localeCompare(p.at)).map(p => viewPost(m, p)) };
+    }
+    if (a === 'feed' && b && c === 'like' && method === 'POST') { const p = posts.find(z => z.id === b); if (!p) throw new E(404, 'not_found'); if (p.likes.has(m.displayName)) p.likes.delete(m.displayName); else p.likes.add(m.displayName); return viewPost(m, p); }
+    if (a === 'feed' && b && c === 'comment' && method === 'POST') { const p = posts.find(z => z.id === b); if (!p) throw new E(404, 'not_found'); if (!String(body.text || '').trim()) throw new E(400, 'invalid'); p.comments.push({ by: m.displayName, text: String(body.text).trim(), at: now() }); return viewPost(m, p); }
+
+    // ----- new joiner portal -----
+    if (a === 'welcome') {
+      const emp = (method === 'POST' ? body.employmentId : q.get('emp')) || m.employmentIds[0];
+      const r = rowByEmp(emp); if (!r || !(isSelf(m, r) || isHr(m, r.entity_id) || isMgrOf(m, r))) deny();
+      if (method === 'POST') {
+        if (!isSelf(m, r)) deny();
+        const set = welcome.get(emp) || new Set<string>(); set.add(body.step); welcome.set(emp, set);
+        if (body.step === 'policies') policies.forEach(p => acks.add(p.id + '|' + r.person_id));
+      }
+      return portal(m, r);
     }
     return undefined;
   }

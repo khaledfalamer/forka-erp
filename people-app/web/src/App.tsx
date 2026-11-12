@@ -13,14 +13,17 @@ import { Documents, Lifecycle, Payroll, Payslips } from './pages/Hr';
 import { Performance, Learning, Desk, Policies, Reports, Settings } from './pages/More';
 import { Icon, Logo, GROUP_OF, iconFor } from './icons';
 import { RouteCtx } from './ui';
+import { Feed, Welcome } from './pages/Extra';
 
-export type Me = { user: { id: string; name: string; email: string; employmentId: string | null }; roles: string[]; can: { isHr: boolean; isManager: boolean } };
+export type Me = { user: { id: string; name: string; email: string; employmentId: string | null }; roles: string[]; can: { isHr: boolean; isManager: boolean }; newJoiner?: boolean };
 
 // Menu. "live" = also served by the real server today; the others exist in the preview build only until their server part is built.
 type Item = { key: string; label: (t: any) => string; group: 'me' | 'team' | 'hr' | 'company'; show: (m: Me) => boolean; live?: boolean };
 const isPayroll = (m: Me) => m.roles.some(r => ['CEO', 'HR_MANAGER', 'PAYROLL'].includes(r));
 const ITEMS: Item[] = [
   { key: '', label: t => t.m.nav.home, group: 'me', show: () => true, live: true },
+  { key: 'welcome', label: t => t.m.nav.welcome, group: 'me', show: m => !!m.newJoiner },
+  { key: 'feed', label: t => t.m.nav.feed, group: 'me', show: () => true },
   { key: 'requests', label: t => t.m.nav.requests, group: 'me', show: () => true },
   { key: 'leave', label: t => t.m.nav.leave, group: 'me', show: m => !!m.user.employmentId },
   { key: 'time', label: t => t.m.nav.time, group: 'me', show: m => !!m.user.employmentId },
@@ -92,6 +95,8 @@ export function App() {
       case 'learning': return <Learning me={me} />;
       case 'desk': return <Desk me={me} />;
       case 'policies': return <Policies />;
+      case 'feed': return <Feed />;
+      case 'welcome': return <Welcome emp={route[1]} key={route[1] || 'me'} />;
       case 'reports': return <Reports />;
       case 'settings': return <Settings />;
       default: return <p className="muted">{t.notFound}</p>;

@@ -2,6 +2,8 @@
 import type { ReactNode } from 'react';
 
 const P: Record<string, ReactNode> = {
+  feed: <><path d="M4 5h16v11H8l-4 4z" /><path d="M8 9h8M8 12h5" /></>,
+  welcome: <><path d="M12 21s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.5-7 10-7 10Z" /></>,
   home: <><path d="M4 11 12 4l8 7" /><path d="M6 10v9h12v-9" /><path d="M10 19v-5h4v5" /></>,
   requests: <><rect x="5" y="4" width="14" height="16" rx="2" /><path d="M9 9h6M9 13h6M9 17h3" /></>,
   leave: <><path d="M4 20h16" /><path d="M12 20V9" /><path d="M12 9c-3-4-7-3-8-1 3 0 5 1 8 1Z" /><path d="M12 9c3-4 7-3 8-1-3 0-5 1-8 1Z" /><path d="M12 9c-1-3 0-5 2-6" /></>,
@@ -33,7 +35,7 @@ export function Icon({ name, size = 20, className = '' }: { name: string; size?:
 
 // Section colours: Me = sea, Team = sage, HR = terracotta, Company = saffron.
 export const GROUP_OF: Record<string, 'me' | 'team' | 'hr' | 'company'> = {
-  '': 'me', requests: 'me', leave: 'me', time: 'me', payslips: 'me', learning: 'me', policies: 'me',
+  '': 'me', welcome: 'me', feed: 'me', requests: 'me', leave: 'me', time: 'me', payslips: 'me', learning: 'me', policies: 'me',
   people: 'team', approvals: 'team', roster: 'team', attendance: 'team', performance: 'team',
   documents: 'hr', lifecycle: 'hr', payroll: 'hr', desk: 'hr', reports: 'hr', settings: 'company', org: 'company',
 };

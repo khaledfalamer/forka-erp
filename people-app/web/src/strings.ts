@@ -4,7 +4,7 @@ export const modsEn = {
     me: 'Me', team: 'Team', hr: 'HR', company: 'Company', more: 'More',
     home: 'Home', leave: 'Leave', requests: 'Requests', time: 'My time', payslips: 'Payslips', learning: 'Learning', policies: 'News and policies',
     people: 'People', approvals: 'Approvals', roster: 'Roster', attendance: 'Attendance', performance: 'Performance',
-    documents: 'Documents', lifecycle: 'Joiners and leavers', payroll: 'Payroll', desk: 'HR desk', reports: 'Reports', settings: 'Settings', org: 'Structure',
+    documents: 'Documents', lifecycle: 'Joiners and leavers', payroll: 'Payroll', desk: 'HR desk', reports: 'Reports', settings: 'Settings', org: 'Structure', feed: 'Team feed', welcome: 'My welcome',
   },
   common: {
     new: 'New', submit: 'Send', approve: 'Approve', reject: 'Reject', withdraw: 'Withdraw', close: 'Close', all: 'All', none: 'None', open: 'Open',
@@ -17,8 +17,8 @@ export const modsEn = {
     not_started: 'Not started', manager: 'In progress', self: 'Self review', waiting: 'Waiting for employee', resolved: 'Resolved', closed: 'Closed',
     completed: 'Completed', assigned: 'Not done', expired: 'Expired', published: 'Published', exceptions: 'Exceptions review', cut_off: 'Cut-off', exported: 'Exported', released: 'Payslips released' } as Record<string, string>,
   req: {
-    types: { leave: 'Leave', attendance_correction: 'Attendance correction', schedule_change: 'Shift change', letter: 'Letter', profile_update: 'Update my details', general: 'Question for HR' } as Record<string, string>,
-    rules: { line_manager: 'Manager', hr: 'HR', hr_manager: 'HR Manager' } as Record<string, string>,
+    types: { leave: 'Leave', attendance_correction: 'Attendance correction', schedule_change: 'Shift change', letter: 'Letter', profile_update: 'Update my details', general: 'Question for HR', custom: 'Form' } as Record<string, string>,
+    rules: { line_manager: 'Manager', hr: 'HR', hr_manager: 'HR Manager', finance: 'Finance', ceo: 'CEO' } as Record<string, string>,
     mine: 'My requests', toApprove: 'To approve', allTeam: 'All in my scope', newRequest: 'New request', choose: 'What do you need?',
     waitingFor: 'Waiting for', approvedBy: 'Approved by', rejectedBy: 'Rejected by', onBehalf: 'sent by', step: 'Step',
     letters: { salary_certificate: 'Salary certificate', employment_certificate: 'Employment certificate', noc: 'No objection letter (NOC)', experience: 'Experience letter' } as Record<string, string>,
@@ -92,6 +92,27 @@ export const modsEn = {
     document_needed: 'Please attach a medical certificate.', reason_needed: 'Please write a reason.', expiry_in_past: 'The new expiry date must be in the future.', past_shift: 'Past days cannot be changed.',
     export_not_enabled: 'Export files are switched on after the payroll provider and WPS formats are confirmed.', ceo_approval: 'The CEO gives the final payroll approval.', all_ratings_needed: 'Please rate every area before submitting.',
   } as Record<string, string>,
+  forms: {
+    tab: 'Request forms', intro: 'HR builds its own request forms here: the questions, who approves, and what happens automatically when it is approved. No programming needed.',
+    newForm: 'New form', edit: 'Edit', on: 'On', off: 'Off', turnOn: 'Turn on', turnOff: 'Turn off', name: 'Form name (English)', nameAr: 'Form name (Arabic)', description: 'Short description',
+    fields: 'Questions', addField: 'Add a question', label: 'Question (English)', labelAr: 'Question (Arabic)', type: 'Answer type', required: 'Required', options: 'Choices (comma separated)', remove: 'Remove',
+    types: { text: 'Text', number: 'Number', date: 'Date', select: 'Choose from a list', yesno: 'Yes or no', file: 'File or photo' } as Record<string, string>,
+    approvers: 'Who approves (in order)', addStep: 'Add approver', actions: 'When approved, automatically', saved: 'Form saved. Staff can use it in New request.', other: 'Other requests',
+    act: { email_hr: 'Email HR', email_finance: 'Email Finance', email_store: 'Email the store', email_driver: 'Email the driver', email_kitchen: 'Email the kitchen', notify_employee: 'Tell the employee', add_to_payroll: 'Add to next payroll inputs' } as Record<string, string>,
+    done: 'Done automatically', demoNote: 'In this preview the emails are recorded, not sent.', questions: 'questions', steps: 'approval steps',
+  },
+  feed: {
+    title: 'Team feed', placeholder: 'Share news with the team…', post: 'Post', welcomePost: 'Welcome post', like: 'Like', liked: 'Liked', comment: 'Write a comment…', send: 'Send',
+    kinds: { welcome: 'Welcome', post: 'News', announcement: 'Announcement' } as Record<string, string>, onlyManagers: 'Managers and HR can post. Everyone can like and comment.', likes: 'Likes', comments: 'Comments',
+  },
+  welcome: {
+    title: 'Welcome to Forka', hello: 'Welcome aboard', intro: 'These steps help you settle in during your first weeks. It takes about 20 minutes.', progress: 'Completed', previewOf: 'New joiner portal for',
+    steps: { welcome: 'Welcome message', forms: 'Your details', documents: 'Documents and policies', team: 'Meet your team', company: 'About the company', training: 'Training' } as Record<string, string>,
+    message: 'We are glad you are here. Your manager and HR will help you in your first days. If anything is unclear, use Ask HR at any time.', fromCeo: 'From the CEO',
+    personal: 'Personal details', bank: 'Bank details', emergency: 'Emergency contact', fillIn: 'Confirm my details', missing: 'Missing', uploadIt: 'Upload in Documents',
+    readAll: 'I have read the policies', yourManager: 'Your manager', yourTeam: 'Your team', brands: 'Our brands', branches: 'Our branches', markDone: 'Done', allDone: 'All steps done. Welcome to the team!',
+    openPortal: 'View welcome portal',
+  },
 };
 
 export const modsAr: typeof modsEn = {
@@ -99,7 +120,7 @@ export const modsAr: typeof modsEn = {
     me: 'أنا', team: 'الفريق', hr: 'الموارد البشرية', company: 'الشركة', more: 'المزيد',
     home: 'الرئيسية', leave: 'الإجازات', requests: 'الطلبات', time: 'دوامي', payslips: 'قسائم الراتب', learning: 'التدريب', policies: 'الأخبار والسياسات',
     people: 'الموظفون', approvals: 'الموافقات', roster: 'جدول الورديات', attendance: 'الحضور', performance: 'الأداء',
-    documents: 'المستندات', lifecycle: 'المنضمون والمغادرون', payroll: 'الرواتب', desk: 'مكتب الموارد البشرية', reports: 'التقارير', settings: 'الإعدادات', org: 'الهيكل',
+    documents: 'المستندات', lifecycle: 'المنضمون والمغادرون', payroll: 'الرواتب', desk: 'مكتب الموارد البشرية', reports: 'التقارير', settings: 'الإعدادات', org: 'الهيكل', feed: 'آخر أخبار الفريق', welcome: 'الترحيب بي',
   },
   common: {
     new: 'جديد', submit: 'إرسال', approve: 'موافقة', reject: 'رفض', withdraw: 'سحب الطلب', close: 'إغلاق', all: 'الكل', none: 'لا يوجد', open: 'فتح',
@@ -112,8 +133,8 @@ export const modsAr: typeof modsEn = {
     not_started: 'لم يبدأ', manager: 'قيد التنفيذ', self: 'تقييم ذاتي', waiting: 'بانتظار الموظف', resolved: 'تم الحل', closed: 'مغلق',
     completed: 'مكتمل', assigned: 'غير مكتمل', expired: 'منتهي', published: 'منشور', exceptions: 'مراجعة الاستثناءات', cut_off: 'إقفال الحضور', exported: 'تم التصدير', released: 'تم إصدار القسائم' },
   req: {
-    types: { leave: 'إجازة', attendance_correction: 'تصحيح الحضور', schedule_change: 'تغيير الوردية', letter: 'خطاب', profile_update: 'تحديث بياناتي', general: 'سؤال للموارد البشرية' },
-    rules: { line_manager: 'المدير', hr: 'الموارد البشرية', hr_manager: 'مدير الموارد البشرية' },
+    types: { leave: 'إجازة', attendance_correction: 'تصحيح الحضور', schedule_change: 'تغيير الوردية', letter: 'خطاب', profile_update: 'تحديث بياناتي', general: 'سؤال للموارد البشرية', custom: 'نموذج' },
+    rules: { line_manager: 'المدير', hr: 'الموارد البشرية', hr_manager: 'مدير الموارد البشرية', finance: 'المالية', ceo: 'الرئيس التنفيذي' },
     mine: 'طلباتي', toApprove: 'بانتظار موافقتي', allTeam: 'كل الطلبات ضمن صلاحيتي', newRequest: 'طلب جديد', choose: 'ماذا تحتاج؟',
     waitingFor: 'بانتظار', approvedBy: 'وافق', rejectedBy: 'رفض', onBehalf: 'أرسله', step: 'الخطوة',
     letters: { salary_certificate: 'شهادة راتب', employment_certificate: 'شهادة عمل', noc: 'خطاب عدم ممانعة', experience: 'شهادة خبرة' },
@@ -186,5 +207,26 @@ export const modsAr: typeof modsEn = {
     invalid: 'يرجى تعبئة الحقول المطلوبة.', no_days: 'لا توجد أيام عمل في هذه التواريخ.', overlap: 'لديك إجازة في هذه التواريخ.', not_enough_balance: 'الرصيد غير كافٍ لهذه الإجازة.',
     document_needed: 'يرجى إرفاق شهادة طبية.', reason_needed: 'يرجى كتابة السبب.', expiry_in_past: 'يجب أن يكون تاريخ الانتهاء الجديد في المستقبل.', past_shift: 'لا يمكن تغيير الأيام السابقة.',
     export_not_enabled: 'تُفعّل ملفات التصدير بعد تأكيد صيغ مزوّد الرواتب ونظام حماية الأجور.', ceo_approval: 'الاعتماد النهائي للرواتب من الرئيس التنفيذي.', all_ratings_needed: 'يرجى تقييم كل المجالات قبل الإرسال.',
+  },
+  forms: {
+    tab: 'نماذج الطلبات', intro: 'هنا تنشئ الموارد البشرية نماذج الطلبات بنفسها: الأسئلة، ومن يوافق، وما يحدث تلقائياً بعد الموافقة. دون الحاجة إلى برمجة.',
+    newForm: 'نموذج جديد', edit: 'تعديل', on: 'مفعّل', off: 'متوقف', turnOn: 'تفعيل', turnOff: 'إيقاف', name: 'اسم النموذج (بالإنجليزية)', nameAr: 'اسم النموذج (بالعربية)', description: 'وصف قصير',
+    fields: 'الأسئلة', addField: 'إضافة سؤال', label: 'السؤال (بالإنجليزية)', labelAr: 'السؤال (بالعربية)', type: 'نوع الإجابة', required: 'مطلوب', options: 'الخيارات (مفصولة بفواصل)', remove: 'حذف',
+    types: { text: 'نص', number: 'رقم', date: 'تاريخ', select: 'اختيار من قائمة', yesno: 'نعم أو لا', file: 'ملف أو صورة' },
+    approvers: 'من يوافق (بالترتيب)', addStep: 'إضافة موافق', actions: 'بعد الموافقة، تلقائياً', saved: 'تم حفظ النموذج. يمكن للموظفين استخدامه من طلب جديد.', other: 'طلبات أخرى',
+    act: { email_hr: 'إرسال بريد للموارد البشرية', email_finance: 'إرسال بريد للمالية', email_store: 'إرسال بريد للمستودع', email_driver: 'إرسال بريد للسائق', email_kitchen: 'إرسال بريد للمطبخ', notify_employee: 'إبلاغ الموظف', add_to_payroll: 'إضافة إلى مدخلات الرواتب القادمة' },
+    done: 'تم تلقائياً', demoNote: 'في هذه المعاينة تُسجَّل الرسائل ولا تُرسل.', questions: 'أسئلة', steps: 'خطوات موافقة',
+  },
+  feed: {
+    title: 'آخر أخبار الفريق', placeholder: 'شارك خبراً مع الفريق…', post: 'نشر', welcomePost: 'منشور ترحيب', like: 'إعجاب', liked: 'أعجبني', comment: 'اكتب تعليقاً…', send: 'إرسال',
+    kinds: { welcome: 'ترحيب', post: 'خبر', announcement: 'إعلان' }, onlyManagers: 'يمكن للمدراء والموارد البشرية النشر، ويمكن للجميع الإعجاب والتعليق.', likes: 'الإعجابات', comments: 'التعليقات',
+  },
+  welcome: {
+    title: 'مرحباً بك في فوركا', hello: 'أهلاً بك معنا', intro: 'تساعدك هذه الخطوات على الاستقرار في أسابيعك الأولى، وتستغرق نحو 20 دقيقة.', progress: 'مكتمل', previewOf: 'بوابة الموظف الجديد لـ',
+    steps: { welcome: 'رسالة الترحيب', forms: 'بياناتك', documents: 'المستندات والسياسات', team: 'تعرّف على فريقك', company: 'عن الشركة', training: 'التدريب' },
+    message: 'سعداء بانضمامك إلينا. سيساعدك مديرك والموارد البشرية في أيامك الأولى. إذا كان أي شيء غير واضح، استخدم "اسأل الموارد البشرية" في أي وقت.', fromCeo: 'من الرئيس التنفيذي',
+    personal: 'البيانات الشخصية', bank: 'بيانات البنك', emergency: 'جهة اتصال للطوارئ', fillIn: 'تأكيد بياناتي', missing: 'ناقص', uploadIt: 'ارفعه من المستندات',
+    readAll: 'قرأت السياسات', yourManager: 'مديرك', yourTeam: 'فريقك', brands: 'علاماتنا التجارية', branches: 'فروعنا', markDone: 'تم', allDone: 'اكتملت جميع الخطوات. أهلاً بك في الفريق!',
+    openPortal: 'عرض بوابة الترحيب',
   },
 };

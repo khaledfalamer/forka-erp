@@ -105,7 +105,8 @@ function handle(method: string, path: string, body: Any): any {
     const roles = m.isCeo ? ['CEO'] : ([...new Set(m.grants.map(g => g.role))] as string[]);
     const hr = m.isCeo || m.grants.some(g => ['HR_MANAGER', 'HR_OFFICER'].includes(g.role));
     return { user: { id: m.userId, name: m.displayName, email: m.email, employmentId: m.employmentIds[0] ?? null }, roles: roles.length ? roles : ['EMPLOYEE'],
-      can: { seePeople: true, seeOrg: true, isHr: hr, isManager: hr || m.grants.some(g => g.role === 'BRANCH_MANAGER') } };
+      can: { seePeople: true, seeOrg: true, isHr: hr, isManager: hr || m.grants.some(g => g.role === 'BRANCH_MANAGER') },
+      newJoiner: (() => { const e = D.employments.find((x: Any) => m.employmentIds.includes(x.id)); return !!e && (Date.now() - new Date(e.start_date).getTime()) < 120 * 864e5; })() };
   }
   if (p === '/org') return { entities: D.entities, branches: D.branches, departments: D.departments, levels: D.levels, jobTitles: D.jobTitles };
   if (p === '/employees') {
