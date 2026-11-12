@@ -11,8 +11,11 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@500;600&family=Inter+Tight:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 <script src="../config.js"></script>
+<link rel="stylesheet" href="../suite/suite.css">
+<script src="../suite/suite.js"></script>
 <style>
-:root{--ink:#23211F;--ink2:#4a4642;--mute:#8a847c;--line:#e4ded4;--bg:#F5F2EC;--card:#fffdf9;--bronze:#A57C52;--bronze2:#8a6440;--soft:#efe7dc;--ok:#3f7a52;--okbg:#e6f0e8;--warn:#a8741a;--warnbg:#f8eedb;--bad:#a5432f;--badbg:#f6e3de;--blue:#3c5d84;--bluebg:#e5ecf4}
+/* Hire's own colour names, mapped onto the shared Forka suite tokens (brief 1.1); the accent is sea */
+:root{--fs-accent:#3D7C8C;--ink:var(--fs-ink);--ink2:#4a4642;--mute:var(--fs-ink2);--line:var(--fs-border);--bg:var(--fs-canvas);--card:var(--fs-surface);--bronze:var(--fs-bronze);--bronze2:var(--fs-bronze-d);--soft:var(--fs-soft);--ok:var(--fs-success);--okbg:var(--fs-success-bg);--warn:var(--fs-warning);--warnbg:var(--fs-warning-bg);--bad:var(--fs-danger);--badbg:var(--fs-danger-bg);--blue:var(--fs-info);--bluebg:var(--fs-info-bg)}
 *{box-sizing:border-box}
 body{margin:0;font-family:"Inter Tight",system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:14px;line-height:1.45}
 h1,h2,h3{font-family:"EB Garamond",Georgia,serif;font-weight:600;margin:0;letter-spacing:.1px}
@@ -30,15 +33,6 @@ label .hint{font-weight:400;color:var(--mute)}
 .btn.ok{background:var(--ok);border-color:var(--ok)}.btn.bad{background:#fff;color:var(--bad);border-color:#e7c3ba}
 .btn{text-decoration:none}.btn.sm{height:30px;padding:0 10px;font-size:12px}
 .btn.ai{background:#fff;color:var(--bronze2);border-color:#dcc5a9}
-header{background:var(--ink);color:#fff;padding:0 22px;display:flex;align-items:center;gap:18px;height:58px;position:sticky;top:0;z-index:20}
-.logo{font-family:"EB Garamond",serif;font-size:22px;letter-spacing:.5px}.logo b{color:#d7b48a;font-weight:600}
-nav{display:flex;gap:4px;flex:1;overflow-x:auto}
-nav a{color:#cfc8bf;text-decoration:none;padding:7px 12px;border-radius:7px;font-weight:500;cursor:pointer;white-space:nowrap;font-size:13px}
-nav a.on,nav a:hover{background:#3a3633;color:#fff}
-nav a .n{background:var(--bronze);color:#fff;border-radius:9px;padding:0 6px;font-size:11px;margin-inline-start:5px}
-.who{display:flex;align-items:center;gap:8px;font-size:12px;color:#cfc8bf}
-.who select{width:auto;background:#3a3633;color:#fff;border:0;padding:6px 8px}
-.role{background:var(--bronze);color:#fff;border-radius:20px;padding:3px 10px;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.6px}
 main{max-width:1240px;margin:0 auto;padding:24px 22px 80px}
 .top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px;flex-wrap:wrap}
 .top p{margin:4px 0 0;color:var(--mute)}
@@ -46,18 +40,6 @@ main{max-width:1240px;margin:0 auto;padding:24px 22px 80px}
 .grid{display:grid;gap:14px}.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
 @media(max-width:860px){.g2,.g3,.g4{grid-template-columns:1fr 1fr}}
 @media(max-width:560px){.g2,.g3,.g4{grid-template-columns:1fr}}
-/* Phone: the top bar becomes three tidy rows - name + language, who you are + Forka Apps, then the menu (swipe sideways) */
-@media(max-width:720px){
-  header{height:auto;flex-wrap:wrap;padding:10px 14px;gap:8px 10px}
-  .logo{order:1;white-space:nowrap;font-size:21px}
-  #langSw{order:2;margin-inline-start:auto}
-  .who{order:3;flex-basis:100%;flex-wrap:nowrap;min-width:0}
-  .who .role{white-space:nowrap;flex:none}
-  .who select{flex:1;min-width:0;height:32px;padding:4px 8px;font-size:12px}
-  .who .btn{flex:none;margin:0!important}
-  nav{order:4;flex-basis:100%;margin:0 -14px;padding:0 10px 2px;scrollbar-width:none}
-  nav::-webkit-scrollbar{display:none}
-}
 .kpi .v{font-size:28px;font-weight:700;font-family:"EB Garamond",serif}.kpi .l{color:var(--mute);font-size:12px;font-weight:500}
 .tag{display:inline-block;border-radius:20px;padding:2px 9px;font-size:11px;font-weight:600;background:var(--soft);color:var(--ink2);white-space:nowrap}
 .tag.ok{background:var(--okbg);color:var(--ok)}.tag.warn{background:var(--warnbg);color:var(--warn)}.tag.bad{background:var(--badbg);color:var(--bad)}.tag.blue{background:var(--bluebg);color:var(--blue)}.tag.br{background:#f3e6d6;color:var(--bronze2)}
@@ -114,57 +96,42 @@ div.sec{margin-top:14px}div.sec>h3{margin-bottom:6px}
 .track div.done:before{background:var(--bronze)}.track div.cur{color:var(--ink);font-weight:700}.track div.cur:before{background:var(--ink);box-shadow:0 0 0 4px #e4d3bd}
 pre.out{white-space:pre-wrap;background:#fff;border:1px solid var(--line);border-radius:8px;padding:12px;font-family:inherit;font-size:13px;max-height:340px;overflow:auto}
 .banner{background:#3a3633;color:#e9e1d6;font-size:12px;padding:6px 22px}
+/* suite header and menu (shared look from ../suite/suite.css); the wrappers take no space so the bars stay sticky */
+#fshead,#fsnav,#fsbottom{display:contents}
+.fs-head select.viewas{width:auto;max-width:220px;height:34px;padding:0 8px;border:1px solid rgba(255,255,255,.22);border-radius:8px;background:rgba(255,255,255,.08);color:#F4EFE7;font-size:13px}
+.fs-head select.viewas option{color:var(--fs-ink);background:#fff}
+.fs-drawer select.viewas{margin:0 10px;width:calc(100% - 20px)}
+.fs-drawer .fs-badge-n{min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:var(--fs-danger);color:#fff;font-size:12px;display:inline-grid;place-items:center}
+@media(max-width:1023px){.fs-head select.viewas{max-width:160px}}
+/* below 1024 px a wide table scrolls inside its own card, never the page */
+@media(max-width:1023px){.card:has(> table){overflow-x:auto}}
+@media(max-width:639px){.fs-head .fs-slot{display:none}main{padding:18px 14px 80px}}
 
-#langSw{display:flex;border:1px solid #4a4541;border-radius:8px;overflow:hidden;flex:none}
-#langSw button{background:none;border:0;color:#cfc8bf;font:inherit;font-size:12px;font-weight:600;padding:5px 10px;cursor:pointer}
-#langSw button.on{background:var(--bronze);color:#fff}
 [dir=rtl] body{font-family:"IBM Plex Sans Arabic","Inter Tight",system-ui,sans-serif}
-[dir=rtl] h1,[dir=rtl] h2,[dir=rtl] h3,[dir=rtl] .logo{font-family:"IBM Plex Sans Arabic","EB Garamond",serif}
-[dir=rtl] th,[dir=rtl] .role,[dir=rtl] .steps span{letter-spacing:0;text-transform:none}
-[dir=rtl] nav a{padding:7px 9px}
+[dir=rtl] h1,[dir=rtl] h2,[dir=rtl] h3{font-family:"IBM Plex Sans Arabic","EB Garamond",serif}
+[dir=rtl] th,[dir=rtl] .steps span{letter-spacing:0;text-transform:none}
 [dir=rtl] pre.out,[dir=rtl] .crit>*:first-child,[dir=rtl] .cc,[dir=rtl] td{unicode-bidi:plaintext}
 [dir=rtl] input[type=email],[dir=rtl] input[type=tel],[dir=rtl] input[type=url]{direction:ltr;text-align:right}
-
-/* Forka app header: the four-petal mark, FORKA above the app name */
-.fk-lock{display:inline-flex;align-items:center;gap:10px;white-space:nowrap;text-decoration:none;color:inherit}
-.fk-lock>div{text-align:start}
-.fk-lock svg{width:34px;height:34px;flex:none;display:block}
-.fk-lock .fk-k{display:block;font:600 12px/1 'Inter Tight',system-ui,sans-serif;letter-spacing:.2em;color:#c8c3b9;text-transform:uppercase}
-.fk-lock .fk-n{display:block;font:600 20px/1.05 'EB Garamond','IBM Plex Sans Arabic',serif;color:#f6f3ee;margin-top:3px;letter-spacing:0;text-transform:none}
-.fk-lock.on-light .fk-k{color:#8a7f72}.fk-lock.on-light .fk-n{color:#2b2b2b}
-@media (max-width:600px){.fk-lock:not(.big){gap:8px}.fk-lock:not(.big) svg{width:26px;height:26px}.fk-lock:not(.big) .fk-n{font-size:17px}.fk-lock:not(.big) .fk-k{font-size:10.5px}}
-.fk-lock.big{gap:18px}.fk-lock.big svg{width:64px;height:64px}.fk-lock.big .fk-k{font-size:21px}.fk-lock.big .fk-n{font-size:46px;margin-top:6px}
-
-/* mobile: large Forka header fits */
-@media (max-width:600px){.fk-lock.big{gap:12px}.fk-lock.big svg{width:52px;height:52px}.fk-lock.big .fk-k{font-size:14px}.fk-lock.big .fk-n{font-size:32px;white-space:normal}}
-/* Light header (paper) with the app colour line, and the app colour inside */
-header{background:#fdfbf7!important;color:#2b2b2b!important;border-bottom:3px solid #E0A037}header .fk-lock .fk-k{color:#8a7f72!important}.fk-lock .fk-n{color:#2b2b2b!important}
-nav a{color:#5e564d!important}nav a.on,nav a:hover{background:rgba(140,106,63,.12)!important;color:#2b2b2b!important}.who{color:#6f665c!important}
-.who select{background:#fff!important;color:#2b2b2b!important;border:1px solid #e3d8c7!important}#langSw{border-color:#e3d8c7!important}#langSw button{color:#6f665c!important}#langSw button.on{color:#fff!important}
-:root{--bronze:#9C6914;--bronze2:#7f5510;--soft:#f8eed9}
 </style>
 </head>
 <body>
-<header>
-  <div class="fk-lock"><svg viewBox="0 0 118 118" aria-hidden="true"><defs><mask id="fkm-h"><rect width="118" height="118" fill="#fff"/><circle cx="59" cy="59" r="22" fill="#000"/></mask></defs><g mask="url(#fkm-h)"><rect x="7" y="7" width="48" height="48" rx="12" fill="#E0A037"/><rect x="63" y="7" width="48" height="48" rx="12" fill="#E0A037" fill-opacity="0.85"/><rect x="7" y="63" width="48" height="48" rx="12" fill="#E0A037" fill-opacity="0.68"/><rect x="63" y="63" width="48" height="48" rx="12" fill="#E0A037" fill-opacity="0.95"/></g><circle cx="59" cy="59" r="15.8" fill="#E0A037"/></svg><div><span class="fk-k" data-noi18n>FORKA</span><span class="fk-n">Hire</span></div></div>
-  <nav id="nav"></nav>
-  <div id="langSw" data-noi18n><button data-l="en" onclick="setLang('en')">EN</button><button data-l="ar" onclick="setLang('ar')">عربي</button></div>
-  <div class="who" id="who"></div>
-</header>
+<div id="fshead" data-noi18n></div>
+<div id="fsnav"></div>
 <div class="banner" id="banner" style="display:none"></div>
 <main id="main"><div class="empty">Loading…</div></main>
 <div id="modal"><div class="dlg" id="dlg"></div></div>
 <div class="toast" id="toast"></div>
+<div id="fsbottom"></div>
 
 <script>
 /* ============ Language layer: English / العربية (display only — stored data and logic stay in English) ============ */
 let LANG=(()=>{try{return localStorage.getItem("forkaHireLang")==="ar"?"ar":"en"}catch(e){return "en"}})();
 const AR={
-"Guidance for AI":"إرشادات للذكاء الاصطناعي","Hiring":"التوظيف","Hire":"التوظيف","Work type":"نوع العمل","On site":"في الفرع","Remote":"عن بُعد","Hybrid":"مختلط (في الفرع وعن بُعد)","Remote: the branch is optional (the team it reports to)":"للعمل عن بُعد: الفرع اختياري (الفريق الذي يتبع له)","Summarise CV":"تلخيص السيرة الذاتية","Role":"الوظيفة","Years":"سنوات الخبرة","Languages":"اللغات","Visa / notice":"الإقامة / فترة الإشعار","Recent employers":"آخر جهات العمل","Must-have":"الشرط الأساسي","AI score":"درجة الذكاء الاصطناعي","Evidence in the CV":"الدليل في السيرة","Summarise again":"تلخيص مرة أخرى","Submit my scorecard":"إرسال تقييمي","AI summary":"ملخص الذكاء الاصطناعي","Suggestion — check it against the CV":"اقتراح — تحقق منه مقابل السيرة الذاتية","Check with the candidate":"تحقق مع المرشح","Questions about this CV":"أسئلة عن هذه السيرة","Summarise CV and suggest scores":"تلخيص السيرة واقتراح الدرجات","Save guidance":"حفظ الإرشادات",
+"Guidance for AI":"إرشادات للذكاء الاصطناعي","Work type":"نوع العمل","On site":"في الفرع","Remote":"عن بُعد","Hybrid":"مختلط (في الفرع وعن بُعد)","Remote: the branch is optional (the team it reports to)":"للعمل عن بُعد: الفرع اختياري (الفريق الذي يتبع له)","Summarise CV":"تلخيص السيرة الذاتية","Role":"الوظيفة","Years":"سنوات الخبرة","Languages":"اللغات","Visa / notice":"الإقامة / فترة الإشعار","Recent employers":"آخر جهات العمل","Must-have":"الشرط الأساسي","AI score":"درجة الذكاء الاصطناعي","Evidence in the CV":"الدليل في السيرة","Summarise again":"تلخيص مرة أخرى","Submit my scorecard":"إرسال تقييمي","AI summary":"ملخص الذكاء الاصطناعي","Suggestion — check it against the CV":"اقتراح — تحقق منه مقابل السيرة الذاتية","Check with the candidate":"تحقق مع المرشح","Questions about this CV":"أسئلة عن هذه السيرة","Summarise CV and suggest scores":"تلخيص السيرة واقتراح الدرجات","Save guidance":"حفظ الإرشادات",
 "The AI follows this every time it drafts a job description or job ad. Write it like a note to a new HR assistant: tone, what to always include, what never to say.":"يلتزم الذكاء الاصطناعي بهذه الإرشادات في كل مرة يكتب فيها وصفاً وظيفياً أو إعلان وظيفة. اكتبها كأنها ملاحظة لمساعد موارد بشرية جديد: الأسلوب، وما يجب ذكره دائماً، وما لا يُذكر أبداً.",
 "Notes for the AI, for this job only":"ملاحظات للذكاء الاصطناعي لهذه الوظيفة فقط","Draft JD + ads with AI":"كتابة الوصف والإعلانات بالذكاء الاصطناعي",
 // nav, roles, header
-"Dashboard":"الرئيسية","CEO approvals":"موافقات الرئيس","Hiring requests":"طلبات التوظيف","Candidates":"المرشحون","Talent pool & compliance":"بنك المواهب","Careers page":"صفحة الوظائف","Team & access":"الفريق","Open roles":"الوظائف المتاحة","My applications":"طلباتي",
+"Dashboard":"الرئيسية","New request":"طلب جديد","View as":"عرض بصفة","CEO approvals":"موافقات الرئيس","Hiring requests":"طلبات التوظيف","Candidates":"المرشحون","Talent pool & compliance":"بنك المواهب","Careers page":"صفحة الوظائف","Team & access":"الفريق","Open roles":"الوظائف المتاحة","My applications":"طلباتي",
 "CEO · HR":"الرئيس التنفيذي","HR":"الموارد البشرية","Dept head":"رئيس القسم","Candidate":"مرشح","Department head":"رئيس القسم","CEO":"الرئيس التنفيذي","Dept head + HR":"رئيس القسم + الموارد البشرية",
 "View as: CEO · HR":"عرض بصفة: الرئيس التنفيذي · الموارد البشرية","View as: Candidate":"عرض بصفة: مرشح","Sara (candidate)":"سارة (مرشحة)","Head Chef":"رئيس الطهاة",
 "Loading…":"جارٍ التحميل…",
@@ -287,7 +254,6 @@ function trAttrs(el){ for(const a of ["placeholder","title","aria-label"]){ cons
 const _i18nObs=new MutationObserver(ms=>{ if(LANG!=="ar")return; for(const m of ms){ if(m.type==="characterData") trTextNode(m.target); else m.addedNodes.forEach(trNode) } });
 function applyLang(){
   document.documentElement.lang=LANG; document.documentElement.dir=LANG==="ar"?"rtl":"ltr";
-  document.querySelectorAll("#langSw button").forEach(b=>b.classList.toggle("on",b.dataset.l===LANG));
 }
 function setLang(l){ LANG=l; try{localStorage.setItem("forkaHireLang",l)}catch(e){} applyLang(); if(l==="en") restoreEn(); closeModal(); const ab=document.getElementById("askbox"); if(ab) ab.remove(); render(); trNode(document.body) }
 // keep originals so switching back to English restores fixed text (banner, header) too
@@ -502,21 +468,51 @@ function overdue(){ const L=[]; const C=allCands();
   return L; }
 
 /* ---------------- render shell ---------------- */
+// Suite header (../suite/suite.js): Forka mark, app switcher, EN/AR, the person and their Hire role. FS writes it in
+// English or Arabic itself, so its box carries data-noi18n and the page translator leaves it alone.
+var _hd="",_nv="",_bt="";
+function viewAsSel(){ // CEO "View as" (live) or the demo person switcher; options translated here because the header is skipped by the translator
+  const o=(v,l,on)=>`<option value="${esc(v)}" ${on?"selected":""}>${esc(trText(l))}</option>`;
+  if(DEMO) return `<select class="viewas" aria-label="${esc(trText("View as"))}" onchange="FS.closeAll();V.viewAs=this.value;V.page=null;afterData()">${Object.entries(DEMO_PEOPLE).map(([k,p])=>o(k,p.name,k===V.viewAs)).join("")}</select>`;
+  if(OWNER) return `<select class="viewas" aria-label="${esc(trText("View as"))}" onchange="FS.closeAll();V.viewAs=this.value.split(':')[0];V.viewDept=this.value.split(':')[1]||null;V.page=null;afterData()">${o("hr","View as: CEO · HR",V.role==="hr")}${DEPTS.map(d=>o("head:"+d,"View as: "+d+" head",V.role==="head"&&V.dept===d)).join("")}${HURL?"":o("candidate","View as: Candidate",V.role==="candidate")}</select>`;
+  return "";
+}
+function renderHead(){
+  let user=null;
+  if(V.pages){
+    const roleName={hr:V.ceo?"CEO · HR":"HR",head:"Department head"+(V.dept?" · "+V.dept:""),candidate:"Candidate"}[V.role];
+    const fm=FS.me(), name=(DEMO?(DEMO_PEOPLE[V.viewAs]||{}).name:(SME&&SME.name)||NAMES[ME])||(fm&&fm.name)||ME||"";
+    user={name:name||trText("Candidate"),role:trText(roleName)};
+  }
+  const h=FS.header({app:"hire",lang:LANG,menu:!!V.pages,user,extra:V.pages?viewAsSel():""});
+  if(h!==_hd){ _hd=h; $("#fshead").innerHTML=h; const ub=$("#fshead [data-fs=user]"); if(ub) ub.parentElement.id="who"; } // #who: the user menu, with the link back to Forka Apps
+}
+FS.onLang=l=>setLang(l);
+// phone drawer: the Hire menu plus the "View as" switcher (it has no room in the phone header)
+FS.drawerHTML=()=>[...document.querySelectorAll("#nav > button:not(.fs-more-btn)")].map(i=>{const c=i.cloneNode(true);c.classList.remove("fs-hide");c.classList.add("fs-item");return c.outerHTML}).join("")
+  +(V.pages&&viewAsSel()?`<div class="fs-sec">${esc(trText("View as"))}</div>${viewAsSel()}`:"");
 function render(){
+  renderHead();
   if(!V.pages){ return }
   const C=allCands();
   const badge={approvals: Object.values(S.reqs).filter(r=>r.status==="requested").length+Object.values(C).filter(c=>c.stage==="approval").length,
     reqs: V.role==="head"?Object.values(S.reqs).filter(r=>r.status==="review"&&headSees(r)).length:Object.values(S.reqs).filter(r=>r.status==="approved"||r.status==="ready").length,
     pipeline: V.role==="head"?Object.values(C).filter(c=>headSees(reqOf(c))&&(c.stage==="shortlist"||(c.stage==="interview"&&!(c.iv||{})[V.me]))).length:Object.values(C).filter(c=>c.stage==="applied").length};
-  $("#nav").innerHTML=V.pages.map(p=>`<a class="${p===V.page?"on":""}" onclick="go('${p}')">${PAGE_LABEL[p]}${badge[p]?`<span class="n">${badge[p]}</span>`:""}</a>`).join("");
-  const roleName={hr:V.ceo?"CEO · HR":"HR",head:"Dept head"+(V.dept?" · "+V.dept:""),candidate:"Candidate"}[V.role];
-  let sw="";
-  if(DEMO) sw=`<select onchange="V.viewAs=this.value;V.page=null;afterData()">${Object.entries(DEMO_PEOPLE).map(([k,p])=>`<option value="${k}" ${k===V.viewAs?"selected":""}>${p.name}</option>`).join("")}</select>`;
-  else if(OWNER) sw=`<select onchange="V.viewAs=this.value.split(':')[0];V.viewDept=this.value.split(':')[1]||null;V.page=null;afterData()"><option value="hr">View as: CEO · HR</option>${DEPTS.map(d=>`<option value="head:${d}" ${V.role==="head"&&V.dept===d?"selected":""}>View as: ${d} head</option>`).join("")}${HURL?"":`<option value="candidate" ${V.role==="candidate"?"selected":""}>View as: Candidate</option>`}</select>`;
-  $("#who").innerHTML=`<span class="role">${roleName}</span>${sw}${HURL?`<a class="btn sm sec" style="margin-left:8px" href="${esc(CFG.ERP_HOME||"/")}">Forka Apps</a>`:""}`;
+  const nv=FS.menu(V.pages.map(p=>({label:PAGE_LABEL[p],on:p===V.page,badge:badge[p]||"",attrs:`onclick="go('${p}')"`})),{id:"nav",label:"Forka Hire"});
+  if(nv!==_nv){ _nv=nv; $("#fsnav").innerHTML=nv; }
+  // phones: a small bar with the most common actions (same pages and functions as the menu)
+  const bi=V.role==="candidate"?V.pages.map(p=>({label:PAGE_LABEL[p],icon:p==="jobs"?"home":"user",on:p===V.page,attrs:`onclick="go('${p}')"`}))
+    :[{label:PAGE_LABEL.dash,icon:"home",on:V.page==="dash",attrs:`onclick="go('dash')"`},
+      V.ceo?{label:PAGE_LABEL.approvals,icon:"check",on:V.page==="approvals",badge:badge.approvals||"",attrs:`onclick="go('approvals')"`}:{label:PAGE_LABEL.reqs,icon:"cal",on:V.page==="reqs",badge:badge.reqs||"",attrs:`onclick="go('reqs')"`},
+      {label:"New request",icon:"plus",attrs:`onclick="reqForm()"`},
+      {label:PAGE_LABEL.pipeline,icon:"hire",on:V.page==="pipeline",badge:badge.pipeline||"",attrs:`onclick="go('pipeline')"`}];
+  const bt=FS.bottom(bi); if(bt!==_bt){ _bt=bt; $("#fsbottom").innerHTML=bt; }
+  if(LANG==="ar"){ trNode($("#fsnav")); trNode($("#fsbottom")); } // translate before the menu is measured
   const fn={dash:pDash,approvals:pApprovals,reqs:pReqs,pipeline:pPipeline,pool:pPool,careers:pCareers,team:pTeam,jobs:pJobs,mine:pMine}[V.page];
   $("#main").innerHTML=fn(C);
+  FS.after({app:"hire",bottom:true});
 }
+if(document.fonts&&document.fonts.ready) document.fonts.ready.then(()=>FS.fitMenus());
 function go(p){V.page=p;V.sel.clear();render();window.scrollTo(0,0)}
 function openModal(html){$("#dlg").innerHTML=html;$("#modal").classList.add("on")}
 function closeModal(){$("#modal").classList.remove("on");$("#dlg").innerHTML=""}
