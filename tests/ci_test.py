@@ -221,13 +221,7 @@ async def main():
             ctx, pg, errs = await fresh(b, w, h)
             await google(pg, 'ceo@forka.com')
             if (w, h) == (1366, 900):
-                # sizes in pixels depend on the machine's fonts (GitHub's runner differs from a laptop), so compare colours, borders,
-                # corners, shadows and fonts only; the markup check above already proves the cards' content and structure are unchanged
-                def no_size(v):
-                    if isinstance(v, dict): return {k: no_size(x) for k, x in v.items() if k not in ('width', 'height')}
-                    if isinstance(v, list): return [no_size(x) for x in v]
-                    return v
-                check('App cards unchanged: colours, borders, corners and fonts (1366)', no_size(await pg.evaluate(CARDS_STYLE)) == no_size(CARD_STYLE_SNAPSHOT))
+                check('App cards unchanged: size and colours (1366)', await pg.evaluate(CARDS_STYLE) == CARD_STYLE_SNAPSHOT)
             for lg in ['en', 'ar']:
                 await pg.click(f'[data-fs-lang={lg}]'); await pg.wait_for_timeout(100)
                 if lg == 'ar' and (w, h) == (1366, 900):
