@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="../suite/suite.css">
 <style>
 :root{
-  --fs-accent:#5E7D60;
+  --fs-accent:#397F8F;
   --charcoal:#23211f;--charcoal-2:#171513;--paper:var(--fs-canvas);--bronze:var(--fs-bronze);--bronze-l:#b8875a;--bronze-soft:#e9dccb;
   --ok:var(--fs-success);--warn:#e0a23a;--bad:var(--fs-danger);
   --sans:'Inter Tight','IBM Plex Sans Arabic',system-ui,sans-serif;--serif:'EB Garamond',Georgia,serif;
@@ -32,7 +32,7 @@ html,body{margin:0;height:100%}
 body{font-family:var(--sans);color:var(--text);background:var(--charcoal-2);overflow:hidden;-webkit-font-smoothing:antialiased}
 button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
 input,textarea,select{font:inherit;color:inherit}
-svg:not(.fs-ic):not(.fs-mark svg){width:16px;height:16px;flex:none;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+svg:not(.fs-ic):not(.fs-lock svg):not(.fs-appic svg):not(.fk-lock svg){width:16px;height:16px;flex:none;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .app{display:flex;flex-direction:column;height:100%}
 
 /* suite header (suite/suite.css): Boards' search, View as / sync and alerts sit in its slots */
@@ -45,7 +45,7 @@ svg:not(.fs-ic):not(.fs-mark svg){width:16px;height:16px;flex:none;stroke:curren
 .fs-head .viewas{max-width:190px}
 .fs-pop .meav svg{width:18px;height:18px}
 @media (max-width:1279px){.fs-head .vlab{display:none}}
-@media (max-width:1023px){.fs-head .fs-switch-label,.fs-head .fs-mark b{display:none}.fs-head .viewas{max-width:150px}}
+@media (max-width:1023px){.fs-head .fs-switch-label{display:none}.fs-head .viewas{max-width:150px}}
 @media (max-width:639px){.fs-head .viewas,.fs-head .vlab{display:none}}
 .search.psearch{margin:8px 10px 0;max-width:none;flex:none}
 .search.psearch input{background:var(--field);border-color:var(--line);color:var(--text)}
@@ -584,6 +584,21 @@ html[dir=rtl] .sdr h5{letter-spacing:0}
 /* bottom bar sits under dialogs */
 .fs-bottom{z-index:28}
 .fs-bottom svg{width:22px;height:22px}
+
+/* Forka app header: the four-petal mark, FORKA above the app name */
+.fk-lock{display:inline-flex;align-items:center;gap:10px;white-space:nowrap;text-decoration:none;color:inherit}
+.fk-lock>div{text-align:start}
+.fk-lock svg{width:34px;height:34px;flex:none;display:block}
+.fk-lock .fk-k{display:block;font:600 12px/1 'Inter Tight',system-ui,sans-serif;letter-spacing:.2em;color:#c8c3b9;text-transform:uppercase}
+.fk-lock .fk-n{display:block;font:600 20px/1.05 'EB Garamond','IBM Plex Sans Arabic',serif;color:#f6f3ee;margin-top:3px;letter-spacing:0;text-transform:none}
+.fk-lock.on-light .fk-k{color:#8a7f72}.fk-lock.on-light .fk-n{color:#2b2b2b}
+@media (max-width:600px){.fk-lock:not(.big){gap:8px}.fk-lock:not(.big) svg{width:26px;height:26px}.fk-lock:not(.big) .fk-n{font-size:17px}.fk-lock:not(.big) .fk-k{font-size:10.5px}}
+.fk-lock.big{gap:18px}.fk-lock.big svg{width:64px;height:64px}.fk-lock.big .fk-k{font-size:21px}.fk-lock.big .fk-n{font-size:46px;margin-top:6px}
+
+/* mobile: large Forka header fits */
+@media (max-width:600px){.fk-lock.big{gap:12px}.fk-lock.big svg{width:52px;height:52px}.fk-lock.big .fk-k{font-size:14px}.fk-lock.big .fk-n{font-size:32px;white-space:normal}}
+:root{--bronze:#397F8F;--bronze-l:#5a9aa8;--bronze-soft:#dcebee}
+
 </style>
 </head>
 <body>
@@ -951,6 +966,8 @@ function seed(){
   return D;
 }
 const KEY='forka-boards-preview-v5';
+let fkI=0;function fkMark(){const m='fkm'+(++fkI);return `<svg viewBox="0 0 118 118" aria-hidden="true"><defs><mask id="${m}"><rect width="118" height="118" fill="#fff"/><circle cx="59" cy="59" r="22" fill="#000"/></mask></defs><g mask="url(#${m})"><rect x="7" y="7" width="48" height="48" rx="12" fill="#397F8F"/><rect x="63" y="7" width="48" height="48" rx="12" fill="#397F8F" fill-opacity="0.85"/><rect x="7" y="63" width="48" height="48" rx="12" fill="#397F8F" fill-opacity="0.68"/><rect x="63" y="63" width="48" height="48" rx="12" fill="#397F8F" fill-opacity="0.95"/></g><circle cx="59" cy="59" r="15.8" fill="#397F8F"/></svg>`}
+function fkLock(name,cls,attrs){return `<div class="fk-lock ${cls||''}" ${attrs||''}>${fkMark()}<div><span class="fk-k">FORKA</span><span class="fk-n">${name}</span></div></div>`}
 const CFG=window.FORKA_APPS||{};
 const LIVE=!!CFG.BOARDS_URL&&!/^(127\.0\.0\.1|localhost)$/.test(location.hostname)&&!/[?&]demo\b/.test(location.search);
 let D=(()=>{if(LIVE)return {boards:{},lists:{},cards:{},order:[],me:'',people:[]};try{const d=JSON.parse(localStorage.getItem(KEY)||'null');if(d&&d.boards&&d.me)return d}catch(e){}return seed()})();
@@ -1473,7 +1490,7 @@ function fromDocs(){const me=SV.me.email,N={boards:{},lists:{},cards:{},order:[]
 /* Don't redraw under someone's fingers: wait until they leave the box they are typing in. */
 function soft(){const a=document.activeElement;if(DR.d||ASK||(a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)&&!['q','pq','pq2'].includes(a.id))){V.stale=true;return}render()}
 function setSync(s){SV.state=s;const el=document.getElementById('sync');if(el){el.className='sync '+s;el.textContent=s==='ok'?t('sSaved'):s==='saving'?t('sSaving'):t('sOff')}}
-function gate(k){SV.ready=false;document.getElementById('app').innerHTML=`<div class="gate"><div class="brand"><b>FORKA</b><span>${t('app')}</span></div>
+function gate(k){SV.ready=false;document.getElementById('app').innerHTML=`<div class="gate">${fkLock(lang==='ar'?t('app'):'Board')}
   ${k==='load'?`<p>${t('loading')}</p>`:k==='signin'?`<p>${t('signinNeed')}</p><a class="btn" href="${esc(CFG.ERP_HOME||'../')}">${t('signinBtn')}</a>`:`<p>${t('netErr')}</p><button class="btn" onclick="location.reload()">${t('retry')}</button>`}
   <div class="seg" style="margin-top:18px"><button onclick="lang='en';try{localStorage.setItem('fb-lang','en')}catch(e){};gate('${k}')" class="${lang==='en'?'on':''}">EN</button><button onclick="lang='ar';try{localStorage.setItem('fb-lang','ar')}catch(e){};gate('${k}')" class="${lang==='ar'?'on':''}">عربي</button></div></div>`;
   document.documentElement.lang=lang;document.documentElement.dir=lang==='ar'?'rtl':'ltr'}
