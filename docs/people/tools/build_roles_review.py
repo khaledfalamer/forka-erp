@@ -126,6 +126,35 @@ GAPS = [
 ]
 
 # For each idea (same order as GAPS): what we mean, and an example at Forka. (EN meaning, EN example, AR meaning, AR example)
+# Khaled's decisions on the ideas (12 Nov 2026, from review comments). Phase shown, then a note.
+DECIDED = {
+    'Expenses and petty cash claims': ('Later', 'Khaled: not needed now. Another program handles expenses today. Kept on the list for later.', 'خالد: غير مطلوب حالياً، يوجد برنامج آخر للمصاريف. يبقى في القائمة لوقت لاحق.'),
+    'Shift swaps, open shifts and availability': ('1B', 'Khaled: agreed. Added to the plan with the rosters (Phase 1B).', 'خالد: موافق. أُضيف إلى الخطة مع جداول الورديات (المرحلة 1ب).'),
+    'Labour cost against sales': ('No', 'Khaled: not needed. Labour cost is fixed; we save money by moving people between branches.', 'خالد: غير مطلوب. تكلفة العمالة ثابتة، ونوفّر بنقل الموظفين بين الفروع.'),
+    'Service charge or tips sharing': ('Later', 'Khaled: maybe later.', 'خالد: ربما لاحقاً.'),
+    'Staff accommodation and transport': ('Later', 'Khaled: good idea, for a later stage.', 'خالد: فكرة جيدة، لمرحلة لاحقة.'),
+    'Company assets and vehicles': ('2', 'Khaled: agreed. Added to the plan (Phase 2).', 'خالد: موافق. أُضيف إلى الخطة (المرحلة 2).'),
+    'Visa and government steps': ('2', 'Khaled: agreed. Added to the plan (Phase 2).', 'خالد: موافق. أُضيف إلى الخطة (المرحلة 2).'),
+    'End-of-service estimate': ('3', 'Khaled: agreed. Added to the plan (Phase 3).', 'خالد: موافق. أُضيف إلى الخطة (المرحلة 3).'),
+    'Air ticket entitlement': ('Later', 'Khaled: keep it for later.', 'خالد: يبقى لوقت لاحق.'),
+    'Medical insurance': ('2', 'Khaled: agreed. Added to the plan (Phase 2).', 'خالد: موافق. أُضيف إلى الخطة (المرحلة 2).'),
+    'Loans and advance repayments': ('2', 'Khaled: agreed. Added to the plan (Phase 2).', 'خالد: موافق. أُضيف إلى الخطة (المرحلة 2).'),
+    'Incentives and bonuses': ('Last', 'Khaled: keep it for the last stage.', 'خالد: يبقى للمرحلة الأخيرة.'),
+    'Workforce planning': ('Last', 'Khaled: good idea, we will do it last.', 'خالد: فكرة جيدة، سننفذها في المرحلة الأخيرة.'),
+    'Succession and key people': ('3', 'Khaled: agreed. Added to the plan with performance reviews (Phase 3).', 'خالد: موافق. أُضيف إلى الخطة مع تقييم الأداء (المرحلة 3).'),
+    'E-signature': ('2', 'Khaled: agreed. Added to the plan (Phase 2).', 'خالد: موافق. أُضيف إلى الخطة (المرحلة 2).'),
+    'Warnings and disciplinary register': ('2', 'Khaled: agreed. Added to the plan (Phase 2).', 'خالد: موافق. أُضيف إلى الخطة (المرحلة 2).'),
+    'Exit interviews and reasons': ('2', 'Khaled: agreed. Added to the plan (Phase 2).', 'خالد: موافق. أُضيف إلى الخطة (المرحلة 2).'),
+    'Anonymous suggestions': ('2', 'Khaled: agreed. Added to the plan (Phase 2).', 'خالد: موافق. أُضيف إلى الخطة (المرحلة 2).'),
+    'Birthdays and work anniversaries': ('2', 'Khaled: agreed. Added to the plan (Phase 2).', 'خالد: موافق. أُضيف إلى الخطة (المرحلة 2).'),
+    'Overtime pre-approval': ('1B', 'Khaled: agreed. Added to the plan with rosters (Phase 1B).', 'خالد: موافق. أُضيف إلى الخطة مع جداول الورديات (المرحلة 1ب).'),
+    'Org chart picture': ('1A', 'Khaled: agreed. Added to the plan (Phase 1A). A first version is already in the app preview.', 'خالد: موافق. أُضيف إلى الخطة (المرحلة 1أ). توجد نسخة أولى في معاينة التطبيق.'),
+}
+GAPS = [g[:5] + (DECIDED[g[0]][0],) if g[0] in DECIDED else g for g in GAPS]
+PHASE_AR = {'Later': 'لاحقاً', 'Last': 'الأخيرة', 'No': 'غير مطلوب', 'later': 'لاحقاً'}
+def phase_ar(ph): return PHASE_AR.get(ph, ph)
+def decision(en): return DECIDED.get(en, (None, '', ''))[1:]
+
 EXPLAIN = [
  ('Today staff pay small costs themselves (fuel, a missing ingredient, a taxi) and wait for cash back. In the app they photograph the receipt, the manager and Finance approve, and the amount is added to the next salary or paid from petty cash with a clear record.',
   'A driver fills the delivery bike with fuel for 40 AED, sends the receipt photo from his phone, and sees it approved and added to his November pay.',
@@ -245,10 +274,10 @@ def page(lang_switch=True):
         out.append(f'<tr><th>{t(row[0], row[1])}</th>' + ''.join(f'<td class="c-{v or "no"}">{t(*WORD[v])}</td>' for v in row[2:]) + '</tr>')
     out.append('</tbody></table>')
     out.append(f'<h2>{t("3. What we might be missing", "3. ما قد ينقصنا")}</h2>')
-    out.append(f'<p class="muted">{t("We compared our plan with Zoho People, Odoo HR, SAP SuccessFactors, Bayzat (UAE) and restaurant scheduling tools such as 7shifts, using their public feature descriptions. These are ideas to discuss, not decisions.", "قارنّا خطتنا مع Zoho People وOdoo HR وSAP SuccessFactors وBayzat (الإمارات) وأدوات جدولة المطاعم مثل 7shifts، بناءً على وصف خصائصها المنشور. هذه أفكار للنقاش وليست قرارات.")}</p>')
+    out.append(f'<p class="muted">{t("We compared our plan with Zoho People, Odoo HR, SAP SuccessFactors, Bayzat (UAE) and restaurant scheduling tools such as 7shifts, using their public feature descriptions. These are ideas to discuss. Khaled's first decisions (12 Nov) are shown under each idea.", "قارنّا خطتنا مع Zoho People وOdoo HR وSAP SuccessFactors وBayzat (الإمارات) وأدوات جدولة المطاعم مثل 7shifts، بناءً على وصف خصائصها المنشور. هذه أفكار للنقاش. قرارات خالد الأولى (12 نوفمبر) تظهر تحت كل فكرة.")}</p>')
     out.append('<table class="gaps"><thead><tr><th>' + t('Idea', 'الفكرة') + '</th><th>' + t('What it does', 'ماذا يفعل') + '</th><th>' + t('Seen in', 'موجود في') + '</th><th>' + t('Phase', 'المرحلة') + '</th></tr></thead><tbody>')
     for (en, ar, den, dar, src, ph), (me, xe, ma, xa) in zip(GAPS, EXPLAIN):
-        out.append(f'<tr><td><strong>{t(en, ar)}</strong></td><td>{t(den, dar)}<div class="ex"><b>{t("What we mean:", "ما نقصده:")}</b> {t(me, ma)}</div><div class="ex eg"><b>{t("Example at Forka:", "مثال في فوركا:")}</b> {t(xe, xa)}</div></td><td class="src">{e(src)}</td><td class="ph">{e(ph)}</td></tr>')
+        out.append(f'<tr><td><strong>{t(en, ar)}</strong></td><td>{t(den, dar)}<div class="ex"><b>{t("What we mean:", "ما نقصده:")}</b> {t(me, ma)}</div><div class="ex eg"><b>{t("Example at Forka:", "مثال في فوركا:")}</b> {t(xe, xa)}</div>{f'<div class="ex dec"><b>{t("Decision:", "القرار:")}</b> {t(*decision(en))}</div>' if en in DECIDED else ''}</td><td class="src">{e(src)}</td><td class="ph">{t(ph, phase_ar(ph))}</td></tr>')
     out.append('</tbody></table>')
     out.append(f'<h2>{t("4. Questions for you", "4. أسئلة لك")}</h2><ol class="qs">')
     out += [f'<li>{t(a, b)}</li>' for a, b in QUESTIONS]
@@ -268,7 +297,7 @@ html[lang=ar] body{font-family:'IBM Plex Sans Arabic','Inter Tight',sans-serif}h
 table{border-collapse:collapse;width:100%;background:#fff;border:1px solid #E3DCD1;border-radius:12px;overflow:hidden;font-size:14.5px}
 th,td{padding:9px 12px;border-bottom:1px solid #EEE9E1;text-align:start;vertical-align:top}thead th{background:#FAF8F4;color:#5E5A54;font-size:13.5px}
 .matrix td{text-align:center;font-weight:600;font-size:14px}.c-do{color:#2F6B3F;background:#EEF6EF}.c-see{color:#245A63;background:#EDF4F5}.c-no{color:#9A938A}
-.ex{margin-top:6px;font-size:14px;line-height:1.5}.ex b{color:#3D7C8C}.eg{background:#FAF8F4;border-inline-start:3px solid #E3A33B;padding:6px 10px;border-radius:6px}.eg b{color:#8E6210}.src{color:#5E5A54;font-size:13px;white-space:nowrap}.ph{font-weight:700;text-align:center}.qs li{margin:8px 0}.wrap{overflow-x:auto}"""
+.ex{margin-top:6px;font-size:14px;line-height:1.5}.ex b{color:#3D7C8C}.eg{background:#FAF8F4;border-inline-start:3px solid #E3A33B;padding:6px 10px;border-radius:6px}.eg b{color:#8E6210}.dec{background:#EEF3EE;border-inline-start:3px solid #7C9A7E;padding:6px 10px;border-radius:6px}.dec b{color:#4B6A4E}.src{color:#5E5A54;font-size:13px;white-space:nowrap}.ph{font-weight:700;text-align:center}.qs li{margin:8px 0}.wrap{overflow-x:auto}"""
 
 body = page(True).replace('<section class="role role-staff">', '<div class="roles"><section class="role role-staff">').replace(
     '</section>\n<h2><span class="en">2.', '</section></div>\n<h2><span class="en">2.').replace('<table', '<div class="wrap"><table').replace('</table>', '</table></div>')
@@ -300,7 +329,7 @@ def plain(ar=False):
     o.append('</table>')
     o.append(f'<h2>{e(pick("3. What we might be missing", "3. ما قد ينقصنا"))}</h2><p>{e(pick("Compared with Zoho People, Odoo HR, SAP SuccessFactors, Bayzat (UAE) and restaurant scheduling tools such as 7shifts, from their public feature descriptions. Ideas to discuss, not decisions. Please mark the three that matter most to you.", "مقارنة مع Zoho People وOdoo HR وSAP SuccessFactors وBayzat (الإمارات) وأدوات جدولة المطاعم مثل 7shifts، من وصف خصائصها المنشور. أفكار للنقاش وليست قرارات. يرجى تحديد أهم ثلاثة بالنسبة لك."))}</p>')
     o.append('<table border="1" cellpadding="5" style="border-collapse:collapse"><tr>' + ''.join(f'<th>{e(pick(x, y))}</th>' for x, y in [('Idea', 'الفكرة'), ('What it does', 'ماذا يفعل'), ('Seen in', 'موجود في'), ('Phase', 'المرحلة'), ('Your view', 'رأيك')]) + '</tr>')
-    for (en, a, den, dar, src, ph), (me, xe, ma, xa) in zip(GAPS, EXPLAIN): o.append(f'<tr><td><b>{e(pick(en, a))}</b></td><td>{e(pick(den, dar))}<br><br><b>{e(pick("What we mean:", "ما نقصده:"))}</b> {e(pick(me, ma))}<br><br><b>{e(pick("Example at Forka:", "مثال في فوركا:"))}</b> <i>{e(pick(xe, xa))}</i></td><td>{e(src)}</td><td>{e(ph)}</td><td></td></tr>')
+    for (en, a, den, dar, src, ph), (me, xe, ma, xa) in zip(GAPS, EXPLAIN): o.append(f'<tr><td><b>{e(pick(en, a))}</b></td><td>{e(pick(den, dar))}<br><br><b>{e(pick("What we mean:", "ما نقصده:"))}</b> {e(pick(me, ma))}<br><br><b>{e(pick("Example at Forka:", "مثال في فوركا:"))}</b> <i>{e(pick(xe, xa))}</i>{f'<br><br><b>{e(pick("Decision:", "القرار:"))}</b> {e(pick(*decision(en)))}' if en in DECIDED else ''}</td><td>{e(src)}</td><td>{e(pick(ph, phase_ar(ph)))}</td><td></td></tr>')
     o.append('</table>')
     o.append(f'<h2>{e(pick("4. Questions for you", "4. أسئلة لك"))}</h2><ol>' + ''.join(f'<li>{e(pick(x, y))}<br><br></li>' for x, y in QUESTIONS) + '</ol></div>')
     return ''.join(o)

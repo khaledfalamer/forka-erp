@@ -75,27 +75,27 @@ Found by comparing with Zoho People, Odoo, SAP SuccessFactors, Bayzat and restau
 
 | Feature | Phase | Plan | Database | Server + tests | Screens | Live | Depends on | Blocked by | Next step |
 |---|---|---|---|---|---|---|---|---|---|
-| **Expenses and petty cash**<br><sub>Pay and money</sub> | 2 | · | · | · | · | · | — | Department heads review | Decide after department heads reply |
-| **Loans and repayments**<br><sub>Pay and money</sub> | 2 | · | · | · | · | · | — | Department heads review | Decide after department heads reply |
-| **End-of-service estimate**<br><sub>Pay and money</sub> | 3 | · | · | · | · | · | — | Department heads review | Decide after department heads reply |
-| **Air ticket entitlement**<br><sub>Pay and money</sub> | 2 | · | · | · | · | · | — | Department heads review | Decide after department heads reply |
-| **Service charge sharing**<br><sub>Pay and money</sub> | ? | · | · | · | · | · | — | Department heads review | Decide after department heads reply |
-| **Shift swaps and open shifts**<br><sub>Time</sub> | 1B | · | · | · | · | · | — | Department heads review | Decide after department heads reply |
-| **Overtime pre-approval**<br><sub>Time</sub> | 1B | · | · | · | · | · | — | Department heads review | Decide after department heads reply |
-| **Labour cost vs sales**<br><sub>Time</sub> | 3 | · | · | · | · | · | — | Department heads review | Decide after department heads reply |
-| **Accommodation and transport**<br><sub>Staff services</sub> | 2 | · | · | · | · | · | — | Department heads review | Decide after department heads reply |
-| **Assets and vehicles**<br><sub>Staff services</sub> | 2 | · | · | · | · | · | — | Department heads review | Decide after department heads reply |
-| **Visa and government steps**<br><sub>Staff services</sub> | 2 | · | · | · | · | · | — | Department heads review | Decide after department heads reply |
-| **Medical insurance**<br><sub>Staff services</sub> | 2 | · | · | · | · | · | — | Department heads review | Decide after department heads reply |
-| **Incentives and bonuses**<br><sub>People and talent</sub> | 4 | · | · | · | · | · | — | Department heads review | Decide after department heads reply |
-| **Workforce planning**<br><sub>People and talent</sub> | 3 | · | · | · | · | · | — | Department heads review | Decide after department heads reply |
-| **Succession and key people**<br><sub>People and talent</sub> | later | · | · | · | · | · | — | Department heads review | Decide after department heads reply |
-| **Warnings register**<br><sub>People and talent</sub> | 2 | · | · | · | · | · | — | Department heads review | Decide after department heads reply |
-| **Exit interviews**<br><sub>People and talent</sub> | 2 | · | · | · | · | · | — | Department heads review | Decide after department heads reply |
-| **Anonymous suggestions**<br><sub>Culture and tools</sub> | 2 | · | · | · | · | · | — | Department heads review | Decide after department heads reply |
-| **Birthdays and anniversaries**<br><sub>Culture and tools</sub> | 2 | · | · | · | · | · | — | Department heads review | Decide after department heads reply |
-| **E-signature**<br><sub>Culture and tools</sub> | 2 | · | · | · | · | · | — | Department heads review | Decide after department heads reply |
-| **Org chart picture**<br><sub>Culture and tools</sub> | 1A | · | · | · | · | · | — | Department heads review | Decide after department heads reply |
+| **Expenses and petty cash**<br><sub>Pay and money</sub> | later | · | · | · | · | · | — | Not needed now: another program handles expenses | Revisit later |
+| **Loans and repayments**<br><sub>Pay and money</sub> | 2 | · | · | · | · | · | — | — | Agreed by Khaled: build in Phase 2 |
+| **End-of-service estimate**<br><sub>Pay and money</sub> | 3 | · | · | · | · | · | — | — | Agreed by Khaled: build in Phase 3 |
+| **Air ticket entitlement**<br><sub>Pay and money</sub> | later | · | · | · | · | · | — | Kept for later | Revisit later |
+| **Service charge sharing**<br><sub>Pay and money</sub> | later | · | · | · | · | · | — | Maybe later | Revisit later |
+| **Shift swaps and open shifts**<br><sub>Time</sub> | 1B | · | · | · | · | · | — | — | Agreed by Khaled: build with rosters |
+| **Overtime pre-approval**<br><sub>Time</sub> | 1b | · | · | · | · | · | — | — | Agreed by Khaled: build with rosters (Phase 1B) |
+| **Labour cost vs sales**<br><sub>Time</sub> | no | · | · | · | · | · | — | Not needed: labour cost is fixed; savings come from moving people | Dropped |
+| **Accommodation and transport**<br><sub>Staff services</sub> | later | · | · | · | · | · | — | Later stage | Revisit later |
+| **Assets and vehicles**<br><sub>Staff services</sub> | 2 | · | · | · | · | · | — | — | Agreed by Khaled: build in Phase 2 |
+| **Visa and government steps**<br><sub>Staff services</sub> | 2 | · | · | · | · | · | — | — | Agreed by Khaled: build in Phase 2 |
+| **Medical insurance**<br><sub>Staff services</sub> | 2 | · | · | · | · | · | — | — | Agreed by Khaled: build in Phase 2 |
+| **Incentives and bonuses**<br><sub>People and talent</sub> | last | · | · | · | · | · | — | Last stage | Build last |
+| **Workforce planning**<br><sub>People and talent</sub> | last | · | · | · | · | · | — | Last stage | Build last |
+| **Succession and key people**<br><sub>People and talent</sub> | 3 | · | · | · | · | · | — | — | Agreed by Khaled: build with performance (Phase 3) |
+| **Warnings register**<br><sub>People and talent</sub> | 2 | · | · | · | · | · | — | — | Agreed by Khaled: build in Phase 2 |
+| **Exit interviews**<br><sub>People and talent</sub> | 2 | · | · | · | · | · | — | — | Agreed by Khaled: build in Phase 2 |
+| **Anonymous suggestions**<br><sub>Culture and tools</sub> | 2 | · | · | · | · | · | — | — | Agreed by Khaled: build in Phase 2 |
+| **Birthdays and anniversaries**<br><sub>Culture and tools</sub> | 2 | · | · | · | · | · | — | — | Agreed by Khaled: build in Phase 2 |
+| **E-signature**<br><sub>Culture and tools</sub> | 2 | · | · | · | · | · | — | — | Agreed by Khaled: build in Phase 2 |
+| **Org chart picture**<br><sub>Culture and tools</sub> | 1a | · | · | · | · | · | — | — | Agreed by Khaled: build in Phase 1A |
 
 ## How to use this map
 

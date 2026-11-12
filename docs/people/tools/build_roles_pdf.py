@@ -68,7 +68,7 @@ def part(lang):
     o.append('</tbody></table></section>')
     # ideas: two pages
     items = list(zip(rr.GAPS, rr.EXPLAIN))
-    sizes = [4, 6, 6, 5]
+    sizes = [4, 4, 5, 4, 4]
     chunks, k = [], 0
     for z in sizes: chunks.append(items[k:k + z]); k += z
     starts = [sum(sizes[:i]) for i in range(len(sizes))]
@@ -77,8 +77,8 @@ def part(lang):
         if not pi: o.append(f'<p class="muted">{e(L["s3p"])}</p><p class="pick">☐ = {e(L["pick"])}</p>')
         o.append('<div class="ideas">')
         for n, ((en, a, den, dar, src, ph), (me, xe, ma, xa)) in enumerate(chunk, start=starts[pi]):
-            o.append(f'<div class="idea c{n % 4}"><div class="idea-top"><span class="box">☐</span><b>{e(pick(en, a))}</b><span class="badge">{e(L["phase"])} {e(ph)}</span></div>'
-                     f'<p class="mean"><b>{e(pick("What we mean", "ما نقصده"))}</b> {e(pick(me, ma))}</p><p class="eg"><b>{e(pick("Example at Forka", "مثال في فوركا"))}</b> {e(pick(xe, xa))}</p><small>{e(L["seen"])}: {e(src)}</small></div>')
+            o.append(f'<div class="idea c{n % 4}"><div class="idea-top"><span class="box">☐</span><b>{e(pick(en, a))}</b><span class="badge">{e(L["phase"])} {e(pick(ph, rr.phase_ar(ph)))}</span></div>'
+                     f'<p class="mean"><b>{e(pick("What we mean", "ما نقصده"))}</b> {e(pick(me, ma))}</p><p class="eg"><b>{e(pick("Example at Forka", "مثال في فوركا"))}</b> {e(pick(xe, xa))}</p>{f'<p class="dec"><b>{e(pick("Decision", "القرار"))}</b> {e(pick(*rr.decision(en)))}</p>' if en in rr.DECIDED else ''}<small>{e(L["seen"])}: {e(src)}</small></div>')
         o.append('</div></section>')
     # questions
     o.append(f'<section class="page"><header class="ph">{logo(28)}<span>{e(L["page"])}</span></header><h2>{e(L["s4"])}</h2><ol class="qs">')
@@ -141,7 +141,7 @@ h2 { font-size: 24pt; margin-bottom: 4mm; } [lang=ar] h2 { font-size: 20pt; }
 .idea.c1 { border-inline-start-color: #E3A33B; } .idea.c2 { border-inline-start-color: #7C9A7E; } .idea.c3 { border-inline-start-color: #C8553D; }
 .idea-top { display: flex; gap: 1.5mm; align-items: flex-start; } .idea-top b { flex: 1; font-size: 11pt; line-height: 1.25; } .box { font-size: 11pt; line-height: 1; color: #6B665F; }
 .badge { background: #2B2B2B; color: #fff; border-radius: 999px; padding: .4mm 2mm; font-size: 7.5pt; white-space: nowrap; font-weight: 600; }
-.idea p { margin: 1.5mm 0 1mm; } .idea .mean b, .idea .eg b { display: block; font-size: 8pt; text-transform: uppercase; letter-spacing: .05em; color: #3D7C8C; margin-bottom: .5mm; } [lang=ar] .idea .mean b, [lang=ar] .idea .eg b { letter-spacing: 0; font-size: 9pt; } .idea .eg { background: #FAF6EE; border-radius: 2mm; padding: 2mm 2.5mm; } .idea .eg b { color: #8E6210; } .idea small { color: #6B665F; font-size: 7.6pt; }
+.idea p { margin: 1.5mm 0 1mm; } .idea .mean b, .idea .eg b { display: block; font-size: 8pt; text-transform: uppercase; letter-spacing: .05em; color: #3D7C8C; margin-bottom: .5mm; } [lang=ar] .idea .mean b, [lang=ar] .idea .eg b { letter-spacing: 0; font-size: 9pt; } .idea .eg { background: #FAF6EE; border-radius: 2mm; padding: 2mm 2.5mm; } .idea .eg b { color: #8E6210; } .idea .dec { background: #EEF3EE; border-radius: 2mm; padding: 1.5mm 2.5mm; font-size: 8.4pt; } .idea .dec b { color: #4B6A4E; margin-inline-end: 1.5mm; } .idea small { color: #6B665F; font-size: 7.6pt; }
 .qs { padding-inline-start: 6mm; font-size: 10.5pt; } .qs li { margin-bottom: 3mm; break-inside: avoid; }
 .lines i { display: block; border-bottom: 1px solid #CFC7BA; height: 7mm; }
 .end { margin-top: 4mm; display: flex; align-items: center; justify-content: space-between; border-top: 1px solid #E3DCD1; padding-top: 6mm; color: #6B665F; }
