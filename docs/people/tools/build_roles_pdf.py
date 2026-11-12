@@ -68,7 +68,7 @@ def part(lang):
     o.append('</tbody></table></section>')
     # ideas: two pages
     items = list(zip(rr.GAPS, rr.EXPLAIN))
-    sizes = [4, 4, 5, 4, 4]
+    sizes = [4, 4, 4, 4, 3, 3]
     chunks, k = [], 0
     for z in sizes: chunks.append(items[k:k + z]); k += z
     starts = [sum(sizes[:i]) for i in range(len(sizes))]

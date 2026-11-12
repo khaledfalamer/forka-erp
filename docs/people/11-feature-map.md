@@ -81,7 +81,7 @@ Found by comparing with Zoho People, Odoo, SAP SuccessFactors, Bayzat and restau
 | **Air ticket entitlement**<br><sub>Pay and money</sub> | later | · | · | · | · | · | — | Kept for later | Revisit later |
 | **Service charge sharing**<br><sub>Pay and money</sub> | later | · | · | · | · | · | — | Maybe later | Revisit later |
 | **Shift swaps and open shifts**<br><sub>Time</sub> | 1B | · | · | · | · | · | — | — | Agreed by Khaled: build with rosters |
-| **Overtime pre-approval**<br><sub>Time</sub> | 1b | · | · | · | · | · | — | — | Agreed by Khaled: build with rosters (Phase 1B) |
+| **Overtime pre-approval**<br><sub>Time</sub> | 1B | · | · | · | · | · | — | — | Agreed by Khaled: build with rosters (Phase 1B) |
 | **Labour cost vs sales**<br><sub>Time</sub> | no | · | · | · | · | · | — | Not needed: labour cost is fixed; savings come from moving people | Dropped |
 | **Accommodation and transport**<br><sub>Staff services</sub> | later | · | · | · | · | · | — | Later stage | Revisit later |
 | **Assets and vehicles**<br><sub>Staff services</sub> | 2 | · | · | · | · | · | — | — | Agreed by Khaled: build in Phase 2 |
@@ -95,7 +95,8 @@ Found by comparing with Zoho People, Odoo, SAP SuccessFactors, Bayzat and restau
 | **Anonymous suggestions**<br><sub>Culture and tools</sub> | 2 | · | · | · | · | · | — | — | Agreed by Khaled: build in Phase 2 |
 | **Birthdays and anniversaries**<br><sub>Culture and tools</sub> | 2 | · | · | · | · | · | — | — | Agreed by Khaled: build in Phase 2 |
 | **E-signature**<br><sub>Culture and tools</sub> | 2 | · | · | · | · | · | — | — | Agreed by Khaled: build in Phase 2 |
-| **Org chart picture**<br><sub>Culture and tools</sub> | 1a | · | · | · | · | · | — | — | Agreed by Khaled: build in Phase 1A |
+| **Org chart picture**<br><sub>Culture and tools</sub> | 1A | · | · | · | · | · | — | — | Agreed by Khaled: build in Phase 1A |
+| **AI assistant (Ask Forka)**<br><sub>Culture and tools</sub> | last | · | · | · | · | · | Roles and access, Audit and access logs | SOPs written in one place; lawyer check on sending staff data to the AI provider | Agreed by Khaled: final step. 1) SOP helper 2) app guide and drafts 3) manager questions |
 
 ## How to use this map
 

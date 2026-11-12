@@ -968,7 +968,7 @@
   {
    "id": "x-otpre",
    "name": "Overtime pre-approval",
-   "phase": "1b",
+   "phase": "1B",
    "spec": "12-roles-review",
    "depends": [],
    "blocker": "",
@@ -984,11 +984,30 @@
   {
    "id": "x-orgchart",
    "name": "Org chart picture",
-   "phase": "1a",
+   "phase": "1A",
    "spec": "12-roles-review",
    "depends": [],
    "blocker": "",
    "next": "Agreed by Khaled: build in Phase 1A",
+   "status": {
+    "spec": "no",
+    "db": "no",
+    "server": "no",
+    "screens": "no",
+    "live": "no"
+   }
+  },
+  {
+   "id": "x-ai",
+   "name": "AI assistant (Ask Forka)",
+   "phase": "last",
+   "spec": "12-roles-review",
+   "depends": [
+    "access",
+    "audit"
+   ],
+   "blocker": "SOPs written in one place; lawyer check on sending staff data to the AI provider",
+   "next": "Agreed by Khaled: final step. 1) SOP helper 2) app guide and drafts 3) manager questions",
    "status": {
     "spec": "no",
     "db": "no",
@@ -1154,7 +1173,8 @@
       "x-suggest",
       "x-birthdays",
       "x-esign",
-      "x-orgchart"
+      "x-orgchart",
+      "x-ai"
      ]
     }
    ]

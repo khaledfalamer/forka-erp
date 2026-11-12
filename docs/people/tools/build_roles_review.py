@@ -123,6 +123,7 @@ GAPS = [
  ('Birthdays and work anniversaries', 'أعياد الميلاد وذكرى العمل', 'Shown in the team feed (only if the person agrees).', 'تظهر في أخبار الفريق (بموافقة الشخص فقط).', 'Zoho', '2'),
  ('Overtime pre-approval', 'الموافقة المسبقة على العمل الإضافي', 'Managers approve overtime before it happens, not only after.', 'يوافق المدير على العمل الإضافي قبل حدوثه وليس بعده فقط.', 'SAP Time', '1B'),
  ('Org chart picture', 'مخطط الهيكل التنظيمي', 'A visual chart of who reports to whom, from your org structure file.', 'مخطط مرئي لمن يتبع لمن، من ملف الهيكل التنظيمي.', 'Zoho, Odoo', '1A'),
+ ('AI assistant (Ask Forka)', 'المساعد الذكي (اسأل فوركا)', 'Staff and managers ask in their own words how to do something; the assistant answers from our SOPs, guides them to the right screen and drafts requests for them to check.', 'يسأل الموظفون والمديرون بكلماتهم كيف يقومون بشيء ما، فيجيب المساعد من إجراءات العمل لدينا، ويرشدهم إلى الشاشة الصحيحة، ويجهّز الطلبات لهم ليراجعوها.', 'Zoho Zia, SAP Joule, Workday Assistant', 'Last'),
 ]
 
 # For each idea (same order as GAPS): what we mean, and an example at Forka. (EN meaning, EN example, AR meaning, AR example)
@@ -149,6 +150,7 @@ DECIDED = {
     'Birthdays and work anniversaries': ('2', 'Khaled: agreed. Added to the plan (Phase 2).', 'خالد: موافق. أُضيف إلى الخطة (المرحلة 2).'),
     'Overtime pre-approval': ('1B', 'Khaled: agreed. Added to the plan with rosters (Phase 1B).', 'خالد: موافق. أُضيف إلى الخطة مع جداول الورديات (المرحلة 1ب).'),
     'Org chart picture': ('1A', 'Khaled: agreed. Added to the plan (Phase 1A). A first version is already in the app preview.', 'خالد: موافق. أُضيف إلى الخطة (المرحلة 1أ). توجد نسخة أولى في معاينة التطبيق.'),
+    'AI assistant (Ask Forka)': ('Last', 'Khaled: agreed, as the final step, once the SOPs are written down.', 'خالد: موافق، كخطوة أخيرة بعد كتابة إجراءات العمل.'),
 }
 GAPS = [g[:5] + (DECIDED[g[0]][0],) if g[0] in DECIDED else g for g in GAPS]
 PHASE_AR = {'Later': 'لاحقاً', 'Last': 'الأخيرة', 'No': 'غير مطلوب', 'later': 'لاحقاً'}
@@ -240,6 +242,10 @@ EXPLAIN = [
   'A new supervisor opens the chart and sees her team, her manager and the two vacant positions in her branch.',
   'صورة للمؤسسة: من يتبع لمن في كل فرع وفي الإدارة العامة، مع الصور والوظائف الشاغرة، مبنية من ملف الهيكل التنظيمي الذي أعدّه فريق الموارد البشرية.',
   'مشرفة جديدة تفتح المخطط وترى فريقها ومديرها والوظيفتين الشاغرتين في فرعها.'),
+ ('An assistant inside the app that knows our written SOPs and policies. It only sees what the person is allowed to see, never approves or submits anything by itself, and logs every question. Built in three steps: SOP answers, then app guidance and drafts, then manager questions.',
+  'A new waiter asks: "How do I ask for emergency leave?" The assistant explains the rule from the leave policy, opens the leave form and fills in the dates; the waiter checks it and presses Submit.',
+  'مساعد داخل التطبيق يعرف إجراءات العمل والسياسات المكتوبة لدينا. يرى فقط ما يحق للشخص رؤيته، ولا يوافق أو يرسل أي شيء بنفسه، ويسجّل كل سؤال. يُبنى على ثلاث خطوات: إجابات من الإجراءات، ثم الإرشاد في التطبيق وتجهيز الطلبات، ثم أسئلة المديرين.',
+  'نادل جديد يسأل: "كيف أطلب إجازة طارئة؟" يشرح المساعد القاعدة من سياسة الإجازات، ويفتح نموذج الإجازة ويملأ التواريخ، ثم يراجعه النادل ويضغط إرسال.'),
 ]
 assert len(EXPLAIN) == len(GAPS)
 
