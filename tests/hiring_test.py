@@ -10,7 +10,7 @@ CFG_PREVIEW = "window.FORKA_APPS={MODE:'live',ACCOUNTS_URL:'https://accounts.tes
 SESS = {'TOKCEO-0000000000000000000': {'email': 'ceo@forka.com', 'name': 'Khaled Alamer', 'role': 'hr', 'ceo': True, 'dept': None},
         'TOKCHEF-000000000000000000': {'email': 'chef@kuwaitikitchen.com', 'name': 'Head Chef', 'role': 'head', 'ceo': False, 'dept': 'Kitchen'}}
 DATA = {'reqs': {}, 'pipe': {}, 'jobs': {}, 'apps': {}, 'config': {}}
-VER = [1]; CALLS = []; FAIL = [0]   # FAIL: how many applications the fake server refuses as busy before accepting
+VER = [1]; CALLS = []; FAIL = [0]; OLD_AI = [True]   # OLD_AI: the Hiring script on Google has no AI yet   # FAIL: how many applications the fake server refuses as busy before accepting
 DATA['reqs']['r1'] = {'id': 'r1', 'reqId': 'REQ-2611-01', 'title': 'Line Cook', 'dept': 'Kitchen', 'branch': 'Sharjah', 'status': 'open', 'headcount': 1, 'history': [], 'mustHaves': ['Kuwaiti dishes', 'Hygiene', 'Speed'], 'traits': ['Team cooperation'], 'knockout': ['2 years in a kitchen?'], 'ad': 'Cook with us', 'adAr': 'اطبخ معنا', 'titleAr': 'طباخ خط', 'knockoutAr': ['سنتان في مطبخ؟'], 'createdAt': 1793624193162, 'createdBy': 'ceo@forka.com', 'postedAt': 1793624734240, 'salMin': 3000, 'salMax': 4000, 'cur': 'AED'}
 DATA['reqs']['r2'] = {'id': 'r2', 'title': 'Cashier', 'dept': 'Front of house', 'branch': 'Ajman', 'status': 'review', 'headcount': 2, 'history': [], 'mustHaves': ['Cash handling'], 'testQs': [], 'practical': '', 'traits': [], 'createdBy': 'ceo@forka.com', 'createdAt': 0}
 DATA['jobs']['r2'] = {'id': 'r2', 'title': 'Cashier', 'dept': 'Front of house', 'branch': 'Ajman', 'open': False}
@@ -56,6 +56,10 @@ def handle(b):
         bk = {'token': 'tok-new-0000000000000000', 'kind': b['kind'], 'slots': b['slots'], 'mins': b['mins'], 'mode': b['mode'], 'place': b['place'], 'by': me['email'], 'byName': me['name'], 'at': NOW, 'pick': None}
         DATA['pipe'][b['id']].setdefault('books', {})[b['kind']] = bk; VER[0] += 1
         return {'ok': True, 'ver': 'v%d' % VER[0], 'link': 'https://apply.forka.com/#book=' + bk['token'], 'mailed': True, 'book': bk}
+    if a == 'ai' and not OLD_AI[0]:
+        return {'ok': True, 'text': '{"jd": "About the role: line cook.", "ad": "Cook with us in Sharjah.", "adAr": "اطبخ معنا", "knockout": ["2 years in a kitchen?"]}'}
+    if a == 'put' and b.get('col') == 'config' and b.get('id') == 'aiguide':
+        DATA['config']['aiguide'] = b['data']; VER[0] += 1; return {'ok': True, 'ver': 'v%d' % VER[0]}
     if a == 'aisum':
         return {'ok': True, 'ai': {'summary': 'Line cook with 3 years in Kuwaiti kitchens.', 'role': 'Line cook, Kuwaiti Kitchen', 'years': 3, 'employers': ['Kuwaiti Kitchen'], 'languages': ['English', 'Arabic'],
             'visaNotice': 'Own visa', 'mustHaves': [{'item': 'Kuwaiti dishes', 'score': 4, 'evidence': 'Cooked machboos daily'}, {'item': 'Hygiene', 'score': 1, 'evidence': 'Not in the CV'}, {'item': 'Speed', 'score': 3, 'evidence': 'Busy lunch service'}],
@@ -148,6 +152,45 @@ async def main():
             await pg.evaluate("closeModal();DRAFT=null")
             await pg.evaluate("aiBusy(null,async()=>{await askJSON('Write a JD')})"); await pg.wait_for_timeout(300)
             check('Old Hiring script on Google: the AI message says so (not just "try again")', 'still the old version' in await pg.inner_text('#toast'), await pg.inner_text('#toast'))
+            # --- guidance for AI job descriptions ---
+            OLD_AI[0] = False
+            await pg.evaluate("go('careers')"); await pg.wait_for_timeout(300)
+            check('Careers settings have a "Guidance for AI" box for HR', await pg.locator('#ai_guide').count() == 1)
+            await pg.fill('#ai_guide', 'Always mention: free staff meal and visa provided. Never mention salary.')
+            await pg.click('#aiguidecard button.btn'); await pg.wait_for_timeout(300)
+            check('Guidance is saved in Hiring settings', 'free staff meal' in DATA['config'].get('aiguide', {}).get('text', ''))
+            await pg.screenshot(path=str(ROOT / 'tests' / 'shots' / 'hiring_ai_guidance.png'), full_page=True)
+            await pg.evaluate("Object.assign(S.reqs.r1,{testQs:['Grill station'],practical:'Cook two dishes',purpose:'Cook on the hot line',duties:'Grill and prep'});openReq('r1')"); await pg.wait_for_timeout(300)
+            await pg.fill('#r_ainote', 'Mention the night-shift allowance.')
+            await pg.click('text=Draft JD + ads with AI'); await pg.wait_for_timeout(500)
+            ai = [c for c in CALLS if c.get('action') == 'ai']
+            pr = ai[-1]['prompt'] if ai else ''
+            check('The AI request carries the guidance and the note for this job, before the instructions', pr.startswith("Forka HR's standing guidance") and 'free staff meal' in pr and 'night-shift allowance' in pr, pr[:200])
+            check('The draft fills the job description and ads', 'About the role: line cook.' in await pg.input_value('#r_jd') and 'Cook with us' in await pg.input_value('#r_ad'))
+            await pg.evaluate("closeModal()")
+            # --- remote positions ---
+            await pg.evaluate("go('reqs');reqForm()"); await pg.wait_for_timeout(300)
+            check('Hiring request form has Work type: On site, Remote, Hybrid', await pg.evaluate("[...document.querySelectorAll('#f_work option')].map(o=>o.textContent).join(',')") == 'Choose…,On site,Remote,Hybrid')
+            await pg.evaluate("""()=>{const f=(id,v)=>{const e=document.getElementById(id);e.value=v};f('f_title','Social Media Coordinator');f('f_dept',document.querySelector('#f_dept option:nth-child(2)').value);f('f_branch','');f('f_work','Remote');f('f_smax','6000');
+              ['f_mh0','f_mh1','f_mh2'].forEach((id,i)=>f(id,'Must '+i));document.querySelector('.f_pr').checked=true;[...document.querySelectorAll('.f_tr')].slice(0,2).forEach(x=>x.checked=true)}""")
+            await pg.evaluate("saveReq()"); await pg.wait_for_timeout(400)
+            rr = [x for x in DATA['reqs'].values() if x.get('title') == 'Social Media Coordinator']
+            check('A remote request saves without a branch', bool(rr) and rr[0].get('work') == 'Remote' and not rr[0].get('branch'), rr[:1] or await pg.inner_text('#toast'))
+            await pg.evaluate("setLang('ar');go('reqs')"); await pg.wait_for_timeout(300)
+            await pg.screenshot(path=str(ROOT / 'tests' / 'shots' / 'hiring_remote_list_ar.png'))
+            await pg.evaluate("reqForm();document.getElementById('f_work').value='Remote'"); await pg.wait_for_timeout(300)
+            await pg.locator('#f_work').scroll_into_view_if_needed(); await pg.screenshot(path=str(ROOT / 'tests' / 'shots' / 'hiring_remote_form_ar.png'))
+            check('Arabic: Work type and Remote are translated', 'نوع العمل' in await pg.inner_text('body') and 'عن بُعد' in await pg.inner_text('body'))
+            await pg.evaluate("closeModal();setLang('en')"); await pg.wait_for_timeout(200)
+            await pg.evaluate("go('reqs')"); await pg.wait_for_timeout(300)
+            check('The requests list shows it as Remote', 'Remote' in await pg.inner_text('main') if await pg.locator('main').count() else 'Remote' in await pg.inner_text('body'))
+            if rr:
+                rid = rr[0]['id']
+                await pg.evaluate(f"Object.assign(S.reqs['{rid}'],{{status:'open',testQs:['x'],practical:'Portfolio',purpose:'Run our social media',duties:'Posts'}});openReq('{rid}')"); await pg.wait_for_timeout(300)
+                await pg.click('text=Draft JD + ads with AI'); await pg.wait_for_timeout(500)
+                pr = [c for c in CALLS if c.get('action') == 'ai'][-1]['prompt']
+                check('The AI is told the job is remote, so the JD and ads say so', 'This is a remote job' in pr, pr[:300])
+                await pg.evaluate("closeModal()")
             # --- interview comparison ---
             await pg.evaluate("go('pipeline')"); await pg.evaluate("openCand('civ')"); await pg.wait_for_timeout(300)
             cmp = await pg.inner_text('.cmp')
@@ -220,6 +263,14 @@ async def main():
             body = await pg.inner_text('body')
             check('Careers page lists the open job', 'Line Cook' in body and 'Sharjah' in body)
             check('Careers page shows no internal data', not re.search(r'Sara|salary range|REQ-', body))
+            DATA['jobs']['rrem'] = {'id': 'rrem', 'title': 'Social Media Coordinator', 'dept': 'Marketing', 'branch': 'Head Office', 'work': 'Remote', 'open': True, 'postedAt': 1793624734241}
+            await pg.reload(); await pg.wait_for_timeout(800)
+            card = await pg.inner_text('[data-job=rrem]')
+            check('Careers page: a remote job says Remote (and not the office it reports to)', 'Remote' in card and 'Head Office' not in card, card)
+            await pg.evaluate("lang='ar';render()") ; await pg.wait_for_timeout(200)
+            check('...and عن بُعد in Arabic', 'عن بُعد' in await pg.inner_text('[data-job=rrem]'))
+            await pg.locator('.jobs').screenshot(path=str(ROOT / 'tests' / 'shots' / 'careers_remote_ar.png'))
+            await pg.evaluate("lang='en';render()"); del DATA['jobs']['rrem']; await pg.reload(); await pg.wait_for_timeout(800)
             await pg.click('[data-job=r1]'); await pg.wait_for_timeout(200)
             check('Job page shows the ad and the form', 'Cook with us' in await pg.inner_text('body') and await pg.locator('#f').count() == 1)
             await pg.click('#f button[type=submit]'); await pg.wait_for_timeout(200)

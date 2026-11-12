@@ -13,7 +13,7 @@
  *  5. The /exec address goes into config.js as BOARDS_URL.
  * Nothing secret is in this file.
  */
-const ACCOUNTS_URL = 'https://script.google.com/macros/s/AKfycbwUO5mC1oZrKiSJfF-kpeIFUPjfzB5VToNVn9EH-ecmDadFs9xsU1oDFHTgJ2FSg6vP/exec';
+const ACCOUNTS_URL = 'https://forka-apps-443945615318.me-central1.run.app/accounts';
 const APP_URL = 'https://erp.forka.com/boards/';
 const DATA_TAB = 'Data';
 const D_HEAD = ['Id', 'Kind', 'Scope', 'Json', 'At', 'By', 'Deleted'];
