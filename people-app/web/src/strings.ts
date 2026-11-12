@@ -52,7 +52,7 @@ export const modsEn = {
     file: 'File (photo or PDF)', newExpiry: 'New expiry date', verify: 'Accept', reject: 'Reject', daysLeft: 'days left', uploaded: 'Uploaded. HR will check it.', ago: 'days ago',
   },
   life: {
-    title: 'Joiners and leavers', onboarding: 'New joiners', exits: 'Leaving', probation: 'Probation ending', started: 'Started', lastDay: 'Started', items: 'steps done', owner: 'Owner',
+    title: 'Joiners and leavers', onboarding: 'New joiners', exits: 'Leaving', probation: 'Probation ending', started: 'Started', lastDay: 'Last day', items: 'steps done', owner: 'Owner',
     owners: { hr: 'HR', manager: 'Manager', employee: 'Employee', it: 'IT', finance: 'Finance' } as Record<string, string>, ends: 'Ends', review: 'Review', noneProb: 'No probation periods end in the next weeks.',
   },
   pay: {
@@ -168,7 +168,7 @@ export const modsAr: typeof modsEn = {
     file: 'الملف (صورة أو PDF)', newExpiry: 'تاريخ الانتهاء الجديد', verify: 'قبول', reject: 'رفض', daysLeft: 'يوماً متبقياً', uploaded: 'تم الرفع. ستتحقق منه الموارد البشرية.', ago: 'يوماً مضت',
   },
   life: {
-    title: 'المنضمون والمغادرون', onboarding: 'الموظفون الجدد', exits: 'المغادرون', probation: 'انتهاء فترة التجربة', started: 'بدأ', lastDay: 'بدأ', items: 'خطوات مكتملة', owner: 'المسؤول',
+    title: 'المنضمون والمغادرون', onboarding: 'الموظفون الجدد', exits: 'المغادرون', probation: 'انتهاء فترة التجربة', started: 'بدأ', lastDay: 'آخر يوم عمل', items: 'خطوات مكتملة', owner: 'المسؤول',
     owners: { hr: 'الموارد البشرية', manager: 'المدير', employee: 'الموظف', it: 'تقنية المعلومات', finance: 'المالية' }, ends: 'تنتهي', review: 'التقييم', noneProb: 'لا توجد فترات تجربة تنتهي قريباً.',
   },
   pay: {
