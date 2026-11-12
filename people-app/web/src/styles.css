@@ -431,3 +431,23 @@ html[lang="ar"] .logo-text small { letter-spacing: .06em; }
 .approver-list { margin: 0; padding-inline-start: 22px; display: grid; gap: 6px; } .approver-list li > * { margin-inline-end: 8px; }
 .auto-done { font-size: 13px; background: #E9F2F3; border-radius: 8px; padding: 6px 10px; color: #245A63; }
 @media (max-width: 760px) { .welcome-grid { grid-template-columns: 1fr; } .welcome-steps { grid-template-columns: 1fr 1fr; } }
+
+/* Language box (top bar) */
+.lang-btn { display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,.08); color: inherit; border: 1px solid rgba(255,255,255,.28); border-radius: 999px; padding: 5px 12px; font: inherit; font-size: 14px; cursor: pointer; }
+.lang-btn:hover { background: rgba(255,255,255,.16); }
+.lang-btn.dark { background: #fff; color: var(--charcoal); border-color: var(--line, #DDD6CB); }
+.lang-btn.dark:hover { background: #F6F2EA; }
+.lang-caret { font-size: 11px; opacity: .7; }
+.lang-search { width: 100%; padding: 10px 12px; border: 1px solid var(--line, #DDD6CB); border-radius: 10px; font: inherit; font-size: 16px; background: #fff; color: var(--charcoal); margin-block: 4px 10px; }
+.lang-head { font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin: 12px 2px 6px; }
+html[lang="ar"] .lang-head { letter-spacing: 0; }
+.lang-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+.lang-row { display: grid; grid-template-columns: 1fr auto; grid-template-rows: auto auto; text-align: start; gap: 0 8px; padding: 10px 12px; border: 1px solid var(--line, #DDD6CB); border-radius: 10px; background: #fff; color: var(--charcoal); font: inherit; cursor: pointer; }
+.lang-row:hover { border-color: var(--bronze); }
+.lang-row.on { border-color: var(--bronze); background: #F7F1E8; }
+.lang-native { font-size: 17px; font-weight: 600; grid-column: 1; }
+.lang-en { font-size: 12.5px; color: var(--muted); grid-column: 1; }
+.lang-tick { grid-column: 2; grid-row: 1 / span 2; align-self: center; color: var(--bronze); font-weight: 700; }
+.auto-notice { background: #FFF6E3; color: #5A4310; border-block-end: 1px solid #EED9A8; padding: 8px 16px; font-size: 13.5px; line-height: 1.5; }
+.login .auto-notice { border: 1px solid #EED9A8; border-radius: 10px; margin-block: 8px; }
+html[dir="ltr"] .lang-native { text-align: left; } html[dir="rtl"] .lang-native { text-align: right; }

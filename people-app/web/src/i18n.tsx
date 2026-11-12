@@ -1,233 +1,61 @@
 import { store } from './api';
-import { modsEn, modsAr } from './strings';
+import { en, ar } from './base-text';
+import { LANGS, langInfo, loadLayer, overlay, loadFont } from './languages';
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 
 export type Lang = 'en' | 'ar';
 export type Bi = { en: string | null; ar: string | null } | null | undefined;
 
-const en = {
-  m: modsEn,
-  appName: 'Forka People',
-  signIn: 'Sign in',
-  demoNotice: 'Demo only. Every person here is made up. Real sign-in (Google account or phone code) comes in Phase 1.',
-  chooseAccount: 'Choose a demo account',
-  demo: 'Demo',
-  demoBrowser: 'This preview runs in your browser: changes you make are kept until you reload the page.',
-  signOut: 'Sign out',
-  home: 'Home',
-  people: 'People',
-  org: 'Structure',
-  language: 'العربية',
-  hello: 'Hello',
-  heroLine: 'Here is what needs your attention today.',
-  myJob: 'My job',
-  teamCount: 'People I can see',
-  expiringSoon: 'Documents expiring in the next 60 days',
-  noneExpiring: 'No documents expire in the next 60 days.',
-  expired: 'Expired',
-  search: 'Search by name, number or job',
-  allBranches: 'All branches',
-  noResults: 'No one matches.',
-  back: 'Back',
-  backArrow: '←',
-  toArrow: '→',
-  comma: ',',
-  overview: 'Overview',
-  history: 'Job history',
-  personal: 'Personal',
-  pay: 'Pay',
-  activity: 'Changes',
-  viewedBy: 'Who viewed',
-  employeeNo: 'Employee number',
-  job: 'Job',
-  level: 'Level',
-  branch: 'Branch',
-  department: 'Department',
-  company: 'Company',
-  manager: 'Manager',
-  startDate: 'Start date',
-  jobSince: 'In this job since',
-  probationEnd: 'Probation ends',
-  permitTitle: 'Job title on work permit',
-  documents: 'Documents',
-  expires: 'Expires',
-  status: 'Status',
-  gender: 'Gender',
-  nationality: 'Nationality',
-  dateOfBirth: 'Date of birth',
-  mobile: 'Mobile',
-  personalEmail: 'Personal email',
-  payNotice: 'Viewing pay is recorded. The employee can see who looked.',
-  personalNotice: 'Viewing personal details is recorded.',
-  monthlyTotal: 'Monthly total',
-  component: 'Item',
-  amount: 'Amount',
-  from: 'From',
-  to: 'To',
-  current: 'Current',
-  scheduled: 'Scheduled',
-  past: 'Past',
-  changedBy: 'Changed by',
-  reason: 'Reason',
-  changeJob: 'Change job',
-  effectiveFrom: 'Effective from',
-  newManager: 'Manager',
-  keepManager: 'Keep current manager',
-  save: 'Save',
-  cancel: 'Cancel',
-  required: 'Required',
-  saved: 'Saved.',
-  savedScheduled: 'Saved. The change will apply on its date.',
-  savedPayroll: 'Saved. This change is dated in the past, so payroll has been flagged.',
-  backdateHint: 'Dates in the past need the HR Manager.',
-  when: 'When',
-  action: 'Action',
-  by: 'By',
-  dataClass: 'Data',
-  noEntries: 'Nothing yet.',
-  loading: 'Loading...',
-  error: 'Something went wrong. Please try again.',
-  notFound: 'Not found, or you do not have access.',
-  entities: 'Companies',
-  branches: 'Branches',
-  levels: 'Job levels',
-  people_n: 'people',
-  roles: { CEO: 'CEO', HR_MANAGER: 'HR Manager', HR_OFFICER: 'HR Officer', PAYROLL: 'Payroll', BRANCH_MANAGER: 'Branch Manager', SYS_ADMIN: 'System admin', EMPLOYEE: 'Employee' } as Record<string, string>,
-  reasons: { hire: 'Joined', transfer: 'Transfer', promotion: 'Promotion', role_change: 'Role change', manager_change: 'New manager', correction: 'Correction' } as Record<string, string>,
-  statuses: { active: 'Active', pending_start: 'Starting soon', on_leave_of_absence: 'Leave of absence', notice: 'Notice period', exited: 'Left', valid: 'Valid', expired: 'Expired', replaced: 'Replaced', pending_verification: 'Waiting for HR', rejected: 'Rejected' } as Record<string, string>,
-  genders: { male: 'Male', female: 'Female' } as Record<string, string>,
-  dataClasses: { D3: 'Personal details', D4: 'Pay' } as Record<string, string>,
-  actions: { 'assignment.change': 'Job changed', 'denied.pay': 'Pay view refused', 'denied.personal': 'Personal view refused', 'denied.assignment': 'Job change refused' } as Record<string, string>,
-  errors: {
-    backdate_needs_hr_manager: 'Changes dated in the past need the HR Manager.',
-    date_before_current: 'The new date must be after the current job started.',
-    already_scheduled: 'A change is already scheduled for this person.',
-    other_company: 'Moving to another company is a separate process.',
-    own_manager: 'A person cannot be their own manager.',
-    no_access: 'You do not have access to this.',
-  } as Record<string, string>,
-};
-
-const ar: typeof en = {
-  m: modsAr,
-  appName: 'Forka People',
-  signIn: 'تسجيل الدخول',
-  demoNotice: 'نسخة تجريبية فقط. جميع الأشخاص هنا غير حقيقيين. تسجيل الدخول الفعلي (حساب Google أو رمز عبر الجوال) في المرحلة الأولى.',
-  chooseAccount: 'اختر حساباً تجريبياً',
-  demo: 'تجريبي',
-  demoBrowser: 'هذه المعاينة تعمل داخل المتصفح: التغييرات تبقى حتى إعادة تحميل الصفحة.',
-  signOut: 'تسجيل الخروج',
-  home: 'الرئيسية',
-  people: 'الموظفون',
-  org: 'الهيكل',
-  language: 'English',
-  hello: 'مرحباً',
-  heroLine: 'هذا ما يحتاج إلى انتباهك اليوم.',
-  myJob: 'وظيفتي',
-  teamCount: 'الموظفون الذين يمكنني رؤيتهم',
-  expiringSoon: 'مستندات تنتهي خلال 60 يوماً',
-  noneExpiring: 'لا توجد مستندات تنتهي خلال 60 يوماً.',
-  expired: 'منتهي',
-  search: 'ابحث بالاسم أو الرقم أو الوظيفة',
-  allBranches: 'كل الفروع',
-  noResults: 'لا توجد نتائج.',
-  back: 'رجوع',
-  backArrow: '→',
-  toArrow: '←',
-  comma: '،',
-  overview: 'نظرة عامة',
-  history: 'السجل الوظيفي',
-  personal: 'البيانات الشخصية',
-  pay: 'الراتب',
-  activity: 'التغييرات',
-  viewedBy: 'من اطّلع',
-  employeeNo: 'الرقم الوظيفي',
-  job: 'الوظيفة',
-  level: 'المستوى',
-  branch: 'الفرع',
-  department: 'القسم',
-  company: 'الشركة',
-  manager: 'المدير المباشر',
-  startDate: 'تاريخ الالتحاق',
-  jobSince: 'في هذه الوظيفة منذ',
-  probationEnd: 'نهاية فترة التجربة',
-  permitTitle: 'المسمى في تصريح العمل',
-  documents: 'المستندات',
-  expires: 'تاريخ الانتهاء',
-  status: 'الحالة',
-  gender: 'الجنس',
-  nationality: 'الجنسية',
-  dateOfBirth: 'تاريخ الميلاد',
-  mobile: 'الجوال',
-  personalEmail: 'البريد الشخصي',
-  payNotice: 'يتم تسجيل كل اطلاع على الراتب، ويمكن للموظف معرفة من اطّلع.',
-  personalNotice: 'يتم تسجيل كل اطلاع على البيانات الشخصية.',
-  monthlyTotal: 'الإجمالي الشهري',
-  component: 'البند',
-  amount: 'المبلغ',
-  from: 'من',
-  to: 'إلى',
-  current: 'الحالي',
-  scheduled: 'مجدول',
-  past: 'سابق',
-  changedBy: 'بواسطة',
-  reason: 'السبب',
-  changeJob: 'تغيير الوظيفة',
-  effectiveFrom: 'يسري من',
-  newManager: 'المدير المباشر',
-  keepManager: 'الإبقاء على المدير الحالي',
-  save: 'حفظ',
-  cancel: 'إلغاء',
-  required: 'مطلوب',
-  saved: 'تم الحفظ.',
-  savedScheduled: 'تم الحفظ. سيُطبَّق التغيير في تاريخه.',
-  savedPayroll: 'تم الحفظ. التغيير بتاريخ سابق، لذلك تم تنبيه الرواتب.',
-  backdateHint: 'التواريخ السابقة تحتاج إلى مدير الموارد البشرية.',
-  when: 'الوقت',
-  action: 'الإجراء',
-  by: 'بواسطة',
-  dataClass: 'البيانات',
-  noEntries: 'لا يوجد شيء بعد.',
-  loading: 'جارٍ التحميل...',
-  error: 'حدث خطأ. يرجى المحاولة مرة أخرى.',
-  notFound: 'غير موجود، أو ليست لديك صلاحية.',
-  entities: 'الشركات',
-  branches: 'الفروع',
-  levels: 'المستويات الوظيفية',
-  people_n: 'موظف',
-  roles: { CEO: 'الرئيس التنفيذي', HR_MANAGER: 'مدير الموارد البشرية', HR_OFFICER: 'موظف موارد بشرية', PAYROLL: 'الرواتب', BRANCH_MANAGER: 'مدير فرع', SYS_ADMIN: 'مسؤول النظام', EMPLOYEE: 'موظف' },
-  reasons: { hire: 'التحاق', transfer: 'نقل', promotion: 'ترقية', role_change: 'تغيير الوظيفة', manager_change: 'مدير جديد', correction: 'تصحيح' },
-  statuses: { active: 'على رأس العمل', pending_start: 'سيبدأ قريباً', on_leave_of_absence: 'إجازة طويلة', notice: 'فترة إشعار', exited: 'غادر', valid: 'ساري', expired: 'منتهي', replaced: 'تم استبداله', pending_verification: 'بانتظار الموارد البشرية', rejected: 'مرفوض' },
-  genders: { male: 'ذكر', female: 'أنثى' },
-  dataClasses: { D3: 'البيانات الشخصية', D4: 'الراتب' },
-  actions: { 'assignment.change': 'تغيير الوظيفة', 'denied.pay': 'رفض الاطلاع على الراتب', 'denied.personal': 'رفض الاطلاع على البيانات الشخصية', 'denied.assignment': 'رفض تغيير الوظيفة' },
-  errors: {
-    backdate_needs_hr_manager: 'التواريخ السابقة تحتاج إلى مدير الموارد البشرية.',
-    date_before_current: 'يجب أن يكون التاريخ الجديد بعد بداية الوظيفة الحالية.',
-    already_scheduled: 'يوجد تغيير مجدول لهذا الموظف.',
-    other_company: 'النقل إلى شركة أخرى إجراء منفصل.',
-    own_manager: 'لا يمكن أن يكون الموظف مديراً لنفسه.',
-    no_access: 'ليست لديك صلاحية.',
-  },
-};
-
 const dict = { en, ar };
-type Ctx = { lang: Lang; t: typeof en; setLang: (l: Lang) => void; bi: (v: Bi) => string; date: (d: string | null | undefined) => string; money: (v: string | number, cur?: string | null) => string };
+type Text = typeof en;
+type Ctx = {
+  lang: Lang; // base language for data, names and dates: 'ar' only when Arabic is chosen, otherwise 'en'
+  ui: string; // the language the person chose in the language box
+  auto: boolean; // true when the screen text is machine-translated
+  t: Text; setLang: (l: string) => void;
+  bi: (v: Bi) => string; date: (d: string | null | undefined) => string; money: (v: string | number, cur?: string | null) => string;
+};
 const I18n = createContext<Ctx>(null as unknown as Ctx);
+// Symbols that follow the reading direction, not the language.
+const KEEP = ['language', 'backArrow', 'toArrow', 'comma'];
 
 export function I18nProvider({ children }: { children: ReactNode }) {
-  const [lang, setLang] = useState<Lang>(() => (store.get('fp_lang') as Lang) || 'en');
+  const [ui, setUi] = useState<string>(() => { const v = store.get('fp_lang') || 'en'; return LANGS.some(l => l.code === v) ? v : 'en'; });
+  const [layer, setLayer] = useState<{ code: string; t: Text } | null>(null);
+  const info = langInfo(ui);
+  const lang: Lang = ui === 'ar' ? 'ar' : 'en';
   useEffect(() => {
-    document.documentElement.lang = lang;
-    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
-    store.set('fp_lang', lang);
-  }, [lang]);
-  const locale = lang === 'ar' ? 'ar-AE-u-nu-latn' : 'en-GB';
+    const root = document.documentElement;
+    root.lang = ui;
+    root.dir = info.rtl ? 'rtl' : 'ltr';
+    store.set('fp_lang', ui);
+    if (info.base) { root.style.removeProperty('--font'); root.style.removeProperty('--head'); return; }
+    loadFont(info.font);
+    const f = info.font ? `'${info.font}', 'Inter Tight', system-ui, sans-serif` : '';
+    if (f) { root.style.setProperty('--font', f); root.style.setProperty('--head', f); }
+    else { root.style.removeProperty('--font'); root.style.removeProperty('--head'); }
+    let live = true;
+    loadLayer(ui).then(flat => {
+      if (!live) return;
+      const t = overlay(en, flat, KEEP);
+      if (info.rtl) { t.backArrow = ar.backArrow; t.toArrow = ar.toArrow; t.comma = ar.comma; }
+      setLayer({ code: ui, t });
+    });
+    return () => { live = false; };
+  }, [ui]);
+  const t: Text = info.base ? dict[lang] : layer?.code === ui ? layer.t : en;
+  const locale = lang === 'ar' ? 'ar-AE-u-nu-latn' : info.base ? 'en-GB' : `${ui}-u-nu-latn`;
+  const fmt = (fn: () => string, fallback: () => string) => { try { return fn(); } catch { return fallback(); } };
   const value: Ctx = {
-    lang, t: dict[lang], setLang,
+    lang, ui, auto: !info.base, t, setLang: setUi,
     bi: v => (v ? (lang === 'ar' ? v.ar || v.en : v.en || v.ar) || '' : ''),
-    date: d => (d ? new Date(d + (d.length === 10 ? 'T00:00:00' : '')).toLocaleDateString(locale, { day: 'numeric', month: 'short', year: 'numeric' }) : '—'),
-    money: (v, cur) => `${Number(v).toLocaleString(locale, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}${cur ? ' ' + cur : ''}`,
+    date: d => {
+      if (!d) return '—';
+      const x = new Date(d + (d.length === 10 ? 'T00:00:00' : ''));
+      const o = { day: 'numeric', month: 'short', year: 'numeric' } as const;
+      return fmt(() => x.toLocaleDateString(locale, o), () => x.toLocaleDateString('en-GB', o));
+    },
+    money: (v, cur) => `${Number(v).toLocaleString(lang === 'ar' ? locale : 'en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}${cur ? ' ' + cur : ''}`,
   };
   return <I18n.Provider value={value}>{children}</I18n.Provider>;
 }

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { LangPicker, AutoNotice } from './LangPicker';
 import { api, useRoute, go, DEMO } from './api';
 import { useI18n } from './i18n';
 import { Login } from './pages/Login';
@@ -107,11 +108,12 @@ export function App() {
       <header className="top">
         <a href="#/" className="brand-link"><Logo />{DEMO && <em className="demo-pill">{t.demo}</em>}</a>
         <div className="top-right">
-          <button className="link-btn" onClick={() => setLang(lang === 'en' ? 'ar' : 'en')}>{t.language}</button>
+          <LangPicker />
           <span className="who" title={me.user.email}>{me.user.name}<small>{me.roles.map(r => t.roles[r] || r).join(' · ')}</small></span>
           <button className="link-btn" onClick={signOut}>{t.signOut}</button>
         </div>
       </header>
+      <AutoNotice />
       <div className="layout">
         <nav className="side" aria-label="Main">
           {groups.map(([g, label]) => { const list = items.filter(i => i.group === g); return list.length ? (

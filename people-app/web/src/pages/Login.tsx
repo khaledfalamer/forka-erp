@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { LangPicker, AutoNotice } from '../LangPicker';
 import { api, DEMO } from '../api';
 import { useI18n } from '../i18n';
 import { Logo } from '../icons';
@@ -18,8 +19,9 @@ export function Login({ onDone }: { onDone: () => void }) {
       <div className="login-card">
         <div className="login-head">
           <Logo dark />
-          <button className="link-btn dark" onClick={() => setLang(lang === 'en' ? 'ar' : 'en')}>{t.language}</button>
+          <LangPicker dark />
         </div>
+        <AutoNotice />
         <h1>{t.signIn}</h1>
         <p className="notice">{t.demoNotice}{DEMO ? ' ' + t.demoBrowser : ''}</p>
         <h2>{t.chooseAccount}</h2>
