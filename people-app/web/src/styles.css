@@ -603,3 +603,10 @@ html[lang="ar"] .dash-hero h1 { font-family: var(--head); font-size: clamp(32px,
 .v2 .page .panel, .v2 .page .card { border-radius: 18px; }
 .dash > .panel h2 { font-family: var(--font); font-size: 20px; font-weight: 600; }
 @media (max-width: 900px) { .sec-head .muted { display: none; } .sec-head h2 { font-size: 19px; } }
+/* the top bar must not create its own layer, or pop-ups opened from it (language box) are cut off */
+.v2 .top { backdrop-filter: none; background: var(--paper); }
+/* the dark sidebar colour runs the full height of long pages */
+@media (min-width: 901px) {
+  .shell.v2 { background: linear-gradient(to right, #2B2B2B 252px, var(--paper) 252px); }
+  html[dir="rtl"] .shell.v2 { background: linear-gradient(to left, #2B2B2B 252px, var(--paper) 252px); }
+}
