@@ -21,6 +21,15 @@ repository; it will then move there with its history. Nothing in this folder is 
 - Home: my job, my team count, documents expiring within 60 days.
 - Phone-first screens, English and Arabic (right to left), Forka brand.
 
+## Preview of every module (demo build only)
+
+`npm run -w web build:demo` builds a version that runs in the browser with made-up data (published as a private review link).
+It contains every module as pages: leave (balances, requests, team calendar), requests and approvals, my time and clock-in,
+roster, attendance exceptions, payslips, documents (expiry, renewal upload, HR check), joiners and leavers (onboarding,
+probation, exit checklists), payroll month-end steps and variance, performance reviews with role scorecards, learning,
+HR desk (private cases), news and policy acknowledgements, reports, and settings. The tables for all of these are in
+`server/migrations/002_modules.sql`; their server endpoints are built module by module, with tests, before real data.
+
 ## Not yet (by design)
 
 - Real sign-in (Google for office staff, phone code + PIN for frontline). The skeleton has a **demo account picker that only exists outside production**.
