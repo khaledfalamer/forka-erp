@@ -197,12 +197,12 @@ label.f{display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--fk
 /* Forka app header: the four-petal mark, FORKA above the app name */
 .fk-lock{display:inline-flex;align-items:center;gap:10px;white-space:nowrap;text-decoration:none;color:inherit}
 .fk-lock>div{text-align:start}
-.fk-lock svg{width:30px;height:30px;flex:none;display:block}
-.fk-lock .fk-k{display:block;font:600 9.5px/1 'Inter Tight',system-ui,sans-serif;letter-spacing:.14em;color:#c8c3b9;text-transform:uppercase}
+.fk-lock svg{width:34px;height:34px;flex:none;display:block}
+.fk-lock .fk-k{display:block;font:600 12px/1 'Inter Tight',system-ui,sans-serif;letter-spacing:.2em;color:#c8c3b9;text-transform:uppercase}
 .fk-lock .fk-n{display:block;font:600 20px/1.05 'EB Garamond','IBM Plex Sans Arabic',serif;color:#f6f3ee;margin-top:3px;letter-spacing:0;text-transform:none}
 .fk-lock.on-light .fk-k{color:#8a7f72}.fk-lock.on-light .fk-n{color:#2b2b2b}
-@media (max-width:600px){.fk-lock:not(.big){gap:8px}.fk-lock:not(.big) svg{width:26px;height:26px}.fk-lock:not(.big) .fk-n{font-size:17px}.fk-lock:not(.big) .fk-k{font-size:8.5px}}
-.fk-lock.big{gap:18px}.fk-lock.big svg{width:64px;height:64px}.fk-lock.big .fk-k{font-size:15px}.fk-lock.big .fk-n{font-size:46px;margin-top:6px}
+@media (max-width:600px){.fk-lock:not(.big){gap:8px}.fk-lock:not(.big) svg{width:26px;height:26px}.fk-lock:not(.big) .fk-n{font-size:17px}.fk-lock:not(.big) .fk-k{font-size:10.5px}}
+.fk-lock.big{gap:18px}.fk-lock.big svg{width:64px;height:64px}.fk-lock.big .fk-k{font-size:21px}.fk-lock.big .fk-n{font-size:46px;margin-top:6px}
 </style>
 </head>
 <body>
@@ -210,7 +210,7 @@ label.f{display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--fk
 <script src="config.js"></script>
 <script>
 'use strict';
-let fkI=0;function fkMark(){const m='fkm'+(++fkI);return `<svg viewBox="0 0 64 64" aria-hidden="true"><defs><mask id="${m}"><rect width="64" height="64" fill="#fff"/><circle cx="32" cy="32" r="12.5" fill="#000"/></mask></defs><g mask="url(#${m})"><rect width="30" height="30" rx="7" fill="#4d7b8a"/><rect x="34" width="30" height="30" rx="7" fill="#d9a650"/><rect y="34" width="30" height="30" rx="7" fill="#829980"/><rect x="34" y="34" width="30" height="30" rx="7" fill="#ba5c45"/></g><circle cx="32" cy="32" r="9" fill="#876b45"/></svg>`}
+let fkI=0;function fkMark(){const m='fkm'+(++fkI);return `<svg viewBox="0 0 118 118" aria-hidden="true"><defs><mask id="${m}"><rect width="118" height="118" fill="#fff"/><circle cx="59" cy="59" r="22" fill="#000"/></mask></defs><g mask="url(#${m})"><rect x="7" y="7" width="48" height="48" rx="12" fill="#397F8F"/><rect x="63" y="7" width="48" height="48" rx="12" fill="#E0A037"/><rect x="7" y="63" width="48" height="48" rx="12" fill="#77987D"/><rect x="63" y="63" width="48" height="48" rx="12" fill="#BD5038"/></g><circle cx="59" cy="59" r="15.8" fill="#896B45"/></svg>`}
 function fkLock(name,cls,attrs){return `<div class="fk-lock ${cls||''}" ${attrs||''}>${fkMark()}<div><span class="fk-k">FORKA</span><span class="fk-n">${name}</span></div></div>`}
 const CFG=window.FORKA_APPS||{};
 const LIVE=!!(CFG.ACCOUNTS_URL&&CFG.GOOGLE_CLIENT_ID);
@@ -471,10 +471,10 @@ function vGate(){
   else{const m={waiting:['waitT','waitTxt','ok'],pending:['pendT','pendTxt','ok'],blocked:['blockT','blockTxt','err'],rejected:['rejT','blockTxt','err']}[g.step];
     const r=DATA.requests[g.email];
     body='<h2>'+t(m[0])+'</h2><div class="'+m[2]+'">'+t(m[1])+(g.step==='rejected'&&r&&r.reason?'<br><b>'+esc(r.reason)+'</b>':'')+'</div><div class="note">'+esc(g.email)+'</div><button class="lnk" data-a="g-start">'+t('back')+'</button>'}
-  return '<div class="gate">'+langSw()+fkLock(t('apps'),'big')+'<div class="gcard">'+body+'</div><a class="plink" href="help/?lang='+lang+'" target="_blank" rel="noopener">'+t('help')+'</a> · <a class="plink" href="privacy.html">'+t('privacy')+'</a></div>'}
+  return '<div class="gate">'+langSw()+fkLock(lang==='ar'?t('apps'):'App','big')+'<div class="gcard">'+body+'</div><a class="plink" href="help/?lang='+lang+'" target="_blank" rel="noopener">'+t('help')+'</a> · <a class="plink" href="privacy.html">'+t('privacy')+'</a></div>'}
 
 function vTop(){const p=person(me);
-  return '<div class="top">'+fkLock(t('apps'),'on-light','data-a="home" style="cursor:pointer"')+'<div class="sp"></div>'+
+  return '<div class="top">'+fkLock(lang==='ar'?t('apps'):'App','on-light','data-a="home" style="cursor:pointer"')+'<div class="sp"></div>'+
     '<div class="me"><div class="av">'+esc(initials(p.name))+'</div><div class="txt"><div class="nm">'+esc(p.name)+'</div><div class="lv">'+lvName(p.level)+'</div></div></div>'+
     '<a class="btn sm" id="helpl" href="help/?lang='+lang+'" target="_blank" rel="noopener">'+t('help')+'</a><button class="btn sm" data-a="out">'+t('out')+'</button>'+langSw()+'</div>'}
 
@@ -559,7 +559,7 @@ function render(){
   const gm=document.getElementById('gmail');if(gm)gate.typed=gm.value;
   const fq=document.activeElement&&document.activeElement.id==='fq'?document.activeElement.selectionStart:null;
   if(me&&(!person(me)||person(me).status!=='active')){me=null;view='gate';try{sessionStorage.removeItem('fa-me')}catch(_){}}
-  if(CFG.MODE==='live'&&!LIVE){root.innerHTML='<div class="gate">'+langSw()+fkLock(t('apps'),'big')+'<div class="gcard"><h2>'+t('setupT')+'</h2><p>'+t('setupTxt')+'</p></div></div>';return}
+  if(CFG.MODE==='live'&&!LIVE){root.innerHTML='<div class="gate">'+langSw()+fkLock(lang==='ar'?t('apps'):'App','big')+'<div class="gcard"><h2>'+t('setupT')+'</h2><p>'+t('setupTxt')+'</p></div></div>';return}
   if(!me){root.innerHTML=vGate();if(LIVE&&gate.step==='start')drawGoogle()}
   else{if(view==='gate')view='home';
     if((view==='people'||view==='activity')&&!isCeo(person(me)))view='home';
