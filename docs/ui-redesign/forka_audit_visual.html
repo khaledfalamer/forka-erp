@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Forka Audit — Before / After</title>
+<style>
+:root{--canvas:#F7F4EE;--surface:#FFF;--ink:#25211D;--ink2:#6E6861;--bronze:#98693F;--ok:#397553;--warn:#A66C1E;--bad:#B34C3D;--border:#E5DED4;--soft:#F1EBE2}
+*{box-sizing:border-box}
+body{margin:0;background:var(--canvas);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Arial,sans-serif}
+.wrap{max-width:1180px;margin:0 auto;padding:24px 16px 60px}
+.kicker{color:var(--bronze);font-weight:700;font-size:12px;letter-spacing:2px;text-transform:uppercase}
+h1{font-family:Georgia,"Times New Roman",serif;font-size:34px;margin:4px 0 6px}
+.lead{color:var(--ink2);margin:0 0 20px;max-width:760px}
+.tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+.tab{border:1px solid var(--border);background:var(--surface);padding:9px 14px;border-radius:999px;cursor:pointer;font:inherit;font-size:14px;color:var(--ink)}
+.tab[aria-selected=true]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.tab .p{font-size:11px;font-weight:700;margin-right:6px;color:var(--bad)}
+.tab[aria-selected=true] .p{color:#F3B4A9}
+.panel{display:none}.panel.on{display:block}
+.says{background:var(--soft);border-left:4px solid var(--bronze);padding:12px 16px;border-radius:6px;margin-bottom:16px}
+.says b{color:var(--bronze)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:860px){.grid{grid-template-columns:1fr}}
+.col{min-width:0}.col h3{margin:0 0 8px;font-size:13px;letter-spacing:1px;text-transform:uppercase}
+.col.before h3{color:var(--bad)}.col.after h3{color:var(--ok)}
+.screen{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.note{font-size:13px;color:var(--ink2);margin:8px 2px 0}
+.note li{margin:2px 0}
+.bar{display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid var(--border);background:#FBF9F5;font-size:13px}
+.logo{font-family:Georgia,serif;font-weight:700}
+.pill{display:inline-block;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:600;border:1px solid}
+.u{color:var(--bad);border-color:var(--bad);background:#FBEDEA}
+.h{color:var(--warn);border-color:var(--warn);background:#FBF2E6}
+.n{color:var(--ink2);border-color:var(--border);background:#F7F4EE}
+.g{color:var(--ok);border-color:var(--ok);background:#EAF3ED}
+.sp{flex:1}
+.btn{background:var(--bronze);color:#fff;border:0;border-radius:8px;padding:7px 12px;font:inherit;font-size:13px;cursor:pointer}
+.btn.ghost{background:none;color:var(--ink);border:1px solid var(--border)}
+.bad-flag{position:relative}
+.bad-flag::after{content:attr(data-flag);position:absolute;right:6px;top:4px;z-index:3;background:var(--bad);color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:4px}
+/* nav */
+.hscroll{overflow-x:scroll;white-space:nowrap;padding:8px 10px;border-bottom:1px solid var(--border);font-size:13px}
+.hscroll span{display:inline-block;padding:6px 12px;margin-right:4px;border-radius:6px;background:#F3EFE8}
+.navrow{display:flex;gap:4px;padding:8px 10px;border-bottom:1px solid var(--border);font-size:13px;flex-wrap:wrap;align-items:center}
+.navrow span{padding:6px 12px;border-radius:6px}
+.navrow .on{background:var(--ink);color:#fff}
+.more{position:relative}
+.menu{position:absolute;top:32px;left:0;background:#fff;border:1px solid var(--border);border-radius:8px;box-shadow:0 6px 20px rgba(0,0,0,.1);padding:6px;display:none;z-index:2;min-width:150px}
+.menu div{padding:6px 10px;border-radius:6px}.menu div:hover{background:var(--soft)}
+.more.open .menu{display:block}
+.body{padding:14px;font-size:13px;color:var(--ink2);min-height:90px}
+/* table */
+.tscroll{overflow:auto;max-height:220px}
+table{border-collapse:collapse;font-size:12px;width:100%}
+th,td{border-bottom:1px solid var(--border);padding:6px 8px;text-align:left;white-space:nowrap}
+th{background:#FBF9F5;font-weight:600;position:sticky;top:0}
+.dense td,.dense th{padding:4px 6px;font-size:11px}
+.pin{position:sticky;left:0;background:#fff;box-shadow:2px 0 0 var(--border);z-index:1}
+th.pin{background:#FBF9F5;z-index:2}
+.num{font-variant-numeric:tabular-nums;text-align:right}
+tr.click{cursor:pointer}tr.click:hover td{background:#FBF6EE}
+.cards{display:flex;gap:8px;padding:10px 12px;flex-wrap:wrap}
+.card{flex:1;min-width:110px;border:1px solid var(--border);border-radius:10px;padding:8px 10px}
+.card .v{font-size:18px;font-weight:700;font-variant-numeric:tabular-nums}
+.card .l{font-size:11px;color:var(--ink2)}
+.filters{display:flex;gap:6px;padding:0 12px 10px;flex-wrap:wrap}
+.chip{border:1px solid var(--border);border-radius:999px;padding:3px 10px;font-size:12px;background:#fff}
+.chip.on{border-color:var(--bronze);color:var(--bronze);font-weight:600}
+.drawer{border-top:1px solid var(--border);padding:10px 12px;background:#FBF9F5;font-size:12px;display:none}
+.drawer.on{display:block}
+.drawer dl{display:grid;grid-template-columns:auto 1fr;gap:3px 12px;margin:6px 0 0}
+.drawer dt{color:var(--ink2)}
+/* form */
+.form{padding:12px;font-size:12px}
+.form label{display:block;color:var(--ink2);margin:6px 0 2px}
+.inp{border:1px solid var(--border);border-radius:6px;height:26px;background:#fff}
+.longform{max-height:260px;overflow:auto}
+.steps{display:flex;gap:4px;padding:10px 12px;border-bottom:1px solid var(--border)}
+.step{flex:1;text-align:center;font-size:11px;padding:6px 2px;border-radius:6px;background:#F3EFE8;color:var(--ink2)}
+.step.done{background:#EAF3ED;color:var(--ok)}.step.cur{background:var(--ink);color:#fff}
+.err{color:var(--bad);font-size:11px;margin-top:2px}
+.foot{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-top:1px solid var(--border);font-size:12px;color:var(--ink2)}
+/* dashboard */
+.empty-big{margin:12px;border:1px dashed var(--border);border-radius:10px;height:150px;display:flex;align-items:center;justify-content:center;color:var(--ink2)}
+.zero{display:flex;gap:6px;padding:0 12px 12px;flex-wrap:wrap}
+.zero div{flex:1;min-width:70px;border:1px solid var(--border);border-radius:8px;padding:6px;text-align:center;font-size:11px;color:var(--ink2)}
+.zero b{display:block;font-size:16px;color:var(--ink)}
+.stepper{display:flex;padding:0 12px 12px;gap:2px}
+.stepper div{flex:1;background:#F3EFE8;padding:6px 4px;font-size:11px;text-align:center;cursor:pointer}
+.stepper div:first-child{border-radius:8px 0 0 8px}.stepper div:last-child{border-radius:0 8px 8px 0}
+.stepper div:hover{background:var(--soft);color:var(--bronze)}
+.stepper b{display:block;font-size:14px}
+.queue{margin:0 12px 12px;border:1px solid var(--border);border-radius:10px;padding:12px;font-size:13px}
+/* kanban */
+.board{display:flex;gap:8px;padding:10px;overflow-x:auto}
+.colk{min-width:150px;flex:1;background:#F7F4EE;border-radius:8px;padding:6px}
+.colk h4{margin:2px 4px 6px;font-size:12px;display:flex;justify-content:space-between}
+.tk{background:#fff;border:1px solid var(--border);border-radius:8px;padding:7px;margin-bottom:6px;font-size:12px}
+.tk .t{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tk .t2{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.tk .m{display:flex;gap:6px;align-items:center;margin-top:5px;color:var(--ink2);font-size:11px}
+.av{width:18px;height:18px;border-radius:50%;background:var(--bronze);color:#fff;font-size:9px;display:inline-flex;align-items:center;justify-content:center}
+.wide{width:760px}
+.tabgroups{display:grid;gap:10px;margin-bottom:20px}
+.tg{display:grid;grid-template-columns:110px 1fr;gap:10px;align-items:start}
+.tgl{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--ink2);padding-top:10px}
+.tg .tabs{margin:0}
+@media(max-width:640px){.tg{grid-template-columns:1fr;gap:4px}.tgl{padding-top:0}}
+.full{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:auto}
+.full table{font-size:13px}.full td,.full th{white-space:normal;padding:9px 12px;vertical-align:top}
+.sw{display:flex;gap:8px;flex-wrap:wrap;padding:12px}
+.sw div{width:96px;font-size:11px;color:var(--ink2)}
+.sw i{display:block;height:44px;border-radius:8px;border:1px solid var(--border);margin-bottom:4px}
+.typo{padding:12px;border-top:1px solid var(--border)}
+.serif{font-family:Georgia,serif}
+.focusdemo{outline:3px solid #C9A46A;outline-offset:2px}
+.tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;padding:12px}
+.tile{border:1px solid var(--border);border-radius:10px;padding:10px;font-size:12px}
+.tile b{display:block;font-size:14px;color:var(--ink)}
+.tile .m2{color:var(--ink2);margin:2px 0 8px}
+.tile.off{background:#FAF8F4;color:var(--ink2)}
+.sec{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--ink2);padding:10px 12px 0}
+.phone{width:280px;max-width:100%;margin:0 auto;border:8px solid #2B2B2B;border-radius:28px;height:480px;overflow:hidden;position:relative;background:var(--canvas)}
+.phone .in{height:100%;overflow:auto;font-size:12px}
+.overflowpage{width:420px}
+.bottombar{position:absolute;bottom:0;left:0;right:0;display:flex;justify-content:space-around;background:#fff;border-top:1px solid var(--border);padding:8px 0;font-size:11px}
+.bottombar span{text-align:center;min-width:44px}
+.drawerm{position:absolute;top:0;bottom:0;left:0;width:72%;background:#fff;box-shadow:4px 0 20px rgba(0,0,0,.15);padding:14px;transform:translateX(-105%);transition:transform .2s;z-index:5;font-size:13px}
+.drawerm.on{transform:none}
+.drawerm div{padding:9px 6px;border-bottom:1px solid var(--border)}
+.stagestrip{display:flex;gap:6px;overflow-x:scroll;padding:10px 12px}
+.stagestrip span{flex:0 0 auto;border:1px solid var(--border);border-radius:8px;padding:6px 10px;font-size:12px;background:#F7F4EE}
+.dead{margin:12px;padding:12px;border-radius:8px;background:#F3EFE8;color:var(--ink2);font-size:13px}
+.mask{font-variant-numeric:tabular-nums;color:var(--ink2)}
+.ed{display:grid;grid-template-columns:1fr 1fr;gap:0}
+.ed>div{padding:10px;font-size:12px}
+.ed>div+div{border-left:1px solid var(--border);background:#FBF9F5}
+.calg{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);font-size:11px}
+.calg div{background:#fff;min-height:64px;padding:4px}
+.calg .d{color:var(--ink2);font-size:10px}
+.cc{display:block;background:#F1EBE2;border-radius:4px;padding:1px 4px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.more2{display:inline-block;margin-top:2px;color:var(--bronze);font-weight:600;cursor:pointer}
+.tl{display:grid;grid-template-columns:120px 1fr;font-size:11px}
+.tl>div{border-bottom:1px solid var(--border);padding:6px;height:30px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tl .lab{background:#FBF9F5;border-right:1px solid var(--border);font-weight:600}
+.tlbar{position:relative}.tlbar i{position:absolute;top:7px;height:16px;border-radius:4px;background:var(--bronze);opacity:.75}
+.grp{border:1px solid var(--border);border-radius:8px;margin-bottom:8px}
+.grp summary{padding:8px 10px;font-weight:600;cursor:pointer;font-size:12px}
+.grp .gi{padding:0 10px 10px}
+.sticky{position:sticky;bottom:0;background:#fff}
+.det{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px}
+.det .box{border:1px solid var(--border);border-radius:8px;padding:8px;font-size:12px}
+.det .box b{display:block;margin-bottom:4px;font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--ink2)}
+.det .wide2{grid-column:1/-1}
+.pinbox{padding:20px;text-align:center;font-size:13px}
+.pindots{display:flex;gap:8px;justify-content:center;margin:12px 0}
+.pindots i{width:38px;height:44px;border:1px solid var(--border);border-radius:8px;display:inline-block;background:#fff}
+.abc{display:flex;gap:6px;padding:12px}
+.abc div{flex:1;border-radius:8px;padding:8px;font-size:12px;border:1px solid var(--border)}
+.abc b{font-size:18px;display:block}
+.callout{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px;max-width:760px}
+.callout ul{margin:8px 0 0;padding-left:20px}
+.src{margin-top:26px;font-size:12px;color:var(--ink2)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="kicker">Forka ERP design audit · 12 Nov 2026</div>
+  <h1>What the auditor means</h1>
+  <p class="lead">Every recommendation in the audit, drawn as a rough "Now" vs "Proposed" sketch with made-up demo data. They show the idea, not a final design. Pick a topic below; many of the "Proposed" sides are clickable. Start with ★ Priorities for the full plan.</p>
+
+  <div class="tabgroups" role="tablist">
+    <div class="tg"><div class="tgl">Whole suite</div><div class="tabs">
+      <button class="tab" role="tab" aria-selected="true" data-t="plan">★ Priorities &amp; sprints</button>
+      <button class="tab" role="tab" aria-selected="false" data-t="tokens"><span class="p">P2</span>Design system</button>
+      <button class="tab" role="tab" aria-selected="false" data-t="nav"><span class="p">P0</span>Shared header &amp; nav</button>
+      <button class="tab" role="tab" aria-selected="false" data-t="launcher"><span class="p">P0</span>App launcher</button>
+      <button class="tab" role="tab" aria-selected="false" data-t="mobile"><span class="p">P0</span>Phone layout</button>
+      <button class="tab" role="tab" aria-selected="false" data-t="rtl"><span class="p">P0</span>Arabic (RTL)</button>
+    </div></div>
+    <div class="tg"><div class="tgl">Forka Hire</div><div class="tabs">
+      <button class="tab" role="tab" aria-selected="false" data-t="dash"><span class="p">P1</span>Dashboard &amp; approvals</button>
+      <button class="tab" role="tab" aria-selected="false" data-t="hreq"><span class="p">P1</span>Requests &amp; pipeline</button>
+      <button class="tab" role="tab" aria-selected="false" data-t="form"><span class="p">P0</span>Hiring request form</button>
+      <button class="tab" role="tab" aria-selected="false" data-t="talent"><span class="p">P1</span>Talent pool privacy</button>
+      <button class="tab" role="tab" aria-selected="false" data-t="careers"><span class="p">P2</span>Careers editor</button>
+    </div></div>
+    <div class="tg"><div class="tgl">Forka Boards</div><div class="tabs">
+      <button class="tab" role="tab" aria-selected="false" data-t="progress"><span class="p">P1</span>Company progress</button>
+      <button class="tab" role="tab" aria-selected="false" data-t="board"><span class="p">P1</span>Board cards &amp; "Urgent"</button>
+      <button class="tab" role="tab" aria-selected="false" data-t="cal"><span class="p">P1</span>Calendar &amp; timeline</button>
+      <button class="tab" role="tab" aria-selected="false" data-t="task"><span class="p">P1</span>New task form</button>
+    </div></div>
+    <div class="tg"><div class="tgl">Procurement</div><div class="tabs">
+      <button class="tab" role="tab" aria-selected="false" data-t="purch"><span class="p">P1</span>Purchasing &amp; request detail</button>
+      <button class="tab" role="tab" aria-selected="false" data-t="inv"><span class="p">P0</span>Inventory table</button>
+      <button class="tab" role="tab" aria-selected="false" data-t="supp"><span class="p">P1</span>Suppliers &amp; ABC analysis</button>
+      <button class="tab" role="tab" aria-selected="false" data-t="pin">Operations PIN</button>
+    </div></div>
+    <div class="tg"><div class="tgl">Not reviewed</div><div class="tabs">
+      <button class="tab" role="tab" aria-selected="false" data-t="people">Forka People (HRIS)</button>
+    </div></div>
+  </div>
+
+  <!-- NAV -->
+  <section class="panel" id="nav">
+    <div class="says"><b>He says:</b> Every app (Hire, Boards, Procurement) has its own kind of header and menu. In Hire, the top menu scrolls sideways even on a normal laptop, so items like "Team &amp; access" are hidden. <b>Fix:</b> use one suite header everywhere, with an app switcher and your role always visible. Put extra menu items under a named "More" menu instead of a sideways scrollbar.</div>
+    <div class="grid">
+      <div class="col before"><h3>Now</h3>
+        <div class="screen">
+          <div class="bar"><span class="logo">Forka Hire</span></div>
+          <div class="hscroll bad-flag" data-flag="hidden scroll"><span>Dashboard</span><span>Approvals</span><span>Requests</span><span>Candidates</span><span>Talent pool</span><span>Careers</span><span>Reports</span><span>Settings</span><span>Team &amp; access</span></div>
+          <div class="body">Each app looks a bit different: Boards has a left rail, Procurement has big buttons in the middle, and Hire has this scrolling strip.</div>
+        </div>
+        <ul class="note"><li>"Team &amp; access" is off-screen at 1363 px.</li><li>You have to learn the menu again in every app.</li></ul>
+      </div>
+      <div class="col after"><h3>Proposed</h3>
+        <div class="screen">
+          <div class="bar"><span class="logo">Forka</span><span class="pill n">▦ Apps ▾</span><b>Hire</b><span class="sp"></span><span>🔍</span><span>EN / ع</span><span>🔔</span><span class="pill g">Khaled · CEO</span></div>
+          <div class="navrow"><span class="on">Dashboard</span><span>Approvals</span><span>Requests</span><span>Candidates</span><span>Talent pool</span>
+            <span class="more" id="more"><span class="btn ghost" style="padding:5px 10px">More ▾</span><div class="menu"><div>Careers page</div><div>Reports</div><div>Settings</div><div>Team &amp; access</div></div></span></div>
+          <div class="body">The same header appears in Hire, Boards and Procurement. Only the app name and a small accent colour change. Click <b>More</b>.</div>
+        </div>
+        <ul class="note"><li>Nothing is hidden, and there is no sideways scrollbar.</li><li>On phones, the menu becomes a drawer.</li></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- INVENTORY -->
+  <section class="panel" id="inv">
+    <div class="says"><b>He says:</b> The inventory grid has 379 rows and about 14 columns, including unit conversions, and it scrolls inside the page. It is the screen where staff are most likely to make mistakes. <b>Fix:</b> show only the key columns by default (the audit suggests 8) and pin <i>Item</i> and <i>Stock now</i> so they never scroll away. Add filter chips and saved views, and open the extra detail (conversions, usage, reserve) in a side drawer when you click a row. <b>All calculations and permissions stay the same.</b></div>
+    <div class="grid">
+      <div class="col before"><h3>Now</h3>
+        <div class="screen">
+          <div class="tscroll bad-flag" data-flag="14 cols · nested scroll">
+            <table class="dense wide"><tr><th>Code</th><th>Item</th><th>Cat</th><th>Supplier</th><th>Unit</th><th>Pack</th><th>Conv</th><th>Stock</th><th>Usage/wk</th><th>Reserve</th><th>Reorder</th><th>To buy</th><th>Cost</th><th>Terms</th></tr>
+              <tr><td>K-014</td><td>Basmati rice</td><td>Dry</td><td>Supplier A</td><td>kg</td><td>25kg</td><td>1:25</td><td>40</td><td>32</td><td>10</td><td>50</td><td>2</td><td>3.10</td><td>30d</td></tr>
+              <tr><td>K-022</td><td>Olive oil</td><td>Dry</td><td>Supplier B</td><td>L</td><td>4×5L</td><td>1:20</td><td>12</td><td>15</td><td>5</td><td>20</td><td>1</td><td>6.40</td><td>COD</td></tr>
+              <tr><td>F-103</td><td>Chicken breast</td><td>Frozen</td><td>Supplier C</td><td>kg</td><td>10kg</td><td>1:10</td><td>18</td><td>40</td><td>10</td><td>30</td><td>3</td><td>4.80</td><td>15d</td></tr>
+              <tr><td>D-007</td><td>Fresh cream</td><td>Dairy</td><td>Supplier D</td><td>L</td><td>12×1L</td><td>1:12</td><td>30</td><td>22</td><td>6</td><td>24</td><td>0</td><td>1.90</td><td>30d</td></tr>
+              <tr><td>P-051</td><td>Takeaway box M</td><td>Pack</td><td>Supplier E</td><td>pc</td><td>500</td><td>1:500</td><td>900</td><td>600</td><td>200</td><td>1000</td><td>1</td><td>0.09</td><td>30d</td></tr>
+              <tr><td>…</td><td>…374 more</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            </table>
+          </div>
+        </div>
+        <ul class="note"><li>Scroll right and you lose sight of which item you are on.</li><li>Editable and read-only cells look the same.</li></ul>
+      </div>
+      <div class="col after"><h3>Proposed</h3>
+        <div class="screen">
+          <div class="bar"><b>Inventory</b><span class="pill n">UAE · all branches</span><span class="sp"></span><span style="color:var(--ink2)">Saved 2 min ago</span><button class="btn">Reorder</button></div>
+          <div class="cards"><div class="card"><div class="v">72%</div><div class="l">Budget used</div></div><div class="card"><div class="v">48.2k</div><div class="l">Stock value</div></div><div class="card"><div class="v" style="color:var(--bad)">3</div><div class="l">Need reorder</div></div></div>
+          <div class="filters"><span class="chip">🔍 Search</span><span class="chip on">Low stock</span><span class="chip">Supplier ▾</span><span class="chip">Category ▾</span><span class="chip">⭑ My saved view</span><span class="chip">Columns ▾</span></div>
+          <div class="tscroll" style="max-height:none">
+            <table id="invt"><tr><th class="pin">Item</th><th class="num">Stock now</th><th class="num">Reorder at</th><th class="num">To buy</th><th>Supplier</th><th>Status</th></tr>
+              <tr class="click" data-i="0"><td class="pin">Basmati rice</td><td class="num">40 kg</td><td class="num">50</td><td class="num">2 bags</td><td>Supplier A</td><td><span class="pill h">Low</span></td></tr>
+              <tr class="click" data-i="1"><td class="pin">Olive oil</td><td class="num">12 L</td><td class="num">20</td><td class="num">1 case</td><td>Supplier B</td><td><span class="pill h">Low</span></td></tr>
+              <tr class="click" data-i="2"><td class="pin">Chicken breast</td><td class="num">18 kg</td><td class="num">30</td><td class="num">3 cartons</td><td>Supplier C</td><td><span class="pill u">Critical</span></td></tr>
+            </table>
+          </div>
+          <div class="drawer" id="drw"></div>
+        </div>
+        <ul class="note"><li>Click a row to open the detail drawer.</li><li>Item stays pinned on the left when you scroll.</li></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- FORM -->
+  <section class="panel" id="form">
+    <div class="says"><b>He says:</b> The hiring request is one long page: role, location, salary, screening, tests, traits and criticality all at once. The process is right, but it is too much to fill in at one time. <b>Fix:</b> split it into 4 steps (Role &amp; location → Compensation &amp; timing → Evaluation plan → Review &amp; submit). Show errors next to the field and make it clear when a draft is saved. <b>CEO approval stays exactly as it is.</b></div>
+    <div class="grid">
+      <div class="col before"><h3>Now</h3>
+        <div class="screen">
+          <div class="bar"><b>New hiring request</b></div>
+          <div class="form longform bad-flag" data-flag="one long page">
+            <label>Role title</label><div class="inp"></div><label>Branch</label><div class="inp"></div><label>Department</label><div class="inp"></div>
+            <label>Salary range</label><div class="inp"></div><label>Start date</label><div class="inp"></div><label>Headcount</label><div class="inp"></div>
+            <label>Screening criteria</label><div class="inp" style="height:50px"></div><label>Practical test</label><div class="inp"></div>
+            <label>Traits</label><div class="inp"></div><label>Criticality</label><div class="inp"></div><label>Reason for hire</label><div class="inp" style="height:50px"></div>
+            <label>…more fields</label><div class="inp"></div>
+            <div style="margin-top:10px"><button class="btn">Submit</button></div>
+          </div>
+        </div>
+        <ul class="note"><li>Errors only appear when you press Submit.</li><li>You can't tell if your draft was saved.</li></ul>
+      </div>
+      <div class="col after"><h3>Proposed</h3>
+        <div class="screen">
+          <div class="steps" id="steps"></div>
+          <div class="form" id="stepbody"></div>
+          <div class="foot"><span id="saved">Draft saved ✓</span><span><button class="btn ghost" id="back">Back</button> <button class="btn" id="next">Next</button></span></div>
+        </div>
+        <ul class="note"><li>Click Next / Back to walk through the steps.</li><li>The last step goes to CEO approval, same as today.</li></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- DASH -->
+  <section class="panel" id="dash">
+    <div class="says"><b>He says:</b> When nothing is waiting, a huge empty "Nothing waiting" box takes up the first screen, every pipeline stage shows 0 at the same size, and there is no next step to take. <b>Fix:</b> use a small "Next action" queue with a helpful empty message and a button. Turn the stages into one clickable stepper that opens the filtered list. Add date and role filters.</div>
+    <div class="grid">
+      <div class="col before"><h3>Now</h3>
+        <div class="screen">
+          <div class="bar"><b>Hire dashboard</b></div>
+          <div class="empty-big bad-flag" data-flag="big & empty">Nothing waiting</div>
+          <div class="zero"><div><b>0</b>Applied</div><div><b>0</b>Screened</div><div><b>0</b>Interview</div><div><b>0</b>Practical</div><div><b>0</b>Offer</div><div><b>0</b>Hired</div></div>
+        </div>
+        <ul class="note"><li>Lots of space is used, but it tells you nothing.</li><li>The useful actions are on other pages.</li></ul>
+      </div>
+      <div class="col after"><h3>Proposed</h3>
+        <div class="screen">
+          <div class="bar"><b>Hire dashboard</b><span class="sp"></span><span class="chip">Last 30 days ▾</span><span class="chip">All roles ▾</span></div>
+          <div class="cards"><div class="card"><div class="v">3</div><div class="l">Open roles</div></div><div class="card"><div class="v">0</div><div class="l">In process</div></div><div class="card"><div class="v" style="color:var(--bad)">1</div><div class="l">Approval overdue</div></div></div>
+          <div class="queue"><b>Next action</b><br><span style="color:var(--ink2)">No candidates yet: none of your 3 open roles has been posted.</span><br><button class="btn" style="margin-top:8px">Post a role →</button></div>
+          <div class="stepper"><div><b>0</b>Applied</div><div><b>0</b>Screened</div><div><b>0</b>Interview</div><div><b>0</b>Practical</div><div><b>0</b>Offer</div><div><b>0</b>Hired</div></div>
+        </div>
+        <ul class="note"><li>An empty state that says what to do next and gives you a button for it.</li><li>The same idea fixes the "Post a role first" dead end in Add applicant.</li></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- BOARD -->
+  <section class="panel" id="board">
+    <div class="says"><b>He says:</b> Board columns run past the right edge and make the whole page scroll sideways. Card titles get cut off, and too many cards are tagged "Urgent", so the tag stops meaning anything. <b>Fix:</b> keep the sideways scroll inside the board area only and wrap titles to 2 lines. Use "Urgent" rarely, as one clear signal, and keep priority and due date visually separate.</div>
+    <div class="grid">
+      <div class="col before"><h3>Now</h3>
+        <div class="screen">
+          <div class="board bad-flag" data-flag="page scrolls sideways" style="overflow:hidden">
+            <div class="colk"><h4>To do <span>4</span></h4>
+              <div class="tk"><div class="t">Update allergen labels for new winter menu items</div><div class="m"><span class="pill u">Urgent</span><span class="av">MA</span>14 Nov</div></div>
+              <div class="tk"><div class="t">Book pest control for Sharjah kitchen deep clean</div><div class="m"><span class="pill u">Urgent</span><span class="av">TA</span>15 Nov</div></div></div>
+            <div class="colk"><h4>Doing <span>2</span></h4>
+              <div class="tk"><div class="t">Photoshoot for Mayar pastry counter relaunch</div><div class="m"><span class="pill u">Urgent</span><span class="av">KA</span>18 Nov</div></div></div>
+            <div class="colk"><h4>Review <span>1</span></h4>
+              <div class="tk"><div class="t">Supplier contract renewal…</div><div class="m"><span class="pill u">Urgent</span></div></div></div>
+          </div>
+        </div>
+        <ul class="note"><li>Everything is "Urgent", so nothing stands out.</li><li>Titles are cut off after a few words.</li></ul>
+      </div>
+      <div class="col after"><h3>Proposed</h3>
+        <div class="screen">
+          <div class="filters" style="padding:10px 12px 0"><span class="chip">🔍</span><span class="chip">Owner ▾</span><span class="chip">Priority ▾</span><span class="chip">Due this week</span></div>
+          <div class="board">
+            <div class="colk"><h4>To do <span>4 ＋</span></h4>
+              <div class="tk"><div class="t2" title="Update allergen labels for new winter menu items">Update allergen labels for new winter menu items</div><div class="m"><span class="pill u">● Urgent</span><span class="av">MA</span>📅 14 Nov · ☑ 2/5</div></div>
+              <div class="tk"><div class="t2">Book pest control for Sharjah kitchen deep clean</div><div class="m"><span class="pill h">High</span><span class="av">TA</span>📅 15 Nov</div></div></div>
+            <div class="colk"><h4>Doing <span>2 ＋</span></h4>
+              <div class="tk"><div class="t2">Photoshoot for Mayar pastry counter relaunch</div><div class="m"><span class="pill n">Normal</span><span class="av">KA</span>📅 18 Nov</div></div></div>
+            <div class="colk"><h4>Review <span>1 ＋</span></h4>
+              <div class="tk"><div class="t2">Supplier contract renewal for dry goods</div><div class="m"><span class="pill n">Low</span>📅 30 Nov</div></div></div>
+          </div>
+        </div>
+        <ul class="note"><li>Only one card is Urgent, so it stands out.</li><li>The board scrolls inside its own box; the page doesn't.</li></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- PLAN -->
+  <section class="panel on" id="plan">
+    <div class="says"><b>He says:</b> Keep every workflow, data rule, route and permission. Fix the shared navigation, the dense procurement tables and the long forms first, and do the visual polish last. The effort estimates assume design changes only, with no backend rewrites.</div>
+    <div class="full"><table>
+      <tr><th>Priority</th><th>Change</th><th>Impact</th><th>Effort</th><th>Done when…</th></tr>
+      <tr><td><span class="pill u">P0</span></td><td>Shared shell &amp; navigation</td><td>Very high</td><td>Medium</td><td>No hidden menu items at 1366 px; the same app switcher everywhere; your role always visible.</td></tr>
+      <tr><td><span class="pill u">P0</span></td><td>Inventory table redesign</td><td>Very high</td><td>High</td><td>Item and stock columns stay visible; no scroll inside the page; edits respect permissions and can be undone.</td></tr>
+      <tr><td><span class="pill u">P0</span></td><td>Phone layout &amp; Arabic RTL</td><td>High</td><td>Medium–high</td><td>No sideways page scroll at 390 / 768 / 1024 / 1366 px; every menu and action reachable in English and Arabic.</td></tr>
+      <tr><td><span class="pill u">P0</span></td><td>4-step hiring request form</td><td>High</td><td>Medium</td><td>Four steps, errors next to fields, a review step and a clear draft state; CEO approval unchanged.</td></tr>
+      <tr><td><span class="pill h">P1</span></td><td>Dashboards: "what needs me" first</td><td>High</td><td>Medium</td><td>A useful action queue at the top; KPI cards open the filtered list.</td></tr>
+      <tr><td><span class="pill h">P1</span></td><td>Finding candidates &amp; requests</td><td>High</td><td>Low–medium</td><td>Search, filters, sorting and a list view; contact details hidden by role.</td></tr>
+      <tr><td><span class="pill h">P1</span></td><td>Board cards readability</td><td>Medium–high</td><td>Medium</td><td>Sideways scroll only inside the board; full titles readable; "Urgent" used consistently.</td></tr>
+      <tr><td><span class="pill h">P1</span></td><td>Procurement queue &amp; request detail</td><td>High</td><td>Medium</td><td>Triage comes first; decision history and contact access are clear.</td></tr>
+      <tr><td><span class="pill n">P2</span></td><td>Careers editor</td><td>Medium</td><td>Low–medium</td><td>Clear save state, preview modes, each section edited on its own.</td></tr>
+      <tr><td><span class="pill n">P2</span></td><td>Small interactions &amp; finish</td><td>Medium</td><td>Low</td><td>Consistent focus, hover, loading, empty, success and error states.</td></tr>
+    </table></div>
+    <div class="grid" style="margin-top:16px">
+      <div class="callout"><b>Suggested 4 sprints</b><ul>
+        <li><b>Sprint 1:</b> colours/fonts (tokens), shared header, menu overflow, focus rings, phone frame.</li>
+        <li><b>Sprint 2:</b> inventory table prototype and procurement request detail.</li>
+        <li><b>Sprint 3:</b> hiring request wizard, candidate/request search, dashboard empty states.</li>
+        <li><b>Sprint 4:</b> board on phones, task form, calendar/timeline, careers editor, polish.</li></ul></div>
+      <div class="callout"><b>Rules he sets for the developer</b><ul>
+        <li>Every role sees exactly the same data and actions as today.</li>
+        <li>Keep the personal PIN for Operations and keep CEO approval.</li>
+        <li>Don't show candidate, staff, supplier contact or salary data to more people.</li>
+        <li>Don't create or edit live business data while testing.</li>
+        <li>Test at 4 screen sizes, in English and Arabic, at 200% zoom and with the keyboard only.</li></ul></div>
+    </div>
+  </section>
+
+  <!-- TOKENS -->
+  <section class="panel" id="tokens">
+    <div class="says"><b>He says:</b> Keep the warm ivory, dark ink and bronze, and keep serif for page titles only. Use a clear sans-serif for menus, labels, tables and numbers, with body text at 14–16 px and labels at least 13 px. Line up numbers using tabular figures. Use one spacing scale (4/8/12/16/24/32) and 8–12 px corners, and show a visible focus ring. Status badges need text <i>and</i> colour, and "Urgent" must not look like the default tag.</div>
+    <div class="grid">
+      <div class="col after"><h3>Colour tokens (his starting values)</h3>
+        <div class="screen">
+          <div class="sw">
+            <div><i style="background:#F7F4EE"></i>Canvas<br>#F7F4EE</div>
+            <div><i style="background:#FFFFFF"></i>Surface<br>#FFFFFF</div>
+            <div><i style="background:#25211D"></i>Ink<br>#25211D</div>
+            <div><i style="background:#6E6861"></i>Secondary<br>#6E6861</div>
+            <div><i style="background:#98693F"></i>Bronze (actions)<br>#98693F</div>
+            <div><i style="background:#E5DED4"></i>Border<br>#E5DED4</div>
+            <div><i style="background:#397553"></i>Success<br>#397553</div>
+            <div><i style="background:#A66C1E"></i>Warning<br>#A66C1E</div>
+            <div><i style="background:#B34C3D"></i>Danger<br>#B34C3D</div>
+          </div>
+          <div class="typo"><div class="serif" style="font-size:24px;font-weight:700">Page title in serif</div>
+            <div style="font-size:15px">Body text in sans-serif, 15 px. Labels 13 px.</div>
+            <div style="font-size:13px;color:var(--ink2)">Helper text 12–13 px, darker grey so it is readable.</div>
+            <div class="num" style="text-align:left;font-size:14px;margin-top:6px">Tabular numbers: 1,240.50 · 98.00 · 12 Nov 2026</div></div>
+        </div>
+      </div>
+      <div class="col"><h3 style="color:var(--ink)">Badges, buttons &amp; focus</h3>
+        <div class="screen" style="padding:12px;font-size:13px">
+          <p style="margin:0 0 6px"><b>Priority:</b> each level means one thing.</p>
+          <span class="pill u">● Urgent: today, blocks work</span> <span class="pill h">High: this week</span> <span class="pill n">Normal</span> <span class="pill n" style="opacity:.75">Low</span>
+          <p style="margin:12px 0 6px"><b>Status:</b> colour plus a word plus an icon, never colour alone.</p>
+          <span class="pill g">✓ Approved</span> <span class="pill h">⏳ Waiting</span> <span class="pill u">✕ Rejected</span>
+          <p style="margin:12px 0 6px"><b>Focus ring</b> for keyboard users:</p>
+          <button class="btn focusdemo">Primary action</button> <button class="btn ghost">Secondary</button>
+          <p style="margin:12px 0 6px"><b>Table density:</b> users can switch.</p>
+          <span class="chip on">Comfortable (default)</span> <span class="chip">Compact</span>
+          <p style="margin:12px 0 0;color:var(--ink2)">Touch targets are about 44 × 44 px, text contrast meets WCAG AA, and each app keeps a small accent colour only for wayfinding.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LAUNCHER -->
+  <section class="panel" id="launcher">
+    <div class="says"><b>He says:</b> The launcher is the best-looking screen. But apps and admin tools are mixed together, and "People and access" can be confused with an HR system. <b>Fix:</b> keep the greeting and a small KPI band. Add a clear <b>Workspaces</b> section with one same-size card per app: a one-line purpose, one small metric and an Open button. Move admin tools into their own section. If a role can't use an app, show the card locked with a reason instead of hiding it.</div>
+    <div class="grid">
+      <div class="col before"><h3>Now</h3>
+        <div class="screen">
+          <div class="bar"><span class="logo">Forka Apps</span></div>
+          <div style="padding:12px;font-size:13px"><b class="serif" style="font-size:18px">Good morning, Khaled</b></div>
+          <div class="sec">Your apps</div>
+          <div class="tiles"><div class="tile"><b>Procurement</b></div><div class="tile"><b>Hiring</b><div class="m2">Recruitment, approvals, candidates and careers page</div></div><div class="tile"><b>Branch Check</b></div><div class="tile"><b>Boards</b></div></div>
+          <div class="sec">Administration</div>
+          <div class="tiles bad-flag" data-flag="is this HR?"><div class="tile"><b>People and access</b></div><div class="tile"><b>Activity</b></div></div>
+        </div>
+        <ul class="note"><li>Cards are different sizes with uneven text.</li><li>Forka People (HR) can't be found.</li></ul>
+      </div>
+      <div class="col after"><h3>Proposed</h3>
+        <div class="screen">
+          <div class="bar"><span class="logo">Forka</span><span class="sp"></span><span>🔍</span><span>EN / ع</span><span>🔔</span><span class="pill g">Khaled · CEO</span></div>
+          <div style="padding:12px 12px 0;font-size:13px"><b class="serif" style="font-size:18px">Good morning, Khaled</b><span style="color:var(--ink2)"> · Thu 12 Nov</span></div>
+          <div class="filters" style="padding:8px 12px 0"><span class="pill u">2 approvals waiting</span><span class="pill h">3 items to reorder</span></div>
+          <div class="sec">Workspaces</div>
+          <div class="tiles">
+            <div class="tile"><b>Hire</b><div class="m2">Roles, candidates, approvals</div><span class="pill h">1 overdue</span> <button class="btn" style="float:right;padding:4px 10px">Open</button></div>
+            <div class="tile"><b>Boards</b><div class="m2">Tasks and projects</div><span class="pill n">12 due this week</span> <button class="btn" style="float:right;padding:4px 10px">Open</button></div>
+            <div class="tile"><b>Procurement</b><div class="m2">Requests, orders, stock</div><span class="pill n">5 open requests</span> <button class="btn" style="float:right;padding:4px 10px">Open</button></div>
+            <div class="tile off"><b>People</b><div class="m2">Staff records, leave, payroll</div>🔒 Ask HR for access</div>
+          </div>
+          <div class="sec">Admin tools</div>
+          <div class="filters" style="padding:8px 12px 12px"><span class="chip">User access &amp; roles</span><span class="chip">Activity log</span><span class="chip">Branch Check</span></div>
+        </div>
+        <ul class="note"><li>The four apps look the same, and admin tools sit apart.</li><li>Renaming "People and access" to "User access &amp; roles" removes the confusion.</li></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- MOBILE -->
+  <section class="panel" id="mobile">
+    <div class="says"><b>He says:</b> Phones weren't tested, but desktop already overflows sideways, so phones will be worse. <b>Fix:</b> below 1024 px the side rail shrinks to icons. Below 640 px the menu becomes a drawer, with a small bottom bar for common actions. The page itself must never scroll sideways; only tables and boards may, inside their own box.</div>
+    <div class="grid">
+      <div class="col before"><h3>Likely now (390 px phone)</h3>
+        <div class="phone"><div class="in"><div class="overflowpage">
+          <div class="bar"><span class="logo">Forka Hire</span></div>
+          <div class="hscroll"><span>Dashboard</span><span>Approvals</span><span>Requests</span><span>Candidates</span><span>Talent pool</span><span>Careers</span></div>
+          <div class="cards"><div class="card"><div class="v">3</div><div class="l">Open roles</div></div><div class="card"><div class="v">0</div><div class="l">In process</div></div><div class="card"><div class="v">1</div><div class="l">Overdue</div></div><div class="card"><div class="v">0</div><div class="l">Hired</div></div></div>
+          <div class="empty-big">Nothing waiting</div>
+        </div></div></div>
+        <ul class="note"><li>The page is wider than the phone, so you pinch and scroll sideways.</li></ul>
+      </div>
+      <div class="col after"><h3>Proposed (tap ☰)</h3>
+        <div class="phone"><div class="in" style="padding-bottom:50px">
+          <div class="bar"><span id="burger" style="cursor:pointer;font-size:18px">☰</span><span class="logo">Hire</span><span class="sp"></span><span>🔔</span></div>
+          <div class="cards"><div class="card"><div class="v">3</div><div class="l">Open roles</div></div><div class="card"><div class="v" style="color:var(--bad)">1</div><div class="l">Overdue</div></div></div>
+          <div class="queue"><b>Next action</b><br><span style="color:var(--ink2)">Approve the Cashier vacancy (Oman)</span><br><button class="btn" style="margin-top:6px">Review</button></div>
+          <div class="drawerm" id="mdrawer"><div><b>Forka Hire</b></div><div>Dashboard</div><div>Approvals</div><div>Requests</div><div>Candidates</div><div>Talent pool</div><div>Careers page</div><div>Team &amp; access</div><div style="color:var(--ink2)">▦ Switch app</div></div>
+          </div>
+          <div class="bottombar"><span>🏠<br>Home</span><span>✓<br>Approve</span><span>＋<br>New</span><span>👤<br>Me</span></div>
+        </div>
+        <ul class="note"><li>Everything fits the screen width.</li><li>The full menu, including "Team &amp; access", is in the drawer.</li></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- RTL -->
+  <section class="panel" id="rtl">
+    <div class="says"><b>He says:</b> Arabic is more than translated words. The whole layout must mirror: menu on the right, reading right to left, table columns reversed, drawers opening from the right, and form errors on the correct side. Keep numbers and dates easy to read, and test every screen in Arabic, not just the language toggle.</div>
+    <div class="grid">
+      <div class="col before"><h3>Translated only</h3>
+        <div class="screen">
+          <div class="bar"><span class="logo">فوركا</span><span>المشتريات</span><span class="sp"></span><span>EN / ع</span></div>
+          <table class="bad-flag" data-flag="still left-to-right"><tr><th>الصنف</th><th>المخزون</th><th>المورّد</th><th>الحالة</th></tr>
+            <tr><td>أرز بسمتي</td><td>40 kg</td><td>المورّد أ</td><td><span class="pill h">منخفض</span></td></tr>
+            <tr><td>زيت زيتون</td><td>12 L</td><td>المورّد ب</td><td><span class="pill h">منخفض</span></td></tr></table>
+          <div class="form"><label>اسم الصنف</label><div class="inp" style="border-color:var(--bad)"></div><div class="err">الحقل مطلوب</div></div>
+        </div>
+        <ul class="note"><li>Arabic words, but the layout still reads left to right.</li></ul>
+      </div>
+      <div class="col after"><h3>Mirrored properly</h3>
+        <div class="screen" dir="rtl" lang="ar" style="text-align:right">
+          <div class="bar"><span class="logo">فوركا</span><span>المشتريات</span><span class="sp"></span><span>ع / EN</span></div>
+          <table><tr><th style="text-align:right">الصنف</th><th style="text-align:right">المخزون</th><th style="text-align:right">المورّد</th><th style="text-align:right">الحالة</th></tr>
+            <tr><td style="text-align:right">أرز بسمتي</td><td class="num" style="text-align:right"><bdi>40 kg</bdi></td><td style="text-align:right">المورّد أ</td><td style="text-align:right"><span class="pill h">منخفض</span></td></tr>
+            <tr><td style="text-align:right">زيت زيتون</td><td class="num" style="text-align:right"><bdi>12 L</bdi></td><td style="text-align:right">المورّد ب</td><td style="text-align:right"><span class="pill h">منخفض</span></td></tr></table>
+          <div class="form"><label>اسم الصنف</label><div class="inp" style="border-color:var(--bad)"></div><div class="err">الحقل مطلوب</div>
+            <div style="margin-top:10px"><button class="btn">حفظ</button> <button class="btn ghost">إلغاء</button></div></div>
+        </div>
+        <ul class="note"><li>Columns, labels, errors and buttons all start from the right.</li><li>Numbers stay readable.</li></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- HIRE REQUESTS & PIPELINE -->
+  <section class="panel" id="hreq">
+    <div class="says"><b>He says:</b> The hiring requests table has no search, filter or sort. The candidate board has 10 stages in a sideways strip, so the later stages are hidden. "Add applicant" just says "Post a role first", which is a dead end. <b>Fix:</b> add role, status, branch and date filters, sortable columns and saved views. Make the list view the default, with stages as a compact summary that always names the current stage. Replace the dead end with a button that goes to posting the role, for people allowed to do it.</div>
+    <div class="grid">
+      <div class="col before"><h3>Now</h3>
+        <div class="screen">
+          <div class="bar"><b>Hiring requests</b></div>
+          <table><tr><th>Role</th><th>Branch</th><th>Status</th></tr><tr><td>Cashier</td><td>Oman</td><td>Waiting CEO</td></tr><tr><td>Waiter</td><td>Fujairah</td><td>Draft</td></tr><tr><td>CDP</td><td>UAQ</td><td>Approved</td></tr></table>
+          <div class="bar" style="border-top:1px solid var(--border)"><b>Candidates · board</b></div>
+          <div class="stagestrip bad-flag" data-flag="10 stages, scroll"><span>Applied 0</span><span>Screened 0</span><span>Phone call 0</span><span>Interview 1 0</span><span>Practical 0</span><span>Interview 2 0</span><span>References 0</span><span>Offer 0</span><span>Accepted 0</span><span>Hired 0</span></div>
+          <div class="dead">Post a role first.</div>
+        </div>
+        <ul class="note"><li>You can't search or filter the requests.</li><li>The message gives you no way forward.</li></ul>
+      </div>
+      <div class="col after"><h3>Proposed</h3>
+        <div class="screen">
+          <div class="bar"><b>Hiring requests</b><span class="sp"></span><button class="btn">＋ New request</button></div>
+          <div class="filters" style="padding:10px 12px"><span class="chip">🔍 Search role</span><span class="chip on">Status: Waiting CEO</span><span class="chip">Branch ▾</span><span class="chip">Date ▾</span><span class="chip">⭑ Saved: My branches</span></div>
+          <table><tr><th>Role ↕</th><th>Branch ↕</th><th>Status</th><th>Days waiting ↓</th></tr><tr class="click"><td>Cashier</td><td>Oman</td><td><span class="pill h">⏳ Waiting CEO</span></td><td class="num">3</td></tr></table>
+          <div class="bar" style="border-top:1px solid var(--border)"><b>Candidates</b><span class="sp"></span><span class="chip on">List</span><span class="chip">Board</span></div>
+          <div class="stepper" style="padding-top:10px"><div><b>0</b>Applied</div><div><b>0</b>Screen</div><div><b>0</b>Interview</div><div><b>0</b>Practical</div><div><b>0</b>Offer</div><div><b>0</b>Hired</div></div>
+          <div class="queue">No candidates yet. Applicants can only be added to a <b>posted</b> role.<br><button class="btn" style="margin-top:8px">Post the Waiter role (Fujairah) →</button><br><span style="font-size:11px;color:var(--ink2)">Only shown to people allowed to post roles.</span></div>
+        </div>
+        <ul class="note"><li>Search, filter, sort and saved views.</li><li>Stages are grouped into a short stepper; each one opens its candidates.</li></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- TALENT -->
+  <section class="panel" id="talent">
+    <div class="says"><b>He says:</b> The talent pool shows every candidate's phone and email in a broad table. <b>Fix:</b> only show contact details to the roles that need them. Hide them for everyone else, reveal them on click for authorized people, and log who looked. Keep the existing permission rules.</div>
+    <div class="grid">
+      <div class="col before"><h3>Now</h3>
+        <div class="screen"><table class="bad-flag" data-flag="contacts visible"><tr><th>Candidate</th><th>Role</th><th>Phone</th><th>Email</th></tr>
+          <tr><td>Candidate A</td><td>Waiter</td><td>+971 50 123 4521</td><td>cand.a@mail.com</td></tr>
+          <tr><td>Candidate B</td><td>Cashier</td><td>+968 92 456 7810</td><td>cand.b@mail.com</td></tr>
+          <tr><td>Candidate C</td><td>CDP</td><td>+971 55 987 1102</td><td>cand.c@mail.com</td></tr></table></div>
+        <ul class="note"><li>Anyone who can open the page sees every contact detail.</li></ul>
+      </div>
+      <div class="col after"><h3>Proposed</h3>
+        <div class="screen"><table><tr><th>Candidate</th><th>Role</th><th>Keep until</th><th>Contact</th></tr>
+          <tr><td>Candidate A</td><td>Waiter</td><td>Mar 2027</td><td><span class="mask" id="rv">+971 5• ••• ••21</span> <button class="btn ghost" style="padding:2px 8px;font-size:11px" id="rvb">Show</button></td></tr>
+          <tr><td>Candidate B</td><td>Cashier</td><td>Jan 2027</td><td class="mask">+968 9• ••• ••10</td></tr>
+          <tr><td>Candidate C</td><td>CDP</td><td>Feb 2027</td><td class="mask">🔒 HR only</td></tr></table>
+          <div class="body" style="min-height:0">Clicking "Show" is logged: <i>"Khaled viewed Candidate A's phone · 12 Nov 08:14"</i>.</div></div>
+        <ul class="note"><li>Masked by default, revealed for authorized roles, every view audited.</li></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- CAREERS -->
+  <section class="panel" id="careers">
+    <div class="says"><b>He says:</b> The careers page editor has a live preview and AI help, which is good. But three text boxes with two separate Save buttons feel like a basic admin form. <b>Fix:</b> put the editor and preview side by side, let each section save on its own with a "last saved" time, and add a phone preview.</div>
+    <div class="grid">
+      <div class="col before"><h3>Now</h3>
+        <div class="screen"><div class="form">
+          <label>About Forka</label><div class="inp" style="height:46px"></div>
+          <label>Why work with us</label><div class="inp" style="height:46px"></div><button class="btn" style="margin-top:6px">Save</button>
+          <label>Benefits</label><div class="inp" style="height:46px"></div><button class="btn" style="margin-top:6px">Save</button>
+          <p class="note bad-flag" data-flag="which Save?">Preview is further down the page…</p></div></div>
+        <ul class="note"><li>It isn't clear what each Save saves, or whether it worked.</li></ul>
+      </div>
+      <div class="col after"><h3>Proposed</h3>
+        <div class="screen">
+          <div class="bar"><b>Careers page</b><span class="sp"></span><span class="chip on">Desktop</span><span class="chip">Phone</span></div>
+          <div class="ed">
+            <div>
+              <details class="grp" open><summary>About Forka <span class="pill g" style="float:right">✓ Saved 10:42</span></summary><div class="gi"><div class="inp" style="height:40px"></div></div></details>
+              <details class="grp"><summary>Why work with us <span class="pill h" style="float:right">Unsaved</span></summary><div class="gi"><div class="inp" style="height:40px"></div><button class="btn" style="margin-top:6px">Save section</button></div></details>
+              <details class="grp"><summary>Benefits <span class="pill g" style="float:right">✓ Saved</span></summary><div class="gi"><div class="inp" style="height:40px"></div></div></details>
+              <button class="btn ghost" style="font-size:12px">✨ Suggest wording</button>
+            </div>
+            <div><b class="serif" style="font-size:16px">Join Forka</b><p style="color:var(--ink2);margin:4px 0">Live preview updates as you type…</p><div style="height:40px;background:#F1EBE2;border-radius:6px"></div><p style="margin:6px 0 0">Open roles: Waiter · Cashier · CDP</p></div>
+          </div>
+        </div>
+        <ul class="note"><li>Each section shows its own save state.</li><li>The preview sits next to the editor, with a phone preview option.</li></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROGRESS -->
+  <section class="panel" id="progress">
+    <div class="says"><b>He says:</b> Company progress has useful counts and department progress, but there's no date range and you can't click into anything. Projects already has good filters, but rows don't look clickable. <b>Fix:</b> add a date range and a "My department / All company" switch, and make KPI cards act as filters. Fit a compact summary above the fold. Pin the Project and Status columns, and remember the filters and sorting you chose.</div>
+    <div class="grid">
+      <div class="col before"><h3>Now</h3>
+        <div class="screen">
+          <div class="bar"><b>Company progress</b></div>
+          <div class="cards"><div class="card"><div class="v">48</div><div class="l">Tasks</div></div><div class="card"><div class="v">31</div><div class="l">Done</div></div><div class="card"><div class="v">6</div><div class="l">Overdue</div></div></div>
+          <div class="body">Department progress… projects table… workload table… (continues below the fold)</div>
+        </div>
+        <ul class="note"><li>It's unclear which period the numbers cover, and the cards don't do anything.</li></ul>
+      </div>
+      <div class="col after"><h3>Proposed (click a card)</h3>
+        <div class="screen">
+          <div class="bar"><b>Company progress</b><span class="sp"></span><span class="chip">This month ▾</span><span class="chip on">All company</span><span class="chip">My dept</span></div>
+          <div class="cards" id="kpis"><div class="card click" data-f="all" style="cursor:pointer"><div class="v">48</div><div class="l">Tasks</div></div><div class="card" data-f="done" style="cursor:pointer"><div class="v" style="color:var(--ok)">31</div><div class="l">Done</div></div><div class="card" data-f="over" style="cursor:pointer;border-color:var(--bad)"><div class="v" style="color:var(--bad)">6</div><div class="l">Overdue →</div></div></div>
+          <table id="ptab"><tr><th class="pin">Project</th><th>Status</th><th>Dept</th><th>Owner</th></tr>
+            <tr data-s="over" class="click"><td class="pin">Winter menu launch ›</td><td><span class="pill u">Overdue</span></td><td>Kitchen</td><td>MA</td></tr>
+            <tr data-s="done" class="click"><td class="pin">Oman store set-up ›</td><td><span class="pill g">Done</span></td><td>Ops</td><td>KA</td></tr>
+            <tr data-s="over" class="click"><td class="pin">Mayar photoshoot ›</td><td><span class="pill u">Overdue</span></td><td>Marketing</td><td>TA</td></tr></table>
+        </div>
+        <ul class="note"><li>Clicking a KPI card filters the table.</li><li>The › arrow and hover show that rows open.</li></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- CALENDAR & TIMELINE -->
+  <section class="panel" id="cal">
+    <div class="says"><b>He says:</b> Calendar chips cut off long task names, and the timeline cuts off titles while also scrolling sideways. <b>Fix:</b> on busy days show "+3 more" and open the task details with one tap. On the timeline, pin the task names on the left so they stay visible while the bars scroll.</div>
+    <div class="grid">
+      <div class="col before"><h3>Now</h3>
+        <div class="screen">
+          <div class="calg"><div><span class="d">11</span><span class="cc">Update allerg…</span></div><div><span class="d">12</span><span class="cc">Book pest con…</span><span class="cc">Supplier cont…</span><span class="cc">Photoshoot f…</span><span class="cc">Staff traini…</span><span class="cc">Menu costin…</span></div><div><span class="d">13</span></div><div><span class="d">14</span><span class="cc">Oman stock…</span></div></div>
+          <div class="tl bad-flag" data-flag="titles clipped"><div>Winter men…</div><div class="tlbar"><i style="left:10%;width:50%"></i></div><div>Oman sto…</div><div class="tlbar"><i style="left:40%;width:45%"></i></div></div>
+        </div>
+        <ul class="note"><li>A busy day is a wall of half-names.</li></ul>
+      </div>
+      <div class="col after"><h3>Proposed (click "+3 more")</h3>
+        <div class="screen">
+          <div class="calg"><div><span class="d">11</span><span class="cc" title="Update allergen labels">Update allergen labels</span></div><div><span class="d">12</span><span class="cc">Book pest control</span><span class="cc">Supplier contract</span><span class="more2" id="more3">+3 more</span></div><div><span class="d">13</span></div><div><span class="d">14</span><span class="cc">Oman stock count</span></div></div>
+          <div class="drawer" id="daylist"><b>Thu 12 Nov · 5 tasks</b><br>Book pest control · Supplier contract renewal · Photoshoot for Mayar · Staff training · Menu costing review</div>
+          <div class="tl"><div class="lab">Winter menu launch</div><div class="tlbar"><i style="left:10%;width:50%"></i></div><div class="lab">Oman stock count</div><div class="tlbar"><i style="left:40%;width:45%"></i></div></div>
+        </div>
+        <ul class="note"><li>Task names on the timeline are pinned and readable.</li><li>Crowded days show a count instead of a pile of chips.</li></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- TASK FORM -->
+  <section class="panel" id="task">
+    <div class="says"><b>He says:</b> The new-task dialog asks for everything in one long column: type, text, department, board, list, assignee, dates, priority, labels, description and checklist. Defaults can be confusing when you switch department. <b>Fix:</b> group it into <b>Essentials</b> (title, department, board, owner), <b>Schedule</b> (dates, priority) and <b>Details</b> (labels, description, checklist). Keep Create/Cancel fixed at the bottom, show which department and board you're adding to, and check the due date and owner as you type.</div>
+    <div class="grid">
+      <div class="col before"><h3>Now</h3>
+        <div class="screen"><div class="form longform bad-flag" data-flag="one long column">
+          <label>Type</label><div class="inp"></div><label>Task *</label><div class="inp"></div><label>Department</label><div class="inp"></div><label>Board</label><div class="inp"></div><label>List</label><div class="inp"></div><label>Assignee</label><div class="inp"></div><label>Start</label><div class="inp"></div><label>Due</label><div class="inp"></div><label>Priority</label><div class="inp"></div><label>Labels</label><div class="inp"></div><label>Description</label><div class="inp" style="height:50px"></div><label>Checklist</label><div class="inp"></div>
+          <div style="margin-top:10px"><button class="btn ghost">Cancel</button> <button class="btn">Create</button></div></div></div>
+        <ul class="note"><li>You have to scroll to reach Create.</li><li>It isn't clear which board the task goes to.</li></ul>
+      </div>
+      <div class="col after"><h3>Proposed</h3>
+        <div class="screen" style="display:flex;flex-direction:column;max-height:360px">
+          <div class="bar"><b>New task</b><span class="sp"></span><span class="pill n">Kitchen › Winter menu board</span></div>
+          <div class="form" style="overflow:auto;flex:1">
+            <details class="grp" open><summary>1 · Essentials</summary><div class="gi"><label>Title *</label><div class="inp"></div><label>Department · Board</label><div class="inp"></div><label>Owner *</label><div class="inp" style="border-color:var(--bad)"></div><div class="err">Choose who owns this task</div></div></details>
+            <details class="grp"><summary>2 · Schedule</summary><div class="gi"><label>Due date · Priority</label><div class="inp"></div></div></details>
+            <details class="grp"><summary>3 · Details (optional)</summary><div class="gi"><label>Labels · Description · Checklist</label><div class="inp" style="height:40px"></div></div></details>
+          </div>
+          <div class="foot sticky"><span>Esc to cancel</span><span><button class="btn ghost">Cancel</button> <button class="btn">Create task</button></span></div>
+        </div>
+        <ul class="note"><li>Three groups, the board shown at the top, buttons always visible.</li></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- PURCHASING -->
+  <section class="panel" id="purch">
+    <div class="says"><b>He says:</b> Procurement opens with big buttons in the middle, which works differently from Hire and Boards. The purchasing queue has too many chips and filters competing, and too many "Urgent" tags. The request detail mixes assignment, clarification and notes. <b>Fix:</b> use the shared header with a procurement sub-menu. Show a compact status summary, a clear "New request" button and saved queue views. Split the request detail into <b>Summary · Owner &amp; status · Clarification thread · Decision history</b>, keep "Save note" and "Email requester" as separate buttons, and ask for confirmation before big status changes. Approvals stay the same.</div>
+    <div class="grid">
+      <div class="col before"><h3>Now</h3>
+        <div class="screen">
+          <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;padding:16px" class="bad-flag" data-flag="different nav model"><span class="btn">Purchasing</span><span class="btn">Operations</span><span class="btn">Requests</span><span class="btn">Payments</span><span class="btn">Oman</span></div>
+          <div class="filters"><span class="chip">All</span><span class="chip">New</span><span class="chip">Assigned</span><span class="chip">Waiting</span><span class="chip">Ordered</span><span class="chip">Received</span><span class="chip">Urgent</span><span class="chip">Branch</span><span class="chip">Supplier</span><span class="chip">Mine</span></div>
+          <table><tr><td>Chicken breast 30 kg</td><td><span class="pill u">Urgent</span></td></tr><tr><td>Takeaway boxes</td><td><span class="pill u">Urgent</span></td></tr><tr><td>Cleaning supplies</td><td><span class="pill u">Urgent</span></td></tr></table>
+          <div class="body">Detail: assign · clarify · notes · requester phone, all in one block.</div>
+        </div>
+        <ul class="note"><li>Ten chips have the same weight, and "Urgent" is on everything.</li></ul>
+      </div>
+      <div class="col after"><h3>Proposed</h3>
+        <div class="screen">
+          <div class="bar"><span class="logo">Forka</span><b>Procurement</b><span class="sp"></span><span class="pill g">Khaled · CEO</span></div>
+          <div class="navrow"><span class="on">Requests</span><span>Orders</span><span>Inventory</span><span>Suppliers</span><span>Payments</span><span>Summary</span></div>
+          <div class="bar" style="background:#fff"><span class="pill h">5 new</span><span class="pill n">3 waiting supplier</span><span class="pill u">1 urgent</span><span class="sp"></span><button class="btn">＋ New request</button></div>
+          <div class="filters" style="padding-top:8px"><span class="chip on">⭑ My queue</span><span class="chip">Oman</span><span class="chip">More filters ▾</span></div>
+          <div class="det">
+            <div class="box"><b>Request summary</b>Chicken breast · 30 kg · Fujairah · needed Sat</div>
+            <div class="box"><b>Owner &amp; status</b>Assigned to Purchasing · <span class="pill h">Waiting supplier</span></div>
+            <div class="box wide2"><b>Clarification thread</b>"Is 10 kg cartons OK?": Branch, 09:10<br><button class="btn ghost" style="margin-top:6px;font-size:12px">Save note</button> <button class="btn ghost" style="font-size:12px">Email requester</button></div>
+            <div class="box wide2"><b>Decision history</b>Created 08:02 · Assigned 08:15 · Clarification asked 09:10</div>
+          </div>
+        </div>
+        <ul class="note"><li>Same header as the other apps, plus a procurement sub-menu.</li><li>Moving to "Ordered" asks "Are you sure?" first.</li></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- SUPPLIERS & ABC -->
+  <section class="panel" id="supp">
+    <div class="says"><b>He says:</b> Suppliers shows contact and payment details up front. <b>Fix:</b> show whether each supplier record is complete and what's missing first, and keep contact details protected. The ABC analysis explanation is helpful, but it's followed by another huge grid. <b>Fix:</b> keep the explanation and put the table behind filters, so you click a group to see its items. Purchase orders are fine, and the owner-only import stays locked.</div>
+    <div class="grid">
+      <div class="col before"><h3>Now</h3>
+        <div class="screen">
+          <table class="bad-flag" data-flag="contacts first"><tr><th>Supplier</th><th>Phone</th><th>Bank / IBAN</th><th>Category</th></tr><tr><td>Supplier A</td><td>+971 4 ••• full</td><td>AE07 0331 … full</td><td>Dry</td></tr><tr><td>Supplier B</td><td>—</td><td>—</td><td>Dairy</td></tr></table>
+          <div class="body">ABC explanation… then a 379-row grid again.</div>
+        </div>
+        <ul class="note"><li>Sensitive details are shown before anything useful.</li></ul>
+      </div>
+      <div class="col after"><h3>Proposed</h3>
+        <div class="screen">
+          <table><tr><th>Supplier</th><th>Record</th><th>Next action</th><th>Contact</th></tr>
+            <tr><td>Supplier A</td><td><span class="pill g">✓ Complete</span></td><td>—</td><td class="mask">🔒 Finance only</td></tr>
+            <tr><td>Supplier B</td><td><span class="pill h">2 missing</span></td><td><a href="#" onclick="return false" style="color:var(--bronze)">Add trade licence, bank details</a></td><td class="mask">🔒</td></tr></table>
+          <div class="sec">ABC analysis: click a group</div>
+          <div class="abc"><div style="border-color:var(--bronze)"><b>A</b>20 items · 80% of spend<br><span style="color:var(--ink2)">Review weekly</span></div><div><b>B</b>60 items · 15%</div><div><b>C</b>299 items · 5%</div></div>
+        </div>
+        <ul class="note"><li>Missing details and next steps come first.</li><li>The analysis is a summary first, with a drill-down into the items.</li></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- PIN -->
+  <section class="panel" id="pin">
+    <div class="says"><b>He says:</b> Keep the personal PIN on Operations; it's a real security check, and it must stay on the server, not only in the browser. <b>Fix:</b> say briefly why the PIN is needed, add a clear way back, give accessible input help, and show clear messages for a wrong or expired PIN.</div>
+    <div class="grid">
+      <div class="col before"><h3>Now</h3>
+        <div class="screen"><div class="pinbox bad-flag" data-flag="no context"><b>Enter PIN</b><div class="pindots"><i></i><i></i><i></i><i></i></div><button class="btn">OK</button></div></div>
+        <ul class="note"><li>It doesn't say why, how to get back, or what happens if the PIN is wrong.</li></ul>
+      </div>
+      <div class="col after"><h3>Proposed</h3>
+        <div class="screen"><div class="pinbox">
+          <div style="text-align:left"><a href="#" onclick="return false" style="color:var(--bronze);font-size:12px">← Back to Procurement</a></div>
+          <div style="font-size:28px">🔒</div><b>Operations is protected</b>
+          <p style="color:var(--ink2);margin:4px 0">It controls stock adjustments and payments, so we confirm it's you. Enter your 4-digit personal PIN.</p>
+          <div class="pindots"><i style="border-color:var(--bad)"></i><i style="border-color:var(--bad)"></i><i style="border-color:var(--bad)"></i><i style="border-color:var(--bad)"></i></div>
+          <div class="err" style="font-size:12px">Wrong PIN. 2 tries left before a 5-minute lock.</div>
+          <button class="btn" style="margin-top:8px">Unlock</button>
+          <p style="font-size:11px;color:var(--ink2);margin:8px 0 0">Unlock lasts 30 min · Forgot PIN? Ask an admin</p>
+        </div></div>
+        <ul class="note"><li>The same check, now explained, with a way out and clear errors.</li></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- PEOPLE -->
+  <section class="panel" id="people">
+    <div class="callout">
+      <b class="serif" style="font-size:20px">Forka People (HRIS) wasn't reviewed</b>
+      <p style="color:var(--ink2)">The demo account he used didn't show Forka People as an app. He only saw the admin "People and access" page and the Boards staff directory. He says <b>not</b> to assume the HR system is missing and not to redesign it from those screens.</p>
+      <b>What he suggests once access is given:</b>
+      <ul>
+        <li>Use the same shared header and a people-first dashboard.</li>
+        <li>Audit staff profiles, attendance, leave, documents, payroll and employee/manager self-service.</li>
+        <li>Don't add or remove HR workflows.</li>
+        <li>Keep salary and ID data locked to the current roles.</li>
+      </ul>
+      <p style="color:var(--ink2);margin-bottom:0">Next step: give the auditor a read-only People login, then ask for a second round.</p>
+    </div>
+  </section>
+
+  <p class="src">Based on "Forka ERP Design Audit – 12 Nov 2026", all sections. Colours are the audit's suggested starting tokens (canvas #F7F4EE, bronze #98693F, ink #25211D).</p>
+</div>
+
+<script>
+document.querySelectorAll('.tab').forEach(function(b){b.addEventListener('click',function(){
+  document.querySelectorAll('.tab').forEach(function(x){x.setAttribute('aria-selected','false')});
+  document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('on')});
+  b.setAttribute('aria-selected','true');document.getElementById(b.dataset.t).classList.add('on');});});
+
+var more=document.getElementById('more');
+more.addEventListener('click',function(e){e.stopPropagation();more.classList.toggle('open')});
+document.addEventListener('click',function(){more.classList.remove('open')});
+
+var items=[
+ {n:'Basmati rice',d:[['Pack','25 kg bag (1 bag = 25 kg)'],['Usage / week','32 kg'],['Reserve','10 kg'],['Unit cost','3.10'],['Terms','30 days']]},
+ {n:'Olive oil',d:[['Pack','Case 4 × 5 L (1 case = 20 L)'],['Usage / week','15 L'],['Reserve','5 L'],['Unit cost','6.40'],['Terms','Cash on delivery']]},
+ {n:'Chicken breast',d:[['Pack','10 kg carton'],['Usage / week','40 kg'],['Reserve','10 kg'],['Unit cost','4.80'],['Terms','15 days']]}];
+var drw=document.getElementById('drw');
+document.querySelectorAll('#invt tr.click').forEach(function(r){r.addEventListener('click',function(){
+  var it=items[r.dataset.i];
+  drw.innerHTML='<b>'+it.n+'</b> · details (read-only) <span style="float:right;cursor:pointer" onclick="this.parentNode.classList.remove(\'on\')">✕</span><dl>'+
+    it.d.map(function(x){return '<dt>'+x[0]+'</dt><dd style="margin:0">'+x[1]+'</dd>'}).join('')+'</dl>';
+  drw.classList.add('on');});});
+
+var steps=['Role & location','Pay & timing','Evaluation plan','Review & submit'];
+var bodies=[
+ '<label>Role title *</label><div class="inp"></div><label>Branch *</label><div class="inp" style="border-color:var(--bad)"></div><div class="err">Pick a branch to continue</div><label>Department</label><div class="inp"></div>',
+ '<label>Salary range *</label><div class="inp"></div><label>Target start date</label><div class="inp"></div><label>Headcount</label><div class="inp"></div>',
+ '<label>Must-have screening criteria</label><div class="inp" style="height:44px"></div><label>Practical test</label><div class="inp"></div><label>Key traits · Criticality</label><div class="inp"></div>',
+ '<b>Check before sending</b><ul style="margin:6px 0;padding-left:18px;color:var(--ink2)"><li>Role, branch, department ✓</li><li>Pay & timing ✓</li><li>Evaluation plan ✓</li></ul><span class="pill h">Goes to CEO for approval (2 working days)</span>'];
+var cur=0,sEl=document.getElementById('steps'),bEl=document.getElementById('stepbody'),nx=document.getElementById('next'),bk=document.getElementById('back');
+function draw(){sEl.innerHTML=steps.map(function(s,i){return '<div class="step '+(i<cur?'done':i==cur?'cur':'')+'">'+(i<cur?'✓ ':(i+1)+'. ')+s+'</div>'}).join('');
+  bEl.innerHTML=bodies[cur];nx.textContent=cur==3?'Submit for approval':'Next';bk.style.visibility=cur?'visible':'hidden';}
+nx.onclick=function(){if(cur<3){cur++;draw();}else{nx.textContent='Sent ✓';}};
+bk.onclick=function(){if(cur>0){cur--;draw();}};
+draw();
+
+var bg=document.getElementById('burger'),md=document.getElementById('mdrawer');
+bg.onclick=function(e){e.stopPropagation();md.classList.toggle('on')};
+md.onclick=function(){md.classList.remove('on')};
+var rv=document.getElementById('rv'),rvb=document.getElementById('rvb');
+rvb.onclick=function(){rv.textContent='+971 50 123 4521';rvb.textContent='Logged ✓';rvb.disabled=true};
+document.getElementById('more3').onclick=function(){document.getElementById('daylist').classList.toggle('on')};
+document.querySelectorAll('#kpis .card').forEach(function(c){c.addEventListener('click',function(){
+  document.querySelectorAll('#kpis .card').forEach(function(x){x.style.background=''});c.style.background='#FBF6EE';
+  var f=c.dataset.f;document.querySelectorAll('#ptab tr[data-s]').forEach(function(r){r.style.display=(f=='all'||r.dataset.s==f)?'':'none'});});});
+</script>
+</body>
+</html>
