@@ -117,7 +117,7 @@ async def main():
             nav = await pg.inner_text('#nav')
             check('CEO opens Hiring with the full HR menu', all(x in nav for x in ['CEO approvals', 'Candidates', 'Team']), nav)
             check('Real application from the careers page shows in the pipeline', 'Sara Ali' in await pg.evaluate("JSON.stringify(allCands())"))
-            check('Link back to Forka Apps', await pg.locator('#who a[href="https://erp.forka.com/"]').count() == 1)
+            check('Link back to Forka Apps (bottom of the left menu)', await pg.locator('#side a[href="https://erp.forka.com/"]').count() == 1)
             check('No "Demo mode" banner on the live site', 'Demo mode' not in await pg.inner_text('body'))
             await pg.evaluate("go('team')"); await pg.wait_for_timeout(200)
             await pg.click('text=Add HR or department head') if await pg.locator('text=Add HR or department head').count() else await pg.evaluate("addMember()")
