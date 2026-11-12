@@ -1,8 +1,10 @@
-// One PostgreSQL for all Forka apps (Cloud SQL in the Firebase project). DATABASE_URL comes from the environment / Secret Manager.
+// One PostgreSQL for all Forka apps (Cloud SQL in the project forka-apps).
+// Either DATABASE_URL, or the standard PG* settings: on Cloud Run PGHOST=/cloudsql/forka-apps:me-central1:forka-db,
+// PGUSER=forka_app, PGDATABASE=Forka, and PGPASSWORD from Secret Manager (so the password never needs URL-encoding).
 import pg from 'pg';
 
 export const pool = new pg.Pool({
-  connectionString: process.env.DATABASE_URL,
+  connectionString: process.env.DATABASE_URL || undefined,
   max: Number(process.env.DB_POOL || 5),
   ssl: process.env.DB_SSL === '1' ? { rejectUnauthorized: false } : undefined,
 });

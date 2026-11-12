@@ -13,40 +13,44 @@ for all Forka apps (later also Forka People). Files (CVs, board attachments, doc
 The new server answers exactly like the Apps Script one (same requests, same answers), so at go-live each website only
 changes its server address in `config.js`. The Apps Script projects stay untouched as the way back.
 
-## One-time setup (Khaled, about 30 minutes)
+## One-time setup (done 12 Nov 2026 unless marked)
 
-1. **Project.** Go to console.firebase.google.com with the company Google account (not a personal one) > Add project >
-   name `forka-apps`. Turn on billing (Blaze plan). Keep Google Analytics off.
-2. **Database.** console.cloud.google.com > same project > SQL > Create instance > PostgreSQL 16.
-   Edition Enterprise, preset Sandbox to start (smallest machine, about USD 10 to 30 a month), region: any (for example europe-west1).
-   Instance ID `forka-db`. Set a strong password for the `postgres` user and keep it in your password manager.
-   Then Databases > Create database `forka`. Users > Add user `forka_app` with its own strong password.
-3. **Storage.** Firebase console > Storage > Get started (production mode). Files are opened only through the server, never public.
-4. **Secret.** Security > Secret Manager > Create secret `DATABASE_URL` with the value
-   `postgres://forka_app:PASSWORD@/forka?host=/cloudsql/PROJECT_ID:REGION:forka-db`
-   (PROJECT_ID and REGION are shown on the SQL instance page).
-5. **Deploy** (Cloud Shell, the `>_` button at the top of console.cloud.google.com):
-   ```
-   git clone https://github.com/khaledfalamer/forka-erp && cd forka-erp/platform
-   gcloud run deploy forka-apps --source . --region REGION --allow-unauthenticated \
-     --add-cloudsql-instances PROJECT_ID:REGION:forka-db --set-secrets DATABASE_URL=DATABASE_URL:latest
-   ```
-   Cloud Run prints the server address, for example `https://forka-apps-xxxx.a.run.app`.
-6. **Tables.** In Cloud Shell, still in `forka-erp/platform`:
-   ```
-   npm install
-   gcloud sql connect forka-db --user=postgres   # then type:  \c forka   and   grant all on database forka to forka_app;   then \q
-   ```
-   Then run the migrations through the Cloud SQL proxy (`npm run migrate` with DATABASE_URL pointing at the proxy).
-   Claude will give the exact commands when you are at this step.
+Project **forka-apps** (organisation forka.com, the same project as the Google sign-in client).
 
-Nothing secret goes into GitHub: passwords live in Secret Manager only.
+- Database: Cloud SQL **forka-db**, PostgreSQL 18, Enterprise, shared core 1 vCPU / 1.7 GB, me-central1 (Doha), single zone.
+  Automated backups 7 days + point-in-time recovery on. Database **Forka**, app user **forka_app**.
+  Connection name `forka-apps:me-central1:forka-db`.
+- Files: Cloud Storage bucket **forka-apps-files** (me-central1, public access blocked).
+- Secret Manager: **PGPASSWORD** = the forka_app password. Nothing secret is in GitHub.
+
+### Put the server online (Cloud Shell, the `>_` button at the top of console.cloud.google.com)
+
+```
+gcloud config set project forka-apps
+PN=$(gcloud projects describe forka-apps --format='value(projectNumber)')
+SA=$PN-compute@developer.gserviceaccount.com
+gcloud projects add-iam-policy-binding forka-apps --member=serviceAccount:$SA --role=roles/cloudsql.client
+gcloud projects add-iam-policy-binding forka-apps --member=serviceAccount:$SA --role=roles/secretmanager.secretAccessor
+git clone -b claude/zealous-clarke-ax4jbr https://github.com/khaledfalamer/forka-erp && cd forka-erp/platform
+gcloud run deploy forka-apps --source . --region me-central1 --allow-unauthenticated \
+  --add-cloudsql-instances forka-apps:me-central1:forka-db \
+  --set-env-vars PGHOST=/cloudsql/forka-apps:me-central1:forka-db,PGUSER=forka_app,PGDATABASE=Forka \
+  --set-secrets PGPASSWORD=PGPASSWORD:latest
+```
+Answer **Y** when it asks to enable services (Cloud Build, Artifact Registry, Cloud Run).
+On start the server creates its tables itself. It prints an address like `https://forka-apps-xxxx.me-central1.run.app`;
+opening `.../accounts` must show `{"ok":true,"service":"forka-apps-accounts"}`.
+The live site does not use this server until go-live.
+
+**Update later:** in Cloud Shell, `cd forka-erp && git pull && cd platform` and run the same `gcloud run deploy` line again.
 
 ## Go-live for Accounts (+ Boards), when Khaled says "go live"
 
 1. Download the Accounts Sheet tabs People, Requests, Activity as CSV, and copy the Script property `SALT`.
-2. `SALT=... node scripts/import-accounts.js People.csv Requests.csv Activity.csv` (refuses to run twice unless `--replace`).
-3. Change `ACCOUNTS_URL` (and `BOARDS_URL`) in `config.js` to `https://forka-apps-xxxx.a.run.app/accounts` (`/boards`), push to main.
+2. In Cloud Shell, with the Cloud SQL Auth Proxy running (`cloud-sql-proxy forka-apps:me-central1:forka-db &`):
+   `PGHOST=127.0.0.1 PGUSER=forka_app PGDATABASE=Forka PGPASSWORD=... SALT=... node scripts/import-accounts.js People.csv Requests.csv Activity.csv`
+   (refuses to run twice unless `--replace`).
+3. Change `ACCOUNTS_URL` (and `BOARDS_URL`) in `config.js` to `https://forka-apps-xxxx.me-central1.run.app/accounts` (`/boards`), push to main.
 4. Paste the new `ACCOUNTS_URL` constant into the Hiring and Procurement scripts (they ask the accounts server "who").
 5. Everyone signs in once more (old sessions do not carry over). PINs keep working because the salt was copied.
 
