@@ -70,11 +70,21 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--bronze);outline-
 .hp{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;opacity:0;pointer-events:none}
 footer{max-width:980px;margin:0 auto;padding:0 20px 40px;color:var(--mute);font-size:13px}
 @media(max-width:640px){.hero h1{font-size:30px}.grid{grid-template-columns:1fr}.panel{padding:18px}.q{flex-wrap:wrap}}
+
+/* Forka app header: the four-petal mark, FORKA above the app name */
+.fk-lock{display:inline-flex;align-items:center;gap:10px;white-space:nowrap;text-decoration:none;color:inherit}
+.fk-lock>div{text-align:start}
+.fk-lock svg{width:30px;height:30px;flex:none;display:block}
+.fk-lock .fk-k{display:block;font:600 9.5px/1 'Inter Tight',system-ui,sans-serif;letter-spacing:.14em;color:#c8c3b9;text-transform:uppercase}
+.fk-lock .fk-n{display:block;font:600 20px/1.05 'EB Garamond','IBM Plex Sans Arabic',serif;color:#f6f3ee;margin-top:3px;letter-spacing:0;text-transform:none}
+.fk-lock.on-light .fk-k{color:#8a7f72}.fk-lock.on-light .fk-n{color:#2b2b2b}
+@media (max-width:600px){.fk-lock:not(.big){gap:8px}.fk-lock:not(.big) svg{width:26px;height:26px}.fk-lock:not(.big) .fk-n{font-size:17px}.fk-lock:not(.big) .fk-k{font-size:8.5px}}
+.fk-lock.big{gap:18px}.fk-lock.big svg{width:64px;height:64px}.fk-lock.big .fk-k{font-size:15px}.fk-lock.big .fk-n{font-size:46px;margin-top:6px}
 </style>
 </head>
 <body>
 <div id="pv"></div>
-<header><div class="bar"><div class="logo">FORKA <b>Careers</b></div><span class="sp"></span><button class="lang" id="lang"></button></div></header>
+<header><div class="bar"><div class="fk-lock"><svg viewBox="0 0 64 64" aria-hidden="true"><defs><mask id="fkm-c"><rect width="64" height="64" fill="#fff"/><circle cx="32" cy="32" r="12.5" fill="#000"/></mask></defs><g mask="url(#fkm-c)"><rect width="30" height="30" rx="7" fill="#4d7b8a"/><rect x="34" width="30" height="30" rx="7" fill="#d9a650"/><rect y="34" width="30" height="30" rx="7" fill="#829980"/><rect x="34" y="34" width="30" height="30" rx="7" fill="#ba5c45"/></g><circle cx="32" cy="32" r="9" fill="#876b45"/></svg><div><span class="fk-k">FORKA</span><span class="fk-n" id="appn">Careers</span></div></div><span class="sp"></span><button class="lang" id="lang"></button></div></header>
 <div id="app"></div>
 <footer id="ft"></footer>
 <script>
@@ -132,7 +142,7 @@ const qOf=(j,i)=>lang==="ar"&&j.knockoutAr&&j.knockoutAr[i]?j.knockoutAr[i]:j.kn
 function adOf(j){return lang==="ar"&&j.adAr?j.adAr:(j.ad||j.summary||j.jd||"")}
 function render(){
   document.documentElement.lang=lang;document.documentElement.dir=lang==="ar"?"rtl":"ltr";
-  document.getElementById("lang").textContent=t("lang");
+  document.getElementById("lang").textContent=t("lang");document.getElementById("appn").textContent=lang==="ar"?"الوظائف":"Careers";
   document.getElementById("pv").innerHTML=HURL?"":`<div class="pv">${t("preview")}</div>`;
   document.getElementById("ft").textContent=t("privacy");
   const A=document.getElementById("app"),b=brand();
