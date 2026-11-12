@@ -69,6 +69,34 @@ Results that leave the system or go to leadership.
 | **CEO dashboard**<br><sub>Outputs</sub> | 5 | · | · | · | · | · | Reports and dashboards | — | Suggested: key numbers on the home screen |
 | **Accounting export**<br><sub>Outputs</sub> | 3 | ✓ | · | · | · | · | Payroll month-end | Accounting system details | Payroll journal per entity and cost centre |
 
+## Ideas to review
+
+Found by comparing with Zoho People, Odoo, SAP SuccessFactors, Bayzat and restaurant tools. Waiting for department heads.
+
+| Feature | Phase | Plan | Database | Server + tests | Screens | Live | Depends on | Blocked by | Next step |
+|---|---|---|---|---|---|---|---|---|---|
+| **Expenses and petty cash**<br><sub>Pay and money</sub> | 2 | · | · | · | · | · | — | Department heads review | Decide after department heads reply |
+| **Loans and repayments**<br><sub>Pay and money</sub> | 2 | · | · | · | · | · | — | Department heads review | Decide after department heads reply |
+| **End-of-service estimate**<br><sub>Pay and money</sub> | 3 | · | · | · | · | · | — | Department heads review | Decide after department heads reply |
+| **Air ticket entitlement**<br><sub>Pay and money</sub> | 2 | · | · | · | · | · | — | Department heads review | Decide after department heads reply |
+| **Service charge sharing**<br><sub>Pay and money</sub> | ? | · | · | · | · | · | — | Department heads review | Decide after department heads reply |
+| **Shift swaps and open shifts**<br><sub>Time</sub> | 1B | · | · | · | · | · | — | Department heads review | Decide after department heads reply |
+| **Overtime pre-approval**<br><sub>Time</sub> | 1B | · | · | · | · | · | — | Department heads review | Decide after department heads reply |
+| **Labour cost vs sales**<br><sub>Time</sub> | 3 | · | · | · | · | · | — | Department heads review | Decide after department heads reply |
+| **Accommodation and transport**<br><sub>Staff services</sub> | 2 | · | · | · | · | · | — | Department heads review | Decide after department heads reply |
+| **Assets and vehicles**<br><sub>Staff services</sub> | 2 | · | · | · | · | · | — | Department heads review | Decide after department heads reply |
+| **Visa and government steps**<br><sub>Staff services</sub> | 2 | · | · | · | · | · | — | Department heads review | Decide after department heads reply |
+| **Medical insurance**<br><sub>Staff services</sub> | 2 | · | · | · | · | · | — | Department heads review | Decide after department heads reply |
+| **Incentives and bonuses**<br><sub>People and talent</sub> | 4 | · | · | · | · | · | — | Department heads review | Decide after department heads reply |
+| **Workforce planning**<br><sub>People and talent</sub> | 3 | · | · | · | · | · | — | Department heads review | Decide after department heads reply |
+| **Succession and key people**<br><sub>People and talent</sub> | later | · | · | · | · | · | — | Department heads review | Decide after department heads reply |
+| **Warnings register**<br><sub>People and talent</sub> | 2 | · | · | · | · | · | — | Department heads review | Decide after department heads reply |
+| **Exit interviews**<br><sub>People and talent</sub> | 2 | · | · | · | · | · | — | Department heads review | Decide after department heads reply |
+| **Anonymous suggestions**<br><sub>Culture and tools</sub> | 2 | · | · | · | · | · | — | Department heads review | Decide after department heads reply |
+| **Birthdays and anniversaries**<br><sub>Culture and tools</sub> | 2 | · | · | · | · | · | — | Department heads review | Decide after department heads reply |
+| **E-signature**<br><sub>Culture and tools</sub> | 2 | · | · | · | · | · | — | Department heads review | Decide after department heads reply |
+| **Org chart picture**<br><sub>Culture and tools</sub> | 1A | · | · | · | · | · | — | Department heads review | Decide after department heads reply |
+
 ## How to use this map
 
 1. Before building a feature, read its plan section (doc 09 for Phase 1, docs 02–08 for the rest) and check its "Depends on" column is real first.

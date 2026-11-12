@@ -660,6 +660,342 @@
     "screens": "no",
     "live": "no"
    }
+  },
+  {
+   "id": "x-expenses",
+   "name": "Expenses and petty cash",
+   "phase": "2",
+   "spec": "12-roles-review",
+   "depends": [],
+   "blocker": "Department heads review",
+   "next": "Decide after department heads reply",
+   "status": {
+    "spec": "no",
+    "db": "no",
+    "server": "no",
+    "screens": "no",
+    "live": "no"
+   }
+  },
+  {
+   "id": "x-swaps",
+   "name": "Shift swaps and open shifts",
+   "phase": "1B",
+   "spec": "12-roles-review",
+   "depends": [],
+   "blocker": "Department heads review",
+   "next": "Decide after department heads reply",
+   "status": {
+    "spec": "no",
+    "db": "no",
+    "server": "no",
+    "screens": "no",
+    "live": "no"
+   }
+  },
+  {
+   "id": "x-labour",
+   "name": "Labour cost vs sales",
+   "phase": "3",
+   "spec": "12-roles-review",
+   "depends": [],
+   "blocker": "Department heads review",
+   "next": "Decide after department heads reply",
+   "status": {
+    "spec": "no",
+    "db": "no",
+    "server": "no",
+    "screens": "no",
+    "live": "no"
+   }
+  },
+  {
+   "id": "x-tips",
+   "name": "Service charge sharing",
+   "phase": "?",
+   "spec": "12-roles-review",
+   "depends": [],
+   "blocker": "Department heads review",
+   "next": "Decide after department heads reply",
+   "status": {
+    "spec": "no",
+    "db": "no",
+    "server": "no",
+    "screens": "no",
+    "live": "no"
+   }
+  },
+  {
+   "id": "x-housing",
+   "name": "Accommodation and transport",
+   "phase": "2",
+   "spec": "12-roles-review",
+   "depends": [],
+   "blocker": "Department heads review",
+   "next": "Decide after department heads reply",
+   "status": {
+    "spec": "no",
+    "db": "no",
+    "server": "no",
+    "screens": "no",
+    "live": "no"
+   }
+  },
+  {
+   "id": "x-assets",
+   "name": "Assets and vehicles",
+   "phase": "2",
+   "spec": "12-roles-review",
+   "depends": [],
+   "blocker": "Department heads review",
+   "next": "Decide after department heads reply",
+   "status": {
+    "spec": "no",
+    "db": "no",
+    "server": "no",
+    "screens": "no",
+    "live": "no"
+   }
+  },
+  {
+   "id": "x-visa",
+   "name": "Visa and government steps",
+   "phase": "2",
+   "spec": "12-roles-review",
+   "depends": [],
+   "blocker": "Department heads review",
+   "next": "Decide after department heads reply",
+   "status": {
+    "spec": "no",
+    "db": "no",
+    "server": "no",
+    "screens": "no",
+    "live": "no"
+   }
+  },
+  {
+   "id": "x-eosb",
+   "name": "End-of-service estimate",
+   "phase": "3",
+   "spec": "12-roles-review",
+   "depends": [],
+   "blocker": "Department heads review",
+   "next": "Decide after department heads reply",
+   "status": {
+    "spec": "no",
+    "db": "no",
+    "server": "no",
+    "screens": "no",
+    "live": "no"
+   }
+  },
+  {
+   "id": "x-ticket",
+   "name": "Air ticket entitlement",
+   "phase": "2",
+   "spec": "12-roles-review",
+   "depends": [],
+   "blocker": "Department heads review",
+   "next": "Decide after department heads reply",
+   "status": {
+    "spec": "no",
+    "db": "no",
+    "server": "no",
+    "screens": "no",
+    "live": "no"
+   }
+  },
+  {
+   "id": "x-insurance",
+   "name": "Medical insurance",
+   "phase": "2",
+   "spec": "12-roles-review",
+   "depends": [],
+   "blocker": "Department heads review",
+   "next": "Decide after department heads reply",
+   "status": {
+    "spec": "no",
+    "db": "no",
+    "server": "no",
+    "screens": "no",
+    "live": "no"
+   }
+  },
+  {
+   "id": "x-loans",
+   "name": "Loans and repayments",
+   "phase": "2",
+   "spec": "12-roles-review",
+   "depends": [],
+   "blocker": "Department heads review",
+   "next": "Decide after department heads reply",
+   "status": {
+    "spec": "no",
+    "db": "no",
+    "server": "no",
+    "screens": "no",
+    "live": "no"
+   }
+  },
+  {
+   "id": "x-incentive",
+   "name": "Incentives and bonuses",
+   "phase": "4",
+   "spec": "12-roles-review",
+   "depends": [],
+   "blocker": "Department heads review",
+   "next": "Decide after department heads reply",
+   "status": {
+    "spec": "no",
+    "db": "no",
+    "server": "no",
+    "screens": "no",
+    "live": "no"
+   }
+  },
+  {
+   "id": "x-wfp",
+   "name": "Workforce planning",
+   "phase": "3",
+   "spec": "12-roles-review",
+   "depends": [],
+   "blocker": "Department heads review",
+   "next": "Decide after department heads reply",
+   "status": {
+    "spec": "no",
+    "db": "no",
+    "server": "no",
+    "screens": "no",
+    "live": "no"
+   }
+  },
+  {
+   "id": "x-succession",
+   "name": "Succession and key people",
+   "phase": "later",
+   "spec": "12-roles-review",
+   "depends": [],
+   "blocker": "Department heads review",
+   "next": "Decide after department heads reply",
+   "status": {
+    "spec": "no",
+    "db": "no",
+    "server": "no",
+    "screens": "no",
+    "live": "no"
+   }
+  },
+  {
+   "id": "x-esign",
+   "name": "E-signature",
+   "phase": "2",
+   "spec": "12-roles-review",
+   "depends": [],
+   "blocker": "Department heads review",
+   "next": "Decide after department heads reply",
+   "status": {
+    "spec": "no",
+    "db": "no",
+    "server": "no",
+    "screens": "no",
+    "live": "no"
+   }
+  },
+  {
+   "id": "x-discipline",
+   "name": "Warnings register",
+   "phase": "2",
+   "spec": "12-roles-review",
+   "depends": [],
+   "blocker": "Department heads review",
+   "next": "Decide after department heads reply",
+   "status": {
+    "spec": "no",
+    "db": "no",
+    "server": "no",
+    "screens": "no",
+    "live": "no"
+   }
+  },
+  {
+   "id": "x-exit",
+   "name": "Exit interviews",
+   "phase": "2",
+   "spec": "12-roles-review",
+   "depends": [],
+   "blocker": "Department heads review",
+   "next": "Decide after department heads reply",
+   "status": {
+    "spec": "no",
+    "db": "no",
+    "server": "no",
+    "screens": "no",
+    "live": "no"
+   }
+  },
+  {
+   "id": "x-suggest",
+   "name": "Anonymous suggestions",
+   "phase": "2",
+   "spec": "12-roles-review",
+   "depends": [],
+   "blocker": "Department heads review",
+   "next": "Decide after department heads reply",
+   "status": {
+    "spec": "no",
+    "db": "no",
+    "server": "no",
+    "screens": "no",
+    "live": "no"
+   }
+  },
+  {
+   "id": "x-birthdays",
+   "name": "Birthdays and anniversaries",
+   "phase": "2",
+   "spec": "12-roles-review",
+   "depends": [],
+   "blocker": "Department heads review",
+   "next": "Decide after department heads reply",
+   "status": {
+    "spec": "no",
+    "db": "no",
+    "server": "no",
+    "screens": "no",
+    "live": "no"
+   }
+  },
+  {
+   "id": "x-otpre",
+   "name": "Overtime pre-approval",
+   "phase": "1B",
+   "spec": "12-roles-review",
+   "depends": [],
+   "blocker": "Department heads review",
+   "next": "Decide after department heads reply",
+   "status": {
+    "spec": "no",
+    "db": "no",
+    "server": "no",
+    "screens": "no",
+    "live": "no"
+   }
+  },
+  {
+   "id": "x-orgchart",
+   "name": "Org chart picture",
+   "phase": "1A",
+   "spec": "12-roles-review",
+   "depends": [],
+   "blocker": "Department heads review",
+   "next": "Decide after department heads reply",
+   "status": {
+    "spec": "no",
+    "db": "no",
+    "server": "no",
+    "screens": "no",
+    "live": "no"
+   }
   }
  ],
  "bands": [
@@ -756,7 +1092,7 @@
    "name": "Outputs",
    "layout": "row",
    "note": "Results that leave the system or go to leadership.",
-   "arrow": "",
+   "arrow": "ideas below are waiting for the department heads review",
    "groups": [
     {
      "name": "Outputs",
@@ -766,6 +1102,59 @@
       "reports",
       "ceodash",
       "accounting"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Ideas to review",
+   "note": "Found by comparing with Zoho People, Odoo, SAP SuccessFactors, Bayzat and restaurant tools. Waiting for department heads.",
+   "arrow": "",
+   "groups": [
+    {
+     "name": "Pay and money",
+     "features": [
+      "x-expenses",
+      "x-loans",
+      "x-eosb",
+      "x-ticket",
+      "x-tips"
+     ]
+    },
+    {
+     "name": "Time",
+     "features": [
+      "x-swaps",
+      "x-otpre",
+      "x-labour"
+     ]
+    },
+    {
+     "name": "Staff services",
+     "features": [
+      "x-housing",
+      "x-assets",
+      "x-visa",
+      "x-insurance"
+     ]
+    },
+    {
+     "name": "People and talent",
+     "features": [
+      "x-incentive",
+      "x-wfp",
+      "x-succession",
+      "x-discipline",
+      "x-exit"
+     ]
+    },
+    {
+     "name": "Culture and tools",
+     "features": [
+      "x-suggest",
+      "x-birthdays",
+      "x-esign",
+      "x-orgchart"
      ]
     }
    ]

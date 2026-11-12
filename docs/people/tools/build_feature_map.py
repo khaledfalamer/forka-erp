@@ -75,7 +75,7 @@ for bi_, band in enumerate(data['bands']):
             out.append(f'<text x="{x}" y="{y+12}" font-size="12" fill="#5E5A54" font-weight="600">{html.escape(g["name"].upper())}</text>')
             for j, fid in enumerate(g['features']): box(x, y + 20 + j * (BH + 10), F[fid], cw)
         y += 20 + tallest * (BH + 10) - 10
-    if bi_ < len(data['bands']) - 1:
+    if bi_ < len(data['bands']) - 1 and data['bands'][bi_].get('arrow'):
         arrow(W / 2, y + 8, y + 58, data['bands'][bi_]['arrow'])
         y += 70
 H = y + 30
