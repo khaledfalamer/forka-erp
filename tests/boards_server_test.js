@@ -28,8 +28,13 @@ const ctx = {
   CacheService: { getScriptCache: () => ({ put: (k, v) => cache[k] = v, get: k => cache[k] ?? null, remove: k => delete cache[k] }) },
   LockService: { getScriptLock: () => ({ waitLock() {}, releaseLock() {} }) },
   ContentService: { createTextOutput: t => ({ setMimeType() { return this; }, t }), MimeType: { JSON: 1 } },
+  // Pretend accounts server: "who", plus "directory" and "invite" (Boards no longer reads the accounts Sheet itself).
   UrlFetchApp: { fetch: (u, o) => { const b = o && o.payload ? JSON.parse(o.payload) : {}; const k = Object.keys(SESS).find(k => tok(k) === b.token);
-    return { getContentText: () => JSON.stringify(k && b.action === 'who' ? { ok: true, me: { email: SESS[k][0], name: k, level: SESS[k][1], status: 'active' } } : { ok: false, error: 'session' }) }; } },
+    let ans = { ok: false, error: 'session' };
+    if (k && b.action === 'who') ans = { ok: true, me: { email: SESS[k][0], name: k, level: SESS[k][1], status: 'active' } };
+    if (k && b.action === 'directory') ans = { ok: true, people: ap.d.slice(1).map(r => ({ email: r[0], name: r[1], title: r[2], ceo: r[3] === 'ceo', status: r[4] })).filter(p => p.status === 'active' || p.status === 'pending') };
+    if (k && b.action === 'invite') { if (!ap.d.some(r => r[0] === b.email)) ap.d.push([b.email, b.name, b.title, 'staff', 'pending', false, '', false, false, 'google', '', 'Boards: ' + SESS[k][0], new Date(), SESS[k][0]]); ans = { ok: true }; }
+    return { getContentText: () => JSON.stringify(ans) }; } },
   DriveApp: { createFolder: () => folder, getFolderById: () => folder,
     getFileById: id => { const f = files[id]; if (!f) throw new Error('no'); let n = 0;
       return { getDescription: () => f.desc, getBlob: () => ({ getContentType: () => f.blob.type, getBytes: () => f.blob.bytes }), getParents: () => ({ hasNext: () => n++ === 0, next: () => ({ getId: () => 'FOLDER1' }) }) }; } },

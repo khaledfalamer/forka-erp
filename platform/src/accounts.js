@@ -10,7 +10,7 @@ const LEVELS = ['staff', 'manager', 'ceo'];
 const STATUSES = ['active', 'pending', 'blocked'];
 const SESSION_SECONDS = 6 * 60 * 60;
 const MAX_PIN_TRIES = 10;
-const WRITES = ['request', 'savePerson', 'setStatus', 'reject'];
+const WRITES = ['request', 'savePerson', 'setStatus', 'reject', 'invite'];
 const key = e => String(e || '').trim().toLowerCase();
 
 // ---------------- Google sign-in ----------------
@@ -159,6 +159,23 @@ export function makeAccounts({ verifyGoogle = makeGoogleVerifier() } = {}) {
     if (a === 'who') return { ok: true, me: publicPerson(me) };
     if (a === 'signout') { await db('delete from accounts.sessions where token_hash = $1', [tokHash(b.token)]); await log(db, me.email, 'signout'); return { ok: true }; }
     if (a === 'open') { await log(db, me.email, 'open', '', String(b.app || '').slice(0, 40)); return { ok: true }; }
+    // For Boards: everyone with an account (active, or "To confirm"), names only - no apps, no sign-in details.
+    if (a === 'directory') {
+      const list = (await people(db)).filter(p => p.status === 'active' || p.status === 'pending')
+        .map(p => ({ email: p.email, name: p.name, title: p.title, ceo: p.level === 'ceo', status: p.status }));
+      return { ok: true, people: list };
+    }
+    // For Boards: a department head invites someone new. They are added as "To confirm" with no apps; the CEO confirms them.
+    if (a === 'invite') {
+      const email = key(b.email);
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.startsWith('pin-')) return { ok: false, error: 'need' };
+      if (await findPerson(db, email)) return { ok: true, exists: true };
+      await writePerson(db, { email, name: String(b.name || '').trim().slice(0, 80) || email, title: String(b.title || '').trim().slice(0, 80),
+        level: 'staff', status: 'pending', apps: { proc: 0, hire: 0, branch: 0 }, sides: [], method: 'google', pinHash: '',
+        addedBy: 'Boards: ' + me.email }, me.email, true);
+      await log(db, me.email, 'invite', email, 'Boards');
+      return { ok: true };
+    }
 
     // CEO only
     if (!isCeo(me)) return { ok: false, error: 'role' };

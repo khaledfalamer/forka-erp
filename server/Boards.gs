@@ -14,7 +14,6 @@
  * Nothing secret is in this file.
  */
 const ACCOUNTS_URL = 'https://script.google.com/macros/s/AKfycbwUO5mC1oZrKiSJfF-kpeIFUPjfzB5VToNVn9EH-ecmDadFs9xsU1oDFHTgJ2FSg6vP/exec';
-const ACCOUNTS_SHEET_ID = '1YkqcYwtKcm4mOz-wJGLvSPAeEYGzPxqLep_SzRGOCCA';   // read for the list of people; new invites are added there as "To confirm"
 const APP_URL = 'https://erp.forka.com/boards/';
 const DATA_TAB = 'Data';
 const D_HEAD = ['Id', 'Kind', 'Scope', 'Json', 'At', 'By', 'Deleted'];
@@ -40,7 +39,6 @@ function setup() {
   tab_(DATA_TAB, D_HEAD);
   folder_();
   UrlFetchApp.fetch(ACCOUNTS_URL, { muteHttpExceptions: true });   // asks for the "connect to Forka Apps" permission now
-  SpreadsheetApp.openById(ACCOUNTS_SHEET_ID);
   MailApp.getRemainingDailyQuota();
   return 'Done. Now Deploy > New deployment > Web app (Execute as: Me, Who has access: Anyone).';
 }
@@ -65,15 +63,18 @@ function erpWho_(tok) {
   c.put(k, JSON.stringify(me), 300);
   return me;
 }
-/* Everyone with a Forka Apps account (active, or "To confirm" for people a head invited). Read at most every 5 minutes. */
-function accounts_() {
-  const c = CacheService.getScriptCache(), hit = c.get('acc:v1');
+/* Everyone with a Forka Apps account (active, or "To confirm" for people a head invited), asked from the accounts server
+   with the signed-in person's own session. Kept for 5 minutes. */
+function accounts_(tok) {
+  const c = CacheService.getScriptCache(), hit = c.get('acc:v2');
   if (hit) { try { return JSON.parse(hit); } catch (e) {} }
-  const sh = SpreadsheetApp.openById(ACCOUNTS_SHEET_ID).getSheetByName('People');
-  const n = sh ? sh.getLastRow() - 1 : 0;
-  const all = n > 0 ? sh.getRange(2, 1, n, 5).getValues().map(r => ({ email: key_(r[0]), name: String(r[1] || ''), title: String(r[2] || ''), ceo: String(r[3]).toLowerCase() === 'ceo', status: String(r[4] || '').toLowerCase() }))
-    .filter(p => p.email && (p.status === 'active' || p.status === 'pending')) : [];
-  try { c.put('acc:v1', JSON.stringify(all), 300); } catch (e) {}
+  if (!tok) return [];
+  const r = UrlFetchApp.fetch(ACCOUNTS_URL, { method: 'post', contentType: 'text/plain', payload: JSON.stringify({ action: 'directory', token: tok }), muteHttpExceptions: true, followRedirects: true });
+  let j; try { j = JSON.parse(r.getContentText()); } catch (e) { return []; }
+  if (!j.ok || !j.people) return [];
+  const all = j.people.map(p => ({ email: key_(p.email), name: String(p.name || ''), title: String(p.title || ''), ceo: !!p.ceo, status: String(p.status || '') }))
+    .filter(p => p.email && (p.status === 'active' || p.status === 'pending'));
+  try { c.put('acc:v2', JSON.stringify(all), 300); } catch (e) {}
   return all;
 }
 
@@ -194,6 +195,7 @@ function handle_(b) {
   const me = erpWho_(b.token);
   if (!me) return { ok: false, error: 'session' };
   const all = readAll_(), x = ctx_(me, all);
+  x.tok = String(b.token || '');
   if (a === 'load') return load_(x, +b.since || 0);
   if (a === 'save') return save_(x, b.docs || []);
   if (a === 'upload') return upload_(x, b);
@@ -208,7 +210,7 @@ function load_(x, since) {
     if (visible_(x, d)) docs.push({ id: d.id, kind: d.kind, json: d.json, at: d.at, by: d.by });
   });
   const o = { ok: true, now: Date.now(), docs, me: { email: x.me, ceo: x.ceo, depts: x.depts } };
-  if (!since) o.people = accounts_().map(p => ({ email: p.email, name: p.name, title: p.title, ceo: p.ceo, invited: p.status === 'pending' }));
+  if (!since) o.people = accounts_(x.tok).map(p => ({ email: p.email, name: p.name, title: p.title, ceo: p.ceo, invited: p.status === 'pending' }));
   return o;
 }
 function save_(x, docs) {
@@ -244,15 +246,14 @@ function save_(x, docs) {
 /* A department head invites someone new: they are added to Forka Apps as "To confirm"; the CEO confirms them in People and access. */
 function invite_(x, email, inv) {
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return;
-  if (accounts_().some(p => p.email === email)) return;
-  const sh = SpreadsheetApp.openById(ACCOUNTS_SHEET_ID).getSheetByName('People');
-  if (!sh) return;
-  sh.appendRow([email, String(inv.name || '').slice(0, 80), String(inv.title || '').slice(0, 80), 'staff', 'pending', false, '', false, false, 'google', '', 'Boards: ' + x.me, new Date(), x.me]);
-  CacheService.getScriptCache().remove('acc:v1');
+  if (accounts_(x.tok).some(p => p.email === email)) return;
+  UrlFetchApp.fetch(ACCOUNTS_URL, { method: 'post', contentType: 'text/plain', muteHttpExceptions: true, followRedirects: true,
+    payload: JSON.stringify({ action: 'invite', token: x.tok, email: email, name: String(inv.name || '').slice(0, 80), title: String(inv.title || '').slice(0, 80) }) });
+  CacheService.getScriptCache().remove('acc:v2');
 }
 function emailNotes_(x, notes) {
   let left = 0; try { left = MailApp.getRemainingDailyQuota(); } catch (e) { return; }
-  const names = {}; accounts_().forEach(p => { names[p.email] = p.name || p.email; });
+  const names = {}; accounts_(x.tok).forEach(p => { names[p.email] = p.name || p.email; });
   notes.forEach(n => {
     const to = key_(n.to);
     if (!to || to === x.me || left < 20) return;

@@ -51,7 +51,7 @@ r = await call({ action: 'me', token: ceo }); ck('CEO sees 2 waiting requests', 
 r = await call({ action: 'savePerson', token: ceo, id: '', fromReq: 'new.person@forka.com', person: { email: 'new.person@forka.com', name: 'Sara Ali', level: 'staff', status: 'active', apps: { proc: 1 }, sides: ['fin', 'dept'], method: 'google' } });
 ck('CEO allows request with Procurement Finance', r.ok && r.people.find(p => p.email === 'new.person@forka.com').sides.join() === 'fin,dept', r);
 ck('Request marked approved', r.requests.find(x => x.email === 'new.person@forka.com').state === 'approved');
-ck('Approved person signs in', (await call({ action: 'google', idToken: 'tok-new' })).ok);
+const ham2 = (await call({ action: 'google', idToken: 'tok-new' })).token; ck('Approved person signs in', !!ham2);
 r = await call({ action: 'reject', token: ceo, id: 'other@forka.com', reason: 'Not part of the team' }); ck('CEO rejects with reason', r.ok);
 r = await call({ action: 'google', idToken: 'tok-other' }); ck('Rejected person sees reason', r.status === 'rejected' && r.reason === 'Not part of the team', r);
 r = await call({ action: 'savePerson', token: ceo, id: '', person: { name: 'Store Helper', method: 'pin', pinNew: '12', status: 'active', apps: { branch: 1 } } }); ck('Short PIN refused', r.error === 'pinBad');
@@ -95,6 +95,15 @@ ck('Activity has sign-ins, confirm, allow, reject, add, edit, block, open', ['si
   ck('Broken request answered with "bad"', bad.error === 'bad');
   const g = await app.inject({ method: 'GET', url: '/accounts' });
   ck('GET answers like the Apps Script ping, open to every page', JSON.parse(g.body).service === 'forka-apps-accounts' && g.headers['access-control-allow-origin'] === '*');
+}
+{
+  const d = await call({ action: 'directory', token: ham2 });
+  ck('Boards directory: any signed-in person gets names of active and "To confirm" people, nothing else', d.ok && d.people.some(p => p.email === 'ceo@forka.com' && p.ceo) && !d.people.some(p => p.status === 'blocked') && !JSON.stringify(d).includes('pinHash') && !JSON.stringify(d).includes('apps'), d);
+  const i1 = await call({ action: 'invite', token: ham2, email: 'Sara.New@Forka.com', name: 'Sara New', title: 'Designer' });
+  const row = (await q("select * from accounts.people where email='sara.new@forka.com'")).rows[0];
+  ck('Boards invite adds the person as "To confirm" with no apps', i1.ok && row && row.status === 'pending' && !row.app_proc && !row.app_hire && row.added_by === 'Boards: new.person@forka.com', row);
+  ck('Inviting someone who already has an account changes nothing', (await call({ action: 'invite', token: ham2, email: 'ceo@forka.com', name: 'X' })).exists === true);
+  ck('Invite without a session is refused', (await call({ action: 'invite', token: 'nope', email: 'a@b.com' })).error === 'session');
 }
 ck('Sign out ends the session', (await call({ action: 'signout', token: ceo })).ok && (await call({ action: 'me', token: ceo })).error === 'session');
 console.log(`${res.filter(Boolean).length}/${res.length} platform accounts checks passed`);
