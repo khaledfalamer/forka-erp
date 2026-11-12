@@ -562,6 +562,7 @@ html[dir=rtl] .pfind input{padding:0 38px 0 14px}
 .top .search input{background:#fff!important;border-color:#e3d8c7!important;color:#2b2b2b!important}.top .seg{background:rgba(0,0,0,.06)!important}.top .seg button{color:#6f665c}.top .seg button.on{color:#fff}
 .top select{background:#fff!important;color:#2b2b2b!important;border:1px solid #e3d8c7!important}.top label,.top .sync{color:#6f665c!important}.top .ib,.top .bell,.top .bell svg{color:#2b2b2b!important;opacity:1!important}
 :root{--bronze:#397F8F;--bronze-l:#5a9aa8;--bronze-soft:#dcebee}
+.blogo{height:34px;width:auto;display:block;flex:none}@media(max-width:600px){.blogo{height:28px}}
 </style>
 </head>
 <body>
@@ -1013,7 +1014,7 @@ function render(){
   document.getElementById('app').innerHTML=`
   <div class="top">
     <button class="ib menu-b" data-a="side" aria-label="${t('departments')}">${ic('menu')}</button>
-    ${fkLock(lang==='ar'?t('app'):'Board')}
+    <img class="blogo" src="../logos/forka-board-logo.png" alt="Forka Board">
     <div class="search">${V.view==='board'?`${ic('search')}<input id="q" type="search" placeholder="${t('search')}" value="${esc(V.f.q)}" aria-label="${t('search')}">`:''}</div>
     ${LIVE?`<span id="sync" class="sync ${SV.state||'ok'}">${t(SV.state==='saving'?'sSaving':SV.state==='off'?'sOff':'sSaved')}</span>`:`<label class="hide-sm" style="font-size:12px;color:#a9a196">${t('viewAs')}</label>`}
     ${LIVE?'':`<select class="viewas" id="viewas" aria-label="${t('viewAs')}">${PEOPLE.map(p=>`<option value="${p.id}" ${p.id===ME()?'selected':''}>${esc(pname(p.id))}${p.ceo?' - '+t('ceoRole'):''}</option>`).join('')}</select>`}
