@@ -125,6 +125,95 @@ GAPS = [
  ('Org chart picture', 'مخطط الهيكل التنظيمي', 'A visual chart of who reports to whom, from your org structure file.', 'مخطط مرئي لمن يتبع لمن، من ملف الهيكل التنظيمي.', 'Zoho, Odoo', '1A'),
 ]
 
+# For each idea (same order as GAPS): what we mean, and an example at Forka. (EN meaning, EN example, AR meaning, AR example)
+EXPLAIN = [
+ ('Today staff pay small costs themselves (fuel, a missing ingredient, a taxi) and wait for cash back. In the app they photograph the receipt, the manager and Finance approve, and the amount is added to the next salary or paid from petty cash with a clear record.',
+  'A driver fills the delivery bike with fuel for 40 AED, sends the receipt photo from his phone, and sees it approved and added to his November pay.',
+  'اليوم يدفع الموظفون مصاريف صغيرة من جيبهم (وقود، مكوّن ناقص، تاكسي) وينتظرون استردادها. في التطبيق يصوّر الموظف الإيصال، ويوافق المدير والمالية، ويُضاف المبلغ إلى الراتب القادم أو يُدفع من النثرية مع سجل واضح.',
+  'سائق يعبّئ دراجة التوصيل بوقود بقيمة 40 درهماً، ويرسل صورة الإيصال من هاتفه، ويرى الموافقة وإضافتها إلى راتب نوفمبر.'),
+ ('Staff can offer a shift to a colleague and swap, but the change only counts after the manager approves. Managers can post an "open shift" that any trained person can take, and staff can mark days they cannot work before the roster is made.',
+  'A waiter in Sharjah has a family event on Friday. He offers his evening shift, a colleague accepts in the app, and the branch manager approves with one tap. No phone calls.',
+  'يستطيع الموظف عرض ورديته على زميل والتبديل، ولا يُعتمد التغيير إلا بعد موافقة المدير. ويمكن للمدير نشر "وردية مفتوحة" يأخذها أي موظف مدرّب، ويحدد الموظفون الأيام التي لا يستطيعون العمل فيها قبل إعداد الجدول.',
+  'نادل في الشارقة لديه مناسبة عائلية يوم الجمعة. يعرض ورديته المسائية، يقبلها زميل في التطبيق، ويوافق مدير الفرع بضغطة واحدة دون مكالمات.'),
+ ('When the manager builds the roster, the app shows the cost of the hours planned compared with the sales expected for that day, taken from the till system (POS). It helps match staff numbers to how busy the branch will be.',
+  'Tuesday sales in Fujairah are usually low. The roster shows labour at 38% of expected sales, so the manager moves one person to Friday when it is busy.',
+  'عند إعداد الجدول، يعرض التطبيق تكلفة الساعات المخطط لها مقارنة بالمبيعات المتوقعة لذلك اليوم من نظام نقاط البيع. يساعد ذلك على مطابقة عدد الموظفين مع ازدحام الفرع.',
+  'مبيعات الثلاثاء في الفجيرة منخفضة عادة. يُظهر الجدول أن العمالة 38% من المبيعات المتوقعة، فينقل المدير موظفاً إلى يوم الجمعة المزدحم.'),
+ ('Only if branches collect a service charge or tips for staff. The app would split the total by rules you set (for example by hours worked or role) and show each person\'s share on the payslip, so it is fair and visible.',
+  'If Mayar collected 3,000 AED in tips in a month, each barista and waiter would see their share based on the hours they worked.',
+  'فقط إذا كانت الفروع تجمع رسوم خدمة أو إكراميات للموظفين. يقسم التطبيق المبلغ حسب قواعد تحددونها (مثل ساعات العمل أو الوظيفة) ويظهر نصيب كل شخص في قسيمة الراتب، ليكون عادلاً وواضحاً.',
+  'إذا جمع مقهى ميار 3,000 درهم إكراميات في شهر، يرى كل باريستا ونادل نصيبه حسب ساعات عمله.'),
+ ('A record of staff housing and transport: each building, room and bed, who lives where, how many beds are free, the monthly cost, and which bus or driver takes which staff to which branch.',
+  'HR hires two cooks for Umm Al Quwain and immediately sees which room has free beds and which bus route passes that branch.',
+  'سجل لسكن الموظفين والمواصلات: كل مبنى وغرفة وسرير، ومن يسكن أين، وعدد الأسرّة الشاغرة، والتكلفة الشهرية، وأي حافلة أو سائق ينقل أي موظفين إلى أي فرع.',
+  'توظّف الموارد البشرية طاهيين لأم القيوين، وترى فوراً أي غرفة فيها أسرّة شاغرة وأي خط حافلات يمر بذلك الفرع.'),
+ ('A list of company items given to staff: uniforms, keys, phones, tablets and delivery motorbikes. It shows who has what, the condition, and for vehicles the registration and insurance dates. When someone leaves, the exit checklist lists exactly what they must return.',
+  'When a driver resigns, his exit checklist shows the motorbike, its key, the delivery box and two uniforms. Nothing is missed.',
+  'قائمة بأغراض الشركة المسلّمة للموظفين: الزي والمفاتيح والهواتف والأجهزة اللوحية ودراجات التوصيل. تبين من يحمل ماذا وحالته، وللمركبات تواريخ التسجيل والتأمين. وعند مغادرة الموظف تعرض قائمة المغادرة بالضبط ما يجب إرجاعه.',
+  'عندما يستقيل سائق، تظهر قائمة مغادرته الدراجة ومفتاحها وصندوق التوصيل وزيين. لا يُنسى شيء.'),
+ ('Not only the expiry date of a visa, but every step in getting or renewing it: entry permit, medical test, Emirates ID, work permit, labour contract. Each step has a date, an owner, a cost and a status, so HR and the PRO know what is stuck.',
+  'A new waiter started work but his medical test is not booked yet. The app shows the visa is stuck at the medical step for 9 days and reminds the Government Relations Officer.',
+  'ليس فقط تاريخ انتهاء الإقامة، بل كل خطوة في استخراجها أو تجديدها: تصريح الدخول، الفحص الطبي، الهوية، تصريح العمل، عقد العمل. لكل خطوة تاريخ ومسؤول وتكلفة وحالة، فتعرف الموارد البشرية ومندوب العلاقات الحكومية ما المتوقف.',
+  'نادل جديد بدأ العمل لكن فحصه الطبي لم يُحجز. يُظهر التطبيق أن الإقامة متوقفة عند خطوة الفحص منذ 9 أيام ويذكّر موظف العلاقات الحكومية.'),
+ ('A running estimate of how much end-of-service each person would receive if they left today, and the total the company should set aside each month. It is only switched on after a qualified adviser confirms the calculation.',
+  'Finance sees the total end-of-service the group owes across all UAE staff at month end, and HR can tell a leaving employee their estimate before the final settlement.',
+  'تقدير مستمر لمكافأة نهاية الخدمة التي سيحصل عليها كل موظف لو غادر اليوم، والمبلغ الإجمالي الذي يجب أن تخصصه الشركة كل شهر. لا يُفعّل إلا بعد تأكيد مستشار مختص للحساب.',
+  'ترى المالية إجمالي مكافآت نهاية الخدمة المستحقة على المجموعة لكل موظفي الإمارات في نهاية الشهر، ويمكن للموارد البشرية إخبار الموظف المغادر بتقديره قبل المخالصة.'),
+ ('Your leave policy gives some staff a ticket home (for example every two years). The app tracks who is due a ticket, from when, its value, and whether it was used or paid, so it is planned with their annual leave.',
+  'A cook\'s ticket becomes due in March. HR sees it three months ahead (as the policy asks) and plans it with his annual leave.',
+  'تمنح سياسة الإجازات بعض الموظفين تذكرة سفر (مثلاً كل سنتين). يتابع التطبيق من يستحق التذكرة ومنذ متى وقيمتها وهل استُخدمت أو صُرفت، لتُخطط مع الإجازة السنوية.',
+  'تستحق تذكرة طاهٍ في مارس. تراها الموارد البشرية قبل ثلاثة أشهر (كما تطلب السياسة) وتخطط لها مع إجازته السنوية.'),
+ ('Who is covered by health insurance, their policy and card numbers, dependants, and renewal dates. New joiners are added and leavers removed as part of onboarding and exit, so nobody is left uninsured or paid for after leaving.',
+  'When a new barista joins, the onboarding checklist includes "add to medical insurance", and her card number is saved in her record.',
+  'من هو مشمول بالتأمين الصحي، وأرقام الوثيقة والبطاقة، والمعالون، وتواريخ التجديد. يُضاف المنضمون ويُحذف المغادرون ضمن خطوات الانضمام والمغادرة، حتى لا يبقى أحد بلا تأمين أو يُدفع عنه بعد مغادرته.',
+  'عندما تنضم باريستا جديدة، تتضمن قائمة الانضمام "إضافة إلى التأمين الطبي"، ويُحفظ رقم بطاقتها في ملفها.'),
+ ('When a salary advance or loan is approved, the app creates a repayment plan: how much is deducted each month and how much is left. Payroll gets the deduction automatically every month until it is paid.',
+  'A cashier takes a 1,500 AED advance over 3 months. Each month 500 AED is sent to payroll as a deduction, and she can see what remains.',
+  'عند اعتماد سلفة أو قرض، ينشئ التطبيق خطة سداد: المبلغ المخصوم كل شهر والمتبقي. تصل الخصومات إلى الرواتب تلقائياً كل شهر حتى السداد.',
+  'كاشيرة تأخذ سلفة 1,500 درهم على 3 أشهر. كل شهر تُرسل 500 درهم للرواتب كخصم، وترى المتبقي.'),
+ ('Calculate branch incentives and staff bonuses from clear numbers: branch sales against target, attendance, review ratings and any warnings. Rules and the 30% cap are set once, and everyone sees how their share was worked out.',
+  'Sharjah beats its monthly target by 8%. The incentive pool is shared by role and attendance, and a waiter with a warning that month gets a reduced share by rule, not by opinion.',
+  'حساب حوافز الفروع ومكافآت الموظفين من أرقام واضحة: مبيعات الفرع مقابل الهدف، والحضور، وتقييمات الأداء، وأي إنذارات. تُضبط القواعد وسقف 30% مرة واحدة، ويرى الجميع كيف حُسب نصيبه.',
+  'يتجاوز فرع الشارقة هدفه الشهري بنسبة 8%. يُوزّع صندوق الحوافز حسب الوظيفة والحضور، ويحصل نادل لديه إنذار ذلك الشهر على نصيب أقل وفق القاعدة لا حسب الرأي.'),
+ ('Each quarter, agree how many people and how much salary each branch should have, then compare with the actual team and open positions. It is the quarterly manpower planning HR described, kept in one place.',
+  'Oman is approved for 26 people and has 26 plus 3 vacancies. The CEO sees the gap and the cost before approving new hiring requests.',
+  'كل ربع سنة، الاتفاق على عدد الموظفين والرواتب لكل فرع، ثم المقارنة مع الفريق الفعلي والوظائف الشاغرة. هو تخطيط القوى العاملة الربعي الذي وصفته الموارد البشرية في مكان واحد.',
+  'عُمان معتمد لها 26 موظفاً ولديها 26 و3 وظائف شاغرة. يرى الرئيس التنفيذي الفرق والتكلفة قبل الموافقة على طلبات توظيف جديدة.'),
+ ('For key roles (branch manager, head chef, supervisor), note who could take over if the person leaves, how ready they are, and what training they need. It protects branches from sudden gaps.',
+  'If the Fujairah supervisor resigns, HR already knows the senior waiter is ready in 3 months with a short leadership course.',
+  'للوظائف الرئيسية (مدير فرع، رئيس طهاة، مشرف)، تسجيل من يمكنه تولي المسؤولية إذا غادر صاحبها، ومدى جاهزيته، والتدريب الذي يحتاجه. يحمي الفروع من الفراغ المفاجئ.',
+  'إذا استقال مشرف الفجيرة، تعرف الموارد البشرية مسبقاً أن النادل الأقدم جاهز خلال 3 أشهر بدورة قيادية قصيرة.'),
+ ('Staff sign documents on their phone instead of paper: contracts, offer letters, warnings and policy confirmations. The signed copy is saved in their record with the date and time.',
+  'A new cook signs his contract and the handbook confirmation on his phone on day one. HR does not chase paper signatures.',
+  'يوقّع الموظفون المستندات من هواتفهم بدلاً من الورق: العقود وخطابات العرض والإنذارات وتأكيد السياسات. تُحفظ النسخة الموقّعة في ملفهم مع التاريخ والوقت.',
+  'طاهٍ جديد يوقّع عقده وتأكيد دليل الموظف من هاتفه في يومه الأول، دون أن تلاحق الموارد البشرية التوقيعات الورقية.'),
+ ('A clear, private process for warnings, following your disciplinary policy: the manager records what happened, HR checks it, the letter is issued and signed, and it is kept in a register only HR and the CEO can see.',
+  'A branch manager reports repeated lateness. HR reviews the attendance record, issues a first written warning, and the register shows it if it happens again.',
+  'إجراء واضح وخاص للإنذارات وفق سياسة التأديب: يسجل المدير ما حدث، وتتحقق الموارد البشرية، ويصدر الخطاب ويُوقّع، ويُحفظ في سجل لا يراه إلا الموارد البشرية والرئيس التنفيذي.',
+  'يبلّغ مدير فرع عن تأخير متكرر. تراجع الموارد البشرية سجل الحضور وتصدر إنذاراً كتابياً أول، ويظهر في السجل إذا تكرر.'),
+ ('A short set of questions when someone leaves (why, what we could do better) and a report of the main reasons by branch, job and manager, so we fix the causes of people leaving.',
+  'Three cooks left Sharjah in two months, all mentioning split shifts. The report makes the pattern visible.',
+  'مجموعة أسئلة قصيرة عند مغادرة الموظف (لماذا، وماذا يمكن أن نحسّن) وتقرير بالأسباب الرئيسية حسب الفرع والوظيفة والمدير، لمعالجة أسباب المغادرة.',
+  'غادر ثلاثة طهاة فرع الشارقة خلال شهرين وكلهم ذكروا الورديات المقسّمة. يجعل التقرير هذا النمط واضحاً.'),
+ ('Staff can send an idea or a concern without their name, from their phone. HR reads them, groups them, and can reply publicly in the team feed. A digital version of the locked suggestion boxes HR proposed.',
+  'A kitchen helper suggests changing the cleaning rota after closing. The idea reaches HR and the head chef without anyone knowing who sent it.',
+  'يستطيع الموظف إرسال فكرة أو ملاحظة دون اسمه من هاتفه. تقرأها الموارد البشرية وتصنفها ويمكنها الرد علناً في أخبار الفريق. نسخة رقمية من صناديق الاقتراحات المقفلة التي اقترحتها الموارد البشرية.',
+  'مساعد مطبخ يقترح تغيير جدول التنظيف بعد الإغلاق. تصل الفكرة إلى الموارد البشرية ورئيس الطهاة دون معرفة المرسل.'),
+ ('The team feed shows birthdays and work anniversaries so colleagues can congratulate each other. Only for people who agree to show it.',
+  'On Grace\'s first anniversary at Mayar, the feed shows a post and colleagues add their congratulations.',
+  'تعرض أخبار الفريق أعياد الميلاد وذكرى العمل ليهنئ الزملاء بعضهم. فقط لمن يوافق على إظهارها.',
+  'في الذكرى الأولى لغريس في مقهى ميار، يظهر منشور في الأخبار ويضيف الزملاء تهانيهم.'),
+ ('Managers approve overtime before it is worked, with the reason and the expected hours. Overtime that was not approved in advance is flagged when the attendance is reviewed.',
+  'A catering order needs two cooks to stay 3 extra hours on Thursday. The manager approves it on Wednesday, so payroll already expects it.',
+  'يوافق المدير على العمل الإضافي قبل حدوثه مع السبب والساعات المتوقعة. ويُنبّه على أي عمل إضافي غير معتمد مسبقاً عند مراجعة الحضور.',
+  'طلب تموين يحتاج إلى طاهيين يبقيان 3 ساعات إضافية يوم الخميس. يوافق المدير يوم الأربعاء فتعرف الرواتب ذلك مسبقاً.'),
+ ('A picture of the organisation: who reports to whom in each branch and at head office, with photos and vacant positions, built from the org structure file your HR team already made.',
+  'A new supervisor opens the chart and sees her team, her manager and the two vacant positions in her branch.',
+  'صورة للمؤسسة: من يتبع لمن في كل فرع وفي الإدارة العامة، مع الصور والوظائف الشاغرة، مبنية من ملف الهيكل التنظيمي الذي أعدّه فريق الموارد البشرية.',
+  'مشرفة جديدة تفتح المخطط وترى فريقها ومديرها والوظيفتين الشاغرتين في فرعها.'),
+]
+assert len(EXPLAIN) == len(GAPS)
+
 QUESTIONS = [
  ('Who approves leave in your department today? Is "manager, then HR for more than 5 days" right?', 'من يوافق على الإجازات في قسمك حالياً؟ هل "المدير ثم الموارد البشرية لأكثر من 5 أيام" صحيح؟'),
  ('What do your staff ask HR for most often?', 'ما أكثر ما يطلبه موظفوك من الموارد البشرية؟'),
@@ -158,8 +247,8 @@ def page(lang_switch=True):
     out.append(f'<h2>{t("3. What we might be missing", "3. ما قد ينقصنا")}</h2>')
     out.append(f'<p class="muted">{t("We compared our plan with Zoho People, Odoo HR, SAP SuccessFactors, Bayzat (UAE) and restaurant scheduling tools such as 7shifts, using their public feature descriptions. These are ideas to discuss, not decisions.", "قارنّا خطتنا مع Zoho People وOdoo HR وSAP SuccessFactors وBayzat (الإمارات) وأدوات جدولة المطاعم مثل 7shifts، بناءً على وصف خصائصها المنشور. هذه أفكار للنقاش وليست قرارات.")}</p>')
     out.append('<table class="gaps"><thead><tr><th>' + t('Idea', 'الفكرة') + '</th><th>' + t('What it does', 'ماذا يفعل') + '</th><th>' + t('Seen in', 'موجود في') + '</th><th>' + t('Phase', 'المرحلة') + '</th></tr></thead><tbody>')
-    for en, ar, den, dar, src, ph in GAPS:
-        out.append(f'<tr><td><strong>{t(en, ar)}</strong></td><td>{t(den, dar)}</td><td class="src">{e(src)}</td><td class="ph">{e(ph)}</td></tr>')
+    for (en, ar, den, dar, src, ph), (me, xe, ma, xa) in zip(GAPS, EXPLAIN):
+        out.append(f'<tr><td><strong>{t(en, ar)}</strong></td><td>{t(den, dar)}<div class="ex"><b>{t("What we mean:", "ما نقصده:")}</b> {t(me, ma)}</div><div class="ex eg"><b>{t("Example at Forka:", "مثال في فوركا:")}</b> {t(xe, xa)}</div></td><td class="src">{e(src)}</td><td class="ph">{e(ph)}</td></tr>')
     out.append('</tbody></table>')
     out.append(f'<h2>{t("4. Questions for you", "4. أسئلة لك")}</h2><ol class="qs">')
     out += [f'<li>{t(a, b)}</li>' for a, b in QUESTIONS]
@@ -179,7 +268,7 @@ html[lang=ar] body{font-family:'IBM Plex Sans Arabic','Inter Tight',sans-serif}h
 table{border-collapse:collapse;width:100%;background:#fff;border:1px solid #E3DCD1;border-radius:12px;overflow:hidden;font-size:14.5px}
 th,td{padding:9px 12px;border-bottom:1px solid #EEE9E1;text-align:start;vertical-align:top}thead th{background:#FAF8F4;color:#5E5A54;font-size:13.5px}
 .matrix td{text-align:center;font-weight:600;font-size:14px}.c-do{color:#2F6B3F;background:#EEF6EF}.c-see{color:#245A63;background:#EDF4F5}.c-no{color:#9A938A}
-.src{color:#5E5A54;font-size:13px;white-space:nowrap}.ph{font-weight:700;text-align:center}.qs li{margin:8px 0}.wrap{overflow-x:auto}"""
+.ex{margin-top:6px;font-size:14px;line-height:1.5}.ex b{color:#3D7C8C}.eg{background:#FAF8F4;border-inline-start:3px solid #E3A33B;padding:6px 10px;border-radius:6px}.eg b{color:#8E6210}.src{color:#5E5A54;font-size:13px;white-space:nowrap}.ph{font-weight:700;text-align:center}.qs li{margin:8px 0}.wrap{overflow-x:auto}"""
 
 body = page(True).replace('<section class="role role-staff">', '<div class="roles"><section class="role role-staff">').replace(
     '</section>\n<h2><span class="en">2.', '</section></div>\n<h2><span class="en">2.').replace('<table', '<div class="wrap"><table').replace('</table>', '</table></div>')
@@ -211,7 +300,7 @@ def plain(ar=False):
     o.append('</table>')
     o.append(f'<h2>{e(pick("3. What we might be missing", "3. ما قد ينقصنا"))}</h2><p>{e(pick("Compared with Zoho People, Odoo HR, SAP SuccessFactors, Bayzat (UAE) and restaurant scheduling tools such as 7shifts, from their public feature descriptions. Ideas to discuss, not decisions. Please mark the three that matter most to you.", "مقارنة مع Zoho People وOdoo HR وSAP SuccessFactors وBayzat (الإمارات) وأدوات جدولة المطاعم مثل 7shifts، من وصف خصائصها المنشور. أفكار للنقاش وليست قرارات. يرجى تحديد أهم ثلاثة بالنسبة لك."))}</p>')
     o.append('<table border="1" cellpadding="5" style="border-collapse:collapse"><tr>' + ''.join(f'<th>{e(pick(x, y))}</th>' for x, y in [('Idea', 'الفكرة'), ('What it does', 'ماذا يفعل'), ('Seen in', 'موجود في'), ('Phase', 'المرحلة'), ('Your view', 'رأيك')]) + '</tr>')
-    for en, a, den, dar, src, ph in GAPS: o.append(f'<tr><td><b>{e(pick(en, a))}</b></td><td>{e(pick(den, dar))}</td><td>{e(src)}</td><td>{e(ph)}</td><td></td></tr>')
+    for (en, a, den, dar, src, ph), (me, xe, ma, xa) in zip(GAPS, EXPLAIN): o.append(f'<tr><td><b>{e(pick(en, a))}</b></td><td>{e(pick(den, dar))}<br><br><b>{e(pick("What we mean:", "ما نقصده:"))}</b> {e(pick(me, ma))}<br><br><b>{e(pick("Example at Forka:", "مثال في فوركا:"))}</b> <i>{e(pick(xe, xa))}</i></td><td>{e(src)}</td><td>{e(ph)}</td><td></td></tr>')
     o.append('</table>')
     o.append(f'<h2>{e(pick("4. Questions for you", "4. أسئلة لك"))}</h2><ol>' + ''.join(f'<li>{e(pick(x, y))}<br><br></li>' for x, y in QUESTIONS) + '</ol></div>')
     return ''.join(o)
