@@ -16,7 +16,12 @@ const ctx = { SpreadsheetApp: { getActive: () => ss, openById: () => acc },
   CacheService: { getScriptCache: () => ({ put: (k, v) => cache[k] = v, get: k => cache[k] ?? null, remove: k => delete cache[k] }) },
   LockService: { getScriptLock: () => ({ waitLock() {}, releaseLock() {} }) },
   ContentService: { createTextOutput: t => ({ setMimeType() { return this; }, t }), MimeType: { JSON: 1 } },
-  UrlFetchApp: { fetch: (u, o) => { const b = o && o.payload ? JSON.parse(o.payload) : {}; const m = T[b.token]; return { getContentText: () => JSON.stringify(m ? { ok: true, me: { email: m[0], level: m[1], status: 'active' } } : { ok: false, error: 'session' }) }; } },
+  // Pretend accounts server: "who", "directory" (people list) and "invite", as on the Forka Apps server.
+  UrlFetchApp: { fetch: (u, o) => { const b = o && o.payload ? JSON.parse(o.payload) : {}; const m = T[b.token]; let ans = { ok: false, error: 'session' };
+    if (m && (b.action || 'who') === 'who') ans = { ok: true, me: { email: m[0], level: m[1], status: 'active' } };
+    if (m && b.action === 'directory') ans = { ok: true, people: ap.d.slice(1).map(r => ({ email: r[0], name: r[1], title: r[2], ceo: r[3] === 'ceo', status: r[4] })).filter(p => p.status === 'active' || p.status === 'pending') };
+    if (m && b.action === 'invite') { if (!ap.d.some(r => r[0] === b.email)) ap.d.push([b.email, b.name, b.title, 'staff', 'pending', false, '', false, false, 'google', '', 'Boards: ' + m[0], new Date(), m[0]]); ans = { ok: true }; }
+    return { getContentText: () => JSON.stringify(ans) }; } },
   DriveApp: { createFolder: () => folder, getFolderById: () => folder, getFileById: id => { const f = files[id]; let n = 0; return { getDescription: () => f.desc, getBlob: () => ({ getContentType: () => f.b.type, getBytes: () => f.b.bytes }), getParents: () => ({ hasNext: () => n++ === 0, next: () => ({ getId: () => 'F1' }) }) }; } },
   MailApp: { sendEmail: m => mails.push(m), getRemainingDailyQuota: () => 1500 },
   Utilities: { base64Decode: s => [...Buffer.from(s, 'base64')], base64Encode: b => Buffer.from(b).toString('base64'), newBlob: (bytes, type, name) => ({ bytes, type, name }) }, console, Date, JSON, Math };
