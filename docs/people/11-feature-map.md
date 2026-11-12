@@ -97,6 +97,7 @@ Found by comparing with Zoho People, Odoo, SAP SuccessFactors, Bayzat and restau
 | **E-signature**<br><sub>Culture and tools</sub> | 2 | · | · | · | · | · | — | — | Agreed by Khaled: build in Phase 2 |
 | **Org chart picture**<br><sub>Culture and tools</sub> | 1A | · | · | · | · | · | — | — | Agreed by Khaled: build in Phase 1A |
 | **AI assistant (Ask Forka)**<br><sub>Culture and tools</sub> | last | · | · | · | · | · | Roles and access, Audit and access logs | SOPs written in one place; lawyer check on sending staff data to the AI provider | Agreed by Khaled: final step. 1) SOP helper 2) app guide and drafts 3) manager questions |
+| **Staff languages (language box)**<br><sub>Culture and tools</sub> | 1A | ✓ | · | · | ◐ | · | Settings and rules | Native speakers to check each language before go-live | Language box in the demo: English and Arabic by hand, 12 machine-translated languages; later fill more with Google Translate and improve with staff |
 
 ## How to use this map
 

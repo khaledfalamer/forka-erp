@@ -1015,6 +1015,24 @@
     "screens": "no",
     "live": "no"
    }
+  },
+  {
+   "id": "x-langs",
+   "name": "Staff languages (language box)",
+   "phase": "1A",
+   "spec": "12-roles-review",
+   "depends": [
+    "settings"
+   ],
+   "blocker": "Native speakers to check each language before go-live",
+   "next": "Language box in the demo: English and Arabic by hand, 12 machine-translated languages; later fill more with Google Translate and improve with staff",
+   "status": {
+    "spec": "done",
+    "db": "no",
+    "server": "no",
+    "screens": "part",
+    "live": "no"
+   }
   }
  ],
  "bands": [
@@ -1174,7 +1192,8 @@
       "x-birthdays",
       "x-esign",
       "x-orgchart",
-      "x-ai"
+      "x-ai",
+      "x-langs"
      ]
     }
    ]
