@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { api } from '../api';
 import { useI18n } from '../i18n';
-import { Page, Loading, Pill, Modal, Field, useApi, errText, Person, Bar } from '../ui';
+import { Page, Loading, Pill, Modal, Field, useApi, errText, Person, Bar, Illustration } from '../ui';
 import { tone } from './People';
 import type { Me } from '../App';
 
@@ -58,7 +58,8 @@ export function Welcome({ emp }: { emp?: string }) {
   return (
     <Page title={p.isSelf ? W.title : `${W.previewOf} ${bi(p.employee.name)}`}>
       <section className="welcome-hero">
-        <div><h2>{W.hello}{t.comma} {bi(p.employee.name).split(' ')[0]}</h2><p>{W.intro}</p></div>
+        <Illustration className="welcome-illus" priority />
+        <div className="welcome-text"><h2>{W.hello}{t.comma} {bi(p.employee.name).split(' ')[0]}</h2><p>{W.intro}</p><p className="welcome-tag">{t.introTitle}</p></div>
         <div className="progress-num"><strong>{p.progress}%</strong> <small className="muted">{W.progress}</small><Bar value={p.progress} max={100} tone="sage" /></div>
       </section>
       {p.progress === 100 && <p className="ok">{W.allDone}</p>}

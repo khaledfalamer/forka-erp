@@ -3,6 +3,7 @@ import { LangPicker, AutoNotice } from '../LangPicker';
 import { api, DEMO } from '../api';
 import { useI18n } from '../i18n';
 import { Logo } from '../icons';
+import { Illustration } from '../ui';
 
 type U = { email: string; display_name: string; roles: string };
 
@@ -16,6 +17,11 @@ export function Login({ onDone }: { onDone: () => void }) {
   };
   return (
     <div className="login">
+      <div className="login-wrap">
+      <section className="login-intro">
+        <Illustration priority />
+        <div className="login-intro-text"><h2>{t.introTitle}</h2><p>{t.introText}</p></div>
+      </section>
       <div className="login-card">
         <div className="login-head">
           <Logo dark />
@@ -36,6 +42,7 @@ export function Login({ onDone }: { onDone: () => void }) {
             </li>
           ))}
         </ul>
+      </div>
       </div>
     </div>
   );

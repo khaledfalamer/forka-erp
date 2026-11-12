@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { api, DEMO } from '../api';
 import { useI18n } from '../i18n';
 import type { Me } from '../App';
-import { ltr } from '../ui';
+import { ltr, Illustration } from '../ui';
 
 export function Home({ me }: { me: Me }) {
   const { t, bi, date } = useI18n();
@@ -27,7 +27,7 @@ export function Home({ me }: { me: Me }) {
   return (
     <div className="stack">
       <div className="hero">
-        <div><h1>{t.hello}{t.comma} {me.user.name.split(' ')[0]}</h1><p className="muted">{t.heroLine}</p></div>
+        <div className="hero-text"><h1>{t.hello}{t.comma} {me.user.name.split(' ')[0]}</h1><p className="muted">{t.heroLine}</p>
         {DEMO && (
           <div className="quick">
             {me.user.employmentId && <a className="btn" href="#/leave">{t.m.leave.request}</a>}
@@ -35,6 +35,8 @@ export function Home({ me }: { me: Me }) {
             <a className="btn ghost" href="#/desk">{t.m.desk.new}</a>
           </div>
         )}
+        </div>
+        <Illustration className="hero-illus" decorative priority />
       </div>
       <div className="cards">
         {d.me && (

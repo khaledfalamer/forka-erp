@@ -113,3 +113,17 @@ export function Donut({ rows, label, center }: { rows: { key: string; value: num
     </div>
   );
 }
+
+// The Forka People teamwork illustration (raster, 4:5). Small phones get the lighter 672px file.
+// The lettering inside the picture is decoration only; the real logo and all labels stay as UI.
+const ILLUS = import.meta.env.BASE_URL + 'illustrations/forka-people-teamwork';
+export function Illustration({ className = '', decorative = false, priority = false }: { className?: string; decorative?: boolean; priority?: boolean }) {
+  const { t } = useI18n();
+  return (
+    <picture className={'illus ' + className}>
+      <source media="(max-width: 700px)" srcSet={ILLUS + '-mobile.webp'} type="image/webp" />
+      <img src={ILLUS + '.webp'} width={1122} height={1402} alt={decorative ? '' : t.illusAlt}
+        loading={priority ? 'eager' : 'lazy'} decoding="async" {...(priority ? { fetchpriority: 'high' } : {})} />
+    </picture>
+  );
+}
