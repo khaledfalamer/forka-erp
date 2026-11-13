@@ -313,17 +313,20 @@ main input:focus-visible,main select:focus-visible,main textarea:focus-visible,#
   .top h1{font-size:24px}
 }
 
-/* Loading: the app's logo, each leaf lights up in turn so the light travels round it (Khaled, 13 Nov 2026) */
+/* Loading: the app's logo, each leaf lights up in turn so the light travels round it (Khaled, 13 Nov 2026).
+   The glow is a blurred copy of each leaf (an SVG filter), so it also works in Safari. */
 .fk-load{position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;background:#f6f3ee}
-.fk-load .fk-mk{width:180px;height:180px;overflow:visible}.fk-load .fk-mk *{stroke:none}
-@media (max-width:600px){.fk-load .fk-mk{width:140px;height:140px}}
-.fk-load .pt{opacity:.38;animation:fkpt 1.1s ease-in-out infinite}
-.fk-load .p2{animation-delay:.275s}.fk-load .p3{animation-delay:.55s}.fk-load .p4{animation-delay:.825s}
-.fk-load .pc{animation:fkpc 1.1s ease-in-out infinite}
-@keyframes fkpt{0%,55%,100%{opacity:.38;filter:none}18%{opacity:1;filter:drop-shadow(0 0 14px var(--g)) drop-shadow(0 0 4px var(--g))}}
+.fk-load .fk-mk{width:90px;height:90px;overflow:visible;flex:none}.fk-load .fk-mk *{stroke:none}
+@media (max-width:600px){.fk-load .fk-mk{width:72px;height:72px}}
+.fk-load .pt{opacity:.38;animation:fkpt .825s ease-in-out infinite}
+.fk-load .pg{opacity:0;animation:fkpg .825s ease-in-out infinite}
+.fk-load .p2{animation-delay:.206s}.fk-load .p3{animation-delay:.412s}.fk-load .p4{animation-delay:.619s}
+.fk-load .pc{animation:fkpc .825s ease-in-out infinite}
+@keyframes fkpt{0%,55%,100%{opacity:.38}18%{opacity:1}}
+@keyframes fkpg{0%,55%,100%{opacity:0}18%{opacity:.9}}
 @keyframes fkpc{0%,100%{opacity:.75}50%{opacity:1}}
 .fk-load .fk-vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
-@media (prefers-reduced-motion:reduce){.fk-load .pt,.fk-load .pc{animation:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){.fk-load .pt,.fk-load .pc{animation:none;opacity:1}.fk-load .pg{animation:none;opacity:0}}
 </style>
 </head>
 <body>
@@ -342,7 +345,7 @@ main input:focus-visible,main select:focus-visible,main textarea:focus-visible,#
   <div class="who" id="who"></div>
 </header>
 <div class="banner" id="banner" style="display:none"></div>
-<main id="main"><div class="fk-load" role="status" style="--lc:#E0A037"><svg class="fk-mk" viewBox="46 96 255 255" aria-hidden="true"><defs><mask id="fkm"><rect x="0" y="0" width="400" height="400" fill="#fff"/><circle cx="173.5" cy="223.5" r="47" fill="#000"/></mask></defs><g mask="url(#fkm)"><rect class="pt p1" x="61" y="111" width="105" height="105" rx="24" fill="#E0A037" style="--g:#E0A037"/><rect class="pt p2" x="181" y="111" width="105" height="105" rx="24" fill="#E0A037" style="--g:#E0A037"/><rect class="pt p3" x="181" y="231" width="105" height="105" rx="24" fill="#E0A037" style="--g:#E0A037"/><rect class="pt p4" x="61" y="231" width="105" height="105" rx="24" fill="#E0A037" style="--g:#E0A037"/></g><circle class="pc" cx="173.5" cy="223.5" r="34" fill="#E0A037" style="--g:#E0A037"/></svg><span class="fk-vh">Loading</span></div></main>
+<main id="main"><div class="fk-load" role="status" style="--lc:#E0A037"><svg class="fk-mk" viewBox="46 96 255 255" aria-hidden="true"><defs><mask id="fkm"><rect x="0" y="0" width="400" height="400" fill="#fff"/><circle cx="173.5" cy="223.5" r="47" fill="#000"/></mask><filter id="fkg" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="16"/></filter></defs><g filter="url(#fkg)"><rect class="pg p1" x="61" y="111" width="105" height="105" rx="24" fill="#E0A037"/><rect class="pg p2" x="181" y="111" width="105" height="105" rx="24" fill="#E0A037"/><rect class="pg p3" x="181" y="231" width="105" height="105" rx="24" fill="#E0A037"/><rect class="pg p4" x="61" y="231" width="105" height="105" rx="24" fill="#E0A037"/></g><g mask="url(#fkm)"><rect class="pt p1" x="61" y="111" width="105" height="105" rx="24" fill="#E0A037"/><rect class="pt p2" x="181" y="111" width="105" height="105" rx="24" fill="#E0A037"/><rect class="pt p3" x="181" y="231" width="105" height="105" rx="24" fill="#E0A037"/><rect class="pt p4" x="61" y="231" width="105" height="105" rx="24" fill="#E0A037"/></g><circle class="pc" cx="173.5" cy="223.5" r="34" fill="#E0A037"/></svg><span class="fk-vh">Loading</span></div></main>
 </div></div>
 <div id="modal"><div class="dlg" id="dlg"></div></div>
 <div class="toast" id="toast"></div>

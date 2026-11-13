@@ -722,17 +722,20 @@ details.ntg{padding:0 16px}details.ntg[open]{padding-bottom:16px}
   .ntg{padding:4px 12px 14px}details.ntg{padding:0 12px}
 }
 
-/* Loading: the app's logo, each leaf lights up in turn so the light travels round it (Khaled, 13 Nov 2026) */
+/* Loading: the app's logo, each leaf lights up in turn so the light travels round it (Khaled, 13 Nov 2026).
+   The glow is a blurred copy of each leaf (an SVG filter), so it also works in Safari. */
 .fk-load{position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;background:#f6f3ee}
-.fk-load .fk-mk{width:180px;height:180px;overflow:visible}.fk-load .fk-mk *{stroke:none}
-@media (max-width:600px){.fk-load .fk-mk{width:140px;height:140px}}
-.fk-load .pt{opacity:.38;animation:fkpt 1.1s ease-in-out infinite}
-.fk-load .p2{animation-delay:.275s}.fk-load .p3{animation-delay:.55s}.fk-load .p4{animation-delay:.825s}
-.fk-load .pc{animation:fkpc 1.1s ease-in-out infinite}
-@keyframes fkpt{0%,55%,100%{opacity:.38;filter:none}18%{opacity:1;filter:drop-shadow(0 0 14px var(--g)) drop-shadow(0 0 4px var(--g))}}
+.fk-load .fk-mk{width:90px;height:90px;overflow:visible;flex:none}.fk-load .fk-mk *{stroke:none}
+@media (max-width:600px){.fk-load .fk-mk{width:72px;height:72px}}
+.fk-load .pt{opacity:.38;animation:fkpt .825s ease-in-out infinite}
+.fk-load .pg{opacity:0;animation:fkpg .825s ease-in-out infinite}
+.fk-load .p2{animation-delay:.206s}.fk-load .p3{animation-delay:.412s}.fk-load .p4{animation-delay:.619s}
+.fk-load .pc{animation:fkpc .825s ease-in-out infinite}
+@keyframes fkpt{0%,55%,100%{opacity:.38}18%{opacity:1}}
+@keyframes fkpg{0%,55%,100%{opacity:0}18%{opacity:.9}}
 @keyframes fkpc{0%,100%{opacity:.75}50%{opacity:1}}
 .fk-load .fk-vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
-@media (prefers-reduced-motion:reduce){.fk-load .pt,.fk-load .pc{animation:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){.fk-load .pt,.fk-load .pc{animation:none;opacity:1}.fk-load .pg{animation:none;opacity:0}}
 </style>
 </head>
 <body>
@@ -1647,7 +1650,7 @@ function fromDocs(){const me=SV.me.email,N={boards:{},lists:{},cards:{},order:[]
 /* Don't redraw under someone's fingers: wait until they leave the box they are typing in. */
 function soft(){const a=document.activeElement;if(DR.d||ASK||(a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)&&!['q','pq','pq2'].includes(a.id))){V.stale=true;return}render()}
 function setSync(s){SV.state=s;const el=document.getElementById('sync');if(el){el.className='sync '+s;el.textContent=s==='ok'?t('sSaved'):s==='saving'?t('sSaving'):t('sOff')}}
-function gate(k){SV.ready=false;if(k==='load'){document.getElementById('app').innerHTML='<div class="fk-load" role="status" style="--lc:#397F8F"><svg class="fk-mk" viewBox="46 96 255 255" aria-hidden="true"><defs><mask id="fkm"><rect x="0" y="0" width="400" height="400" fill="#fff"/><circle cx="173.5" cy="223.5" r="47" fill="#000"/></mask></defs><g mask="url(#fkm)"><rect class="pt p1" x="61" y="111" width="105" height="105" rx="24" fill="#397F8F" style="--g:#397F8F"/><rect class="pt p2" x="181" y="111" width="105" height="105" rx="24" fill="#397F8F" style="--g:#397F8F"/><rect class="pt p3" x="181" y="231" width="105" height="105" rx="24" fill="#397F8F" style="--g:#397F8F"/><rect class="pt p4" x="61" y="231" width="105" height="105" rx="24" fill="#397F8F" style="--g:#397F8F"/></g><circle class="pc" cx="173.5" cy="223.5" r="34" fill="#397F8F" style="--g:#397F8F"/></svg><span class="fk-vh">Loading</span></div>';return}document.getElementById('app').innerHTML=`<div class="gate">${fkLock(lang==='ar'?t('app'):'Board')}
+function gate(k){SV.ready=false;if(k==='load'){document.getElementById('app').innerHTML='<div class="fk-load" role="status" style="--lc:#397F8F"><svg class="fk-mk" viewBox="46 96 255 255" aria-hidden="true"><defs><mask id="fkm"><rect x="0" y="0" width="400" height="400" fill="#fff"/><circle cx="173.5" cy="223.5" r="47" fill="#000"/></mask><filter id="fkg" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="16"/></filter></defs><g filter="url(#fkg)"><rect class="pg p1" x="61" y="111" width="105" height="105" rx="24" fill="#397F8F"/><rect class="pg p2" x="181" y="111" width="105" height="105" rx="24" fill="#397F8F"/><rect class="pg p3" x="181" y="231" width="105" height="105" rx="24" fill="#397F8F"/><rect class="pg p4" x="61" y="231" width="105" height="105" rx="24" fill="#397F8F"/></g><g mask="url(#fkm)"><rect class="pt p1" x="61" y="111" width="105" height="105" rx="24" fill="#397F8F"/><rect class="pt p2" x="181" y="111" width="105" height="105" rx="24" fill="#397F8F"/><rect class="pt p3" x="181" y="231" width="105" height="105" rx="24" fill="#397F8F"/><rect class="pt p4" x="61" y="231" width="105" height="105" rx="24" fill="#397F8F"/></g><circle class="pc" cx="173.5" cy="223.5" r="34" fill="#397F8F"/></svg><span class="fk-vh">Loading</span></div>';return}document.getElementById('app').innerHTML=`<div class="gate">${fkLock(lang==='ar'?t('app'):'Board')}
   ${k==='load'?`<p>${t('loading')}</p>`:k==='signin'?`<p>${t('signinNeed')}</p><a class="btn" href="${esc(CFG.ERP_HOME||'../')}">${t('signinBtn')}</a>`:`<p>${t('netErr')}</p><button class="btn" onclick="location.reload()">${t('retry')}</button>`}
   <div class="seg" style="margin-top:18px"><button onclick="lang='en';try{localStorage.setItem('fb-lang','en')}catch(e){};gate('${k}')" class="${lang==='en'?'on':''}">EN</button><button onclick="lang='ar';try{localStorage.setItem('fb-lang','ar')}catch(e){};gate('${k}')" class="${lang==='ar'?'on':''}">عربي</button></div></div>`;
   document.documentElement.lang=lang;document.documentElement.dir=lang==='ar'?'rtl':'ltr'}
