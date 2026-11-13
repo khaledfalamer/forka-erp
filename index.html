@@ -319,7 +319,7 @@ const T={en:{
   soon:'Moving here soon',curOnly:'Current version - only you can open it until it moves here',openA:'Open',admin:'Administration',
   a_people:'People and access',d_people:'Add people, set clearance and apps, approve requests.',
   a_act:'Activity',d_act:'Who did what, and when.',
-  s_plan:'Purchasing',s_ops:'Operations',s_fin:'Finance',s_dept:'Requests',s_ceo:'CEO approvals',s_oman:'Oman store',
+  s_plan:'Purchasing',s_ops:'Operations',s_fin:'Finance',s_dept:'Requests',s_ceo:'CEO approvals',s_oman:'Oman store',ceoNoStaff:'Not for staff clearance',procLvlNote:'CEO approvals are not available to staff clearance. Stock moves show only to managers and the CEO.',
   people:'People and access',addP:'Add person',waiting:'Waiting for approval',allow:'Allow',reject:'Reject',
   team:'Team',search:'Search name or email',all:'All',st_active:'Active',st_pending:'To confirm',st_blocked:'Blocked',
   colP:'Person',colL:'Clearance',colS:'Status',colA:'Apps',colM:'Sign-in',m_google:'Google',m_pin:'PIN',
@@ -356,7 +356,7 @@ const T={en:{
   soon:'سينقل هنا قريبا',curOnly:'النسخة الحالية - تفتح لك فقط حتى تنقل هنا',openA:'فتح',admin:'الإدارة',
   a_people:'الأشخاص والصلاحيات',d_people:'إضافة الأشخاص وتحديد الصلاحيات والتطبيقات والموافقة على الطلبات.',
   a_act:'سجل النشاط',d_act:'من فعل ماذا ومتى.',
-  s_plan:'المشتريات',s_ops:'العمليات',s_fin:'المالية',s_dept:'الطلبات',s_ceo:'موافقات الرئيس التنفيذي',s_oman:'مخزن عُمان',
+  s_plan:'المشتريات',s_ops:'العمليات',s_fin:'المالية',s_dept:'الطلبات',s_ceo:'موافقات الرئيس التنفيذي',s_oman:'مخزن عُمان',ceoNoStaff:'غير متاح لصلاحية موظف',procLvlNote:'موافقات الرئيس التنفيذي غير متاحة لصلاحية موظف. حركة المخزون تظهر للمديرين والرئيس التنفيذي فقط.',
   people:'الأشخاص والصلاحيات',addP:'إضافة شخص',waiting:'بانتظار الموافقة',allow:'موافقة',reject:'رفض',
   team:'الفريق',search:'ابحث بالاسم أو البريد',all:'الكل',st_active:'مفعل',st_pending:'بانتظار التأكيد',st_blocked:'محظور',
   colP:'الشخص',colL:'الصلاحية',colS:'الحالة',colA:'التطبيقات',colM:'طريقة الدخول',m_google:'Google',m_pin:'رقم سري',
@@ -601,7 +601,7 @@ function vModal(){
     '<div class="g2"><div class="box"><div class="t">'+t('lv')+'</div><div class="seg">'+['staff','manager','ceo'].map(l=>'<button data-a="d-level" data-v="'+l+'" class="'+(d.level===l?'on':'')+'">'+lvName(l)+'</button>').join('')+'</div></div>'+
     '<div class="box"><div class="t">'+t('st')+'</div><div class="seg">'+['active','pending','blocked'].map(s=>'<button data-a="d-status" data-v="'+s+'" class="'+(d.status===s?'on':'')+'">'+t('st_'+s)+'</button>').join('')+'</div></div></div>'+
     '<div class="box"><div class="t">'+t('appsAcc')+'</div>'+(d.level==='ceo'&&d.status==='active'?'<div class="sm-t">'+t('ceoAll')+'</div>':APPS.map(a=>'<label class="ck"><input type="checkbox" data-a="d-app" data-v="'+a.id+'"'+(d.apps[a.id]?' checked':'')+'>'+t('a_'+a.id)+'</label>'+
-      (a.id==='proc'&&d.apps.proc?'<div class="subs" id="sides"><span class="sm-t" style="width:100%">'+t('procSides')+'</span>'+SIDES.map(s=>'<label class="ck"><input type="checkbox" data-a="d-side" data-v="'+s+'"'+((d.sides||[]).includes(s)?' checked':'')+'>'+t('s_'+s)+'</label>').join('')+'</div>':'')).join(''))+'</div>'+
+      (a.id==='proc'&&d.apps.proc?'<div class="subs" id="sides"><span class="sm-t" style="width:100%">'+t('procSides')+'</span>'+SIDES.map(s=>{const off=s==='ceo'&&d.level==='staff';return '<label class="ck"'+(off?' style="opacity:.5" title="'+t('ceoNoStaff')+'"':'')+'><input type="checkbox" data-a="d-side" data-v="'+s+'"'+((d.sides||[]).includes(s)&&!off?' checked':'')+(off?' disabled':'')+'>'+t('s_'+s)+'</label>'}).join('')+'<span class="sm-t" style="width:100%;font-weight:400">'+t('procLvlNote')+'</span></div>':'')).join(''))+'</div>'+
     (modal.err?'<div class="err">'+esc(modal.err)+'</div>':'')+
     '<div class="acts">'+(!isNew&&modal.id!==me?(d.status==='blocked'?'':'<button class="btn dan" data-a="d-block">'+t('block')+'</button>'):'')+'<div class="sp"></div><button class="btn" data-a="m-close">'+t('cancel')+'</button><button class="btn pri" data-a="p-save">'+t('save')+'</button></div></div></div>'}
 
@@ -650,7 +650,7 @@ document.addEventListener('click',e=>{
     case 'm-close':modal=null;break;
     case 'p-save':savePerson();return;
     case 'd-method':modal.draft.method=v;break;
-    case 'd-level':modal.draft.level=v;break;
+    case 'd-level':modal.draft.level=v;if(v==='staff')modal.draft.sides=(modal.draft.sides||[]).filter(x=>x!=='ceo');break;
     case 'd-status':modal.draft.status=v;break;
     case 'd-app':modal.draft.apps[v]=b.checked?1:0;if(v==='proc'&&b.checked&&!(modal.draft.sides||[]).length)modal.draft.sides=['dept'];break;
     case 'd-side':{const s=new Set(modal.draft.sides||[]);b.checked?s.add(v):s.delete(v);modal.draft.sides=SIDES.filter(x=>s.has(x));break}
