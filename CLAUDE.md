@@ -10,6 +10,7 @@ Owner: Khaled Alamer, CEO of Forka Collective (F&B group: UAE branches Sharjah, 
 - Procurement sides are called Purchasing and Operations, never "Planning".
 - Required fields show red when they block saving or the next step.
 - An active CEO opens every app and every section automatically (ceoAll_ in server/Accounts.gs). Never make the CEO tick access for himself.
+- Typing is never lost: every app page has the same "keep what people type" script right after <body> (window.__fkKeep; also in Procurement). Keep it in step everywhere; background refreshes never redraw while a box has focus.
 - Never put secrets in the repo. config.js holds public settings only.
 
 ## What lives where
@@ -23,7 +24,7 @@ Owner: Khaled Alamer, CEO of Forka Collective (F&B group: UAE branches Sharjah, 
 - Apps Script changes do NOT deploy from GitHub. Khaled pastes the file into the script project, then Deploy > Manage deployments > pencil > New version (keeping the same web address). Tell him exactly which project and which file. Never let him choose "New deployment".
 
 ## Checks (run before every push)
-node tests/server_test.js · node tests/hiring_server_test.js · node tests/boards_server_test.js · python3 tests/ci_test.py · python3 tests/hiring_test.py · python3 tests/boards_test.py · python3 tests/boards_live_test.py · python3 tests/pwa_test.py · TEST_DATABASE_URL=... node tests/platform_accounts_test.mjs (skips without a database) (tests/live_test.py runs in CI)
+node tests/server_test.js · node tests/hiring_server_test.js · node tests/boards_server_test.js · python3 tests/ci_test.py · python3 tests/hiring_test.py · python3 tests/boards_test.py · python3 tests/boards_live_test.py · python3 tests/pwa_test.py · python3 tests/keep_typing_test.py · TEST_DATABASE_URL=... node tests/platform_accounts_test.mjs (skips without a database) (tests/live_test.py runs in CI)
 
 ## Rollback
 Website: revert the commit on main. Apps Script: Manage deployments > pencil > choose the previous version.

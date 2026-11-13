@@ -53,6 +53,8 @@ jobs:
         run: python tests/boards_live_test.py
       - name: Team guide page checks
         run: python tests/help_test.py
+      - name: Typed text is never wiped by a redraw (Board, Hire, home)
+        run: python tests/keep_typing_test.py
       - name: Installable app and notifications checks (manifest, offline, install, iPhone steps, EN/AR)
         run: python tests/pwa_test.py
       - name: No secrets in the site
