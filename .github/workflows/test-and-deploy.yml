@@ -43,6 +43,8 @@ jobs:
         run: python tests/board_sidebar_test.py
       - name: Boards (preview) page checks
         run: python tests/boards_test.py
+      - name: Boards page redesign checks (progress, projects, board, calendar, new task; EN/AR, phone to desktop)
+        run: python tests/boards_redesign_test.py
       - name: Boards server checks (who sees and changes what)
         run: node tests/boards_server_test.js
       - name: Boards signed-in checks (several people, real server code)
