@@ -14,7 +14,7 @@ Owner: Khaled Alamer, CEO of Forka Collective (F&B group: UAE branches Sharjah, 
 
 ## What lives where
 - erp.forka.com = this repo on GitHub Pages (CNAME). Every push to main runs .github/workflows/test-and-deploy.yml. The site publishes only if all checks pass.
-- index.html: the hub (sign-in, app tiles, People and access). hiring/: the Hiring app. apply/: a copy of the careers page (apply.forka.com is the forka-apply repo).
+- index.html: the hub (sign-in, app tiles, People and access, "On this device": install the app + turn on notifications). manifest.webmanifest + sw.js make erp.forka.com an installable app (PWA) for the whole site; sw.js never touches the servers or config.js. Notifications: the device address is sent to the server (action pushSubscribe) only once PUSH_PUBLIC_KEY is set in config.js; sending (Board mentions, CEO approvals, LPOs, new applications) is still to build on the platform server. hiring/: the Hiring app. apply/: a copy of the careers page (apply.forka.com is the forka-apply repo).
 - server/Accounts.gs = Apps Script "Forka Apps - Accounts server" (its only file is Code.gs). Sheet "Forka Apps - Accounts" 1YkqcYwtKcm4mOz-wJGLvSPAeEYGzPxqLep_SzRGOCCA, tabs People / Requests / Activity. PINs are stored as salted hashes only.
 - server/Hiring.gs = Apps Script bound to the Sheet "Forka Hiring" (1U_1G9okE9chorTYVollXyOSaKi5GocJWp5-VZUpUfNo). The web app address is HIRING_URL in config.js.
 - server/Boards.gs = Apps Script "Forka Boards server", bound to the Sheet "Forka Boards" (tab Data: one row per board, list, card, message, goal...). Asks the accounts server who people are; reads the accounts Sheet for the list of people; files in a private Drive folder. Web app address = BOARDS_URL in config.js (empty = Boards stays the sample-data preview). Departments and heads are set by the CEO in Boards > People.
@@ -23,7 +23,7 @@ Owner: Khaled Alamer, CEO of Forka Collective (F&B group: UAE branches Sharjah, 
 - Apps Script changes do NOT deploy from GitHub. Khaled pastes the file into the script project, then Deploy > Manage deployments > pencil > New version (keeping the same web address). Tell him exactly which project and which file. Never let him choose "New deployment".
 
 ## Checks (run before every push)
-node tests/server_test.js · node tests/hiring_server_test.js · node tests/boards_server_test.js · python3 tests/ci_test.py · python3 tests/hiring_test.py · python3 tests/boards_test.py · python3 tests/boards_live_test.py · TEST_DATABASE_URL=... node tests/platform_accounts_test.mjs (skips without a database) (tests/live_test.py runs in CI)
+node tests/server_test.js · node tests/hiring_server_test.js · node tests/boards_server_test.js · python3 tests/ci_test.py · python3 tests/hiring_test.py · python3 tests/boards_test.py · python3 tests/boards_live_test.py · python3 tests/pwa_test.py · TEST_DATABASE_URL=... node tests/platform_accounts_test.mjs (skips without a database) (tests/live_test.py runs in CI)
 
 ## Rollback
 Website: revert the commit on main. Apps Script: Manage deployments > pencil > choose the previous version.

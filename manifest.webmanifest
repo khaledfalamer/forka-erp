@@ -1,0 +1,23 @@
+{
+  "name": "Forka App",
+  "short_name": "Forka",
+  "description": "Forka Collective apps: Procurement, Hire and Board.",
+  "id": "/",
+  "start_url": "/?source=app",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f6f3ee",
+  "theme_color": "#f6f3ee",
+  "lang": "en",
+  "dir": "auto",
+  "icons": [
+    { "src": "logos/forka-app-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "logos/forka-app-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "logos/forka-app-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Board", "url": "/boards/", "icons": [{ "src": "logos/forka-board-touch.png", "sizes": "180x180", "type": "image/png" }] },
+    { "name": "Hire", "url": "/hiring/", "icons": [{ "src": "logos/forka-hire-touch.png", "sizes": "180x180", "type": "image/png" }] }
+  ]
+}

@@ -6,6 +6,7 @@
 <meta name="google" content="notranslate">
 <title>Forka Apps</title>
 <link rel="icon" href="logos/forka-app-icon.svg" type="image/svg+xml"><link rel="icon" href="logos/forka-app-icon.png" type="image/png" sizes="64x64"><link rel="apple-touch-icon" href="logos/forka-app-touch.png">
+<link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#f6f3ee"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Forka"><meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="preconnect" href="https://script.google.com">
 <link rel="preconnect" href="https://forka-apps-443945615318.me-central1.run.app">
 <link rel="preconnect" href="https://script.googleusercontent.com" crossorigin>
@@ -260,6 +261,25 @@ label.f{display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--fk
 @keyframes fkpc{0%,100%{opacity:.75}50%{opacity:1}}
 .fk-load .fk-vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 @media (prefers-reduced-motion:reduce){.fk-load .pt,.fk-load .pc{animation:none;opacity:1}.fk-load .pg{animation:none;opacity:0}}
+/* ---------- installable app + notifications ---------- */
+.dev{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px}
+.dev .card{display:flex;flex-direction:column;gap:10px;border-radius:18px;padding:20px 22px}
+.dev .dh{display:flex;align-items:center;gap:12px}
+.dev .dh img{width:44px;height:44px;border-radius:11px;border:1px solid var(--fk-line)}
+.dev .dh .bell{width:44px;height:44px;border-radius:11px;background:var(--fk-bronze-soft);color:var(--fk-bronze);display:flex;align-items:center;justify-content:center;flex:none}
+.dev .dh .bell svg{width:22px;height:22px}
+.dev h3{font-size:21px;color:var(--fk-charcoal)}
+.dev p{margin:0;color:var(--fk-text-2);font-size:13.5px}
+.dev ol{margin:2px 0 0;padding-inline-start:22px;display:flex;flex-direction:column;gap:7px;color:var(--fk-text)}
+.dev ol li{padding-inline-start:4px}
+.dev .shr{display:inline-block;width:17px;height:17px;vertical-align:-3px;color:#2f6fd6}
+.dev ul.nk{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px}
+.dev ul.nk li{display:flex;gap:8px;align-items:flex-start;font-size:13.5px}
+.dev ul.nk li:before{content:"";width:7px;height:7px;border-radius:50%;background:var(--fk-bronze);margin-top:6px;flex:none}
+.dev .row2{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:4px}
+.dev .okl{color:var(--fk-success);font-weight:600;background:var(--fk-success-bg);border-radius:10px;padding:9px 12px;font-size:13.5px}
+.dev .wl{color:var(--fk-warning);background:var(--fk-warning-bg);border-radius:10px;padding:9px 12px;font-size:13.5px}
+.dev .sm-n{font-size:12.5px;color:var(--fk-muted)}
 </style>
 </head>
 <body>
@@ -339,8 +359,22 @@ const T={en:{
   act:'Activity',everyone:'Everyone',noAct:'Nothing yet.',
   v_signin:'signed in',v_signout:'signed out',v_open:'opened',v_req:'requested access',v_allow:'allowed access for',v_reject:'rejected the request from',
   v_add:'added',v_edit:'changed access for',v_confirm:'confirmed access for',v_block:'blocked',v_unblock:'allowed again',
-  reset:'Reset preview data',busy:'Signing in...',privacy:'Privacy policy',help:'How to use',setupT:'Almost ready',setupTxt:'Forka Apps is being set up. Please check back shortly.',sessionEnd:'Please sign in again.',netErr:'Could not reach the server. Check the internet and try again.',noClient:'Google sign-in is not set up yet.',gWait:'Loading Google sign-in...',resetQ:'Reset all preview data back to the start?',yes:'Yes, reset'
+  reset:'Reset preview data',busy:'Signing in...',privacy:'Privacy policy',help:'How to use',setupT:'Almost ready',setupTxt:'Forka Apps is being set up. Please check back shortly.',sessionEnd:'Please sign in again.',netErr:'Could not reach the server. Check the internet and try again.',noClient:'Google sign-in is not set up yet.',gWait:'Loading Google sign-in...',resetQ:'Reset all preview data back to the start?',yes:'Yes, reset',
+  devT:'On this device',appT:'Forka on your phone',appTxt:'Install Forka App to open it from your home screen, like any other app.',install:'Install app',later:'Not now',
+  iosS1:'Tap the Share button',iosS2:'Choose "Add to Home Screen", then "Add"',iosS3:'Open Forka from the new icon on your home screen',iosSafari:'On iPhone and iPad, use Safari for this.',
+  othS:'Open your browser menu and choose "Install app" or "Add to Home screen".',
+  notT:'Notifications',notTxt:'Get a message on this device when:',n_board:'someone mentions you in Board',n_ceo:'a request needs your approval',n_lpo:'an LPO is issued or needs action',n_hire:'a new job application arrives',
+  notOn:'Turn on notifications',notIsOn:'Notifications are on for this device.',notBlocked:'Notifications are blocked for this site. Turn them on in the settings of your browser or phone, then come back.',
+  notIos:'On iPhone, add Forka to your Home Screen first (see the steps), then open it from the icon and turn on notifications there.',notNo:'This browser cannot show notifications.',
+  notTestT:'Forka App',notTestB:'Notifications are on. Forka messages will show here.',notSoon:'Messages start when the Forka server is ready to send them.',notTest:'Send a test'
 },ar:{
+  devT:'على هذا الجهاز',appT:'فوركا على هاتفك',appTxt:'ثبت تطبيق فوركا لتفتحه من الشاشة الرئيسية مثل أي تطبيق آخر.',install:'تثبيت التطبيق',later:'ليس الآن',
+  iosS1:'اضغط زر المشاركة',iosS2:'اختر "إضافة إلى الشاشة الرئيسية" ثم "إضافة"',iosS3:'افتح فوركا من الأيقونة الجديدة على الشاشة الرئيسية',iosSafari:'على iPhone وiPad استخدم متصفح Safari لهذه الخطوة.',
+  othS:'افتح قائمة المتصفح واختر "تثبيت التطبيق" أو "إضافة إلى الشاشة الرئيسية".',
+  notT:'الإشعارات',notTxt:'تصلك رسالة على هذا الجهاز عندما:',n_board:'يذكرك أحد في اللوحات',n_ceo:'يحتاج طلب إلى موافقتك',n_lpo:'يصدر أمر شراء أو يحتاج إلى إجراء',n_hire:'يصل طلب توظيف جديد',
+  notOn:'تفعيل الإشعارات',notIsOn:'الإشعارات مفعلة على هذا الجهاز.',notBlocked:'الإشعارات محظورة لهذا الموقع. فعلها من إعدادات المتصفح أو الهاتف ثم ارجع.',
+  notIos:'على iPhone أضف فوركا إلى الشاشة الرئيسية أولا (انظر الخطوات)، ثم افتحه من الأيقونة وفعل الإشعارات من هناك.',notNo:'هذا المتصفح لا يدعم الإشعارات.',
+  notTestT:'تطبيق فوركا',notTestB:'الإشعارات مفعلة. ستظهر رسائل فوركا هنا.',notSoon:'تبدأ الرسائل عندما يصبح خادم فوركا جاهزا لإرسالها.',notTest:'إرسال تجربة',
   apps:'التطبيقات',sub:'فوركا للاستثمار الجماعي',signin:'تسجيل الدخول',signinTxt:'استخدم حساب Google الخاص بالشركة لفتح تطبيقاتك.',
   google:'الدخول بحساب Google',or:'أو',usePin:'لا يوجد بريد للشركة؟ ادخل بالرقم السري',pin:'الرقم السري',pinGo:'الدخول بالرقم السري',back:'رجوع',
   prevNote:'معاينة: على erp.forka.com يفتح هنا تسجيل الدخول الحقيقي من Google. في المعاينة تختار الحساب.',
@@ -549,6 +583,7 @@ function vHero(){const p=person(me);const h=new Date().getHours();
 function vHome(){const p=person(me);let out='';
   const mine=APPS.filter(a=>a.id==='boards'||(p.apps&&p.apps[a.id]));
   out+='<div class="sec"><h2>'+t('yourApps')+'</h2>'+(mine.length?'<div class="apps">'+mine.map(a=>appTile(a,p)).join('')+'</div>':'<div class="empty-apps">'+t('noApps')+'</div>')+'</div>';
+  out+=vDevice(p);
   if(isCeo(p)){const s=stats();
     out+='<div class="sec"><h2>'+t('admin')+'</h2><div class="apps">'+
       '<button class="app adm" style="--c:#7b4e6e" data-a="v-people"><div class="ic">'+icon('people')+'</div><h3>'+t('a_people')+'</h3><p>'+t('d_people')+'</p>'+((s.wait+s.conf)?'<span class="badge">'+(s.wait+s.conf)+'</span>':'')+'</button>'+
@@ -629,6 +664,52 @@ function render(){
   if(fq!=null){const f=document.getElementById('fq');if(f){f.focus();try{f.setSelectionRange(fq,fq)}catch(_){}}}
 }
 
+/* ---------- installable app + notifications (this device) ---------- */
+const PWA={prompt:null,installed:false,perm:(typeof Notification!=='undefined')?Notification.permission:'none',busy:false,laterAt:0};
+try{PWA.laterAt=+localStorage.getItem('fa-app-later')||0}catch(_){}
+const isStandalone=()=>{try{return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true}catch(_){return false}};
+const isIOS=()=>/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+const swOK=()=>'serviceWorker' in navigator&&/^https?:$/.test(location.protocol);
+if(swOK())addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+addEventListener('beforeinstallprompt',e=>{e.preventDefault();PWA.prompt=e;if(me)render()});
+addEventListener('appinstalled',()=>{PWA.installed=true;PWA.prompt=null;if(me)render()});
+const SHARE='<svg class="shr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="M8 7l4-4 4 4"/><path d="M6 11H5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1h-1"/></svg>';
+const BELL='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 6 2.5 7.5 2.5 7.5h-17S6 15 6 9z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg>';
+function vDevice(p){
+  const standalone=isStandalone()||PWA.installed, later=Date.now()-PWA.laterAt<14*864e5;
+  let cards='';
+  if(!standalone&&!later){
+    let how;
+    if(PWA.prompt)how='<div class="row2"><button class="btn pri" data-a="pwa-install">'+t('install')+'</button><button class="lnk" data-a="pwa-later">'+t('later')+'</button></div>';
+    else if(isIOS())how='<ol id="iosSteps"><li>'+t('iosS1')+' '+SHARE+'</li><li>'+t('iosS2')+'</li><li>'+t('iosS3')+'</li></ol><div class="sm-n">'+t('iosSafari')+'</div><div class="row2"><button class="lnk" data-a="pwa-later">'+t('later')+'</button></div>';
+    else how='<p>'+t('othS')+'</p><div class="row2"><button class="lnk" data-a="pwa-later">'+t('later')+'</button></div>';
+    cards+='<div class="card" id="appcard"><div class="dh"><img src="logos/forka-app-192.png" alt=""><h3>'+t('appT')+'</h3></div><p>'+t('appTxt')+'</p>'+how+'</div>'}
+  const kinds=['n_board'];if(isCeo(p))kinds.push('n_ceo');if(p.apps&&p.apps.proc)kinds.push('n_lpo');if(p.apps&&p.apps.hire)kinds.push('n_hire');
+  let st;
+  const canNotify=typeof Notification!=='undefined'&&swOK();
+  if(isIOS()&&!standalone)st='<div class="wl">'+t('notIos')+'</div>';
+  else if(PWA.perm==='granted')st='<div class="okl">&#10003; '+t('notIsOn')+'</div>'+(CFG.PUSH_PUBLIC_KEY?'':'<div class="sm-n">'+t('notSoon')+'</div>')+'<div class="row2"><button class="btn sm" data-a="pwa-test">'+t('notTest')+'</button></div>';
+  else if(PWA.perm==='denied')st='<div class="wl">'+t('notBlocked')+'</div>';
+  else if(!canNotify)st='<div class="sm-n">'+t('notNo')+'</div>';
+  else st='<div class="row2"><button class="btn pri" data-a="pwa-notify"'+(PWA.busy?' disabled':'')+'>'+t('notOn')+'</button></div>';
+  cards+='<div class="card" id="notcard"><div class="dh"><div class="bell">'+BELL+'</div><h3>'+t('notT')+'</h3></div><p>'+t('notTxt')+'</p><ul class="nk">'+kinds.map(k=>'<li>'+t(k)+'</li>').join('')+'</ul>'+st+'</div>';
+  return '<div class="sec" id="device"><h2>'+t('devT')+'</h2><div class="dev">'+cards+'</div></div>'}
+async function pwaInstall(){const e=PWA.prompt;if(!e)return;PWA.prompt=null;try{e.prompt();const c=await e.userChoice;if(c&&c.outcome==='accepted')PWA.installed=true}catch(_){}render()}
+function pwaLater(){PWA.laterAt=Date.now();try{localStorage.setItem('fa-app-later',String(PWA.laterAt))}catch(_){}render()}
+const b64u=s=>{const p='='.repeat((4-s.length%4)%4),b=atob((s+p).replace(/-/g,'+').replace(/_/g,'/'));return Uint8Array.from(b,c=>c.charCodeAt(0))};
+async function pwaSubscribe(){
+  // Sends this device's notification address to the Forka Apps server. Only runs once the server's public key is in config.js.
+  if(!CFG.PUSH_PUBLIC_KEY||!swOK()||typeof api!=='function')return;
+  try{const reg=await navigator.serviceWorker.ready;
+    const sub=(await reg.pushManager.getSubscription())||await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64u(CFG.PUSH_PUBLIC_KEY)});
+    await api('pushSubscribe',{subscription:sub.toJSON(),lang,device:isIOS()?'ios':/android/i.test(navigator.userAgent)?'android':'desktop'})}catch(_){}}
+async function pwaNotify(){
+  if(typeof Notification==='undefined')return;PWA.busy=true;render();
+  try{PWA.perm=await Notification.requestPermission()}catch(_){PWA.perm=Notification.permission}
+  PWA.busy=false;render();
+  if(PWA.perm==='granted'){pwaTest();pwaSubscribe()}}
+async function pwaTest(){try{const reg=await navigator.serviceWorker.ready;await reg.showNotification(t('notTestT'),{body:t('notTestB'),icon:'logos/forka-app-192.png',badge:'logos/forka-app-icon.png',lang,dir:lang==='ar'?'rtl':'ltr',tag:'forka-test',data:{url:'./'}})}catch(_){}}
+
 /* ---------- events ---------- */
 document.addEventListener('click',e=>{
   const l=e.target.closest('[data-lang]');if(l){lang=l.dataset.lang;try{localStorage.setItem('fa-lang',lang)}catch(_){}render();return}
@@ -664,6 +745,10 @@ document.addEventListener('click',e=>{
     case 'd-block':{const pid=modal.id;modal=null;setStatus(pid,'blocked');return}
     case 'reset':modal={kind:'reset'};break;
     case 'reset-go':resetAll();return;
+    case 'pwa-install':pwaInstall();return;
+    case 'pwa-later':pwaLater();return;
+    case 'pwa-notify':pwaNotify();return;
+    case 'pwa-test':pwaTest();return;
   }
   render()});
 document.addEventListener('keydown',e=>{

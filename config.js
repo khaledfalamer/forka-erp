@@ -8,5 +8,6 @@ window.FORKA_APPS = {
   HIRING_URL: 'https://script.google.com/macros/s/AKfycbx5vwTaOmiKlPMuskrdRSQfMewvX7NOkTTpXymlQgEzK5Vh8uIf95jOyWz19n7wrmN42w/exec',          // Hiring server (Apps Script web app, ends with /exec). Empty = Hiring stays on claude.ai
   BOARDS_URL: 'https://script.google.com/macros/s/AKfycbzx4SO5yPavY7djHjoUQj6GIXxnrbbyGkmMJnf9HxQcOUJMypeej2aFEXF0LgdGDwm82w/exec',          // Boards server (Apps Script web app, ends with /exec). Empty = Boards stays the sample-data preview
   APPLY_URL: 'https://apply.forka.com/',
-  ERP_HOME: 'https://erp.forka.com/'
+  ERP_HOME: 'https://erp.forka.com/',
+  PUSH_PUBLIC_KEY: ''   // public key for phone notifications (from the Forka Apps server). Empty = notifications can be turned on, but nothing is sent yet
 };
