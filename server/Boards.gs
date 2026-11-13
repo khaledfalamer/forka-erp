@@ -52,6 +52,11 @@ function folder_() {
   return f;
 }
 
+/* Emails go out from Google's no-reply address of the company (noreply@forka.com), not from the
+   account that published this script, so staff never see whose account runs it. If Google refuses
+   (only Workspace accounts may use it), the email is still sent the normal way. */
+function mail_(o) { try { MailApp.sendEmail(Object.assign({ noReply: true }, o)); } catch (e) { MailApp.sendEmail(o); } }
+
 /* ---------------- who is this ---------------- */
 function erpWho_(tok) {
   tok = String(tok || '');
@@ -266,7 +271,7 @@ function emailNotes_(x, notes) {
     const link = APP_URL + (n.card ? '#card=' + encodeURIComponent(n.card) : n.ch ? '#chat=' + encodeURIComponent(n.ch) : '');
     const head = n.k === 'unblocked' ? 'A task you were waiting for is done' : who + ' ' + what;
     try {
-      MailApp.sendEmail({ to, name: 'Forka Board', subject: 'Forka Board: ' + head + (title ? ' - ' + title : ''),
+      mail_({ to, name: 'Forka Board', subject: 'Forka Board: ' + head + (title ? ' - ' + title : ''),
         body: head + (title ? ': ' + title : '') + '.\n\nOpen in Board: ' + link + '\n\nYou can turn these emails off in Board (the bell, "Also email me").',
         htmlBody: fkMail_({ c: '#397F8F', logo: 'https://erp.forka.com/logos/forka-board-logo.png', alt: 'Forka Board', lang: 'en',
           kick: BOARD_KICK[n.k] || 'Board', title: head, hi: names[to] ? 'Hello ' + String(names[to]).split(' ')[0] + ',' : '',

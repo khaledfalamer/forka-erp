@@ -90,6 +90,7 @@ r = call({ action: 'apply', job: 'r1', name: 'Sara Ali', email: 'Sara@Mail.com',
 ck('Application with CV accepted, reference returned', r.ok && /^[A-Z0-9]{6}$/.test(r.ref), r);
 ck('CV saved in the private CVs folder', Object.values(files).some(f => f.blob.type === 'application/pdf'));
 ck('HR emailed about the new application', mails.length === 1 && /Sara Ali/.test(mails[0].subject));
+ck('HR email about applications is sent as no-reply', mails[0].noReply === true);
 ck('New-application email uses the Forka design (Hire logo, mustard button, link to Hire)', /forka-hire-logo\.png/.test(mails[0].htmlBody || '') && /#C8891F/.test(mails[0].htmlBody) && /erp\.forka\.com\/hiring\//.test(mails[0].htmlBody));
 ck('Same person, same job, same hour: refused politely', call({ action: 'apply', job: 'r1', name: 'Sara Ali', email: 'sara@mail.com', phone: '+971501234567', consent: true }).error === 'again');
 ck('Robot that fills the hidden field gets "ok" but nothing is saved', call({ action: 'apply', job: 'r1', name: 'Bot', email: 'b@b.co', phone: '0501234567', consent: true, website: 'spam' }).ok && sheets.Applications.d.length === 2);
@@ -180,6 +181,7 @@ ck('No times = refused', call({ action: 'invite', token: JEN, id: 'iv1', kind: '
 let inv = call({ action: 'invite', token: CHEF, id: 'iv1', kind: 'interview', slots: [s1, s2, s3], mins: 45, mode: 'In person', place: 'Sharjah branch' });
 ck('Head sends an interview booking link', inv.ok && /^https:\/\/apply\.forka\.com\/#book=[\w-]{20,}$/.test(inv.link) && inv.mailed, inv);
 ck('Candidate gets the link by email, in Arabic when they applied in Arabic', mails.length === 1 && mails[0].to === 'omar@mail.com' && mails[0].body.includes(inv.link) && /مقابلة/.test(mails[0].body), mails[0]);
+ck('Candidate email: sent as no-reply, replies and questions go to hr@forka.com (never a personal inbox)', mails[0].noReply === true && mails[0].replyTo === 'hr@forka.com' && mails[0].body.includes('hr@forka.com') && mails[0].htmlBody.includes('hr@forka.com'), mails[0].replyTo);
 ck('Candidate booking email: designed, right to left in Arabic, button opens the booking link', /dir="rtl"/.test(mails[0].htmlBody || '') && mails[0].htmlBody.includes(inv.link) && /apply\.forka\.com/.test(mails[0].htmlBody));
 const tok = inv.link.split('#book=')[1];
 let si = call({ action: 'slot', token: tok });
@@ -190,6 +192,7 @@ mails.length = 0;
 let bk = call({ action: 'book', token: tok, t: s2 });
 ck('Candidate picks a time', bk.ok && bk.pick === s2, bk);
 ck('Candidate and interviewer both get a confirmation with a calendar file', mails.length === 2 && mails.every(m => m.attachments && /BEGIN:VEVENT/.test(m.attachments[0].bytes || m.attachments[0].data || '')) && mails[1].to.includes('chef@kuwaitikitchen.com') && mails[1].to.includes('hr@forka.com') && /calendar\.google\.com/.test(mails[1].body), mails.map(m => [m.to, m.subject]));
+ck('Confirmations are sent as no-reply; the candidate one points to hr@forka.com', mails.length === 2 && mails.every(m => m.noReply === true) && mails[0].replyTo === 'hr@forka.com' && mails[0].body.includes('hr@forka.com'), mails.map(m => [m.noReply, m.replyTo]));
 { const p = call({ action: 'load', token: CEO }).data.pipe.iv1;
   ck('The pick shows in Hiring with a history line', p.books.interview.pick === s2 && /Interview booked for/.test(p.history.slice(-1)[0].m), p.books);
   p.books.interview.pick = s3; call({ action: 'put', token: CEO, col: 'pipe', id: 'iv1', data: p });
