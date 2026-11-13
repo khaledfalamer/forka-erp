@@ -10,6 +10,8 @@
  *     It creates the tabs and a private Drive folder "Forka Hiring - CVs".
  *  3. Deploy -> New deployment -> Web app -> Execute as: Me, Who has access: Anyone -> copy the /exec URL.
  *     Send that URL to Claude: it goes into config.js as HIRING_URL.
+ *  Talent pool privacy: rejected / talent-pool candidates leave the server with masked phone and email; "Show" calls
+ *  the reveal action, which writes who, which candidate and when to the "Reveals" tab (created on the first reveal).
  *  Optional Script properties: HR_EMAILS (comma separated) = who gets an email for each new application.
  *                              ANTHROPIC_API_KEY = turns on the AI buttons (CV summary, job ads, interview questions).
  *                              ANTHROPIC_WORKSPACE_ID = only if the key is not tied to one workspace (starts with wrkspc_).
@@ -198,6 +200,83 @@ function mergePipe_(id, d, who) {
   if (!Object.keys(iv).length) delete out.iv;
   if (old && old.books) out.books = old.books; else delete out.books;
   return out;
+}
+
+/* ---------------- talent pool privacy: phone and email masked, "Show" asks the server and is logged ---------------- */
+// Rejected and talent-pool candidates leave the server with masked phone and email (+971 5• ••• ••21, a•••@gmail.com).
+// The full values come only from the "reveal" action, for the same people who could see them before, and every reveal is logged.
+const POOL_STAGES = ['rejected', 'pool'];
+const MASK = '•';
+const REVEAL_TAB = 'Reveals';
+function maskPhone_(p) {
+  p = String(p || '').trim(); if (!p) return '';
+  if (p.indexOf(MASK) >= 0) return p;
+  let d = p.replace(/\D/g, ''); const plus = /^(\+|00)/.test(p); if (/^00/.test(p)) d = d.slice(2);
+  if (d.length < 5) return MASK + MASK + MASK;
+  const cc = plus ? d.slice(0, 3) : '', rest = d.slice(cc.length);
+  return (cc ? '+' + cc + ' ' : '') + rest[0] + MASK + ' ' + MASK + MASK + MASK + ' ' + MASK + MASK + rest.slice(-2);
+}
+function maskEmail_(e) {
+  e = String(e || '').trim(); if (!e) return '';
+  if (e.indexOf(MASK) >= 0) return e;
+  const i = e.indexOf('@'); if (i < 1) return MASK + MASK + MASK;
+  return e[0] + MASK + MASK + MASK + e.slice(i);
+}
+function masked_(o) { return Object.assign({}, o, { phone: maskPhone_(o.phone), email: maskEmail_(o.email) }); }
+// An online application is in the talent pool when its candidate record is (or, before HR picks it up, when it was auto-rejected).
+function appPooled_(id, a, pipe) {
+  if (pipe[id]) return POOL_STAGES.indexOf(pipe[id].stage) >= 0;
+  return POOL_STAGES.indexOf(a.status) >= 0 || ((a.knockout || []).length > 0 && (!a.status || a.status === 'applied'));
+}
+function maskPool_(view) {
+  const pipe = {}, src = view.pipe || {};
+  Object.keys(src).forEach(id => { pipe[id] = POOL_STAGES.indexOf(src[id].stage) >= 0 ? masked_(src[id]) : src[id]; });
+  const apps = {};
+  Object.keys(view.apps || {}).forEach(k => {
+    const doc = view.apps[k], L = doc.list || {}, list = {};
+    Object.keys(L).forEach(a => { list[a] = appPooled_(a, L[a], src) ? masked_(L[a]) : L[a]; });
+    apps[k] = Object.assign({}, doc, { list: list });
+  });
+  return Object.assign({}, view, { pipe: pipe, apps: apps });
+}
+// The stored record of a candidate: the candidate file, or the online application it came from.
+function candStored_(id) {
+  const p = readOne_('pipe', id); if (p) return p;
+  const doc = readOne_('apps', id); if (doc && doc.list && doc.list[id]) return doc.list[id];
+  const all = readAll_('apps');
+  for (const k of Object.keys(all)) { const L = all[k].list || {}; if (L[id]) return L[id]; }
+  return null;
+}
+// A save never writes the masked values over the real ones: they are put back from what is stored.
+function unmaskOne_(o, old) {
+  if (!o) return o;
+  ['phone', 'email'].forEach(f => { if (String(o[f] || '').indexOf(MASK) >= 0) o[f] = (old && old[f]) || ''; });
+  return o;
+}
+function unmask_(col, id, d) {
+  if (!d || typeof d !== 'object') return d;
+  const has = o => o && ['phone', 'email'].some(f => String(o[f] || '').indexOf(MASK) >= 0);
+  if (col === 'pipe' && has(d)) unmaskOne_(d, candStored_(id));
+  if (col === 'apps' && d.list && Object.keys(d.list).some(a => has(d.list[a]))) {
+    const old = readOne_('apps', id) || {};
+    Object.keys(d.list).forEach(a => { if (has(d.list[a])) unmaskOne_(d.list[a], (old.list || {})[a] || candStored_(a)); });
+  }
+  return d;
+}
+function revealLog_(who, id, name) {
+  const s = ss_(); let sh = s.getSheetByName(REVEAL_TAB);
+  if (!sh) sh = s.insertSheet(REVEAL_TAB);
+  if (sh.getLastRow() === 0) { sh.appendRow(['When', 'Who', 'Candidate id', 'Candidate', 'Shown']); sh.setFrozenRows(1); sh.getRange(1, 1, 1, 5).setFontWeight('bold'); }
+  sh.appendRow([new Date(), who.email, String(id), String(name || ''), 'phone, email']);
+}
+// Same rule as seeing the candidate at all: HR and the CEO for everyone, a department head for their own department's roles.
+function reveal_(b, who) {
+  const id = String(b.id || '');
+  if (!/^[A-Za-z0-9_\-.:@]{1,80}$/.test(id)) return { ok: false, error: 'bad' };
+  const c = candStored_(id); if (!c) return { ok: false, error: 'missing' };
+  if (who.role !== 'hr' && !(who.role === 'head' && reqMine_(readOne_('reqs', c.req), who))) return { ok: false, error: 'role' };
+  revealLog_(who, id, c.name);
+  return { ok: true, id: id, phone: String(c.phone || ''), email: String(c.email || '') };
 }
 
 /* ---------------- booking: candidate picks an interview or HR-call time ---------------- */
@@ -533,6 +612,7 @@ function handle_(b) {
     const now = Date.now(), ver = stamp_(), T = {}, data = allData_(T);
     const view = r.role === 'head' ? headView_(data, who) : data;
     view.pipe = blind_(view.pipe, who);
+    const shown = maskPool_(view); view.pipe = shown.pipe; view.apps = shown.apps;   // talent pool: masked phone and email
     // vk: what this person may see. If it changed, or a head's departments may have changed, send everything again.
     const vk = [who.email, who.role, who.ceo ? 1 : 0, who.dept || ''].join('|'), since = +b.since || 0;
     if (since && b.ver && b.vk === vk && !(r.role === 'head' && (changedSince_(T.reqs, since) || changedSince_(T.config, since)))) {
@@ -549,6 +629,7 @@ function handle_(b) {
     if (col === 'config' && r.role !== 'hr') return { ok: false, error: 'role' };           // team list and careers words: HR / CEO
     if (col === 'jobs' && r.role !== 'hr') return { ok: false, error: 'role' };             // posting jobs: HR / CEO
     if (col === 'config' && id === 'team' && !r.ceo) return { ok: false, error: 'role' };   // who is on the team: CEO only
+    if (a === 'put') b.data = unmask_(col, id, b.data || {});                              // masked phone / email never overwrite the real ones
     if (r.role === 'head' && (a === 'del' || !headMayWrite_(col, id, b.data || {}, who))) return { ok: false, error: 'role' };
     if (col === 'jobs' || col === 'reqs' || col === 'config') CacheService.getScriptCache().remove('pubjobs');   // careers page shows the change at once
     const lock = LockService.getScriptLock(); lock.waitLock(15000);
@@ -560,6 +641,7 @@ function handle_(b) {
     } finally { lock.releaseLock(); }
   }
   if (a === 'invite') return invite_(b, who);
+  if (a === 'reveal') return reveal_(b, who);            // talent pool: full phone and email, logged in the Reveals tab
   if (a === 'aisum') return aiSummary_(b, who);
   if (a === 'ai') {                                       // job ads and interview questions (prompt written by the Hiring page)
     const prompt = clean_(b.prompt, 30000);

@@ -39,6 +39,8 @@ jobs:
         run: python tests/hiring_test.py
       - name: Hire left menu checks
         run: python tests/hire_sidebar_test.py
+      - name: Hire page redesign checks (request steps, tables, talent pool privacy, careers editor, phone and Arabic)
+        run: python tests/hire_redesign_test.py
       - name: Board left menu checks
         run: python tests/board_sidebar_test.py
       - name: Boards (preview) page checks
