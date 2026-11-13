@@ -22,6 +22,8 @@ const DELETABLE = ['board', 'list', 'card', 'goal', 'port', 'tpl', 'ctpl', 'spac
 const DEPTS = ['adm', 'ops', 'mkt', 'proc', 'fin', 'hr', 'mnt', 'dev', 'oman'];
 const EMAIL_KINDS = { assign: 'gave you a task', mention: 'mentioned you', req: 'sent a request to your department', done: 'finished your request', subassign: 'gave you a subtask',
   unblocked: 'a task you were waiting for is done', ap_approved: 'approved', ap_changes: 'asked for changes', ap_rejected: 'rejected', chat: 'mentioned you in a chat' };
+const BOARD_KICK = { assign: 'New task', mention: 'You were mentioned', req: 'New request', done: 'Request finished', subassign: 'New subtask',
+  unblocked: 'Ready to start', ap_approved: 'Approved', ap_changes: 'Changes asked', ap_rejected: 'Not approved', chat: 'Chat' };
 const MAX_JSON = 45000;          // one cell holds 50,000 characters
 const MAX_FILE = 5 * 1024 * 1024;
 
@@ -262,10 +264,14 @@ function emailNotes_(x, notes) {
     const card = n.card && x.all[n.card] && x.all[n.card].json, title = card ? card.title : '';
     const who = names[x.me] || x.me, what = EMAIL_KINDS[n.k];
     const link = APP_URL + (n.card ? '#card=' + encodeURIComponent(n.card) : n.ch ? '#chat=' + encodeURIComponent(n.ch) : '');
+    const head = n.k === 'unblocked' ? 'A task you were waiting for is done' : who + ' ' + what;
     try {
-      MailApp.sendEmail({ to, subject: 'Forka Boards: ' + who + ' ' + what + (title ? ' - ' + title : ''),
-        htmlBody: '<p>' + esc_(who) + ' ' + esc_(what) + (title ? ': <b>' + esc_(title) + '</b>' : '') + '.</p><p><a href="' + link + '">Open in Forka Boards</a></p>' +
-          '<p style="color:#888;font-size:12px">You can turn these emails off in Forka Boards (the bell, "Also email me").</p>', name: 'Forka Boards' });
+      MailApp.sendEmail({ to, name: 'Forka Board', subject: 'Forka Board: ' + head + (title ? ' - ' + title : ''),
+        body: head + (title ? ': ' + title : '') + '.\n\nOpen in Board: ' + link + '\n\nYou can turn these emails off in Board (the bell, "Also email me").',
+        htmlBody: fkMail_({ c: '#397F8F', logo: 'https://erp.forka.com/logos/forka-board-logo.png', alt: 'Forka Board', lang: 'en',
+          kick: BOARD_KICK[n.k] || 'Board', title: head, hi: names[to] ? 'Hello ' + String(names[to]).split(' ')[0] + ',' : '',
+          rows: title ? [[n.ch && !n.card ? 'Chat' : 'Task', title]] : [], btn: 'Open in Board', url: link,
+          foot: 'You get this email because you use Forka App.\nTurn these emails off in Board: the bell, then "Also email me".' }) });
       left--;
     } catch (e) {}
   });
@@ -293,4 +299,36 @@ function file_(x, id) {
   if (!inFolder || !cardVisible_(x, cid)) return { ok: false, error: 'role' };
   const bl = f.getBlob();
   return { ok: true, type: bl.getContentType(), data: Utilities.base64Encode(bl.getBytes()) };
+}
+
+/* ---------------- Email design "Paper letter" (Khaled, 13 Nov 2026) ----------------
+   Warm paper background, white card, the app logo on top, a thin line and the button in the app colour.
+   o = { c: app colour, logo: logo URL, alt, lang: 'en'|'ar', kick, title, hi, body, quote, rows: [[label, value]], btn, url, after, foot } */
+function fkMail_(o) {
+  const e = s => String(s == null ? '' : s).replace(/[&<>"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]));
+  const ar = o.lang === 'ar', al = ar ? 'right' : 'left', dir = ar ? 'rtl' : 'ltr';
+  const font = ar ? "'IBM Plex Sans Arabic',Tahoma,Arial,sans-serif" : "'Inter Tight',Arial,Helvetica,sans-serif";
+  const head = ar ? font : "'EB Garamond',Georgia,'Times New Roman',serif";
+  const para = s => e(s).replace(/\n/g, '<br>');
+  const rows = (o.rows || []).filter(r => r && r[1] !== '' && r[1] != null).map(r =>
+    '<tr><td style="padding:9px 0;border-top:1px solid #eee8de;font-size:13px;color:#8a8378;width:38%;text-align:' + al + ';vertical-align:top">' + e(r[0]) + '</td>' +
+    '<td style="padding:9px 0;border-top:1px solid #eee8de;font-size:14.5px;font-weight:600;color:#2B2B2B;text-align:' + al + '">' + para(r[1]) + '</td></tr>').join('');
+  return '<!DOCTYPE html><html dir="' + dir + '"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width">' +
+    '<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@600&family=Inter+Tight:wght@400;600;700&family=IBM+Plex+Sans+Arabic:wght@400;600;700&display=swap" rel="stylesheet"></head>' +
+    '<body style="margin:0;padding:0;background:#f6f3ee">' +
+    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f6f3ee"><tr><td align="center" style="padding:28px 14px">' +
+    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;background:#ffffff;border:1px solid #e7e1d7;border-top:4px solid ' + o.c + ';border-radius:18px;font-family:' + font + ';text-align:' + al + '" dir="' + dir + '">' +
+    '<tr><td style="padding:26px 34px 6px"><img src="' + o.logo + '" height="34" alt="' + e(o.alt || 'Forka') + '" style="display:block;height:34px;width:auto;border:0"></td></tr>' +
+    '<tr><td style="padding:18px 34px 30px">' +
+    (o.kick ? '<div style="font-size:12px;font-weight:700;letter-spacing:' + (ar ? '0' : '.08em') + ';text-transform:uppercase;color:' + o.c + '">' + e(o.kick) + '</div>' : '') +
+    '<div style="font-family:' + head + ';font-size:' + (ar ? '24px' : '30px') + ';font-weight:' + (ar ? 700 : 600) + ';line-height:1.2;color:#2B2B2B;margin:6px 0 14px">' + e(o.title) + '</div>' +
+    ((o.hi || o.body) ? '<div style="font-size:15px;line-height:1.6;color:#4a4640">' + (o.hi ? e(o.hi) + '<br>' : '') + para(o.body) + '</div>' : '') +
+    (o.quote ? '<div style="margin:16px 0 4px;padding:14px 16px;background:#f6f3ee;border-radius:12px;font-size:15px;line-height:1.55;color:#2B2B2B">' + para(o.quote) + '</div>' : '') +
+    (rows ? '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;margin:18px 0 22px">' + rows + '<tr><td colspan="2" style="border-top:1px solid #eee8de;font-size:0;line-height:0">&nbsp;</td></tr></table>' : '<div style="height:18px"></div>') +
+    (o.url ? '<table role="presentation" cellpadding="0" cellspacing="0"><tr><td style="border-radius:999px;background:' + o.c + '"><a href="' + e(o.url) + '" style="display:inline-block;padding:13px 26px;font-weight:600;font-size:15px;color:#ffffff;text-decoration:none;border-radius:999px">' + e(o.btn) + ' ' + (ar ? '&larr;' : '&rarr;') + '</a></td></tr></table>' : '') +
+    (o.after || '') +
+    '</td></tr></table>' +
+    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;font-family:' + font + ';text-align:center" dir="' + dir + '"><tr><td style="padding:18px 20px;font-size:12px;line-height:1.6;color:#8a8378">' +
+    para(o.foot || '') + '<br>Forka Collective</td></tr></table>' +
+    '</td></tr></table></body></html>';
 }

@@ -90,6 +90,7 @@ r = call({ action: 'apply', job: 'r1', name: 'Sara Ali', email: 'Sara@Mail.com',
 ck('Application with CV accepted, reference returned', r.ok && /^[A-Z0-9]{6}$/.test(r.ref), r);
 ck('CV saved in the private CVs folder', Object.values(files).some(f => f.blob.type === 'application/pdf'));
 ck('HR emailed about the new application', mails.length === 1 && /Sara Ali/.test(mails[0].subject));
+ck('New-application email uses the Forka design (Hire logo, mustard button, link to Hire)', /forka-hire-logo\.png/.test(mails[0].htmlBody || '') && /#C8891F/.test(mails[0].htmlBody) && /erp\.forka\.com\/hiring\//.test(mails[0].htmlBody));
 ck('Same person, same job, same hour: refused politely', call({ action: 'apply', job: 'r1', name: 'Sara Ali', email: 'sara@mail.com', phone: '+971501234567', consent: true }).error === 'again');
 ck('Robot that fills the hidden field gets "ok" but nothing is saved', call({ action: 'apply', job: 'r1', name: 'Bot', email: 'b@b.co', phone: '0501234567', consent: true, website: 'spam' }).ok && sheets.Applications.d.length === 2);
 const load = call({ action: 'load', token: JEN }); const app = Object.values(load.data.apps)[0].list; const a = Object.values(app)[0];
@@ -179,6 +180,7 @@ ck('No times = refused', call({ action: 'invite', token: JEN, id: 'iv1', kind: '
 let inv = call({ action: 'invite', token: CHEF, id: 'iv1', kind: 'interview', slots: [s1, s2, s3], mins: 45, mode: 'In person', place: 'Sharjah branch' });
 ck('Head sends an interview booking link', inv.ok && /^https:\/\/apply\.forka\.com\/#book=[\w-]{20,}$/.test(inv.link) && inv.mailed, inv);
 ck('Candidate gets the link by email, in Arabic when they applied in Arabic', mails.length === 1 && mails[0].to === 'omar@mail.com' && mails[0].body.includes(inv.link) && /مقابلة/.test(mails[0].body), mails[0]);
+ck('Candidate booking email: designed, right to left in Arabic, button opens the booking link', /dir="rtl"/.test(mails[0].htmlBody || '') && mails[0].htmlBody.includes(inv.link) && /apply\.forka\.com/.test(mails[0].htmlBody));
 const tok = inv.link.split('#book=')[1];
 let si = call({ action: 'slot', token: tok });
 ck('Booking page shows the times, job and place, nothing private', si.ok && si.slots.length === 3 && si.slots.every(x => x.free) && si.place === 'Sharjah branch' && si.name === 'Omar' && !JSON.stringify(si).match(/chef@|jennifer|iv|tech/), si);
@@ -211,6 +213,7 @@ ck('250 applications in a row are all saved (past the old 300-an-hour limit)', o
 ck('HR gets one email for the first, not 250 emails', mails.length === 1 && /Applicant 0/.test(mails[0].subject), mails.length);
 delete cache['hrmail:sent']; ctx.hrDigest();
 ck('15 minutes later one summary email lists the rest', mails.length === 2 && /249 new applications/.test(mails[1].subject) && mails[1].body.includes('Applicant 249') && mails[1].body.includes('more'), mails[1] && mails[1].subject);
+ck('Summary email lists the people in the Forka design', mails[1] && /Applicant 249/.test(mails[1].htmlBody || '') && /forka-hire-logo/.test(mails[1].htmlBody));
 ctx.hrDigest(); ck('Nothing new = no extra email', mails.length === 2);
 mailQuota = 40; delete cache['hrmail:sent'];
 call({ action: 'apply', job: 'rbig', name: 'Late Applicant', email: 'late@mail.com', phone: '+971500009999', consent: true });

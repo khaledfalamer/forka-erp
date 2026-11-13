@@ -280,6 +280,8 @@ function reveal_(b, who) {
 }
 
 /* ---------------- booking: candidate picks an interview or HR-call time ---------------- */
+const HIRE_C = '#C8891F', HIRE_LOGO = 'https://erp.forka.com/logos/forka-hire-logo.png', STAFF_FOOT = 'You get this email because you use Forka App.';
+function candFoot_(lang) { return lang === 'ar' ? 'وصلتك هذه الرسالة لأنك تقدمت لوظيفة في فوركا.\napply.forka.com' : 'You get this email because you applied for a role at Forka.\napply.forka.com'; }
 const BOOK_KINDS = { call: { en: 'HR call', ar: 'مكالمة مع الموارد البشرية' }, interview: { en: 'Interview', ar: 'مقابلة' } };
 function applyBase_() { return String(props_().getProperty('APPLY_URL') || 'https://apply.forka.com/').replace(/\/?$/, '/'); }
 function findBook_(token) {
@@ -343,7 +345,13 @@ function invite_(b, who) {
     const body = lang === 'ar'
       ? 'مرحباً ' + first + '،\n\nشكراً لاهتمامك بوظيفة ' + job + ' في فوركا. نود ترتيب ' + BOOK_KINDS[kind].ar + ' معك.\nاختر الوقت المناسب لك من هذا الرابط:\n' + link + '\n\n' + (bk.note ? bk.note + '\n\n' : '') + 'فريق التوظيف - فوركا'
       : 'Hello ' + first + ',\n\nThank you for your interest in the ' + job + ' role at Forka. We would like to arrange an ' + BOOK_KINDS[kind].en.toLowerCase() + ' with you.\nPlease pick a time that suits you here:\n' + link + '\n\n' + (bk.note ? bk.note + '\n\n' : '') + 'Forka Hiring team';
-    try { MailApp.sendEmail({ to: c.email, subject: (lang === 'ar' ? 'اختر موعد ' + BOOK_KINDS[kind].ar + ' - ' : 'Pick a time for your ' + BOOK_KINDS[kind].en.toLowerCase() + ' - ') + job, name: 'Forka Hiring', replyTo: who.email, body: body }); mailed = true; } catch (e) {}
+    try { MailApp.sendEmail({ to: c.email, subject: (lang === 'ar' ? 'اختر موعد ' + BOOK_KINDS[kind].ar + ' - ' : 'Pick a time for your ' + BOOK_KINDS[kind].en.toLowerCase() + ' - ') + job, name: 'Forka Hiring', replyTo: who.email, body: body,
+      htmlBody: fkMail_({ c: HIRE_C, logo: HIRE_LOGO, alt: 'Forka', lang: lang, kick: lang === 'ar' ? 'دعوة' : 'Invitation',
+        title: lang === 'ar' ? 'اختر موعد ' + BOOK_KINDS[kind].ar : 'Pick a time for your ' + BOOK_KINDS[kind].en.toLowerCase(),
+        hi: lang === 'ar' ? 'مرحباً ' + first + '،' : 'Hello ' + first + ',',
+        body: lang === 'ar' ? 'شكراً لاهتمامك بوظيفة ' + job + ' في فوركا. نود ترتيب ' + BOOK_KINDS[kind].ar + ' معك. اختر الوقت المناسب لك.'
+          : 'Thank you for your interest in the ' + job + ' role at Forka. We would like to arrange an ' + BOOK_KINDS[kind].en.toLowerCase() + ' with you. Please pick a time that suits you.',
+        quote: bk.note, rows: [[lang === 'ar' ? 'الوظيفة' : 'Role', job]], btn: lang === 'ar' ? 'اختر الموعد' : 'Pick a time', url: link, foot: candFoot_(lang) }) }); mailed = true; } catch (e) {}
   }
   return { ok: true, ver: stamp_(), link: link, mailed: mailed, book: bk };
 }
@@ -377,11 +385,19 @@ function book_(b) {
   try { MailApp.sendEmail({ to: c.email, name: 'Forka Hiring', replyTo: k.by, attachments: [file()],
     subject: (lang === 'ar' ? 'تم تأكيد ' + BOOK_KINDS[k.kind].ar + ' - ' : 'Confirmed: your ' + BOOK_KINDS[k.kind].en.toLowerCase() + ' - ') + job,
     body: (lang === 'ar' ? 'تم تأكيد موعدك: ' : 'You are booked for ') + when_(t, lang) + '\n' + where + '\n\n' + (k.note ? k.note + '\n\n' : '') +
-      (lang === 'ar' ? 'لتغيير الموعد استخدم نفس الرابط: ' : 'Need to change it? Use the same link: ') + applyBase_() + '#book=' + k.token + '\n\nForka Hiring' }); } catch (e) {}
+      (lang === 'ar' ? 'لتغيير الموعد استخدم نفس الرابط: ' : 'Need to change it? Use the same link: ') + applyBase_() + '#book=' + k.token + '\n\nForka Hiring',
+    htmlBody: fkMail_({ c: HIRE_C, logo: HIRE_LOGO, alt: 'Forka', lang: lang, kick: lang === 'ar' ? 'تم التأكيد' : 'Confirmed',
+      title: lang === 'ar' ? 'تم تأكيد ' + BOOK_KINDS[k.kind].ar : 'Your ' + BOOK_KINDS[k.kind].en.toLowerCase() + ' is booked',
+      body: lang === 'ar' ? 'أرفقنا ملف التقويم لإضافته إلى هاتفك. لتغيير الموعد استخدم الزر أدناه.' : 'The calendar file is attached so you can add it to your phone. Need to change it? Use the button below.',
+      quote: k.note, rows: [[lang === 'ar' ? 'الوظيفة' : 'Role', job], [lang === 'ar' ? 'الموعد' : 'When', when_(t, lang)], [lang === 'ar' ? 'المكان' : 'Where', where]],
+      btn: lang === 'ar' ? 'تغيير الموعد' : 'Change the time', url: applyBase_() + '#book=' + k.token, foot: candFoot_(lang) }) }); } catch (e) {}
   const to = [k.by].concat(String(props_().getProperty('HR_EMAILS') || '').split(/[,\s]+/)).filter((x, i, a) => x && a.indexOf(x) === i);
   try { MailApp.sendEmail({ to: to.join(','), name: 'Forka Hiring', attachments: [file()],
     subject: BOOK_KINDS[k.kind].en + ' booked: ' + c.name + ' - ' + when_(t, 'en'),
-    body: c.name + ' (' + job + ') picked ' + when_(t, 'en') + '.\n' + where + '\n\nAdd to Google Calendar: ' + gcal_(k, c) + '\nOpen Hiring: https://erp.forka.com/hiring/' }); } catch (e) {}
+    body: c.name + ' (' + job + ') picked ' + when_(t, 'en') + '.\n' + where + '\n\nAdd to Google Calendar: ' + gcal_(k, c) + '\nOpen Hiring: https://erp.forka.com/hiring/',
+    htmlBody: fkMail_({ c: HIRE_C, logo: HIRE_LOGO, alt: 'Forka Hire', lang: 'en', kick: BOOK_KINDS[k.kind].en + ' booked', title: c.name + ' picked a time',
+      rows: [['Candidate', c.name], ['Role', job], ['When', when_(t, 'en')], ['Where', where]], btn: 'Open in Hire', url: 'https://erp.forka.com/hiring/',
+      after: '<div style="margin-top:14px;font-size:14px"><a href="' + gcal_(k, c) + '" style="color:' + HIRE_C + ';font-weight:600">Add to Google Calendar</a></div>', foot: STAFF_FOOT }) }); } catch (e) {}
   return { ok: true, pick: t, when: when_(t, lang) };
 }
 function allData_(T) { const d = {}; Object.keys(COLS).forEach(c => { if (T) T[c] = {}; d[c] = readAll_(c, T && T[c]); }); return d; }
@@ -414,7 +430,12 @@ function hrDigest() {
       subject: one ? 'New application: ' + one.job + ' - ' + one.name : w.n + ' new applications - Forka Hiring',
       body: one ? one.text + '\n\nOpen Hiring: https://erp.forka.com/hiring/'
         : w.n + ' people applied in the last few minutes.\n\n' + w.lines.map(l => '- ' + l.name + ' - ' + l.job + (l.ko ? ' (did not meet: ' + l.ko + ')' : '')).join('\n') +
-          (w.n > w.lines.length ? '\n...and ' + (w.n - w.lines.length) + ' more.' : '') + '\n\nOpen Hiring: https://erp.forka.com/hiring/' });
+          (w.n > w.lines.length ? '\n...and ' + (w.n - w.lines.length) + ' more.' : '') + '\n\nOpen Hiring: https://erp.forka.com/hiring/',
+      htmlBody: one ? fkMail_({ c: HIRE_C, logo: HIRE_LOGO, alt: 'Forka Hire', lang: 'en', kick: 'New application', title: one.name + ' applied for ' + one.job,
+          body: 'A new person applied on the careers page. Their CV is ready in Hire.', rows: [['Role', one.job], ['Did not meet', one.ko || '']], btn: 'Open in Hire', url: 'https://erp.forka.com/hiring/', foot: STAFF_FOOT })
+        : fkMail_({ c: HIRE_C, logo: HIRE_LOGO, alt: 'Forka Hire', lang: 'en', kick: 'New applications', title: w.n + ' new applications',
+          body: w.n + ' people applied in the last few minutes.' + (w.n > 30 ? ' The latest 30 are below.' : ''),
+          rows: w.lines.slice(-30).map(l => [l.name, l.job + (l.ko ? '\nDid not meet: ' + l.ko : '')]), btn: 'Open in Hire', url: 'https://erp.forka.com/hiring/', foot: STAFF_FOOT }) });
   } catch (e) {} finally { lock.releaseLock(); }
 }
 
@@ -668,4 +689,36 @@ function handle_(b) {
     return { ok: true, name: f.getName(), type: blob.getContentType(), data: Utilities.base64Encode(blob.getBytes()) };
   }
   return { ok: false, error: 'action' };
+}
+
+/* ---------------- Email design "Paper letter" (Khaled, 13 Nov 2026) ----------------
+   Warm paper background, white card, the app logo on top, a thin line and the button in the app colour.
+   o = { c: app colour, logo: logo URL, alt, lang: 'en'|'ar', kick, title, hi, body, quote, rows: [[label, value]], btn, url, after, foot } */
+function fkMail_(o) {
+  const e = s => String(s == null ? '' : s).replace(/[&<>"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]));
+  const ar = o.lang === 'ar', al = ar ? 'right' : 'left', dir = ar ? 'rtl' : 'ltr';
+  const font = ar ? "'IBM Plex Sans Arabic',Tahoma,Arial,sans-serif" : "'Inter Tight',Arial,Helvetica,sans-serif";
+  const head = ar ? font : "'EB Garamond',Georgia,'Times New Roman',serif";
+  const para = s => e(s).replace(/\n/g, '<br>');
+  const rows = (o.rows || []).filter(r => r && r[1] !== '' && r[1] != null).map(r =>
+    '<tr><td style="padding:9px 0;border-top:1px solid #eee8de;font-size:13px;color:#8a8378;width:38%;text-align:' + al + ';vertical-align:top">' + e(r[0]) + '</td>' +
+    '<td style="padding:9px 0;border-top:1px solid #eee8de;font-size:14.5px;font-weight:600;color:#2B2B2B;text-align:' + al + '">' + para(r[1]) + '</td></tr>').join('');
+  return '<!DOCTYPE html><html dir="' + dir + '"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width">' +
+    '<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@600&family=Inter+Tight:wght@400;600;700&family=IBM+Plex+Sans+Arabic:wght@400;600;700&display=swap" rel="stylesheet"></head>' +
+    '<body style="margin:0;padding:0;background:#f6f3ee">' +
+    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f6f3ee"><tr><td align="center" style="padding:28px 14px">' +
+    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;background:#ffffff;border:1px solid #e7e1d7;border-top:4px solid ' + o.c + ';border-radius:18px;font-family:' + font + ';text-align:' + al + '" dir="' + dir + '">' +
+    '<tr><td style="padding:26px 34px 6px"><img src="' + o.logo + '" height="34" alt="' + e(o.alt || 'Forka') + '" style="display:block;height:34px;width:auto;border:0"></td></tr>' +
+    '<tr><td style="padding:18px 34px 30px">' +
+    (o.kick ? '<div style="font-size:12px;font-weight:700;letter-spacing:' + (ar ? '0' : '.08em') + ';text-transform:uppercase;color:' + o.c + '">' + e(o.kick) + '</div>' : '') +
+    '<div style="font-family:' + head + ';font-size:' + (ar ? '24px' : '30px') + ';font-weight:' + (ar ? 700 : 600) + ';line-height:1.2;color:#2B2B2B;margin:6px 0 14px">' + e(o.title) + '</div>' +
+    ((o.hi || o.body) ? '<div style="font-size:15px;line-height:1.6;color:#4a4640">' + (o.hi ? e(o.hi) + '<br>' : '') + para(o.body) + '</div>' : '') +
+    (o.quote ? '<div style="margin:16px 0 4px;padding:14px 16px;background:#f6f3ee;border-radius:12px;font-size:15px;line-height:1.55;color:#2B2B2B">' + para(o.quote) + '</div>' : '') +
+    (rows ? '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;margin:18px 0 22px">' + rows + '<tr><td colspan="2" style="border-top:1px solid #eee8de;font-size:0;line-height:0">&nbsp;</td></tr></table>' : '<div style="height:18px"></div>') +
+    (o.url ? '<table role="presentation" cellpadding="0" cellspacing="0"><tr><td style="border-radius:999px;background:' + o.c + '"><a href="' + e(o.url) + '" style="display:inline-block;padding:13px 26px;font-weight:600;font-size:15px;color:#ffffff;text-decoration:none;border-radius:999px">' + e(o.btn) + ' ' + (ar ? '&larr;' : '&rarr;') + '</a></td></tr></table>' : '') +
+    (o.after || '') +
+    '</td></tr></table>' +
+    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;font-family:' + font + ';text-align:center" dir="' + dir + '"><tr><td style="padding:18px 20px;font-size:12px;line-height:1.6;color:#8a8378">' +
+    para(o.foot || '') + '<br>Forka Collective</td></tr></table>' +
+    '</td></tr></table></body></html>';
 }

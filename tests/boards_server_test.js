@@ -105,6 +105,7 @@ mails.length = 0;
 r = save('MKT', [{ id: 'n1', kind: 'note', json: { id: 'n1', to: 'design@forka.com', by: 'mkt@forka.com', k: 'assign', card: 'c2', at: 1, read: false } },
   { id: 'n2', kind: 'note', json: { id: 'n2', to: 'design@forka.com', by: 'mkt@forka.com', k: 'comment', card: 'c2', at: 1, read: false } }]);
 ck('An alert is saved for the person and emailed (comments are not emailed)', !r.rejected.length && mails.length === 1 && mails[0].to === 'design@forka.com' && /Menu photos/.test(mails[0].subject) && /#card=c2/.test(mails[0].htmlBody), mails);
+ck('Board email uses the Forka design (Board logo, teal button, link to the card)', /forka-board-logo\.png/.test(mails[0].htmlBody) && /#397F8F/.test(mails[0].htmlBody) && /Open in Board/.test(mails[0].htmlBody) && !/Hello ,/.test(mails[0].htmlBody));
 ck('Only the person sees their alerts', ids(load('DES')).includes('n1') && !ids(load('STORE')).includes('n1'));
 save('DES', [{ id: 'user:design@forka.com', kind: 'user', json: { emailOff: true } }]); mails.length = 0;
 save('MKT', [{ id: 'n3', kind: 'note', json: { id: 'n3', to: 'design@forka.com', by: 'mkt@forka.com', k: 'mention', card: 'c2', at: 1 } }]);
