@@ -121,11 +121,12 @@ async def main():
         check('Sign out clears the session', not await pg.evaluate("localStorage.getItem('fa-token')") and 'signout' in CALLS)
         await as_('store@kuwaitikitchen.com')
         check('Hamim signs in, no CEO box', await pg.is_visible('[data-app=proc]') and await pg.locator('#ceobox').count() == 0)
-        async with ctx.expect_page() as np:
+        n0 = len(ctx.pages)
+        async with pg.expect_navigation():
             await pg.click('[data-app=proc]')
-        newp = await np.value
-        check('Procurement opens with the Forka Apps sign-in handed over, visit logged', 'procurement.forka.com' in newp.url and '#erp=S' in newp.url and any(a['verb'] == 'open' for a in ACT), newp.url)
-        await newp.close()
+        check('Procurement opens in the same window with the Forka Apps sign-in handed over, visit logged', 'procurement.forka.com' in pg.url and '#erp=S' in pg.url and len(ctx.pages) == n0 and any(a['verb'] == 'open' for a in ACT), pg.url)
+        await pg.go_back(); await pg.wait_for_selector('[data-app=proc]', timeout=8000)
+        check('Back to Forka Apps: still signed in', await pg.is_visible('[data-app=proc]'))
         await pg.click('[data-a=out]'); await pg.wait_for_selector('#gsi')
         await as_('new.person@forka.com')
         check('Unknown email gets the request form', await pg.is_visible('#rq'))
