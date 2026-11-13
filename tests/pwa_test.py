@@ -49,6 +49,9 @@ async def main():
     check('Service worker leaves the servers alone (only erp.forka.com files)', "url.origin !== self.location.origin" in sw and "req.method !== 'GET'" in sw)
     check('Service worker never caches config.js', 'config.js' in sw)
     check('Notification click only opens erp.forka.com', 'target.origin !== self.location.origin' in sw)
+    wf = (ROOT / '.github' / 'workflows' / 'test-and-deploy.yml').read_text()
+    pub = [l for l in wf.splitlines() if 'mkdir _site' in l][0]
+    check('Publish step copies the manifest and service worker to the live site', 'manifest.webmanifest' in pub and 'sw.js' in pub, pub)
 
     async with async_playwright() as p:
         b = await p.chromium.launch()
