@@ -210,7 +210,7 @@ label.f{display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--fk
 @media (max-width:600px){.fk-lock.big{gap:12px}.fk-lock.big svg{width:52px;height:52px}.fk-lock.big .fk-k{font-size:14px}.fk-lock.big .fk-n{font-size:32px;white-space:normal}}
 
 /* Forka App home: each app is an iPhone-shaped tile with its logo (same size for all) on a light tint of the app colour */
-.toplogo{border:0;background:none;padding:0;cursor:pointer;display:flex;align-items:center}.toplogo img{height:38px;width:auto;display:block}
+.toplogo{border:0;background:none;padding:0;cursor:pointer;display:flex;align-items:center}.toplogo img{height:40px;width:auto;display:block}@media(max-width:600px){.toplogo img{height:32px}}
 .apps:has(.tile){grid-template-columns:repeat(auto-fill,minmax(250px,300px));gap:26px}
 .app.tile{aspect-ratio:1/1;border-radius:22%;background:color-mix(in srgb,var(--c) 13%,#fff);border:1px solid color-mix(in srgb,var(--c) 22%,#fff);align-items:center;justify-content:center;text-align:center;padding:22px;gap:12px;box-shadow:0 2px 6px rgba(43,43,43,.05);min-height:0}
 .app.tile:before,.app.tile:after{display:none}
@@ -517,7 +517,7 @@ function vGate(){
   return '<div class="gate">'+'<div class="gscene" aria-hidden="true"><video autoplay muted loop playsinline poster="logos/lantern-poster.jpg"><source src="logos/lantern.webm" type="video/webm"><source src="logos/lantern.mp4" type="video/mp4"></video></div>'+langSw()+'<div class="gside"><img class="glogo" src="logos/forka-app-logo-light.svg" alt="Forka App"><div class="gcard">'+body+'</div><a class="plink" href="help/?lang='+lang+'" target="_blank" rel="noopener">'+t('help')+'</a> · <a class="plink" href="privacy.html">'+t('privacy')+'</a></div></div>'}
 
 function vTop(){const p=person(me);
-  return '<div class="top">'+'<button class="toplogo" data-a="home" aria-label="Forka App"><img src="logos/forka-app-logo.png" alt="Forka App" height="38"></button>'+'<div class="sp"></div>'+
+  return '<div class="top">'+'<button class="toplogo" data-a="home" aria-label="Forka App"><img src="logos/forka-app-logo.svg" alt="Forka App" height="40"></button>'+'<div class="sp"></div>'+
     '<div class="me"><div class="av">'+esc(initials(p.name))+'</div><div class="txt"><div class="nm">'+esc(p.name)+'</div><div class="lv">'+lvName(p.level)+'</div></div></div>'+
     '<a class="btn sm" id="helpl" href="help/?lang='+lang+'" target="_blank" rel="noopener">'+t('help')+'</a><button class="btn sm" data-a="out">'+t('out')+'</button>'+langSw()+'</div>'}
 
