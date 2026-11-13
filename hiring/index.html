@@ -187,6 +187,131 @@ body.side-mini #side nav a .n{position:absolute;top:3px;right:6px;margin:0;paddi
 #side nav a.on .ni{color:#C8891F}#side nav a .n{background:#D4962E}
 .sd-logo{height:40px;width:auto;display:block;flex:none;max-width:170px;object-fit:contain;object-position:left}
 body.side-mini .sd-logo{height:34px;max-width:40px;object-fit:cover;object-position:left}
+
+/* ===== Hire page content (Phase 3 redesign). Header, left menu, logos and colours are unchanged: only page content below
+   the header uses these, with the existing colour variables. ===== */
+#shell>main{min-width:0}
+main .card,#dlg .card{min-width:0}
+.hx-tw{overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%}
+.hx-tw>table{min-width:680px}
+.hx-t thead th{position:sticky;top:0;background:var(--card);z-index:1}
+.hx-t tr.click:focus-visible td{background:#faf6ef}
+.hx-t td bdi{white-space:nowrap}
+.hx-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.hx-bar{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;margin-bottom:12px}
+.hx-bar .fld{display:flex;flex-direction:column;gap:4px;margin:0;flex:1 1 150px;max-width:230px;min-width:0;font-size:12px}
+.hx-bar .fld.q{flex:2 1 230px;max-width:340px}
+.hx-bar .fld>span:first-child{font-weight:600;color:var(--ink2)}
+.hx-search{position:relative;display:block}.hx-search svg{position:absolute;inset-inline-start:10px;top:50%;transform:translateY(-50%);color:var(--mute);pointer-events:none}
+.hx-search input{padding-inline-start:32px}
+.hx-views{gap:8px;margin:0 0 10px;padding:8px 0 10px;border-bottom:1px solid var(--line)}
+.hx-vl{display:flex;align-items:center;gap:6px;margin:0;font-weight:500}.hx-vl select{width:auto;max-width:220px;height:30px;padding:3px 8px}
+th .hx-sort{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:4px;font:inherit;color:inherit;text-transform:inherit;letter-spacing:inherit}
+th .hx-sort svg{opacity:.45}th .hx-sort.on{color:var(--ink)}th .hx-sort.on svg{opacity:1}
+th .hx-sort:focus-visible{outline:2px solid var(--bronze2);outline-offset:2px;border-radius:3px}
+.hx-seg{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden;background:#fff;flex:none}
+.hx-seg button{border:0;background:none;padding:0 12px;height:34px;font:inherit;font-size:13px;font-weight:600;color:var(--ink2);cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.hx-seg button+button{border-inline-start:1px solid var(--line)}
+.hx-seg button.on{background:var(--ink);color:#fff}
+.hx-chips{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px}
+.hx-chip{border:1px solid var(--line);background:#fff;border-radius:20px;padding:4px 6px 4px 11px;font:inherit;font-size:12px;color:var(--ink2);cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.hx-chip b{background:var(--soft);border-radius:12px;padding:0 7px;font-size:11px;line-height:18px;color:var(--ink)}
+.hx-chip.z{color:var(--mute)}.hx-chip:hover{border-color:var(--ink)}
+.hx-chip.on{background:var(--ink);border-color:var(--ink);color:#fff}.hx-chip.on b{background:#fff;color:var(--ink)}
+[dir=rtl] .hx-chip{padding:4px 11px 4px 6px}
+.hx-bulk{margin-bottom:8px}
+.hx-ss{display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap;min-width:120px}
+.hx-ssb{display:block;height:4px;background:var(--soft);border-radius:3px;overflow:hidden;width:100%;max-width:120px}
+.hx-ssb i{display:block;height:100%;background:var(--bronze)}
+.hx-sh{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:6px}
+.hx-shr{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;margin-bottom:8px}.hx-sh .hx-ssb{max-width:none}
+.hx-empty{text-align:center;padding:26px 12px;color:var(--ink2)}.hx-empty p{margin:0 0 6px}.hx-empty p:first-child{font-weight:600;font-size:15px;color:var(--ink)}
+.hx-empty .btn{margin-top:8px}
+/* dashboard */
+.hx-kpis{margin-bottom:14px}
+.hx-pipe,.hx-na-card{margin-bottom:14px}
+.hx-step{list-style:none;margin:12px 0 4px;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(92px,1fr));gap:6px}
+.hx-step button{width:100%;min-height:58px;border:1px solid var(--line);background:#fff;border-radius:10px;padding:8px 6px;font:inherit;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--ink)}
+.hx-step button b{font-size:20px;font-weight:700;line-height:1.1;font-variant-numeric:tabular-nums}
+.hx-step button span{font-size:11.5px;color:var(--ink2);text-align:center;line-height:1.25}
+.hx-step button:hover{border-color:var(--bronze);background:var(--acc-soft)}
+.hx-step button.z b{color:var(--mute);font-weight:600}
+.hx-src{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:10px}
+.hx-na{list-style:none;margin:8px 0 0;padding:0}
+.hx-na li{display:grid;grid-template-columns:minmax(0,1fr) 150px 110px auto;gap:10px;align-items:center;padding:9px 4px;border-bottom:1px solid var(--line)}
+.hx-na li:last-child{border-bottom:0}
+.hx-na .a{display:flex;flex-direction:column;min-width:0}.hx-na .a span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hx-na li.late .a b{color:var(--bad)}
+.hx-q{list-style:none;margin:8px 0 0;padding:0}
+.hx-q li{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:10px;align-items:center;padding:10px 2px;border-bottom:1px solid var(--line)}
+.hx-q li:last-child{border-bottom:0}.hx-q .m{display:flex;flex-direction:column;gap:2px;min-width:0}.hx-q .b{display:flex;gap:6px;flex-wrap:wrap}
+.kpi .v bdi{font-variant-numeric:tabular-nums}
+/* talent pool */
+.hx-priv{display:flex;align-items:center;gap:6px;margin:0 0 10px}.hx-priv svg,.hx-ct .tag svg{flex:none;vertical-align:-2px}
+.hx-kpis .kpi .v{font-size:28px;font-weight:700;font-family:"EB Garamond",Georgia,serif;line-height:1.2}
+.hx-ct{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px}
+.hx-cv{display:flex;flex-direction:column;font-size:12.5px;font-variant-numeric:tabular-nums;min-width:140px}
+.hx-show{gap:5px}
+/* careers editor */
+.hx-ced{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;align-items:start}
+.hx-ced-ed{display:flex;flex-direction:column;gap:14px;min-width:0}
+.hx-ced-pv{position:sticky;top:78px;min-width:0}
+.hx-st{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;border-radius:20px;padding:2px 9px}
+.hx-st.ok{background:var(--okbg);color:var(--ok)}.hx-st.un{background:var(--warnbg);color:var(--warn)}
+.hx-pv{background:#efe9df;border-radius:12px;padding:12px;margin-top:8px;max-height:72vh;overflow:auto}
+.hx-pv .hx-pvb{margin:0 auto;transition:max-width .2s}
+.hx-pv.phone .hx-pvb{max-width:360px;background:var(--bg);border:8px solid #2b2b2b;border-radius:26px;padding:10px}
+.hx-pv.phone .hero{padding:18px}.hx-pv.phone .hero h1{font-size:24px}
+.hx-pv .hero{margin-bottom:12px}
+/* hiring request wizard */
+.hx-prog{list-style:none;margin:0 0 6px;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.hx-prog button{all:unset;box-sizing:border-box;width:100%;cursor:pointer;display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;border:1px solid var(--line);background:#fff;min-height:44px}
+.hx-prog .n{flex:none;width:24px;height:24px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;background:var(--soft);color:var(--ink2)}
+.hx-prog .t{font-size:12.5px;font-weight:600;color:var(--ink2);line-height:1.2}
+.hx-prog li.done .n{background:var(--bronze);color:#fff}.hx-prog li.done .t{color:var(--ink)}
+.hx-prog li.cur button{border-color:var(--ink);background:var(--card)}.hx-prog li.cur .n{background:var(--ink);color:#fff}.hx-prog li.cur .t{color:var(--ink)}
+.hx-prog button:focus-visible{outline:2px solid var(--bronze2);outline-offset:2px}
+.hx-stepn{margin:4px 0 10px}
+.hx-wiz section>h3{margin:4px 0 2px}#modal .hx-wiz section>h3:focus,#modal .hx-wiz section>h3:focus-visible{outline:none}
+.hx-f.wide{grid-column:1/-1}
+.hx-req{color:var(--bad);font-weight:700;margin-inline-start:3px}
+.hx-err{color:var(--bad);font-size:12px;font-weight:600;min-height:0}.hx-err:empty{display:none}.hx-err:not(:empty){margin-top:4px}
+input.hx-bad,select.hx-bad,textarea.hx-bad{border-color:var(--bad)!important;background:#fff7f5;box-shadow:0 0 0 1px var(--bad)}
+.hx-grp.hx-bad{outline:2px solid var(--bad);outline-offset:3px;border-radius:8px;background:#fff7f5}
+.dlg .ft.hx-wft{position:sticky;bottom:0;z-index:3;align-items:center}
+.hx-dsv{display:inline-flex;align-items:center;gap:4px}
+.hx-dn{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.hx-rv{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin-top:10px}
+.hx-rv h4{margin:0;font-family:"EB Garamond",Georgia,serif;font-size:16px}[dir=rtl] .hx-rv h4{font-family:"IBM Plex Sans Arabic",sans-serif}
+.hx-rv dl{margin:6px 0 0}.hx-rv-r{display:grid;grid-template-columns:200px minmax(0,1fr);gap:10px;padding:5px 0;border-top:1px dashed var(--line);font-size:13px}
+.hx-rv dt{color:var(--mute);font-weight:600}.hx-rv dd{margin:0;overflow-wrap:anywhere}
+/* focus and touch */
+main :focus-visible,#modal :focus-visible,#askbox :focus-visible{outline:2px solid var(--bronze2);outline-offset:2px}
+main input:focus-visible,main select:focus-visible,main textarea:focus-visible,#modal input:focus-visible,#modal select:focus-visible,#modal textarea:focus-visible{outline-offset:-1px}
+#modal{overscroll-behavior:contain}
+.dlg{max-width:100%}
+@media(max-width:1100px){.hx-ced{grid-template-columns:minmax(0,1fr)}.hx-ced-pv{position:static}}
+@media(max-width:860px){.hx-na li{grid-template-columns:minmax(0,1fr) auto;row-gap:4px}.hx-na .o{grid-column:1}.hx-na .s{grid-column:2;grid-row:1}.hx-na .b{grid-column:2}
+  .hx-rv-r{grid-template-columns:minmax(0,1fr);gap:2px}}
+@media(max-width:640px){
+  main .btn,#modal .btn,#askbox .btn,.hx-seg button{min-height:44px;height:auto;padding-top:6px;padding-bottom:6px}
+  main input:not([type=checkbox]):not([type=radio]),main select,#modal input:not([type=checkbox]):not([type=radio]),#modal select{min-height:44px}
+  main input[type=checkbox],#modal input[type=checkbox]{width:22px!important;height:22px}
+  #modal .chk,main .chk{min-height:44px}
+  #modal .x{min-width:44px;min-height:44px}
+  .score button{width:44px;height:44px}
+  .hx-chip{min-height:44px;padding-inline:12px 8px}
+  .hx-bar .fld{max-width:none;flex:1 1 calc(50% - 5px)}.hx-bar .fld.q{max-width:none;flex-basis:100%}
+  .hx-vl{flex-basis:100%}.hx-vl select{flex:1;max-width:none;height:44px}
+  .hx-prog .t{display:none}.hx-prog li.cur .t{display:inline}.hx-prog{grid-template-columns:auto auto auto auto}.hx-prog li.cur{grid-column:auto}
+  .hx-prog button{justify-content:center}
+  .hx-q li{grid-template-columns:minmax(0,1fr) auto}.hx-q .b{grid-column:1/-1}
+  .hx-step{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .dlg .ft.hx-wft{gap:6px}.dlg .ft.hx-wft .hx-dsv{flex-basis:100%}
+  #modal{padding:10px 6px}
+  .dlg .bd{padding:14px 12px}.dlg .hd{padding:14px 12px}.dlg .ft{padding:10px 12px}
+  .top h1{font-size:24px}
+}
 </style>
 </head>
 <body>
@@ -261,6 +386,24 @@ const AR={
 "Answer the quick questions":"أجب عن الأسئلة السريعة","Quick questions":"أسئلة سريعة","Full name":"الاسم الكامل","Phone / WhatsApp":"الهاتف / واتساب","Current location":"الموقع الحالي","Years experience":"سنوات الخبرة","Years of relevant experience":"سنوات الخبرة ذات الصلة","Expected salary":"الراتب المتوقع","Expected monthly salary (total)":"الراتب الشهري المتوقع (إجمالي)","Expected salary:":"الراتب المتوقع:","Notice period (days)":"فترة الإشعار (أيام)","Visa status":"حالة التأشيرة","Own visa / residency":"إقامة / تأشيرة خاصة","Employer visa — transferable":"تأشيرة صاحب عمل — قابلة للتحويل","Visit visa":"تأشيرة زيارة","Needs visa":"يحتاج تأشيرة","Upload your CV":"ارفع سيرتك الذاتية","PDF or a photo of it · max 20 MB · Word files: please save as PDF first":"ملف PDF أو صورة منها · الحد الأقصى ٢٠ ميغابايت · ملفات Word: احفظها بصيغة PDF أولًا","Or paste your CV / LinkedIn link":"أو الصق سيرتك الذاتية / رابط لينكدإن","optional if you uploaded a file":"اختياري إذا رفعت ملفًا","I agree Forka may use my details for this role and keep them up to 6 months for future roles.":"أوافق على أن تستخدم فوركا بياناتي لهذه الوظيفة وتحتفظ بها حتى ٦ أشهر لفرص مستقبلية.","Submit application":"إرسال الطلب","Application sent — track it under My applications":"تم إرسال الطلب — تابعه من قسم طلباتي","Please tick the consent box":"يرجى وضع علامة على خانة الموافقة","Please upload your CV (or paste it)":"يرجى رفع سيرتك الذاتية (أو لصقها)","Name and email are needed":"الاسم والبريد الإلكتروني مطلوبان","Name needed":"الاسم مطلوب","That file is over 20 MB":"حجم الملف يتجاوز ٢٠ ميغابايت","Please upload a PDF or a photo (save Word files as PDF)":"يرجى رفع ملف PDF أو صورة (احفظ ملفات Word بصيغة PDF)","Upload failed — try again or paste the text":"فشل الرفع — حاول مجددًا أو الصق النص","File upload isn't available for your access level — paste your CV text instead":"رفع الملفات غير متاح لصلاحيتك — الصق نص سيرتك الذاتية بدلًا من ذلك","(demo: file too big to keep)":"(تجريبي: الملف كبير جدًا للاحتفاظ به)",
 // add applicant
 "Source":"المصدر","From hr@forka.com, LinkedIn, Indeed, referral or walk-in":"من hr@forka.com أو لينكدإن أو Indeed أو ترشيح أو حضور مباشر","LinkedIn / Indeed":"لينكدإن / Indeed","Email (hr@forka.com)":"البريد (hr@forka.com)","Walk-in":"حضور مباشر","Internal":"داخلي","PDF or photo, from the email":"PDF أو صورة، من البريد الإلكتروني","AI can fill the fields below":"يمكن للذكاء الاصطناعي تعبئة الحقول أدناه","then fill the fields":"ثم املأ الحقول","Fill fields from CV":"تعبئة الحقول من السيرة الذاتية","Candidate consented to Forka holding their data (stated in the application email or form)":"وافق المرشح على احتفاظ فوركا ببياناته (مذكور في بريد التقديم أو النموذج)","Add to pipeline":"إضافة إلى المسار",
+// Phase 3 redesign: dashboard, requests table, candidates, talent pool, careers editor, request steps
+"Date range":"الفترة","All time":"كل الفترات","Last 30 days":"آخر ٣٠ يومًا","Last 90 days":"آخر ٩٠ يومًا","This year":"هذا العام","Filters":"عوامل التصفية",
+"Overdue approvals":"موافقات متأخرة","2-day SLA":"المهلة: يوما عمل","Median days to hire":"الوسيط: أيام حتى التعيين","target 21–28 days":"الهدف ٢١–٢٨ يومًا",
+"Pipeline":"مسار المرشحين","Click a stage to see its candidates":"اضغط على مرحلة لرؤية مرشحيها","Next action":"الإجراء التالي","waiting":"بانتظار","Owner":"المسؤول","You":"أنت",
+"Final approval":"الموافقة النهائية","Build the scorecard":"إعداد بطاقة التقييم","Post the job":"نشر الوظيفة","Screen the CV":"فرز السيرة الذاتية","Finish screening":"إكمال الفرز","Personality assessment":"تقييم الشخصية","Check references":"التحقق من المراجع","Reply on shortlist":"الرد على القائمة المختصرة","Pick for interview or decline":"اختر للمقابلة أو اعتذر","Score the interview":"قيّم المقابلة",
+"New today":"جديد اليوم","Review":"مراجعة","Show all":"عرض الكل","Show fewer":"عرض أقل",
+"Raise one to start. It goes to the CEO for approval first.":"ارفع طلبًا للبدء. يذهب أولًا إلى الرئيس التنفيذي للموافقة.","Your hiring request is not posted yet.":"طلب التوظيف الخاص بك لم يُنشر بعد.","Nobody can apply until a role is posted.":"لا يمكن لأحد التقدّم قبل نشر وظيفة.","Post a role":"انشر وظيفة",
+"Nothing is waiting on you.":"لا يوجد شيء بانتظارك.","Shortlists and scorecards for your department show here.":"تظهر هنا القوائم المختصرة وبطاقات التقييم لقسمك.","New applications and approvals show here.":"تظهر هنا الطلبات الجديدة والموافقات.","See candidates":"عرض المرشحين",
+"New hiring requests from department heads show here.":"تظهر هنا طلبات التوظيف الجديدة من رؤساء الأقسام.","HR sends final candidates here after the references.":"ترسل الموارد البشرية المرشحين النهائيين إلى هنا بعد التحقق من المراجع.",
+"Search":"بحث","Role, request ID, department…":"الوظيفة، رقم الطلب، القسم…","All statuses":"كل الحالات","All departments":"كل الأقسام","All branches":"كل الفروع","Branch":"الفرع","Saved views":"طرق العرض المحفوظة","Choose a view":"اختر طريقة عرض","Save view":"حفظ طريقة العرض","Delete view":"حذف طريقة العرض","Clear filters":"مسح عوامل التصفية","No requests match these filters.":"لا توجد طلبات تطابق عوامل التصفية.","Name this view":"سمِّ طريقة العرض هذه","View saved":"تم حفظ طريقة العرض","View deleted":"تم حذف طريقة العرض",
+"View":"العرض","Stages":"المراحل","All stages":"كل المراحل","No candidates on your shortlist yet.":"لا يوجد مرشحون في قائمتك المختصرة بعد.","HR sends shortlisted candidates for your roles here.":"ترسل الموارد البشرية المرشحين المختارين لوظائفك إلى هنا.","No open roles yet.":"لا توجد وظائف منشورة بعد.","Post a role first. Then people can apply and you can add applicants.":"انشر وظيفة أولًا، ثم يمكن للناس التقدّم ويمكنك إضافة متقدّمين.","Applications from the careers page land here. You can also add walk-ins and email CVs.":"تصل هنا الطلبات من صفحة الوظائف، ويمكنك أيضًا إضافة الحضور المباشر والسير الذاتية الواردة بالبريد.","Select all":"تحديد الكل","Select":"تحديد",
+"Current stage":"المرحلة الحالية","Applicants are added to a posted role. Post one, then add walk-ins and email CVs here.":"يُضاف المتقدّمون إلى وظيفة منشورة. انشر وظيفة، ثم أضف الحضور المباشر والسير الذاتية الواردة بالبريد هنا.",
+"Phone numbers and emails are hidden. Press Show to see them. Each time is recorded (who, which candidate, when).":"أرقام الهواتف والبريد الإلكتروني مخفية. اضغط \"إظهار\" لرؤيتها. يُسجَّل كل إظهار (من، وأي مرشح، ومتى).","Contact":"التواصل","Actions":"الإجراءات","Show":"إظهار","Shown":"ظاهر","HR only":"للموارد البشرية فقط","Only HR can see these details.":"هذه البيانات للموارد البشرية فقط.","Couldn't show the details — try again.":"تعذّر إظهار البيانات — حاول مرة أخرى.",
+"About us":"من نحن","Why work with us":"لماذا تعمل معنا","Benefits":"المزايا","The first words every candidate reads. Two or three short sentences.":"أول كلمات يقرؤها كل مرشح. جملتان أو ثلاث جمل قصيرة.","One reason per line. Short and concrete.":"سبب واحد في كل سطر. قصير وواضح.","What people get when they join.":"ما يحصل عليه الموظف عند انضمامه.","Unsaved":"غير محفوظ","Saves this part only. The careers page changes only when you save.":"يحفظ هذا الجزء فقط. لا تتغير صفحة الوظائف إلا عند الحفظ.","Live preview":"معاينة مباشرة","Preview size":"حجم المعاينة","Desktop":"الكمبيوتر","Shows your words as you type, before you save.":"تعرض كلماتك أثناء الكتابة، قبل الحفظ.","Open the careers page":"فتح صفحة الوظائف",
+"Role & location":"الوظيفة والموقع","Compensation & timing":"الراتب والموعد","Evaluation plan":"خطة التقييم","Review & submit":"المراجعة والإرسال","Progress":"التقدّم","Fields marked * are required":"الحقول المعلّمة بـ * إلزامية","Your draft is back":"تمت استعادة مسودتك","Start over":"البدء من جديد",
+"e.g. Branch Supervisor":"مثال: مشرف فرع","e.g. Run the floor and the shift team so every guest gets the same standard.":"مثال: إدارة الصالة وفريق المناوبة ليحصل كل ضيف على المستوى نفسه.","e.g. Open and close the branch, lead shift briefings, handle complaints, train new staff.":"مثال: فتح الفرع وإغلاقه، وقيادة اجتماعات المناوبة، ومعالجة الشكاوى، وتدريب الموظفين الجدد.","e.g. 6000":"مثال: 6000","e.g. 8000":"مثال: 8000","e.g. 3+ years supervising in a UAE restaurant":"مثال: خبرة إشراف ٣ سنوات أو أكثر في مطعم بالإمارات","e.g. Handling a guest complaint at peak time":"مثال: التعامل مع شكوى ضيف وقت الذروة",
+"Write the role title":"اكتب المسمى الوظيفي","Choose the department":"اختر القسم","Choose the branch. Only remote jobs can leave it empty.":"اختر الفرع. يمكن تركه فارغًا للوظائف عن بُعد فقط.","Write the top of the salary range":"اكتب الحد الأعلى لنطاق الراتب","Write this must-have":"اكتب هذا المتطلب الأساسي","Choose at least one practical test":"اختر اختبارًا عمليًا واحدًا على الأقل","Tick 2 or 3 traits":"حدّد سمتين أو ثلاث","A critical trait must also be ticked as a trait":"السمة الحرجة يجب تحديدها كسمة أيضًا","Please fill the fields marked in red":"يرجى تعبئة الحقول المعلّمة بالأحمر",
+"The salary range is for the CEO and HR only. It never appears in the job ad.":"نطاق الراتب للرئيس التنفيذي والموارد البشرية فقط، ولا يظهر أبدًا في إعلان الوظيفة.","Check everything once. Use Edit to change a part.":"راجع كل شيء مرة واحدة. استخدم \"تعديل\" لتغيير أي جزء.","When you send it, the CEO approves or declines it within 2 working days. Nothing is posted before that.":"بعد الإرسال، يوافق الرئيس التنفيذي أو يرفض خلال يومي عمل، ولا يُنشر شيء قبل ذلك.","Edit":"تعديل","Personality traits":"السمات الشخصية","Back":"رجوع","Close":"إغلاق",
 // candidate modal
 "Move to next stage":"الانتقال للمرحلة التالية","Reject with reason":"رفض مع ذكر السبب","Which criterion did they fail? (required — no rejections on feeling)":"ما المعيار الذي لم يستوفه؟ (إلزامي — لا رفض بناءً على الانطباع)","Why keep them in the talent pool?":"لماذا يُحفظ في بنك المواهب؟","Talent pool note":"ملاحظة بنك المواهب","Talent pool —":"بنك المواهب —","Rejected —":"مرفوض —","Salary above range":"الراتب أعلى من النطاق","Screening score below pass mark":"درجة الفرز أقل من درجة النجاح","Interview score below pass mark":"درجة المقابلة أقل من درجة النجاح","Candidate withdrew":"انسحب المرشح","Missing must-have experience":"تنقصه خبرة أساسية","Screening scorecard":"بطاقة تقييم الفرز","Screening score":"درجة الفرز","Part 1 — CV against the must-haves (1 does not meet · 3 meets with gaps · 5 exceeds)":"الجزء ١ — السيرة الذاتية مقابل المتطلبات الأساسية (١ لا يستوفي · ٣ يستوفي مع فجوات · ٥ يتجاوز)","Part 2 — HR call, 15–30 minutes":"الجزء ٢ — مكالمة الموارد البشرية، ١٥–٣٠ دقيقة","Suggest CV scores":"اقتراح درجات السيرة الذاتية","Suggested — check each score":"مقترحة — راجع كل درجة","Call notes":"ملاحظات المكالمة","HR call:":"مكالمة الموارد البشرية:","Start screening":"بدء الفرز","Pass → personality assessment":"نجح ← تقييم الشخصية","Personality assessment":"تقييم الشخصية","mandatory · input, not pass/fail":"إلزامي · مُدخل للتقييم وليس نجاحًا/رسوبًا","Candidate consented and completed the assessment (tool:":"وافق المرشح وأكمل التقييم (الأداة:","Summary for the panel":"ملخص للجنة","3 lines — the head sees this, never the raw report":"٣ أسطر — يراها رئيس القسم، وليس التقرير الأصلي","Personality summary:":"ملخص الشخصية:","Personality follow-up":"متابعة الشخصية","Follow-up questions:":"أسئلة المتابعة:","2 follow-up questions for the interview":"سؤالا متابعة للمقابلة","A critical trait came out very low — the panel must clear it in the interview.":"ظهرت سمة حرجة بدرجة منخفضة جدًا — يجب على اللجنة توضيحها في المقابلة.","Shortlist pack":"ملف القائمة المختصرة","Send to":"إرسال إلى","head's shortlist":"القائمة المختصرة لرئيس القسم","Pick for interview or decline":"اختر للمقابلة أو ارفض","Invite to interview":"دعوة للمقابلة","Interview + practical (panel)":"المقابلة + الاختبار العملي (اللجنة)","Score the interview":"تقييم المقابلة","Interview scorecard — yours":"بطاقة تقييم المقابلة — الخاصة بك","Score on your own before discussing.":"قيّم بنفسك قبل النقاش.","Other scores stay hidden until you submit yours.":"تبقى الدرجات الأخرى مخفية حتى ترسل درجاتك.","Other panel scores:":"درجات بقية اللجنة:","Submit my scores":"إرسال درجاتي","Scores submitted":"تم إرسال الدرجات","Score every line first":"قيّم كل البنود أولًا","Interview scored by":"قيّم المقابلة","Interview questions":"أسئلة المقابلة","Test in interview:":"يُختبر في المقابلة:","Top 3 things to test in interview":"أهم ٣ أمور تُختبر في المقابلة","Opinions go here; scores stay numbers":"الآراء هنا؛ والدرجات تبقى أرقامًا","Passed → references":"نجح ← المراجع","Reference checks":"التحقق من المراجع","Referee name":"اسم المرجع","Company · relation":"الشركة · صلة المعرفة","Verified — positive":"تم التحقق — إيجابي","Verified — concerns":"تم التحقق — توجد ملاحظات","Could not reach":"تعذّر التواصل","Candidate consents to contacting the current employer (if not: check previous employers, offer conditional)":"يوافق المرشح على التواصل مع جهة عمله الحالية (وإلا: تحقق من جهات العمل السابقة، ويكون العرض مشروطًا)","References clear → final evaluation":"المراجع سليمة ← التقييم النهائي","Final evaluation report":"تقرير التقييم النهائي","Proposed total package (":"الباقة الإجمالية المقترحة (","Basic salary (30%)":"الراتب الأساسي (٣٠٪)","One more negotiation round done (HR only — the department head is not involved in salary)":"تمت جولة تفاوض إضافية (الموارد البشرية فقط — رئيس القسم لا يتدخل في الراتب)","Send to CEO for approval ":"إرسال للرئيس التنفيذي للموافقة","Offer letter signed and accepted":"تم توقيع خطاب العرض وقبوله","No one starts work without complete documentation (control approved 23 Jul).":"لا يبدأ أحد العمل دون اكتمال المستندات (ضابط معتمد في ٢٣ يوليو).","Mark hired → onboarding":"تسجيل كمعيّن ← التهيئة","Moved to":"نُقل إلى","Add note":"إضافة ملاحظة","Note":"ملاحظة","History":"السجل","Save draft":"حفظ المسودة","Close":"إغلاق","Open the file above.":"افتح الملف أعلاه.","Personality report deleted (6-month retention)":"تم حذف تقرير الشخصية (الاحتفاظ ٦ أشهر)","Reject":"رفض","Next":"التالي",
 // toasts / errors / banners
@@ -269,6 +412,10 @@ const AR={
 "You don't have permission to change this. Ask Khaled for Editor access.":"ليست لديك صلاحية لتعديل هذا. اطلب من خالد صلاحية محرر.","Storage is full — archive old candidates.":"المساحة ممتلئة — أرشف المرشحين القدامى.","Couldn't save — try again.":"تعذّر الحفظ — حاول مرة أخرى.","Can't reach the shared data yet — showing what has loaded.":"تعذّر الوصول إلى البيانات المشتركة بعد — يتم عرض ما تم تحميله.","Access changed — reload to continue.":"تغيّرت الصلاحيات — أعد تحميل الصفحة للمتابعة.","Demo mode — sample data, stored only in this browser. Use the switcher (top right) to see each access level.":"وضع تجريبي — بيانات نموذجية محفوظة في هذا المتصفح فقط. استخدم المبدّل (أعلى الصفحة) لرؤية كل مستوى صلاحية.","Select the text and copy it":"حدّد النص وانسخه","AI is busy — try in a minute":"الذكاء الاصطناعي مشغول — حاول بعد دقيقة","AI not allowed on this page":"الذكاء الاصطناعي غير مسموح في هذه الصفحة","AI couldn't do that — try again":"تعذّر على الذكاء الاصطناعي تنفيذ ذلك — حاول مرة أخرى","AI scoring needs CV text — this candidate sent a file only, so score from the file by hand":"التقييم بالذكاء الاصطناعي يحتاج نص السيرة الذاتية — هذا المرشح أرسل ملفًا فقط، فقيّمه يدويًا من الملف",
 };
 const AR_RX=[
+ [/^None of your (\d+) hiring requests is posted yet\.$/,"لم يُنشر أي من طلبات التوظيف الخاصة بك ($1) بعد."],
+ [/^Step (\d) of 4$/,"الخطوة $1 من 4"],[/^Draft saved (\d\d:\d\d)$/,"تم حفظ المسودة $1"],[/^Saved (\d\d:\d\d)$/,"تم الحفظ $1"],[/^Last saved (.+)$/,"آخر حفظ $1"],
+ [/^Must-have (\d)$/,"المتطلب الأساسي $1"],[/^Interview test (\d)$/,"اختبار المقابلة $1"],
+ [/^(.+) head$/,(m,d)=>"رئيس قسم "+trText(d)],
  [/^Data connection stopped \((.+)\)\.?$/,"توقف الاتصال بالبيانات ($1)."],
  [/^View as: (.+) head$/,(m,d)=>"عرض بصفة: رئيس قسم "+trText(d)],
  [/^Dept head · (.+)$/,(m,d)=>"رئيس القسم · "+trText(d)],
@@ -381,7 +528,7 @@ const REQ_STATUS = {requested:["Waiting for CEO","warn"],approved:["Scorecard be
 /* ---------------- state ---------------- */
 let DB=null, USER=null, ME=null, OWNER=false, DEMO=false, CANWRITE=true, SAMPLE=null, ASSETS=null;
 const S={reqs:{},pipe:{},apps:{},jobs:{},team:{members:{}},brand:null};
-const V={role:"candidate",page:null,ceo:false,dept:null,viewAs:null,filter:{q:"",req:"",stage:""},sel:new Set(),pv:"board"};
+const V={role:"candidate",page:null,ceo:false,dept:null,viewAs:null,filter:{q:"",req:"",stage:""},sel:new Set(),pv:"list"};
 const NAMES={};
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const $=s=>document.querySelector(s);
@@ -584,65 +731,199 @@ function openModal(html){$("#dlg").innerHTML=html;$("#modal").classList.add("on"
 function closeModal(){$("#modal").classList.remove("on");$("#dlg").innerHTML=""}
 $("#modal").addEventListener("mousedown",e=>{if(e.target.id==="modal")closeModal()});
 
+/* ---------------- Phase 3 helpers: filters, saved views, stage summary, talent-pool privacy ---------------- */
+const IC={
+ search:`<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>`,
+ sort:`<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 10l4-4 4 4M8 14l4 4 4-4"/></svg>`,
+ up:`<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 14l5-5 5 5"/></svg>`,
+ down:`<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 10l5 5 5-5"/></svg>`,
+ lock:`<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>`,
+ eye:`<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="2.6"/></svg>`,
+ check:`<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>`,
+ desk:`<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4.5" width="18" height="12" rx="1.6"/><path d="M9 20h6M12 16.5V20"/></svg>`,
+ phone:`<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2.2"/><path d="M11 18.5h2"/></svg>`
+};
+const fmtT=t=>t?new Date(t).toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"}):"";
+const RANGES=[["","All time"],["30","Last 30 days"],["90","Last 90 days"],["year","This year"]];
+function inRange(t,r){ if(!r) return true; if(!t) return false; if(r==="year") return new Date(t).getFullYear()===new Date().getFullYear(); return t>=Date.now()-(+r)*864e5 }
+function median(a){ a=a.filter(x=>typeof x==="number"&&isFinite(x)).sort((x,y)=>x-y); if(!a.length) return null; const m=a.length>>1; return a.length%2?a[m]:(a[m-1]+a[m])/2 }
+const opt=(v,label,cur)=>`<option value="${esc(v)}" ${String(v)===String(cur??"")?"selected":""}>${esc(label)}</option>`;
+const canPost=()=>V.role==="hr";                               // posting jobs: HR and the CEO, as before
+// search boxes redraw the page after a short pause and keep the cursor where it was
+function liveQ(id,set){ set(); clearTimeout(window._qt); window._qt=setTimeout(()=>{ render(); const i=document.getElementById(id); if(i){ i.focus(); i.setSelectionRange(i.value.length,i.value.length) } },250) }
+// saved views: kept in this browser, per person
+const VKEY=()=>"forkaHireViews:"+(V.me||"");
+function views(){ try{ return JSON.parse(localStorage.getItem(VKEY())||"{}")||{} }catch(e){ return {} } }
+function viewsSet(o){ try{ localStorage.setItem(VKEY(),JSON.stringify(o)) }catch(e){} }
+async function saveView(){ const name=await ask("Name this view"); if(!name) return; const o=views(); const L=(o.reqs||[]).filter(v=>v.name!==name.slice(0,40));
+  L.push({name:name.slice(0,40),f:JSON.parse(JSON.stringify(V.rf))}); o.reqs=L.slice(-12); viewsSet(o); V.rview=name.slice(0,40); toast("View saved"); render() }
+function useView(name){ const v=(views().reqs||[]).find(x=>x.name===name); V.rview=v?name:""; V.rf=v?{...RF0(),...v.f}:RF0(); render() }
+function delView(){ const o=views(); o.reqs=(o.reqs||[]).filter(v=>v.name!==V.rview); viewsSet(o); V.rview=""; toast("View deleted"); render() }
+// one compact line that always names the current stage (no 10-step strip)
+function stageSum(c){ const i=SI[c.stage]; if(i==null||c.stage==="hired") return stageTag(c);
+  return `<span class="hx-ss"><span class="tag">${STAGES[i][1]}</span> <span class="small muted"><bdi>${i+1}/${STAGES.length}</bdi></span><span class="hx-ssb" aria-hidden="true"><i style="width:${Math.round((i+1)/STAGES.length*100)}%"></i></span></span>` }
+function stageHead(d){ const i=SI[d.stage]; if(i==null) return ""; const s=STAGES[i], nx=STAGES[i+1];
+  return `<div class="hx-sh"><div class="hx-shr"><span class="small muted">Current stage</span> <b>${s[1]}</b> <span class="small muted"><bdi>${i+1}/${STAGES.length}</bdi></span><span class="sp"></span><span class="small"><span class="muted">Owner</span> ${s[2]}</span>${nx?`<span class="small"><span class="muted">Next</span> ${nx[1]}</span>`:""}</div><div class="hx-ssb" aria-hidden="true"><i style="width:${Math.round((i+1)/STAGES.length*100)}%"></i></div></div>` }
+// the posting flow: roles waiting to be posted, or a new hiring request when there are none
+function postFlow(){ closeModal(); const ready=Object.values(S.reqs).filter(r=>r.status==="ready"&&headSees(r));
+  if(ready.length){ V.rf={...RF0(),status:"ready"}; V.rview=""; go("reqs") } else { go("reqs"); reqForm() } }
+/* talent pool privacy: phone and email masked; "Show" asks the server, which logs every reveal */
+const MASK="•"; const REV={};
+function maskPhone(p){ p=String(p||"").trim(); if(!p) return ""; if(p.includes(MASK)) return p;
+  let d=p.replace(/\D/g,""); const plus=/^(\+|00)/.test(p); if(/^00/.test(p)) d=d.slice(2); if(d.length<5) return MASK+MASK+MASK;
+  const cc=plus?d.slice(0,3):"", rest=d.slice(cc.length); return (cc?"+"+cc+" ":"")+rest[0]+MASK+" "+MASK+MASK+MASK+" "+MASK+MASK+rest.slice(-2) }
+function maskEmail(e){ e=String(e||"").trim(); if(!e) return ""; if(e.includes(MASK)) return e; const i=e.indexOf("@"); if(i<1) return MASK+MASK+MASK; return e[0]+MASK+MASK+MASK+e.slice(i) }
+const pooled=c=>c&&(c.stage==="rejected"||c.stage==="pool");
+// same people who could see these details before: HR / CEO, and a head for their own department's roles
+const canReveal=c=>V.role==="hr"||(V.role==="head"&&headSees(reqOf(c)));
+function contactHTML(c){ const rv=REV[c.id], ph=rv?rv.phone:maskPhone(c.phone), em=rv?rv.email:maskEmail(c.email);
+  return `<div class="hx-ct"><span class="hx-cv" data-noi18n><bdi dir="ltr">${esc(ph||"–")}</bdi><bdi dir="ltr">${esc(em||"–")}</bdi></span>${rv?`<span class="tag ok">Shown</span>`:canReveal(c)?`<button type="button" class="btn sm sec hx-show" onclick="event.stopPropagation();reveal('${esc(c.id)}',this)">${IC.eye}<span>Show</span></button>`:`<span class="tag">${IC.lock} HR only</span>`}</div>` }
+async function reveal(id,btn){ const c=allCands()[id]; if(!c) return; let r;
+  if(btn){ btn.disabled=true }
+  if(DEMO||!HURL) r={ok:true,phone:c.phone||"",email:c.email||""};
+  else { r=await api("reveal",{id}); if(!r.ok&&r.error==="action") r={ok:true,phone:c.phone||"",email:c.email||"",old:true} }  // Hiring script not updated yet: the page already has them
+  if(btn){ btn.disabled=false }
+  if(!r.ok){ if(r.error==="session") return gone("signin"); toast(r.error==="role"?"Only HR can see these details.":"Couldn't show the details — try again."); return }
+  REV[id]={phone:r.phone||"",email:r.email||""}; render(); if($("#modal").classList.contains("on")&&DRAFT&&DRAFT.id===id) openCand(id) }
+
 /* ---------------- pages ---------------- */
+function nextActions(C,cands,reqs){ const A=[], dn=r=>(r&&r.dept?r.dept+" head":"Dept head");
+  const add=(o)=>A.push(o);
+  if(V.role==="head"){
+    reqs.filter(r=>r.status==="review").forEach(r=>add({t:"Approve scorecard",s:r.title,o:"You",d:workDaysSince(r.scorecardAt),sla:1,go:`openReq('${r.id}')`}));
+    cands.filter(c=>c.stage==="shortlist").forEach(c=>add({t:"Pick for interview or decline",s:c.name+" · "+(reqOf(c).title||""),o:"You",d:workDaysSince(c.stageAt),sla:1,go:`openCand('${c.id}')`}));
+    cands.filter(c=>c.stage==="interview"&&!(c.iv||{})[V.me]).forEach(c=>add({t:"Score the interview",s:c.name+" · "+(reqOf(c).title||""),o:"You",d:workDaysSince(c.stageAt),go:`openCand('${c.id}')`}));
+  } else {
+    if(V.ceo){ reqs.filter(r=>r.status==="requested").forEach(r=>add({t:"Approve vacancy",s:r.title+" · "+r.dept,o:"CEO",d:workDaysSince(r.createdAt),sla:1,go:`openReq('${r.id}')`}));
+      cands.filter(c=>c.stage==="approval").forEach(c=>add({t:"Final approval",s:c.name+" · "+(reqOf(c).title||""),o:"CEO",d:workDaysSince(c.stageAt),sla:1,go:`openCand('${c.id}')`})); }
+    reqs.filter(r=>r.status==="approved").forEach(r=>add({t:"Build the scorecard",s:r.title+" · "+r.dept,o:"HR",d:workDaysSince(r.createdAt),go:`openReq('${r.id}')`}));
+    reqs.filter(r=>r.status==="ready").forEach(r=>add({t:"Post the job",s:r.title+" · "+place(r),o:"HR",d:workDaysSince(r.createdAt),go:`openReq('${r.id}')`}));
+    reqs.filter(r=>r.status==="review").forEach(r=>add({t:"Approve scorecard",s:r.title,o:dn(r),d:workDaysSince(r.scorecardAt),sla:1,go:`openReq('${r.id}')`}));
+    const lab={applied:"Screen the CV",screening:"Finish screening",personality:"Personality assessment",references:"Check references",final:"Final evaluation",offer:"Offer & documents"};
+    cands.filter(c=>lab[c.stage]).forEach(c=>add({t:lab[c.stage],s:c.name+" · "+(reqOf(c).title||""),o:"HR",d:workDaysSince(c.stageAt||c.createdAt),go:`openCand('${c.id}')`}));
+    cands.filter(c=>c.stage==="shortlist").forEach(c=>add({t:"Reply on shortlist",s:c.name+" · "+(reqOf(c).title||""),o:dn(reqOf(c)),d:workDaysSince(c.stageAt),sla:1,go:`openCand('${c.id}')`}));
+  }
+  const late=x=>x.sla&&x.d>2?1:0; return A.sort((a,b)=>(late(b)-late(a))||(b.d-a.d)) }
+function dashStage(s){ V.filter={q:"",req:(V.dash&&V.dash.req)||"",stage:s}; V.pv="list"; go("pipeline") }
 function pDash(C){
-  const reqs=Object.values(S.reqs).filter(headSees), cands=Object.values(C).filter(c=>headSees(reqOf(c)));
+  const D=V.dash||(V.dash={range:"",req:""});
+  const allReqs=Object.values(S.reqs).filter(headSees);
+  const reqs=allReqs.filter(r=>(!D.req||r.id===D.req)&&inRange(r.createdAt,D.range));
+  const vis=Object.values(C).filter(c=>headSees(reqOf(c))&&(!D.req||c.req===D.req));
+  const cands=vis.filter(c=>inRange(c.createdAt,D.range));
   const active=cands.filter(c=>!["rejected","pool","hired"].includes(c.stage));
-  const hired=cands.filter(c=>c.stage==="hired"&&c.hiredAt);
-  const tth=avg(hired.map(c=>(c.hiredAt-c.createdAt)/864e5));
-  const od=overdue().filter(o=>V.role!=="head"||o[0].startsWith("Dept head")||o[0].includes(V.dept));
-  const funnel=STAGES.map(s=>[s[1],cands.filter(c=>c.stage!=="rejected"&&c.stage!=="pool"&&SI[c.stage]>=SI[s[0]]).length]);
-  const max=Math.max(1,...funnel.map(f=>f[1]));
+  const hired=vis.filter(c=>c.stage==="hired"&&c.hiredAt&&inRange(c.hiredAt,D.range));
+  const mdh=median(hired.map(c=>(c.hiredAt-c.createdAt)/864e5));
+  const od=overdue().filter(o=>V.role!=="head"||o[0].startsWith("Dept head")||o[0].includes(V.dept)).filter(o=>!D.req||(o[2].t==="req"?o[2].id===D.req:(C[o[2].id]||{}).req===D.req));
+  const NA=nextActions(C,V.role==="head"?cands.filter(c=>SI[c.stage]>=SI.shortlist):cands,reqs), shownNA=V.dashAll?NA:NA.slice(0,8);
+  const stg=STAGES.filter(s=>V.role!=="head"||SI[s[0]]>=SI.shortlist);
   const src={}; cands.forEach(c=>src[c.source||"Other"]=(src[c.source||"Other"]||0)+1);
-  const mine = V.role==="head"
-    ? cands.filter(c=>c.stage==="shortlist"||(c.stage==="interview"&&!(c.iv||{})[V.me])).map(c=>[c.name,c.stage==="shortlist"?"Pick for interview or decline":"Score the interview",c.id])
-    : cands.filter(c=>["applied","screening","personality","references","final","offer"].includes(c.stage)).slice(0,8).map(c=>[c.name,STAGES[SI[c.stage]][1]+" · "+(reqOf(c).title||""),c.id]);
+  const open=reqs.filter(r=>r.status==="open").length;
+  let empty;
+  if(V.role==="hr"&&!allReqs.length) empty=`<p>No hiring requests yet.</p><p class="small muted">Raise one to start. It goes to the CEO for approval first.</p><button class="btn br" onclick="reqForm()">+ New hiring request</button>`;
+  else if(V.role==="hr"&&!allReqs.some(r=>r.status==="open")) empty=`<p>${allReqs.length===1?"Your hiring request is not posted yet.":`None of your ${allReqs.length} hiring requests is posted yet.`}</p><p class="small muted">Nobody can apply until a role is posted.</p>${canPost()?`<button class="btn br" onclick="postFlow()">Post a role</button>`:""}`;
+  else if(V.role==="head") empty=`<p>Nothing is waiting on you.</p><p class="small muted">Shortlists and scorecards for your department show here.</p><button class="btn br" onclick="reqForm()">+ New hiring request</button>`;
+  else empty=`<p>Nothing is waiting on you.</p><p class="small muted">New applications and approvals show here.</p><button class="btn sec" onclick="go('pipeline')">See candidates</button>`;
   return `<div class="top"><div><h1>Good to see you${DEMO||NAMES[V.me]?", "+esc(nm(V.me).split(" ")[0]):""}</h1><p>${V.role==="head"?"Your department's hiring at a glance.":"Every Forka hire, request to offer, on one standard flow."}</p></div>
    ${V.role==="head"?`<button class="btn br" onclick="reqForm()">+ New hiring request</button>`:`<div class="row"><button class="btn sec" onclick="addApplicant()">+ Add applicant</button><button class="btn br" onclick="reqForm()">+ New hiring request</button></div>`}</div>
-  <div class="grid g4">
-    <div class="card kpi"><div class="l">Open roles</div><div class="v">${reqs.filter(r=>r.status==="open").length}</div><div class="small muted">${reqs.filter(r=>["requested","approved","review","ready"].includes(r.status)).length} in preparation</div></div>
-    <div class="card kpi"><div class="l">Candidates in process</div><div class="v">${active.length}</div><div class="small muted">${cands.filter(c=>c.stage==="applied").length} new to screen</div></div>
-    <div class="card kpi"><div class="l">Hired</div><div class="v">${hired.length}</div><div class="small muted">avg ${tth?Math.round(tth)+" days":"–"} request → hire (target 21–28)</div></div>
-    <div class="card kpi"><div class="l">Overdue (2-day SLA)</div><div class="v" style="color:${od.length?"var(--bad)":"inherit"}">${od.length}</div><div class="small muted">approvals and shortlist replies</div></div>
+  <div class="hx-bar" role="group" aria-label="Filters">
+   <label class="fld"><span>Date range</span><select id="dsh_range" onchange="V.dash.range=this.value;render()">${RANGES.map(([v,t])=>opt(v,t,D.range)).join("")}</select></label>
+   <label class="fld"><span>Role</span><select id="dsh_role" onchange="V.dash.req=this.value;render()">${opt("","All roles",D.req)}${allReqs.map(r=>opt(r.id,r.title+" · "+place(r),D.req)).join("")}</select></label>
   </div>
-  <div class="grid g2" style="margin-top:14px">
-    <div class="card"><h3>${V.role==="head"?"Waiting on you":"Next actions"}</h3>${mine.length?`<table>${mine.map(m=>`<tr class="click" onclick="openCand('${m[2]}')"><td><b>${esc(m[0])}</b></td><td class="muted small">${esc(m[1])}</td></tr>`).join("")}</table>`:`<div class="empty">Nothing waiting. </div>`}
-      ${od.length?`<div class="sec"><h3 style="color:var(--bad)">Overdue</h3><table>${od.map(o=>`<tr class="click" onclick="${o[2].t==="req"?`openReq('${o[2].id}')`:`openCand('${o[2].id}')`}"><td>${esc(o[0])}</td><td class="right"><span class="tag bad">${o[1]} working days</span></td></tr>`).join("")}</table></div>`:""}</div>
-    <div class="card"><h3>Pipeline funnel</h3><div class="funnel">${funnel.map(f=>`<div class="r"><span>${f[0]}</span><div class="bar"><i style="width:${f[1]/max*100}%"></i></div><b>${f[1]}</b></div>`).join("")}</div>
-      <div class="sec"><h3>Where candidates come from</h3><div class="pills">${Object.entries(src).map(([k,v])=>`<span class="tag">${esc(k)} · ${v}</span>`).join("")||'<span class="muted small">No candidates yet</span>'}</div></div></div>
-  </div>`;
+  <div class="grid g4 hx-kpis">
+    <div class="card kpi"><div class="l">Open roles</div><div class="v"><bdi>${open}</bdi></div><div class="small muted">${reqs.filter(r=>["requested","approved","review","ready"].includes(r.status)).length} in preparation</div></div>
+    <div class="card kpi"><div class="l">Candidates in process</div><div class="v"><bdi>${active.length}</bdi></div><div class="small muted">${cands.filter(c=>c.stage==="applied").length} new to screen</div></div>
+    <div class="card kpi"><div class="l">Overdue approvals</div><div class="v" style="color:${od.length?"var(--bad)":"inherit"}"><bdi>${od.length}</bdi></div><div class="small muted">2-day SLA</div></div>
+    <div class="card kpi"><div class="l">Median days to hire</div><div class="v"><bdi>${mdh==null?"–":Math.round(mdh)}</bdi></div><div class="small muted">target 21–28 days · ${hired.length} hired</div></div>
+  </div>
+  <div class="card hx-pipe"><div class="row"><h3>Pipeline</h3><span class="sp"></span><span class="small muted">Click a stage to see its candidates</span></div>
+   <ol class="hx-step">${stg.map(s=>{const n=cands.filter(c=>c.stage===s[0]).length;return `<li><button type="button" class="${n?"":"z"}" onclick="dashStage('${s[0]}')"><b><bdi>${n}</bdi></b><span>${s[1]}</span></button></li>`}).join("")}</ol>
+   ${V.role==="hr"?`<div class="small muted hx-src"><span>Where candidates come from</span> ${Object.entries(src).map(([k,v])=>`<span class="tag">${esc(k)} · ${v}</span>`).join(" ")||'<span>No candidates yet</span>'}</div>`:""}</div>
+  <div class="card hx-na-card"><div class="row"><h3>Next action</h3><span class="sp"></span>${NA.length?`<span class="small muted"><bdi>${NA.length}</bdi> waiting</span>`:""}</div>
+   ${NA.length?`<ul class="hx-na" aria-label="Next action">${shownNA.map(a=>`<li class="${a.sla&&a.d>2?"late":""}"><div class="a"><b>${a.t}</b><span class="small muted" data-noi18n dir="auto">${esc(a.s)}</span></div><div class="o"><span class="small muted">Owner</span> <span>${a.o}</span></div><div class="s">${a.sla?`<span class="tag ${a.d>2?"bad":a.d>1?"warn":"ok"}">${a.d} / 2 days</span>`:a.d?`<span class="tag">${a.d}d waiting</span>`:`<span class="tag">New today</span>`}</div><div class="b"><button class="btn sm ${a.sla&&a.d>2?"br":"sec"}" onclick="${a.go}">Review</button></div></li>`).join("")}</ul>
+     ${NA.length>8?`<button class="btn sm sec" style="margin-top:8px" onclick="V.dashAll=!V.dashAll;render()">${V.dashAll?"Show fewer":"Show all"}</button>`:""}`:`<div class="hx-empty">${empty}</div>`}</div>`;
 }
 function pApprovals(C){
-  const rq=Object.values(S.reqs).filter(r=>r.status==="requested"), fc=Object.values(C).filter(c=>c.stage==="approval");
+  const rq=Object.values(S.reqs).filter(r=>r.status==="requested").sort((a,b)=>(a.createdAt||0)-(b.createdAt||0)), fc=Object.values(C).filter(c=>c.stage==="approval").sort((a,b)=>(a.stageAt||0)-(b.stageAt||0));
   return `<div class="top"><div><h1>CEO approvals</h1><p>Two working days on each — vacancies and final candidates.</p></div></div>
-  <div class="card"><h3>Vacancies to approve (step 2)</h3>${rq.length?`<table><tr><th>Role</th><th>Dept / branch</th><th>Salary range</th><th>Raised</th><th></th></tr>${rq.map(r=>`<tr class="click" onclick="openReq('${r.id}')"><td><b>${esc(r.title)}</b> × ${r.headcount||1}<div class="small muted">${esc(r.reason)}</div></td><td>${esc(r.dept)} · ${esc(place(r))}</td><td>${fmtN(r.salMin)}–${fmtN(r.salMax)}</td><td>${sla(r.createdAt)}</td><td class="right"><button class="btn sm ok" onclick="event.stopPropagation();reqAct('${r.id}','approve')">Approve</button></td></tr>`).join("")}</table>`:`<div class="empty">No vacancies waiting.</div>`}</div>
-  <div class="card" style="margin-top:14px"><h3>Final candidates to approve (step 14)</h3>${fc.length?`<table><tr><th>Candidate</th><th>Role</th><th>Scores</th><th>Package</th><th>Waiting</th></tr>${fc.map(c=>{const r=reqOf(c);return `<tr class="click" onclick="openCand('${c.id}')"><td><b>${esc(c.name)}</b></td><td>${esc(r.title)}</td><td>Screen ${f1(scr(c,r))} · Interview ${f1(ivAvg(c))}</td><td>${fmtN(c.fin?.total)} <span class="muted small">(basic ${fmtN(c.fin?.basic)})</span></td><td>${sla(c.stageAt)}</td></tr>`}).join("")}</table>`:`<div class="empty">No candidates waiting.</div>`}</div>`;
+  <div class="grid g2 hx-appr">
+  <div class="card"><div class="row"><h3>Vacancies to approve (step 2)</h3><span class="sp"></span><span class="tag ${rq.length?"warn":""}"><bdi>${rq.length}</bdi></span></div>
+   ${rq.length?`<ul class="hx-q">${rq.map(r=>`<li><div class="m"><b data-noi18n dir="auto">${esc(r.title)} × ${r.headcount||1}</b><span class="small muted">${esc(r.dept)} · ${esc(place(r))} · ${esc(r.reason||"")}</span><span class="small"><span class="muted">Salary range</span> <bdi>${fmtN(r.salMin)}–${fmtN(r.salMax)} ${esc(r.cur||"")}</bdi></span></div><div class="s">${sla(r.createdAt)}</div><div class="b"><button class="btn sm sec" onclick="openReq('${r.id}')">Review</button><button class="btn sm ok" onclick="reqAct('${r.id}','approve')">Approve</button></div></li>`).join("")}</ul>`
+     :`<div class="hx-empty"><p>No vacancies waiting.</p><p class="small muted">New hiring requests from department heads show here.</p></div>`}</div>
+  <div class="card"><div class="row"><h3>Final candidates to approve (step 14)</h3><span class="sp"></span><span class="tag ${fc.length?"warn":""}"><bdi>${fc.length}</bdi></span></div>
+   ${fc.length?`<ul class="hx-q">${fc.map(c=>{const r=reqOf(c);return `<li><div class="m"><b data-noi18n dir="auto">${esc(c.name)}</b><span class="small muted" data-noi18n dir="auto">${esc(r.title||"")}</span><span class="small">Screen ${f1(scr(c,r))} · Interview ${f1(ivAvg(c))}</span><span class="small"><span class="muted">Package</span> <bdi>${fmtN(c.fin?.total)}</bdi> <span class="muted small">(basic ${fmtN(c.fin?.basic)})</span></span></div><div class="s">${sla(c.stageAt)}</div><div class="b"><button class="btn sm br" onclick="openCand('${c.id}')">Review</button></div></li>`}).join("")}</ul>`
+     :`<div class="hx-empty"><p>No candidates waiting.</p><p class="small muted">HR sends final candidates here after the references.</p></div>`}</div></div>`;
 }
 const sla=t=>{const d=workDaysSince(t);return `<span class="tag ${d>2?"bad":d>1?"warn":"ok"}">${d} / 2 days</span>`};
+const RF0=()=>({q:"",title:"",status:"",dept:"",branch:"",date:"",sort:"createdAt",dir:-1});
+function sortReq(k){ const f=V.rf; if(f.sort===k) f.dir=-f.dir; else { f.sort=k; f.dir=["createdAt","joinBy","cands"].includes(k)?-1:1 } render() }
 function pReqs(){
-  const L=Object.values(S.reqs).filter(headSees).sort((a,b)=>b.createdAt-a.createdAt);
+  const f=V.rf||(V.rf=RF0()), C=allCands();
+  const all=Object.values(S.reqs).filter(headSees);
+  const cnt={}; Object.values(C).forEach(c=>{ const x=cnt[c.req]||(cnt[c.req]=[0,0]); x[0]++; if(c.stage==="hired") x[1]++ });
+  const uniq=a=>[...new Set(a.filter(Boolean))].sort();
+  let L=all.filter(r=>{ if(f.title&&r.title!==f.title) return false; if(f.status&&r.status!==f.status) return false; if(f.dept&&r.dept!==f.dept) return false;
+    if(f.branch&&(f.branch==="Remote"?r.work!=="Remote":r.branch!==f.branch)) return false; if(!inRange(r.createdAt,f.date)) return false;
+    if(f.q){ const q=f.q.toLowerCase(); if(![r.title,r.reqId,r.dept,place(r),nm(r.createdBy)].join(" ").toLowerCase().includes(q)) return false } return true });
+  const ST=Object.keys(REQ_STATUS);
+  const key={reqId:r=>r.reqId||"~",title:r=>String(r.title||"").toLowerCase(),dept:r=>(r.dept||"")+" "+place(r),createdAt:r=>r.createdAt||0,joinBy:r=>r.joinBy||0,cands:r=>(cnt[r.id]||[0])[0],status:r=>ST.indexOf(r.status)}[f.sort]||(r=>r.createdAt||0);
+  L.sort((a,b)=>{ const x=key(a),y=key(b); return (x<y?-1:x>y?1:0)*f.dir||(b.createdAt||0)-(a.createdAt||0) });
+  const th=(k,label)=>`<th scope="col" aria-sort="${f.sort===k?(f.dir>0?"ascending":"descending"):"none"}"><button type="button" class="hx-sort${f.sort===k?" on":""}" onclick="sortReq('${k}')"><span>${label}</span>${f.sort===k?(f.dir>0?IC.up:IC.down):IC.sort}</button></th>`;
+  const V2=views().reqs||[], filtered=f.q||f.title||f.status||f.dept||f.branch||f.date;
   return `<div class="top"><div><h1>Hiring requests</h1><p>${V.role==="head"?"One form, about 10 minutes. From the second hire of the same role, start from the last request.":"Department heads raise them; CEO approves; HR builds the scorecard; head approves; HR posts."}</p></div><button class="btn br" onclick="reqForm()">+ New hiring request</button></div>
-  <div class="card">${L.length?`<table><tr><th>Req ID</th><th>Role</th><th>Dept · branch</th><th>Joining</th><th>Candidates</th><th>Status</th></tr>${L.map(r=>{const n=Object.values(allCands()).filter(c=>c.req===r.id);const s=REQ_STATUS[r.status]||[r.status,""];return `<tr class="click" onclick="openReq('${r.id}')"><td class="muted">${esc(r.reqId||"—")}</td><td><b>${esc(r.title)}</b> × ${r.headcount||1}</td><td>${esc(r.dept)} · ${esc(place(r))}</td><td>${fmtD(r.joinBy)}</td><td>${n.length} <span class="muted small">${n.filter(c=>c.stage==="hired").length} hired</span></td><td><span class="tag ${s[1]}">${s[0]}</span></td></tr>`}).join("")}</table>`:`<div class="empty">No hiring requests yet. ${V.role!=="candidate"?"Raise the first one.":""}</div>`}</div>`;
+  <div class="card">
+  <div class="hx-bar" role="search">
+   <label class="fld q"><span>Search</span><span class="hx-search">${IC.search}<input id="rq_q" type="search" placeholder="Role, request ID, department…" value="${esc(f.q)}" oninput="liveQ('rq_q',()=>{V.rf.q=this.value})"></span></label>
+   <label class="fld"><span>Role</span><select id="rq_title" onchange="V.rf.title=this.value;render()">${opt("","All roles",f.title)}${uniq(all.map(r=>r.title)).map(t=>opt(t,t,f.title)).join("")}</select></label>
+   <label class="fld"><span>Status</span><select id="rq_status" onchange="V.rf.status=this.value;render()">${opt("","All statuses",f.status)}${ST.map(k=>opt(k,REQ_STATUS[k][0],f.status)).join("")}</select></label>
+   <label class="fld"><span>Department</span><select id="rq_dept" onchange="V.rf.dept=this.value;render()">${opt("","All departments",f.dept)}${uniq(all.map(r=>r.dept)).map(d=>opt(d,d,f.dept)).join("")}</select></label>
+   <label class="fld"><span>Branch</span><select id="rq_branch" onchange="V.rf.branch=this.value;render()">${opt("","All branches",f.branch)}${uniq(all.map(r=>r.branch)).map(d=>opt(d,d,f.branch)).join("")}${all.some(r=>r.work==="Remote")?opt("Remote","Remote",f.branch):""}</select></label>
+   <label class="fld"><span>Raised</span><select id="rq_date" onchange="V.rf.date=this.value;render()">${RANGES.map(([v,t])=>opt(v,t,f.date)).join("")}</select></label>
+  </div>
+  <div class="hx-views row">
+   <label class="hx-vl"><span class="small muted">Saved views</span><select id="rq_view" onchange="useView(this.value)">${opt("","Choose a view",V.rview)}${V2.map(v=>opt(v.name,v.name,V.rview)).join("")}</select></label>
+   <button type="button" class="btn sm sec" id="rq_save" onclick="saveView()">Save view</button>
+   ${V.rview?`<button type="button" class="btn sm bad" onclick="delView()">Delete view</button>`:""}
+   ${filtered?`<button type="button" class="btn sm sec" onclick="V.rf={...RF0(),sort:V.rf.sort,dir:V.rf.dir};V.rview='';render()">Clear filters</button>`:""}
+   <span class="sp"></span><span class="small muted" id="rq_count">Showing ${L.length} of ${all.length}</span>
+  </div>
+  ${all.length?`<div class="hx-tw"><table class="hx-t"><thead><tr>${th("reqId","Req ID")}${th("title","Role")}${th("dept","Dept · branch")}${th("createdAt","Raised")}${th("joinBy","Joining")}${th("cands","Candidates")}${th("status","Status")}</tr></thead><tbody>
+   ${L.map(r=>{const n=cnt[r.id]||[0,0];const s=REQ_STATUS[r.status]||[r.status,""];return `<tr class="click" tabindex="0" onclick="openReq('${r.id}')" onkeydown="if(event.key==='Enter')openReq('${r.id}')"><td class="muted"><bdi>${esc(r.reqId||"—")}</bdi></td><td><b>${esc(r.title)}</b> × ${r.headcount||1}</td><td>${esc(r.dept)} · ${esc(place(r))}</td><td><bdi>${fmtD(r.createdAt)}</bdi></td><td><bdi>${fmtD(r.joinBy)}</bdi></td><td><bdi>${n[0]}</bdi> <span class="muted small">${n[1]} hired</span></td><td><span class="tag ${s[1]}">${s[0]}</span></td></tr>`}).join("")||`<tr><td colspan="7" class="empty">No requests match these filters.</td></tr>`}
+  </tbody></table></div>`:`<div class="hx-empty"><p>No hiring requests yet.</p><p class="small muted">${V.role!=="candidate"?"Raise the first one.":""}</p><button class="btn br" onclick="reqForm()">+ New hiring request</button></div>`}</div>`;
 }
 function pPipeline(C){
   let L=Object.values(C).filter(c=>headSees(reqOf(c)));
   if(V.role==="head") L=L.filter(c=>SI[c.stage]>=SI.shortlist||c.stage==="hired");
   const f=V.filter; if(f.req)L=L.filter(c=>c.req===f.req); if(f.q){const q=f.q.toLowerCase();L=L.filter(c=>(c.name+" "+c.email+" "+(c.cvText||"")).toLowerCase().includes(q))}
   const reqs=Object.values(S.reqs).filter(headSees);
+  const stg=STAGES.filter(s=>V.role!=="head"||SI[s[0]]>=SI.shortlist);
+  const byStage={}; L.forEach(c=>byStage[c.stage]=(byStage[c.stage]||0)+1);
+  const chipL=[["","All stages",L.length],...stg.map(s=>[s[0],s[1],byStage[s[0]]||0]),...(V.role==="hr"?[["rejected","Rejected",byStage.rejected||0],["pool","Talent pool",byStage.pool||0]]:[])];
+  const openRoles=Object.values(S.reqs).filter(r=>["open","ready"].includes(r.status));
   const head=`<div class="top"><div><h1>Candidates</h1><p>${V.role==="head"?"Shortlisted candidates for your roles. Score each interview on your own before discussing.":"Every move is logged the same day. Every rejection names the criterion it failed."}</p></div>
-   <div class="row">${V.role==="hr"?`<button class="btn sec" onclick="addApplicant()">+ Add applicant</button>`:""}<button class="btn sec sm" onclick="V.pv=V.pv==='board'?'list':'board';render()">${V.pv==="board"?"List view":"Board view"}</button></div></div>
-   <div class="row" style="margin-bottom:12px"><input style="max-width:280px" placeholder="Search name, email, CV text…" value="${esc(f.q)}" oninput="V.filter.q=this.value;clearTimeout(window._qt);window._qt=setTimeout(()=>{render();const i=document.querySelector('main input');i.focus();i.setSelectionRange(i.value.length,i.value.length)},250)">
-   <select style="max-width:260px" onchange="V.filter.req=this.value;render()"><option value="">All roles</option>${reqs.map(r=>`<option value="${r.id}" ${f.req===r.id?"selected":""}>${esc(r.title)} · ${esc(place(r))}</option>`).join("")}</select></div>`;
+   <div class="row">${V.role==="hr"?`<button class="btn sec" onclick="addApplicant()">+ Add applicant</button>`:""}<div class="hx-seg" role="group" aria-label="View"><button type="button" class="${V.pv==="list"?"on":""}" aria-pressed="${V.pv==="list"}" onclick="V.pv='list';render()">List view</button><button type="button" class="${V.pv==="board"?"on":""}" aria-pressed="${V.pv==="board"}" onclick="V.pv='board';render()">Board view</button></div></div></div>
+   <div class="hx-bar" role="search">
+    <label class="fld q"><span>Search</span><span class="hx-search">${IC.search}<input id="pp_q" type="search" placeholder="Search name, email, CV text…" value="${esc(f.q)}" oninput="liveQ('pp_q',()=>{V.filter.q=this.value})"></span></label>
+    <label class="fld"><span>Role</span><select id="pp_req" onchange="V.filter.req=this.value;render()"><option value="">All roles</option>${reqs.map(r=>`<option value="${r.id}" ${f.req===r.id?"selected":""}>${esc(r.title)} · ${esc(place(r))}</option>`).join("")}</select></label>
+   </div>
+   <div class="hx-chips" role="group" aria-label="Stages">${chipL.map(([k,t,n])=>`<button type="button" class="hx-chip${(f.stage||"")===k&&V.pv==="list"?" on":""}${n?"":" z"}" aria-pressed="${(f.stage||"")===k&&V.pv==="list"}" onclick="V.filter.stage='${k}';V.pv='list';render()"><span>${t}</span><b><bdi>${n}</bdi></b></button>`).join("")}</div>`;
+  if(!L.length&&!f.q&&!f.req){
+    const e=V.role!=="hr"?`<p>No candidates on your shortlist yet.</p><p class="small muted">HR sends shortlisted candidates for your roles here.</p>`
+      :!openRoles.length?`<p>No open roles yet.</p><p class="small muted">Post a role first. Then people can apply and you can add applicants.</p>${canPost()?`<button class="btn br" onclick="postFlow()">Post a role</button>`:""}`
+      :`<p>No candidates yet.</p><p class="small muted">Applications from the careers page land here. You can also add walk-ins and email CVs.</p><button class="btn br" onclick="addApplicant()">+ Add applicant</button>`;
+    return head+`<div class="card hx-empty">${e}</div>`;
+  }
   const live=L.filter(c=>!["rejected","pool"].includes(c.stage));
   if(V.pv==="board"){
-    const cols=STAGES.filter(s=>V.role!=="head"||SI[s[0]]>=SI.shortlist);
+    const cols=stg;
     return head+`<div class="kanban">${cols.map(s=>{const cs=live.filter(c=>c.stage===s[0]);return `<div class="col"><h4><span>${s[1]}</span><span>${cs.length}</span></h4>${cs.slice(0,60).map(card).join("")}${cs.length>60?`<p class="small muted">${cs.length-60} more in this stage. Use the list view or search.</p>`:""}</div>`}).join("")}</div>
     <p class="small muted">${L.length-live.length} rejected or in talent pool — see the list view${V.role==="hr"?" or Talent pool":""}.</p>`;
   }
+  if(f.stage) L=L.filter(c=>c.stage===f.stage);
   const sel=V.sel;
-  return head+(V.role==="hr"?`<div class="row" style="margin-bottom:8px"><span class="small muted">${sel.size} selected</span><button class="btn sm sec" ${sel.size?"":"disabled"} onclick="bulk('advance')">Move to next stage</button><button class="btn sm sec" ${sel.size?"":"disabled"} onclick="bulk('pool')">Talent pool</button><button class="btn sm bad" ${sel.size?"":"disabled"} onclick="bulk('reject')">Reject with reason</button></div>`:"")+
-  `<div class="card"><table><tr>${V.role==="hr"?`<th><input type="checkbox" style="width:auto" onchange="L_all(this.checked)"></th>`:""}<th>Candidate</th><th>Role</th><th>Stage</th><th>Screen</th><th>Interview</th><th>Applied</th></tr>
-  ${shown(L.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0)),"list").map(c=>{const r=reqOf(c);return `<tr class="click" onclick="openCand('${c.id}')">${V.role==="hr"?`<td onclick="event.stopPropagation()"><input type="checkbox" style="width:auto" ${sel.has(c.id)?"checked":""} onchange="this.checked?V.sel.add('${c.id}'):V.sel.delete('${c.id}');render()"></td>`:""}<td><b>${esc(c.name)}</b><div class="small muted">${esc(c.source||"")}</div></td><td>${esc(r.title||"—")}</td><td>${stageTag(c)}</td><td>${f1(scr(c,r))}</td><td>${f1(ivAvg(c))}</td><td>${fmtD(c.createdAt)}</td></tr>`}).join("")||`<tr><td colspan="7" class="empty">No candidates.</td></tr>`}${moreRow(L,"list",7)}</table></div>`;
+  return head+(V.role==="hr"?`<div class="row hx-bulk"><span class="small muted">${sel.size} selected</span><button class="btn sm sec" ${sel.size?"":"disabled"} onclick="bulk('advance')">Move to next stage</button><button class="btn sm sec" ${sel.size?"":"disabled"} onclick="bulk('pool')">Talent pool</button><button class="btn sm bad" ${sel.size?"":"disabled"} onclick="bulk('reject')">Reject with reason</button></div>`:"")+
+  `<div class="card"><div class="hx-tw"><table class="hx-t"><thead><tr>${V.role==="hr"?`<th scope="col"><input type="checkbox" style="width:auto" aria-label="Select all" onchange="L_all(this.checked)"></th>`:""}<th scope="col">Candidate</th><th scope="col">Role</th><th scope="col">Stage</th><th scope="col">Screen</th><th scope="col">Interview</th><th scope="col">Applied</th></tr></thead><tbody>
+  ${shown(L.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0)),"list").map(c=>{const r=reqOf(c);return `<tr class="click" onclick="openCand('${c.id}')">${V.role==="hr"?`<td onclick="event.stopPropagation()"><input type="checkbox" style="width:auto" aria-label="Select" ${sel.has(c.id)?"checked":""} onchange="this.checked?V.sel.add('${c.id}'):V.sel.delete('${c.id}');render()"></td>`:""}<td><b>${esc(c.name)}</b><div class="small muted">${esc(c.source||"")}</div></td><td>${esc(r.title||"—")}</td><td>${stageSum(c)}</td><td><bdi>${f1(scr(c,r))}</bdi></td><td><bdi>${f1(ivAvg(c))}</bdi></td><td><bdi>${fmtD(c.createdAt)}</bdi></td></tr>`}).join("")||`<tr><td colspan="7" class="empty">No candidates.</td></tr>`}${moreRow(L,"list",7)}</tbody></table></div></div>`;
 }
 window.L_all=v=>{const C=allCands();Object.values(C).forEach(c=>v?V.sel.add(c.id):V.sel.delete(c.id));render()};
 function stageTag(c){ if(c.stage==="rejected")return `<span class="tag bad">Rejected</span>`; if(c.stage==="pool")return `<span class="tag blue">Talent pool</span>`; if(c.stage==="hired")return `<span class="tag ok">Hired</span>`; return `<span class="tag">${STAGES[SI[c.stage]][1]}</span>` }
@@ -653,16 +934,40 @@ function pPool(C){
   const old=L.filter(c=>c.personality&&c.personality.summary&&workDaysSince(c.reject?.at||c.stageAt)>130);
   return `<div class="top"><div><h1>Talent pool & compliance</h1><p>Rejected candidates get a reply. Strong "not now" candidates stay searchable for the next opening.</p></div></div>
   ${old.length?`<div class="note" style="margin-bottom:12px"><b>${old.length} personality report(s) past 6 months</b> for unsuccessful candidates — the Hiring Guide says delete them. <button class="btn sm sec" onclick="purgeOld()">Delete those reports</button></div>`:`<div class="note ok" style="margin-bottom:12px">Retention check: no personality reports older than 6 months for unsuccessful candidates.</div>`}
-  <div class="card"><table><tr><th>Candidate</th><th>Applied for</th><th>Status</th><th>Reason on file</th><th>Consent</th><th></th></tr>${shown(L,"pool").map(c=>`<tr class="click" onclick="openCand('${c.id}')"><td><b>${esc(c.name)}</b><div class="small muted">${esc(c.email||"")}</div></td><td>${esc(reqOf(c).title||"—")}</td><td>${stageTag(c)}</td><td class="small">${esc(c.reject?.reason||c.poolNote||"—")}</td><td>${c.consent?'<span class="tag ok">Yes</span>':'<span class="tag warn">Not recorded</span>'}</td><td class="right">${c.stage==="pool"?`<button class="btn sm sec" onclick="event.stopPropagation();reconsider('${c.id}')">Consider for a role</button>`:""}</td></tr>`).join("")||`<tr><td colspan="6" class="empty">Nobody here yet.</td></tr>`}${moreRow(L,"pool",6)}</table></div>`;
+  <p class="small muted hx-priv">${IC.lock} <span>Phone numbers and emails are hidden. Press Show to see them. Each time is recorded (who, which candidate, when).</span></p>
+  <div class="card"><div class="hx-tw"><table class="hx-t"><thead><tr><th scope="col">Candidate</th><th scope="col">Contact</th><th scope="col">Applied for</th><th scope="col">Status</th><th scope="col">Reason on file</th><th scope="col">Consent</th><th scope="col"><span class="hx-sr">Actions</span></th></tr></thead><tbody>${shown(L,"pool").map(c=>`<tr class="click" onclick="openCand('${c.id}')"><td><b>${esc(c.name)}</b></td><td onclick="event.stopPropagation()">${contactHTML(c)}</td><td>${esc(reqOf(c).title||"—")}</td><td>${stageTag(c)}</td><td class="small">${esc(c.reject?.reason||c.poolNote||"—")}</td><td>${c.consent?'<span class="tag ok">Yes</span>':'<span class="tag warn">Not recorded</span>'}</td><td class="right">${c.stage==="pool"?`<button class="btn sm sec" onclick="event.stopPropagation();reconsider('${c.id}')">Consider for a role</button>`:""}</td></tr>`).join("")||`<tr><td colspan="7" class="empty">Nobody here yet.</td></tr>`}${moreRow(L,"pool",7)}</tbody></table></div></div>`;
 }
-function brand(){return S.brand||{intro:"We operate restaurants across the UAE and Oman — Kuwaiti Kitchen, Mayar Cafe and more — and we're building the biggest F&B group in the region. Owners should own; operators should operate. We're looking for operators.",values:["Food first","Standards you can measure","Grow with the group","Multi-skilled teams","Every candidate gets a reply"],benefits:"Clear career paths across five businesses · training through the Forka Learning Library · a fair, scored hiring process"}}
-function pCareers(){const b=brand();
+const BRAND0={intro:"We operate restaurants across the UAE and Oman — Kuwaiti Kitchen, Mayar Cafe and more — and we're building the biggest F&B group in the region. Owners should own; operators should operate. We're looking for operators.",values:["Food first","Standards you can measure","Grow with the group","Multi-skilled teams","Every candidate gets a reply"],benefits:"Clear career paths across five businesses · training through the Forka Learning Library · a fair, scored hiring process"};
+// each part falls back to the standard words on its own, so saving one part never changes the others
+function brand(){ const s=S.brand||{}; return {intro:s.intro!=null?s.intro:BRAND0.intro,values:Array.isArray(s.values)?s.values:BRAND0.values,benefits:s.benefits!=null?s.benefits:BRAND0.benefits} }
+const BSEC=[["intro","About us","b_intro","The first words every candidate reads. Two or three short sentences."],["values","Why work with us","b_vals","One reason per line. Short and concrete."],["benefits","Benefits","b_ben","What people get when they join."]];
+function bEd(){ const b=brand(), D=V.bdraft||(V.bdraft={}); return {intro:D.intro!=null?D.intro:b.intro,values:D.values!=null?D.values:b.values.join("\n"),benefits:D.benefits!=null?D.benefits:b.benefits} }
+function bLive(){ const e=bEd(); return {intro:e.intro,values:e.values.split("\n").map(s=>s.trim()).filter(Boolean),benefits:e.benefits} }
+function bStat(k){ const dirty=V.bdraft&&V.bdraft[k]!=null; return dirty?`<span class="hx-st un" id="st_${k}">Unsaved</span>`:`<span class="hx-st ok" id="st_${k}">${IC.check}<span>${V.bsaved&&V.bsaved[k]?"Saved "+fmtT(V.bsaved[k]):"Saved"}</span></span>` }
+function bEdit(k,el){ V.bdraft=V.bdraft||{}; V.bdraft[k]=el.value; const st=$("#st_"+k); if(st) st.outerHTML=bStat(k); const b=$("#bs_"+k); if(b) b.disabled=false; const pv=$("#pvBody"); if(pv) pv.innerHTML=pvHtml() }
+async function saveSec(k){ const e=bEd(), cur=JSON.parse(JSON.stringify(S.brand||{})); cur[k]=k==="values"?e.values.split("\n").map(s=>s.trim()).filter(Boolean):e[k];
+  const b=$("#bs_"+k); if(b) b.disabled=true;
+  try{ await store.put("config","brand",cur) }catch(err){ if(b) b.disabled=false; return }
+  if(V.bdraft) delete V.bdraft[k]; V.bsaved=V.bsaved||{}; V.bsaved[k]=now(); toast("Careers page saved"); render() }
+function pvHtml(){ const J=Object.values(S.jobs).filter(j=>j.open).sort((a,b)=>(b.postedAt||0)-(a.postedAt||0)).slice(0,3);
+  return heroHtml(bLive())+`<h3 style="margin:4px 0 8px">Open roles</h3>${J.length?J.map(j=>`<div class="card job" style="margin-bottom:8px"><div style="flex:1"><b>${esc(j.title)}</b><div class="small muted">${esc(place(j))} · ${esc(j.dept)}</div></div></div>`).join(""):`<div class="card empty small">No open roles right now — check back soon.</div>`}` }
+function pCareers(){ const e=bEd(), pm=V.pvm||"desktop";
   return `<div class="top"><div><h1>Careers page</h1><p>Your employer brand: what every candidate sees first. Edit the words here; open roles appear automatically when HR posts them.</p></div>${HURL?`<a class="btn sec" href="${esc(CFG.APPLY_URL||"https://apply.forka.com/")}" target="_blank" rel="noopener">Open the careers page</a>`:`<button class="btn sec" onclick="V.viewAs='candidate';V.page=null;afterData()" ${DEMO?"disabled":""}>Preview as candidate</button>`}</div>
-  <div class="grid g2"><div class="card"><label>Intro</label><textarea id="b_intro" style="min-height:120px">${esc(b.intro)}</textarea><label>Values <span class="hint">one per line</span></label><textarea id="b_vals">${esc(b.values.join("\n"))}</textarea><label>What we offer</label><textarea id="b_ben">${esc(b.benefits)}</textarea><div class="row" style="margin-top:12px"><button class="btn" onclick="saveBrand()">Save</button></div></div>
-  ${V.role==="hr"?`<div class="card" id="aiguidecard" style="margin-top:14px"><h3>Guidance for AI</h3><p class="small muted">The AI follows this every time it drafts a job description or job ad. Write it like a note to a new HR assistant: tone, what to always include, what never to say.</p>
-    <textarea id="ai_guide" style="min-height:150px" placeholder="For example:&#10;- Warm and simple English. Short sentences.&#10;- Always mention: free staff meal, visa provided, one day off a week.&#10;- Never mention salary or the branch manager's name.&#10;- Arabic ad in Gulf-friendly Modern Standard Arabic.">${esc((S.aiguide&&S.aiguide.text)||"")}</textarea>
-    <div class="row" style="margin-top:10px"><button class="btn" onclick="saveGuide()">Save guidance</button>${S.aiguide&&S.aiguide.at?`<span class="small muted">Last saved ${fmtD(S.aiguide.at)}</span>`:""}</div></div>`:""}
-  <div>${heroHtml(b)}<div class="note info">${HURL?`Candidates apply at <b>apply.forka.com</b> with no account: posted jobs appear there in English and Arabic, and each application lands in Candidates with its CV. Walk-ins and email CVs: <b>+ Add applicant</b>.`:`Public candidates without a Forka account apply through hr@forka.com (position in the subject). HR logs them with <b>+ Add applicant</b> — paste the CV and the AI fills the form. Staff and invited candidates apply right here.`}</div></div></div>`}
+  <div class="hx-ced">
+   <div class="hx-ced-ed">
+    ${BSEC.map(([k,t,id,help])=>`<div class="card hx-bs" data-sec="${k}"><div class="row"><h3><label for="${id}" style="all:unset">${t}</label></h3><span class="sp"></span>${bStat(k)}</div><p class="small muted">${help}</p>
+     <textarea id="${id}" style="min-height:${k==="benefits"?96:130}px" oninput="bEdit('${k}',this)">${esc(e[k])}</textarea>
+     <div class="row" style="margin-top:10px"><button class="btn" id="bs_${k}" ${V.bdraft&&V.bdraft[k]!=null?"":"disabled"} onclick="saveSec('${k}')">Save</button><span class="small muted">Saves this part only. The careers page changes only when you save.</span></div></div>`).join("")}
+    ${V.role==="hr"?`<div class="card" id="aiguidecard"><h3>Guidance for AI</h3><p class="small muted">The AI follows this every time it drafts a job description or job ad. Write it like a note to a new HR assistant: tone, what to always include, what never to say.</p>
+     <textarea id="ai_guide" style="min-height:150px" placeholder="For example:&#10;- Warm and simple English. Short sentences.&#10;- Always mention: free staff meal, visa provided, one day off a week.&#10;- Never mention salary or the branch manager's name.&#10;- Arabic ad in Gulf-friendly Modern Standard Arabic.">${esc((S.aiguide&&S.aiguide.text)||"")}</textarea>
+     <div class="row" style="margin-top:10px"><button class="btn" onclick="saveGuide()">Save guidance</button>${S.aiguide&&S.aiguide.at?`<span class="small muted">Last saved ${fmtD(S.aiguide.at)}</span>`:""}</div></div>`:""}
+   </div>
+   <div class="hx-ced-pv"><div class="card"><div class="row"><h3>Live preview</h3><span class="sp"></span><div class="hx-seg" role="group" aria-label="Preview size"><button type="button" class="${pm==="desktop"?"on":""}" aria-pressed="${pm==="desktop"}" onclick="V.pvm='desktop';render()">${IC.desk}<span>Desktop</span></button><button type="button" class="${pm==="phone"?"on":""}" aria-pressed="${pm==="phone"}" onclick="V.pvm='phone';render()">${IC.phone}<span>Phone</span></button></div></div>
+    <p class="small muted">Shows your words as you type, before you save.</p>
+    <div class="hx-pv ${pm}" id="pvFrame"><div class="hx-pvb" id="pvBody">${pvHtml()}</div></div></div>
+    <div class="note info" style="margin-top:12px">${HURL?`Candidates apply at <b>apply.forka.com</b> with no account: posted jobs appear there in English and Arabic, and each application lands in Candidates with its CV. Walk-ins and email CVs: <b>+ Add applicant</b>.`:`Public candidates without a Forka account apply through hr@forka.com (position in the subject). HR logs them with <b>+ Add applicant</b> — paste the CV and the AI fills the form. Staff and invited candidates apply right here.`}</div></div>
+  </div>`}
+
 function heroHtml(b){return `<div class="hero"><div class="small" style="letter-spacing:2px;color:#d7b48a">FORKA COLLECTIVE · CAREERS</div><h1 style="margin:6px 0 8px">Build the region's best restaurants with us</h1><p>${esc(b.intro)}</p><div class="vals">${b.values.map(v=>`<span>${esc(v)}</span>`).join("")}</div><p class="small" style="margin-top:12px">${esc(b.benefits)}</p></div>`}
 function pTeam(){
   const M=S.team.members||{};
@@ -671,9 +976,9 @@ function pTeam(){
    <div class="card"><h3>HR</h3><p class="small muted">Everything: requests, scorecards, screening, personality, references, final evaluation, offers, talent pool, careers page. Khaled (owner) also gets CEO approvals.</p></div>
    <div class="card"><h3>Department head</h3><p class="small muted">Raises hiring requests, approves the scorecard, picks from the shortlist, scores interviews and practical tests. Sees only their department, from shortlist onwards — never salary negotiation or raw personality reports.</p></div>
    <div class="card"><h3>Candidate</h3><p class="small muted">Sees open roles and the careers page, applies with pre-screening questions, and tracks their own application status. Never sees scores or notes.</p></div></div>
-  <div class="card"><table><tr><th>Person</th><th>Access</th><th>Department</th><th></th></tr>
+  <div class="card"><div class="hx-tw"><table style="min-width:460px"><tr><th>Person</th><th>Access</th><th>Department</th><th></th></tr>
    ${DEMO?Object.entries(DEMO_PEOPLE).map(([k,p])=>`<tr><td>${esc(p.name)}</td><td>${p.ceo?"CEO · HR":p.role}</td><td>${esc(p.dept||"—")}</td><td></td></tr>`).join(""):
-   `<tr><td><b>${esc(nm(ME))}</b> (owner)</td><td>CEO · HR</td><td>—</td><td></td></tr>`+Object.entries(M).map(([k,m])=>`<tr><td>${esc(nm(k))}</td><td>${m.role==="hr"?"HR":"Department head"}</td><td>${esc(m.dept||"—")}</td><td class="right"><button class="btn sm bad" onclick="removeMember('${k}')">Remove</button></td></tr>`).join("")}</table>
+   `<tr><td><b>${esc(nm(ME))}</b> (owner)</td><td>CEO · HR</td><td>—</td><td></td></tr>`+Object.entries(M).map(([k,m])=>`<tr><td>${esc(nm(k))}</td><td>${m.role==="hr"?"HR":"Department head"}</td><td>${esc(m.dept||"—")}</td><td class="right"><button class="btn sm bad" onclick="removeMember('${k}')">Remove</button></td></tr>`).join("")}</table></div>
    ${!DEMO?`<p class="small muted" style="margin-top:10px">Also share the app with each HR person and department head as <b>Editor</b> (Share button on this page), so they can save scorecards. Staff applying internally need <b>Contributor</b>.</p>`:""}</div>`;
 }
 function pJobs(){
@@ -693,26 +998,108 @@ function pMine(){
 }
 
 /* ---------------- hiring request ---------------- */
-function reqForm(copyId){
+/* ---------------- hiring request: 4 steps (1 Role & location, 2 Compensation & timing, 3 Evaluation plan, 4 Review & submit) ----------------
+   All four steps stay in the form (only one is shown), so "Send for CEO approval" still saves through saveReq() → status "requested" → CEO approval.
+   The draft is kept in this browser, per person, until it is sent. */
+const WSTEPS=["Role & location","Compensation & timing","Evaluation plan","Review & submit"];
+const WFIELDS={1:["f_title","f_dept","f_branch"],2:["f_smax"],3:["f_mh0","f_mh1","f_mh2","g_pr","g_tr"]};
+const RDKEY=()=>"forkaHireReqDraft:"+(V.me||"");
+function reqDraftGet(){ try{ return JSON.parse(localStorage.getItem(RDKEY())||"null") }catch(e){ return null } }
+function reqDraftClear(reopen){ try{ localStorage.removeItem(RDKEY()) }catch(e){} if(reopen) reqForm(null,true) }
+function reqRead(){ const v=id=>($("#"+id)||{value:""}).value.trim();
+  return {title:v("f_title"),dept:v("f_dept"),branch:v("f_branch"),work:v("f_work")||"On site",headcount:+v("f_hc")||1,reason:v("f_reason"),joinBy:v("f_join")?new Date(v("f_join")).getTime():null,salMin:+v("f_smin")||null,salMax:+v("f_smax")||null,cur:v("f_cur")||"AED",purpose:v("f_purpose"),duties:v("f_duties"),
+    mustHaves:[0,1,2].map(i=>v("f_mh"+i)),testQs:[0,1,2].map(i=>v("f_tq"+i)),practicals:[...document.querySelectorAll(".f_pr:checked")].map(x=>x.value).concat(v("f_prother")?v("f_prother").split(",").map(x=>x.trim()).filter(Boolean):[]),criticals:[...document.querySelectorAll(".f_cr:checked")].map(x=>x.value),traits:[...document.querySelectorAll(".f_tr:checked")].map(x=>x.value)} }
+function reqDraftSave(){ if(!$("#f_title")) return; const t=now(); try{ localStorage.setItem(RDKEY(),JSON.stringify({at:t,step:V.rstep||1,r:reqRead()})) }catch(e){ return }
+  const s=$("#w_saved"); if(s) s.textContent="Draft saved "+fmtT(t) }
+// the same rules as before (saveReq), shown next to each field; step 0 = all steps
+function wValidate(step,mark){ const v=id=>($("#"+id)||{value:""}).value.trim(), E=[], add=(id,m)=>E.push([id,m]);
+  if(step===1||!step){ if(!v("f_title")) add("f_title","Write the role title"); if(!v("f_dept")) add("f_dept","Choose the department"); if(!v("f_branch")&&v("f_work")!=="Remote") add("f_branch","Choose the branch. Only remote jobs can leave it empty.") }
+  if(step===2||!step){ if(!(+v("f_smax"))) add("f_smax","Write the top of the salary range") }
+  if(step===3||!step){ [0,1,2].forEach(i=>{ if(!v("f_mh"+i)) add("f_mh"+i,"Write this must-have") });
+    if(!document.querySelectorAll(".f_pr:checked").length&&!v("f_prother")) add("g_pr","Choose at least one practical test");
+    const tr=[...document.querySelectorAll(".f_tr:checked")].map(x=>x.value), cr=[...document.querySelectorAll(".f_cr:checked")].map(x=>x.value);
+    if(tr.length<2||tr.length>3) add("g_tr","Tick 2 or 3 traits"); else if(cr.some(c=>!tr.includes(c))) add("g_tr","A critical trait must also be ticked as a trait") }
+  if(mark){ (step?WFIELDS[step]||[]:[].concat(WFIELDS[1],WFIELDS[2],WFIELDS[3])).forEach(id=>{ const el=$("#"+id), er=$("#e_"+id); if(el){ el.classList.remove("hx-bad"); el.removeAttribute("aria-invalid") } if(er) er.textContent="" });
+    E.forEach(([id,m])=>{ const el=$("#"+id), er=$("#e_"+id); if(el){ el.classList.add("hx-bad"); el.setAttribute("aria-invalid","true") } if(er) er.textContent=m }) }
+  return E }
+const wStepOf=id=>+Object.keys(WFIELDS).find(k=>WFIELDS[k].includes(id))||1;
+function wShow(){ const n=V.rstep||1;
+  document.querySelectorAll("#dlg [data-wstep]").forEach(p=>{ p.hidden=+p.dataset.wstep!==n });
+  document.querySelectorAll("#w_prog li").forEach((li,i)=>{ li.className=i+1<n?"done":i+1===n?"cur":""; const b=li.querySelector("button"); if(i+1===n) b.setAttribute("aria-current","step"); else b.removeAttribute("aria-current") });
+  const st=$("#w_stepn"); if(st) st.textContent="Step "+n+" of 4";
+  const sh=(id,on)=>{ const b=$("#"+id); if(b) b.style.display=on?"":"none" };
+  sh("w_back",n>1); sh("w_next",n<4); sh("w_send",n===4);
+  if(n===4) wReview();
+  const m=$("#modal"); if(m) m.scrollTop=0;
+  const h=document.querySelector(`#dlg [data-wstep="${n}"] h3`); if(h){ h.setAttribute("tabindex","-1"); h.focus({preventScroll:true}) } }
+function wStep(d){ const n=V.rstep||1;
+  if(d>0){ V.rtried[n]=true; const E=wValidate(n,true); if(E.length){ const el=$("#"+E[0][0]); if(el){ el.scrollIntoView({block:"center"}); (el.matches("input,select,textarea")?el:el.querySelector("input")||el).focus() } toast("Please fill the fields marked in red"); return } }
+  V.rstep=Math.max(1,Math.min(4,n+d)); wShow(); reqDraftSave() }
+function wGo(t){ for(let k=V.rstep||1;k<t;k++){ V.rtried[k]=true; if(wValidate(k,true).length){ V.rstep=k; wShow(); return } } V.rstep=t; wShow() }
+function wReview(){ const r=reqRead(), list=a=>a.filter(Boolean).map(esc).join(" · ");
+  const row=(k,v)=>`<div class="hx-rv-r"><dt>${k}</dt><dd>${v===""||v==null?'<span class="muted">–</span>':v}</dd></div>`;
+  const sec=(n,t,rows)=>`<section class="hx-rv"><div class="row"><h4>${t}</h4><span class="sp"></span><button type="button" class="btn sm sec" onclick="wGo(${n})">Edit</button></div><dl>${rows}</dl></section>`;
+  $("#w_review").innerHTML=sec(1,WSTEPS[0],row("Role title",esc(r.title))+row("Department",esc(r.dept))+row("Branch / location",esc(place(r)))+row("Work type",esc(r.work))+row("Headcount",`<bdi>${r.headcount}</bdi>`)+row("New or replacement",esc(r.reason))+row("Role purpose",esc(r.purpose))+row("Key duties",esc(r.duties)))
+   +sec(2,WSTEPS[1],row("Salary range",r.salMin||r.salMax?`<bdi>${fmtN(r.salMin)}–${fmtN(r.salMax)} ${esc(r.cur)}</bdi>`:"")+row("Target joining date",r.joinBy?`<bdi>${fmtD(r.joinBy)}</bdi>`:""))
+   +sec(3,WSTEPS[2],row("Top 3 must-haves",list(r.mustHaves))+row("Top 3 things to test in interview",list(r.testQs))+row("Practical test(s)",list(r.practicals))+row("Personality traits",list(r.traits))+row("Critical",list(r.criticals))) }
+function reqForm(copyId,fresh){
   const prev=Object.values(S.reqs).filter(headSees).sort((a,b)=>b.createdAt-a.createdAt);
-  const r=copyId?{...S.reqs[copyId]}:{dept:V.dept||"",mustHaves:["","",""],testQs:["","",""],traits:[]};
-  const sel=(id,opts,v)=>`<select id="${id}"><option value="">Choose…</option>${opts.map(o=>`<option ${o===v?"selected":""}>${esc(o)}</option>`).join("")}</select>`;
-  openModal(`<div class="hd"><div><h2>New hiring request</h2><div class="small muted">Step 1 of the Hiring Guide · about 10 minutes · CEO approves within 2 working days</div></div><button class="x" onclick="closeModal()">×</button></div>
-  <div class="bd">${prev.length?`<div class="note info">Same role as before? <select style="width:auto;margin-left:6px" onchange="this.value&&reqForm(this.value)"><option value="">Start from a previous request…</option>${prev.map(p=>`<option value="${p.id}">${esc(p.title)} · ${esc(p.branch)} · ${fmtD(p.createdAt)}</option>`).join("")}</select></div>`:""}
-  <div class="grid g3"><div><label>Role title</label><input id="f_title" value="${esc(r.title)}"></div><div><label>Department</label>${V.role==="head"&&V.dept?sel("f_dept",[V.dept],V.dept):sel("f_dept",DEPTS,r.dept)}</div><div><label>Branch / location</label>${sel("f_branch",BRANCHES,r.branch)}</div>
-  <div><label>Work type</label>${sel("f_work",WORK,r.work||"On site")}<div class="small muted">Remote: the branch is optional (the team it reports to)</div></div>
-  <div><label>Headcount</label><input id="f_hc" type="number" min="1" value="${r.headcount||1}"></div><div><label>New or replacement</label>${sel("f_reason",["New position","Replacement"],r.reason)}</div><div><label>Target joining date</label><input id="f_join" type="date" value="${r.joinBy?new Date(r.joinBy).toISOString().slice(0,10):""}"></div>
-  <div><label>Salary range — min (total package)</label><input id="f_smin" type="number" value="${r.salMin||""}"></div><div><label>Salary range — max</label><input id="f_smax" type="number" value="${r.salMax||""}"></div><div><label>Currency</label>${sel("f_cur",["AED","OMR"],r.cur||"AED")}</div></div>
-  <label>Role purpose <span class="hint">one or two lines</span></label><textarea id="f_purpose">${esc(r.purpose)}</textarea>
-  <label>Key duties</label><textarea id="f_duties">${esc(r.duties)}</textarea>
-  <div class="grid g2"><div><label>Top 3 must-haves <span class="hint">CV screening scores against these</span></label>${[0,1,2].map(i=>`<input id="f_mh${i}" style="margin-bottom:6px" value="${esc(r.mustHaves?.[i])}">`).join("")}</div>
-  <div><label>Top 3 things to test in interview</label>${[0,1,2].map(i=>`<input id="f_tq${i}" style="margin-bottom:6px" value="${esc(r.testQs?.[i])}">`).join("")}</div></div>
-  <label>Practical test(s) <span class="hint">choose one or more</span></label><div class="pills">${PRACTICAL.map(x=>`<label class="chk" style="margin:0 12px 0 0;font-weight:500"><input type="checkbox" class="f_pr" value="${x}" ${PR(r).includes(x)?"checked":""}>${x}</label>`).join("")}</div>
-  <input id="f_prother" placeholder="Other practical test (optional)" style="margin-top:6px" value="${esc(PR(r).filter(x=>!PRACTICAL.includes(x)).join(", "))}">
-  <label>2–3 personality traits that matter most <span class="hint">tick "Critical" on any trait where a very low result must be cleared in interview — as many as you need</span></label>${TRAITS.map(t=>`<div class="crit"><label class="chk" style="margin:0;font-weight:500"><input type="checkbox" class="f_tr" value="${t[0]}" ${(r.traits||[]).includes(t[0])?"checked":""}><span><b>${t[0]}</b> <span class="muted small">— ${t[1]}</span></span></label><label class="chk" style="margin:0;font-weight:500;color:var(--bad)"><input type="checkbox" class="f_cr" value="${t[0]}" ${CR(r).includes(t[0])?"checked":""} onchange="if(this.checked)document.querySelector('.f_tr[value=&quot;'+this.value+'&quot;]').checked=true">Critical</label></div>`).join("")}
-  </div><div class="ft"><button class="btn sec" onclick="closeModal()">Cancel</button><button class="btn br" onclick="saveReq()">Send for CEO approval</button></div>`);
+  const dr=!copyId&&!fresh?reqDraftGet():null;
+  const r=copyId?{...S.reqs[copyId]}:dr&&dr.r?{...dr.r}:{dept:V.dept||"",mustHaves:["","",""],testQs:["","",""],traits:[]};
+  V.rstep=dr&&!copyId?Math.max(1,Math.min(4,dr.step||1)):1; V.rtried={};
+  const sel=(id,opts,v)=>`<select id="${id}" aria-describedby="e_${id}"><option value="">Choose…</option>${opts.map(o=>`<option ${o===v?"selected":""}>${esc(o)}</option>`).join("")}</select>`;
+  const RQ=`<span class="hx-req" aria-hidden="true">*</span>`;
+  const err=id=>`<div class="hx-err" id="e_${id}" aria-live="polite"></div>`;
+  const F=(id,label,ctl,opt2)=>`<div class="hx-f${opt2&&opt2.wide?" wide":""}"><label for="${id}"><span>${label}</span>${opt2&&opt2.req?RQ:""}${opt2&&opt2.hint?` <span class="hint">${opt2.hint}</span>`:""}</label>${ctl}${opt2&&opt2.help?`<div class="small muted">${opt2.help}</div>`:""}${err(id)}</div>`;
+  const inp=(id,val,extra)=>`<input id="${id}" aria-describedby="e_${id}" value="${esc(val)}" ${extra||""}>`;
+  openModal(`<div class="hx-wiz"><div class="hd"><div><h2>New hiring request</h2><div class="small muted">Step 1 of the Hiring Guide · about 10 minutes · CEO approves within 2 working days</div></div><button class="x" onclick="closeModal()" aria-label="Close">×</button></div>
+  <div class="bd">
+   <ol class="hx-prog" id="w_prog" aria-label="Progress">${WSTEPS.map((t,i)=>`<li><button type="button" onclick="wGo(${i+1})"><span class="n"><bdi>${i+1}</bdi></span><span class="t">${t}</span></button></li>`).join("")}</ol>
+   <p class="small muted hx-stepn"><span id="w_stepn">Step 1 of 4</span> · <span>Fields marked * are required</span></p>
+   ${dr&&!copyId?`<div class="note info hx-dn"><span>Your draft is back</span> · <bdi>${fmtT(dr.at)}</bdi> <button type="button" class="btn sm sec" onclick="reqDraftClear(true)">Start over</button></div>`:""}
+   <section data-wstep="1"><h3>Role & location</h3>
+    ${prev.length?`<div class="note info" style="margin-top:8px">Same role as before? <select style="width:auto;margin-inline-start:6px" onchange="this.value&&reqForm(this.value)"><option value="">Start from a previous request…</option>${prev.map(p=>`<option value="${p.id}">${esc(p.title)} · ${esc(p.branch)} · ${fmtD(p.createdAt)}</option>`).join("")}</select></div>`:""}
+    <div class="grid g3">
+     ${F("f_title","Role title",inp("f_title",r.title,'placeholder="e.g. Branch Supervisor" aria-required="true"'),{req:1})}
+     ${F("f_dept","Department",V.role==="head"&&V.dept?sel("f_dept",[V.dept],V.dept):sel("f_dept",DEPTS,r.dept),{req:1})}
+     ${F("f_branch","Branch / location",sel("f_branch",BRANCHES,r.branch),{req:1,help:"Remote: the branch is optional (the team it reports to)"})}
+     ${F("f_work","Work type",sel("f_work",WORK,r.work||"On site"))}
+     ${F("f_hc","Headcount",`<input id="f_hc" type="number" min="1" inputmode="numeric" value="${r.headcount||1}">`)}
+     ${F("f_reason","New or replacement",sel("f_reason",["New position","Replacement"],r.reason))}
+    </div>
+    ${F("f_purpose","Role purpose",`<textarea id="f_purpose" placeholder="e.g. Run the floor and the shift team so every guest gets the same standard.">${esc(r.purpose)}</textarea>`,{hint:"one or two lines",wide:1})}
+    ${F("f_duties","Key duties",`<textarea id="f_duties" placeholder="e.g. Open and close the branch, lead shift briefings, handle complaints, train new staff.">${esc(r.duties)}</textarea>`,{wide:1})}
+   </section>
+   <section data-wstep="2" hidden><h3>Compensation & timing</h3>
+    <div class="grid g3">
+     ${F("f_smin","Salary range — min (total package)",`<input id="f_smin" type="number" inputmode="numeric" placeholder="e.g. 6000" value="${r.salMin||""}">`)}
+     ${F("f_smax","Salary range — max",`<input id="f_smax" type="number" inputmode="numeric" placeholder="e.g. 8000" aria-required="true" aria-describedby="e_f_smax" value="${r.salMax||""}">`,{req:1})}
+     ${F("f_cur","Currency",sel("f_cur",["AED","OMR"],r.cur||"AED"))}
+     ${F("f_join","Target joining date",`<input id="f_join" type="date" value="${r.joinBy?new Date(r.joinBy).toISOString().slice(0,10):""}">`)}
+    </div>
+    <div class="note" style="margin-top:12px">The salary range is for the CEO and HR only. It never appears in the job ad.</div>
+   </section>
+   <section data-wstep="3" hidden><h3>Evaluation plan</h3>
+    <div class="grid g2"><div class="hx-f"><label><span>Top 3 must-haves</span>${RQ} <span class="hint">CV screening scores against these</span></label>${[0,1,2].map(i=>`<input id="f_mh${i}" aria-label="Must-have ${i+1}" aria-describedby="e_f_mh${i}" aria-required="true" style="margin-bottom:2px" ${i===0?'placeholder="e.g. 3+ years supervising in a UAE restaurant"':""} value="${esc(r.mustHaves?.[i])}">${err("f_mh"+i)}`).join("")}</div>
+    <div class="hx-f"><label><span>Top 3 things to test in interview</span></label>${[0,1,2].map(i=>`<input id="f_tq${i}" aria-label="Interview test ${i+1}" style="margin-bottom:6px" ${i===0?'placeholder="e.g. Handling a guest complaint at peak time"':""} value="${esc(r.testQs?.[i])}">`).join("")}</div></div>
+    <div class="hx-f"><label><span>Practical test(s)</span>${RQ} <span class="hint">choose one or more</span></label><div class="pills hx-grp" id="g_pr" role="group" aria-describedby="e_g_pr">${PRACTICAL.map(x=>`<label class="chk" style="margin:0 12px 0 0;font-weight:500"><input type="checkbox" class="f_pr" value="${x}" ${PR(r).includes(x)?"checked":""}>${x}</label>`).join("")}</div>${err("g_pr")}
+    <input id="f_prother" placeholder="Other practical test (optional)" aria-label="Other practical test (optional)" style="margin-top:6px" value="${esc(PR(r).filter(x=>!PRACTICAL.includes(x)).join(", "))}"></div>
+    <div class="hx-f"><label><span>2–3 personality traits that matter most</span>${RQ} <span class="hint">tick "Critical" on any trait where a very low result must be cleared in interview — as many as you need</span></label><div class="hx-grp" id="g_tr" role="group" aria-describedby="e_g_tr">${TRAITS.map(t=>`<div class="crit"><label class="chk" style="margin:0;font-weight:500"><input type="checkbox" class="f_tr" value="${t[0]}" ${(r.traits||[]).includes(t[0])?"checked":""}><span><b>${t[0]}</b> <span class="muted small">— ${t[1]}</span></span></label><label class="chk" style="margin:0;font-weight:500;color:var(--bad)"><input type="checkbox" class="f_cr" value="${t[0]}" ${CR(r).includes(t[0])?"checked":""} onchange="if(this.checked)document.querySelector('.f_tr[value=&quot;'+this.value+'&quot;]').checked=true">Critical</label></div>`).join("")}</div>${err("g_tr")}</div>
+   </section>
+   <section data-wstep="4" hidden><h3>Review & submit</h3>
+    <p class="small muted">Check everything once. Use Edit to change a part.</p>
+    <div id="w_review"></div>
+    <div class="note info" style="margin-top:12px">When you send it, the CEO approves or declines it within 2 working days. Nothing is posted before that.</div>
+   </section>
+  </div>
+  <div class="ft hx-wft"><span class="small muted hx-dsv" id="w_saved" aria-live="polite">${dr&&!copyId?"Draft saved "+fmtT(dr.at):""}</span><span class="sp"></span><button class="btn sec" onclick="closeModal()">Cancel</button><button class="btn sec" id="w_back" onclick="wStep(-1)">Back</button><button class="btn br" id="w_next" onclick="wStep(1)">Next</button><button class="btn br" id="w_send" onclick="saveReq()">Send for CEO approval</button></div></div>`);
+  const box=document.querySelector("#dlg .hx-wiz");
+  const on=()=>{ if(V.rtried[V.rstep]) wValidate(V.rstep,true); clearTimeout(window._rdt); window._rdt=setTimeout(reqDraftSave,400) };
+  box.addEventListener("input",on); box.addEventListener("change",on);
+  wShow();
 }
 async function saveReq(){
+  const WE=wValidate(0,false); if(WE.length&&$("#w_prog")){ V.rstep=wStepOf(WE[0][0]); wShow(); V.rtried[V.rstep]=true; wValidate(V.rstep,true) }  // show the first step with a gap, fields in red
   const v=id=>$("#"+id).value.trim();
   const r={id:uid(),title:v("f_title"),dept:v("f_dept"),branch:v("f_branch"),work:v("f_work")||"On site",headcount:+v("f_hc")||1,reason:v("f_reason"),joinBy:v("f_join")?new Date(v("f_join")).getTime():null,salMin:+v("f_smin")||null,salMax:+v("f_smax")||null,cur:v("f_cur")||"AED",purpose:v("f_purpose"),duties:v("f_duties"),
     mustHaves:[0,1,2].map(i=>v("f_mh"+i)).filter(Boolean),testQs:[0,1,2].map(i=>v("f_tq"+i)).filter(Boolean),practicals:[...document.querySelectorAll(".f_pr:checked")].map(x=>x.value).concat(v("f_prother")?v("f_prother").split(",").map(x=>x.trim()).filter(Boolean):[]),criticals:[...document.querySelectorAll(".f_cr:checked")].map(x=>x.value),traits:[...document.querySelectorAll(".f_tr:checked")].map(x=>x.value),
@@ -720,7 +1107,7 @@ async function saveReq(){
   const miss=[!r.title&&"role title",!r.dept&&"department",!r.branch&&r.work!=="Remote"&&"branch",!r.salMax&&"salary range",r.mustHaves.length<3&&"3 must-haves",!r.practicals.length&&"practical test",r.criticals.some(c=>!r.traits.includes(c))&&"critical traits must also be ticked as traits",(r.traits.length<2||r.traits.length>3)&&"2–3 traits"].filter(Boolean);
   r.practical=r.practicals.join(" + "); r.critical=r.criticals.join(", ");
   if(miss.length) return toast("Missing: "+miss.join(", "));
-  await store.put("reqs",r.id,r); closeModal(); toast("Sent to Khaled for approval"); go("reqs");
+  await store.put("reqs",r.id,r); reqDraftClear(); closeModal(); toast("Sent to Khaled for approval"); go("reqs");
 }
 function openReq(id){
   const r=S.reqs[id]; if(!r) return; const s=REQ_STATUS[r.status]||[r.status,""];
@@ -803,7 +1190,7 @@ async function submitApp(id){ const j=S.jobs[id]; const v=x=>$("#"+x).value.trim
 /* ---------------- HR add applicant ---------------- */
 function addApplicant(reqId){
   const R=Object.values(S.reqs).filter(r=>["open","ready"].includes(r.status));
-  if(!R.length) return toast("Post a role first — no open roles yet");
+  if(!R.length){ openModal(`<div class="hd"><div><h2>Add applicant</h2></div><button class="x" onclick="closeModal()" aria-label="Close">×</button></div><div class="bd hx-empty"><p>Post a role first — no open roles yet</p><p class="small muted">Applicants are added to a posted role. Post one, then add walk-ins and email CVs here.</p></div><div class="ft"><button class="btn sec" onclick="closeModal()">Cancel</button>${canPost()?`<button class="btn br" onclick="postFlow()">Post a role</button>`:""}</div>`); return }
   openModal(`<div class="hd"><div><h2>Add applicant</h2><div class="small muted">From hr@forka.com, LinkedIn, Indeed, referral or walk-in</div></div><button class="x" onclick="closeModal()">×</button></div>
   <div class="bd"><div class="grid g2"><div><label>Role</label><select id="n_req">${R.map(r=>`<option value="${r.id}" ${r.id===reqId?"selected":""}>${esc(r.title)} · ${esc(place(r))}</option>`).join("")}</select></div><div><label>Source</label><select id="n_src">${["Email (hr@forka.com)","LinkedIn","Indeed","Referral","Walk-in","Talent pool","Agency"].map(s=>`<option>${s}</option>`).join("")}</select></div></div>
   <label>CV file <span class="hint">PDF or photo, from the email</span></label><input type="file" id="n_file" accept=".pdf,application/pdf,image/*">
@@ -827,10 +1214,10 @@ function openCand(id){
   const sAvg=scr(d,r), iAvg=ivAvg(d);
   const myIv=(d.iv||{})[V.me]||{tech:[],comp:[]};
   let body="";
-  body+=`<div class="steps">${STAGES.map((s,i)=>`<span class="${si>i?"done":si===i?"cur":""}" title="${s[2]}">${s[1]}</span>`).join("")}</div>`;
+  body+=stageHead(d);
   if(st==="rejected"||st==="pool") body+=`<div class="note ${st==="pool"?"info":""}" style="margin:10px 0">${st==="pool"?"In talent pool":"Rejected"}${d.reject?.reason?" — "+esc(d.reject.reason):""}${d.reject?.auto?" (automatic, pre-screen)":""}</div>`;
   // profile
-  body+=`<div class="grid g2" style="margin-top:10px"><div class="card"><h3>Profile</h3><p class="small">${esc(d.email||"")} ${d.phone?" · "+esc(d.phone):""}<br>${esc(d.location||"")} · ${d.years??"–"} yrs · notice ${d.notice??"–"} days · ${esc(d.visa||"")}</p>${isHR?`<p class="small"><b>Expected salary:</b> ${fmtN(d.salary)} ${r.cur||""} ${d.salary&&r.salMax&&d.salary>r.salMax?'<span class="tag warn">above range</span>':""}</p>`:""}
+  body+=`<div class="grid g2" style="margin-top:10px"><div class="card"><h3>Profile</h3>${pooled(d)?contactHTML(d)+'<p class="small">':`<p class="small">${esc(d.email||"")} ${d.phone?" · "+esc(d.phone):""}<br>`}${esc(d.location||"")} · ${d.years??"–"} yrs · notice ${d.notice??"–"} days · ${esc(d.visa||"")}</p>${isHR?`<p class="small"><b>Expected salary:</b> ${fmtN(d.salary)} ${r.cur||""} ${d.salary&&r.salMax&&d.salary>r.salMax?'<span class="tag warn">above range</span>':""}</p>`:""}
    ${(d.answers||[]).length?`<p class="small"><b>Pre-screen:</b> ${d.answers.map(a=>`${esc(a[0])} — <b>${esc(a[1])}</b>`).join("<br>")}</p>`:""}<p class="small muted">Source: ${esc(d.source||"")} · consent ${d.consent?"recorded":"not recorded"}</p></div>
    <div class="card"><div class="row"><h3>CV</h3><span class="sp"></span>${AI_ON()&&(d.cvFile||d.cvText)?`<button class="btn sm ai" id="aisumbtn" onclick="aiSum()">${d.ai?"Summarise again":"Summarise CV"}</button>`:""}${cvLink(d.cvFile)}</div>${aiSumHTML(d)}${d.cvText?`<pre class="out" style="max-height:170px;margin-top:8px">${esc(d.cvText)}</pre>`:`<p class="small muted">${d.cvFile?"Open the file above.":"No CV yet."}</p>`}</div></div>`;
   // screening (HR only)

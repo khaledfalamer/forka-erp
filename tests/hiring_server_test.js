@@ -93,7 +93,16 @@ ck('HR emailed about the new application', mails.length === 1 && /Sara Ali/.test
 ck('Same person, same job, same hour: refused politely', call({ action: 'apply', job: 'r1', name: 'Sara Ali', email: 'sara@mail.com', phone: '+971501234567', consent: true }).error === 'again');
 ck('Robot that fills the hidden field gets "ok" but nothing is saved', call({ action: 'apply', job: 'r1', name: 'Bot', email: 'b@b.co', phone: '0501234567', consent: true, website: 'spam' }).ok && sheets.Applications.d.length === 2);
 const load = call({ action: 'load', token: JEN }); const app = Object.values(load.data.apps)[0].list; const a = Object.values(app)[0];
-ck('HR sees the application with knockout answer flagged', a.name === 'Sara Ali' && a.email === 'sara@mail.com' && a.knockout[0] === '2 years in a kitchen?' && a.cvFile.drive, a);
+// Sara said No to a knock-out question, so she is auto-rejected (talent pool): her phone and email arrive masked; "Show" (reveal) gives the real ones.
+ck('HR sees the application with knockout answer flagged (talent pool: phone and email masked)', a.name === 'Sara Ali' && a.email === 's•••@mail.com' && a.phone === '+971 5• ••• ••67' && a.knockout[0] === '2 years in a kitchen?' && a.cvFile.drive, a);
+{ const aid = Object.keys(app)[0], rv = call({ action: 'reveal', token: JEN, id: aid });
+  ck('Reveal: HR gets the real phone and email of an auto-rejected application', rv.ok && rv.email === 'sara@mail.com' && rv.phone === '+971 50 123 4567', rv);
+  const doc = JSON.parse(JSON.stringify(load.data.apps[aid])); doc.list[aid].status = 'pool';
+  ck('Saving the application back with the masked values is accepted', call({ action: 'put', token: JEN, col: 'apps', id: aid, data: doc }).ok);
+  ck('...and the real phone and email stay in the Sheet', sheets.Applications.d.some(r => r[0] === aid && r[5].includes('sara@mail.com') && r[5].includes('+971 50 123 4567') && !r[5].includes('•')));
+  call({ action: 'put', token: JEN, col: 'pipe', id: aid, data: Object.assign({}, doc.list[aid], { id: aid, stage: 'applied' }) });
+  ck('Reopening it from the talent pool (masked copy) keeps the real details, and they come back in the list', (x => x.email === 'sara@mail.com' && x.phone === '+971 50 123 4567')(call({ action: 'load', token: JEN }).data.pipe[aid]), call({ action: 'load', token: JEN }).data.pipe[aid]);
+  call({ action: 'del', token: JEN, col: 'pipe', id: aid }); }
 r = call({ action: 'cv', token: JEN, id: a.cvFile.id });
 ck('HR opens the CV through the server', r.ok && Buffer.from(r.data, 'base64').toString().startsWith('%PDF'));
 ck('No CV without a sign-in', call({ action: 'cv', id: a.cvFile.id }).error === 'session');
@@ -260,4 +269,33 @@ delete cache['apply:count'];
   AI.reply = { stop_reason: 'end_turn', content: [{ type: 'text', text: '{"jd":"About the role"}' }] };
   const g = call({ action: 'ai', token: JEN, prompt: 'Write a JD' }), q2 = AI.calls[AI.calls.length - 1];
   ck('Job ads and interview questions also go through the server (plain text answer)', g.ok && g.text.includes('About the role') && !q2.body.output_config.format); AI.reply = null; }
+// ---- talent pool privacy: masked in the list, "Show" asks the server, every reveal is logged ----
+{ call({ action: 'put', token: CEO, col: 'reqs', id: 'rpk', data: { title: 'Pool Cook', dept: 'Kitchen', status: 'open' } });
+  call({ action: 'put', token: CEO, col: 'reqs', id: 'rps', data: { title: 'Pool Waiter', dept: 'Service', status: 'open' } });
+  call({ action: 'put', token: JEN, col: 'pipe', id: 'pk1', data: { req: 'rpk', name: 'Pooled Cook', email: 'pooled.cook@gmail.com', phone: '+971 50 123 4521', stage: 'pool' } });
+  call({ action: 'put', token: JEN, col: 'pipe', id: 'ps1', data: { req: 'rps', name: 'Pooled Waiter', email: 'waiter@mail.com', phone: '0509998877', stage: 'rejected' } });
+  call({ action: 'put', token: JEN, col: 'pipe', id: 'pl1', data: { req: 'rpk', name: 'Live Cook', email: 'live@mail.com', phone: '0501112299', stage: 'screening' } });
+  const L = call({ action: 'load', token: JEN }), txt = JSON.stringify(L);
+  ck('Talent pool list: phone and email are masked like +971 5• ••• ••21 and p•••@gmail.com', L.data.pipe.pk1.phone === '+971 5• ••• ••21' && L.data.pipe.pk1.email === 'p•••@gmail.com', L.data.pipe.pk1);
+  ck('...rejected candidates too, and the full values are nowhere in the answer', L.data.pipe.ps1.phone === '0• ••• ••77' && !/pooled\.cook|123 4521|waiter@mail|0509998877/.test(txt), L.data.pipe.ps1);
+  ck('Candidates still in process keep their phone and email (same as before)', L.data.pipe.pl1.email === 'live@mail.com' && L.data.pipe.pl1.phone === '0501112299');
+  const lr = (sheets.Reveals ? sheets.Reveals.d.length : 0);
+  let rv = call({ action: 'reveal', token: JEN, id: 'pk1' });
+  ck('Reveal: HR gets the full phone and email', rv.ok && rv.phone === '+971 50 123 4521' && rv.email === 'pooled.cook@gmail.com', rv);
+  const row = sheets.Reveals && sheets.Reveals.d[sheets.Reveals.d.length - 1];
+  ck('Reveal is logged in the Reveals tab: when, who, which candidate', sheets.Reveals.d[0][0] === 'When' && sheets.Reveals.d.length === lr + 1 && row[0] instanceof Date && row[1] === 'jennifer@forka.com' && row[2] === 'pk1' && row[3] === 'Pooled Cook', row);
+  ck('The CEO may reveal too', call({ action: 'reveal', token: CEO, id: 'ps1' }).email === 'waiter@mail.com');
+  ck('A department head may reveal their own department\'s candidate (same rule as seeing it)', call({ action: 'reveal', token: CHEF, id: 'pk1' }).phone === '+971 50 123 4521');
+  const n1 = sheets.Reveals.d.length; rv = call({ action: 'reveal', token: CHEF, id: 'ps1' });
+  ck('...but not another department\'s: refused and nothing logged', rv.error === 'role' && !rv.phone && sheets.Reveals.d.length === n1, rv);
+  ck('Head list of their own pool candidates is masked too', (x => x.pk1.email === 'p•••@gmail.com' && !x.ps1)(call({ action: 'load', token: CHEF }).data.pipe));
+  ck('Not signed in: no reveal', call({ action: 'reveal', id: 'pk1' }).error === 'session');
+  ck('Someone without Hiring access: no reveal', call({ action: 'reveal', token: HAM, id: 'pk1' }).error === 'noaccess');
+  ck('Unknown candidate: "missing"; bad id: "bad"', call({ action: 'reveal', token: JEN, id: 'nobody' }).error === 'missing' && call({ action: 'reveal', token: JEN, id: '../x y' }).error === 'bad');
+  const back = JSON.parse(JSON.stringify(L.data.pipe.pk1)); back.stage = 'applied'; back.notes = [{ m: 'Reconsidered' }];
+  ck('Saving a pool candidate with the masked values is accepted', call({ action: 'put', token: JEN, col: 'pipe', id: 'pk1', data: back }).ok);
+  const after = call({ action: 'load', token: JEN }).data.pipe.pk1;
+  ck('...the real phone and email are kept (never overwritten by the mask) and show again now it is back in process', after.stage === 'applied' && after.phone === '+971 50 123 4521' && after.email === 'pooled.cook@gmail.com', after);
+  const back2 = JSON.parse(JSON.stringify(call({ action: 'load', token: CHEF }).data.pipe.ps1 || { req: 'rpk', name: 'x', email: 'w•••@mail.com', phone: '0• ••• ••77' }));
+  ck('A head cannot use a masked save to move a candidate into their department', call({ action: 'put', token: CHEF, col: 'pipe', id: 'ps1', data: Object.assign(back2, { req: 'rpk' }) }).error === 'role'); }
 console.log(`${res.filter(Boolean).length}/${res.length} hiring server checks passed`); process.exit(res.every(Boolean) ? 0 : 1);

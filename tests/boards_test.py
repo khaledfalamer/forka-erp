@@ -65,7 +65,7 @@ async def main():
             await pg.click('[data-a=ntgo]'); await pg.wait_for_timeout(100)
             check('Task, who does it and due date are required (shown in red)', await pg.locator('.ntf .miss').count() == 3 and 'Fill in the boxes in red' in await pg.inner_text('.ntf'))
             await pg.screenshot(path=OUT + '/boards_newtask.png')
-            await pg.select_option('#nt-pri', 'high'); await pg.fill('#nt-check', 'Ask HR for numbers\nReserve the room')
+            await pg.select_option('#nt-pri', 'high'); await pg.click('#nt-det summary'); await pg.fill('#nt-check', 'Ask HR for numbers\nReserve the room')
             await new_task(pg, 'Book the January staff training room', ['os'], '2026-11-12')
             await pg.click(L('To do') + ' [data-a=addc]'); await new_task(pg, 'Second quick card', ['ea'])
             cnt = await pg.locator(L('To do') + ' .card').count()
