@@ -137,8 +137,8 @@ const S=[
 <h3>Sign in</h3><ol>
 <li>Open <b>erp.forka.com</b>. The sign-in box is on the left, next to the lantern picture.</li>
 <li>Press ${u('Sign in with Google')} and choose your <b>company email</b> (for example name@forka.com).</li>
-<li>No company email? Press ${u('No company email? Sign in with a PIN')} and type the PIN the CEO gave you.</li>
-<li>You see the apps you are allowed to open. Press one. A short loading circle with the app logo shows, then the app opens.</li></ol>
+<li>No company email? Press ${u('No company email? Sign in with a PIN')} and type your PIN.</li>
+<li>Press the app you need. A short loading circle with the app logo shows, then the app opens.</li></ol>
 <h3>Inside every app</h3><ul>
 <li>The menu is on the left side (also in Arabic). Press the arrows at the top of the menu to make it small; it remembers your choice.</li>
 <li>On a phone, press the menu button at the top to open the menu.</li>
@@ -153,8 +153,8 @@ const S=[
 <h3>تسجيل الدخول</h3><ol>
 <li>افتح <b>erp.forka.com</b>. مربع الدخول على اليسار بجانب صورة الفانوس.</li>
 <li>اضغط ${u('الدخول بحساب Google')} واختر <b>بريد الشركة</b> (مثل name@forka.com).</li>
-<li>لا يوجد بريد للشركة؟ اضغط ${u('لا يوجد بريد للشركة؟ ادخل بالرقم السري')} واكتب الرقم السري الذي أعطاك إياه الرئيس التنفيذي.</li>
-<li>تظهر لك التطبيقات المسموحة لك. اضغط على أحدها. تظهر دائرة تحميل قصيرة بشعار التطبيق ثم يفتح.</li></ol>
+<li>لا يوجد بريد للشركة؟ اضغط ${u('لا يوجد بريد للشركة؟ ادخل بالرقم السري')} واكتب رقمك السري.</li>
+<li>اضغط التطبيق الذي تحتاجه. تظهر دائرة تحميل قصيرة بشعار التطبيق ثم يفتح.</li></ol>
 <h3>داخل كل تطبيق</h3><ul>
 <li>القائمة على الجانب الأيسر (وكذلك بالعربية). اضغط الأسهم أعلى القائمة لتصغيرها، ويتذكر التطبيق اختيارك.</li>
 <li>على الهاتف، اضغط زر القائمة في الأعلى لفتحها.</li>
@@ -167,20 +167,18 @@ const S=[
 
 {id:'apps',app:'app',roles:['all'],en:{h:'Which app is for what',b:`
 <div class="apps">
-<div class="a"><img src="img/forka-procurement-icon.svg" alt=""><div><b>Procurement</b><small>Department heads, purchasing, store, finance, CEO</small><span>Requests from departments, purchase orders (LPOs), receiving (GRN), stock, suppliers and payments.</span></div></div>
-<div class="a"><img src="../logos/forka-hire-icon.svg" alt=""><div><b>Hire</b><small>HR, department heads, CEO</small><span>Hiring requests, job ads, candidates, interviews and offers.</span></div></div>
-<div class="a"><img src="../logos/forka-board-icon.svg" alt=""><div><b>Board</b><small>Every department</small><span>Tasks and projects for each department, goals and team chat.</span></div></div>
-<div class="a"><img src="../logos/forka-app-icon.svg" alt=""><div><b>Careers page</b><small>apply.forka.com, no sign-in</small><span>Where candidates see open jobs and apply. Share it with candidates.</span></div></div>
-</div>
-<p>You only see the apps the CEO turned on for you. Missing one you need? Ask the CEO.</p>`},
+<div class="a"><img src="img/forka-procurement-icon.svg" alt=""><div><b>Procurement</b><span>Requests from departments, purchase orders (LPOs), receiving (GRN), stock, suppliers and payments.</span></div></div>
+<div class="a"><img src="../logos/forka-hire-icon.svg" alt=""><div><b>Hire</b><span>Hiring requests, job ads, candidates, interviews and offers.</span></div></div>
+<div class="a"><img src="../logos/forka-board-icon.svg" alt=""><div><b>Board</b><span>Tasks and projects for each department, goals and team chat.</span></div></div>
+<div class="a"><img src="../logos/forka-app-icon.svg" alt=""><div><b>Careers page</b><span>Where candidates see open jobs and apply. Share it with candidates.</span></div></div>
+</div>`},
  ar:{h:'أي تطبيق لأي عمل',b:`
 <div class="apps">
-<div class="a"><img src="img/forka-procurement-icon.svg" alt=""><div><b>المشتريات</b><small>مسؤولو الأقسام، المشتريات، المستودع، المالية، الرئيس التنفيذي</small><span>طلبات الأقسام، أوامر الشراء، الاستلام، المخزون، الموردون والمدفوعات.</span></div></div>
-<div class="a"><img src="../logos/forka-hire-icon.svg" alt=""><div><b>التوظيف</b><small>الموارد البشرية، مسؤولو الأقسام، الرئيس التنفيذي</small><span>طلبات التوظيف، إعلانات الوظائف، المرشحون، المقابلات والعروض.</span></div></div>
-<div class="a"><img src="../logos/forka-board-icon.svg" alt=""><div><b>اللوحات</b><small>كل الأقسام</small><span>مهام ومشاريع كل قسم، الأهداف ومحادثة الفريق.</span></div></div>
-<div class="a"><img src="../logos/forka-app-icon.svg" alt=""><div><b>صفحة الوظائف</b><small>apply.forka.com، بدون تسجيل دخول</small><span>يرى فيها المرشحون الوظائف المتاحة ويتقدمون. شاركها مع المرشحين.</span></div></div>
-</div>
-<p>ترى فقط التطبيقات التي فعّلها لك الرئيس التنفيذي. ينقصك تطبيق تحتاجه؟ اطلبه من الرئيس التنفيذي.</p>`}},
+<div class="a"><img src="img/forka-procurement-icon.svg" alt=""><div><b>المشتريات</b><span>طلبات الأقسام، أوامر الشراء، الاستلام، المخزون، الموردون والمدفوعات.</span></div></div>
+<div class="a"><img src="../logos/forka-hire-icon.svg" alt=""><div><b>التوظيف</b><span>طلبات التوظيف، إعلانات الوظائف، المرشحون، المقابلات والعروض.</span></div></div>
+<div class="a"><img src="../logos/forka-board-icon.svg" alt=""><div><b>اللوحات</b><span>مهام ومشاريع كل قسم، الأهداف ومحادثة الفريق.</span></div></div>
+<div class="a"><img src="../logos/forka-app-icon.svg" alt=""><div><b>صفحة الوظائف</b><span>يرى فيها المرشحون الوظائف المتاحة ويتقدمون. شاركها مع المرشحين.</span></div></div>
+</div>`}},
 
 {id:'head-proc',app:'proc',roles:['head'],en:{h:'Ask procurement for something',b:`
 <p>For anything new your department needs: a new ingredient or brand, equipment, a service, design work.</p><ol>
@@ -218,7 +216,7 @@ const S=[
 
 {id:'staff',app:'app',roles:['staff'],en:{h:'For staff',b:`
 <ul>
-<li>Open erp.forka.com and press the app you need. If an app is missing, you do not have it yet: ask your department head.</li>
+<li>Open erp.forka.com and press the app you need.</li>
 <li>Fill every box in red before saving. Red means "needed".</li>
 <li>When you change something, press ${u('Save')} (or ${u('Save changes')}). ${u('Cancel')} throws your changes away.</li>
 <li>Your tasks are in ${u('Board')} → ${u('My tasks')}.</li>
@@ -226,7 +224,7 @@ const S=[
 <div class="tip">Friends looking for a job? Send them <b>apply.forka.com</b>. Every candidate gets a reply.</div>`},
  ar:{h:'للموظفين',b:`
 <ul>
-<li>افتح erp.forka.com واضغط التطبيق الذي تحتاجه. إذا لم يظهر التطبيق، فليس لديك صلاحية بعد: اطلبها من مسؤول قسمك.</li>
+<li>افتح erp.forka.com واضغط التطبيق الذي تحتاجه.</li>
 <li>عبّئ كل خانة حمراء قبل الحفظ. الأحمر يعني "مطلوب".</li>
 <li>عندما تغيّر شيئاً اضغط ${u('حفظ')} (أو ${u('حفظ التعديلات')}). ${u('إلغاء')} يحذف تعديلاتك.</li>
 <li>مهامك في ${u('اللوحات')} ← ${u('مهامي')}.</li>
@@ -335,7 +333,6 @@ const S=[
 <table><tr><th>You see</th><th>Do this</th></tr>
 <tr><td>Please sign in again.</td><td>Your session ended. Sign in again at erp.forka.com.</td></tr>
 <tr><td>Could not reach the server.</td><td>Check the internet, wait a minute, try again.</td></tr>
-<tr><td>No apps are switched on for you yet.</td><td>Ask the CEO to turn on the apps you need.</td></tr>
 <tr><td>Boxes in red.</td><td>They are required. Fill them, then save.</td></tr>
 <tr><td>The page looks old after an update.</td><td>Refresh the page (F5, or pull down on a phone).</td></tr></table>
 <p>Still stuck? Send a screenshot and what you pressed to your department head, or to Ruby (admin@forka.com).</p>`},
@@ -343,7 +340,6 @@ const S=[
 <table><tr><th>ما يظهر لك</th><th>ماذا تفعل</th></tr>
 <tr><td>سجّل الدخول مرة أخرى.</td><td>انتهت الجلسة. سجّل الدخول من جديد في erp.forka.com.</td></tr>
 <tr><td>تعذر الوصول إلى الخادم.</td><td>تأكد من الإنترنت، انتظر دقيقة، ثم حاول مرة أخرى.</td></tr>
-<tr><td>لا توجد تطبيقات مفعّلة لك بعد.</td><td>اطلب من الرئيس التنفيذي تفعيل ما تحتاجه.</td></tr>
 <tr><td>خانات باللون الأحمر.</td><td>هي مطلوبة. عبّئها ثم احفظ.</td></tr>
 <tr><td>الصفحة تبدو قديمة بعد تحديث.</td><td>حدّث الصفحة (F5، أو اسحب للأسفل على الهاتف).</td></tr></table>
 <p>ما زلت تواجه مشكلة؟ أرسل صورة الشاشة وما ضغطت عليه لمسؤول قسمك، أو لروبي (admin@forka.com).</p>`}}
