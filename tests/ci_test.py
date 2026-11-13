@@ -38,11 +38,11 @@ async def main():
         check('CEO sees Procurement tile', await pg.is_visible('[data-app=proc]'))
         check('CEO sees People and access', await pg.is_visible('[data-a=v-people]'))
         check('CEO can open Hiring (current page)', 'off' not in (await pg.get_attribute('[data-app=hire]', 'class')))
-        async with ctx.expect_page() as np0:
-            await pg.click('[data-app=hire]')
-        hp = await np0.value
-        check('Hiring tile opens the current Hiring page', 'claude.ai/artifact/Bn6y2FWinUhxH9AyVsu7BY' in hp.url, hp.url)
-        await hp.close()
+        went = []
+        await pg.expose_function('noteGo', lambda u: went.append(u))
+        await pg.evaluate("goApp=u=>noteGo(u)")
+        n0 = len(ctx.pages); await pg.click('[data-app=hire]'); await pg.wait_for_timeout(600)
+        check('Hiring tile opens the current Hiring page in the same window', any('claude.ai/artifact/Bn6y2FWinUhxH9AyVsu7BY' in str(u) for u in went) and len(ctx.pages) == n0, went)
         await pg.screenshot(path=str(ROOT/'tests'/'shots'/'s_ceo_home.png'), full_page=True)
         # 3 people page, confirm Hamim
         await pg.click('[data-a=v-people]')
@@ -149,11 +149,9 @@ async def main():
         check('PIN person signs in, sees Branch Check only', await pg.locator('[data-app]').count() == 1 and await pg.locator('[data-app=branch]').count() == 1)
         # 11 Procurement tile opens the live app
         await pg.click('[data-a=out]'); await google(pg, 'store@kuwaitikitchen.com')
-        async with ctx.expect_page() as np:
-            await pg.click('[data-app=proc]')
-        newp = await np.value
-        check('Procurement tile opens the current procurement app', 'procurement.forka.com' in newp.url, newp.url)
-        await newp.close()
+        went.clear(); await pg.evaluate("goApp=u=>noteGo(u)")
+        n0 = len(ctx.pages); await pg.click('[data-app=proc]'); await pg.wait_for_timeout(600)
+        check('Procurement tile opens the current procurement app in the same window', any('procurement.forka.com' in str(u) for u in went) and len(ctx.pages) == n0, went)
         # 12 Arabic
         await pg.wait_for_timeout(2000)
         check('Saved message goes away by itself', await pg.locator('.toast').count() == 0)
