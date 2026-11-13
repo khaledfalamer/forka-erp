@@ -224,6 +224,17 @@ label.f{display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--fk
 .app.tile:hover,.app.tile:focus-visible{transform:translateY(-3px);border-color:color-mix(in srgb,var(--c) 45%,#ece4d6);box-shadow:0 18px 40px -12px color-mix(in srgb,var(--c) 55%,transparent),0 0 0 4px color-mix(in srgb,var(--c) 10%,transparent);outline:none}
 .app.tile.off{opacity:.55}
 @media(max-width:640px){.apps:has(.tile){grid-template-columns:1fr 1fr;gap:14px}.app.tile{padding:12px;gap:8px}.app.tile .lgm,.app.tile.br .ic{width:58px;height:58px}.app.tile .lgk{font-size:10px}.app.tile .lgn,.app.tile.br h3{font-size:22px}.app.tile p,.app.tile .meta,.app.tile .soon{display:none}}
+
+/* Sign-in page: light paper, your Forka App logo, blurred Forka logos that come into focus near the mouse or finger */
+.gate{background:#f6f3ee!important;color:var(--fk-text)!important;position:relative;overflow:hidden}
+.gate>*:not(.gfld):not(.lang){position:relative;z-index:1}.gate>.lang{position:absolute;z-index:2}
+.gfld{position:absolute!important;inset:0;z-index:0!important;pointer-events:none}.gfld span{position:absolute;opacity:.55}
+.gblur{filter:blur(9px)}.gsharp{-webkit-mask:radial-gradient(circle 190px at var(--gx,-600px) var(--gy,-600px),#000 45%,transparent 100%);mask:radial-gradient(circle 190px at var(--gx,-600px) var(--gy,-600px),#000 45%,transparent 100%)}
+.glogo{width:300px;max-width:78vw;height:auto;display:block}
+.gate .gcard{margin-top:26px;border:1px solid #ece4d6;box-shadow:0 30px 60px -30px rgba(43,43,43,.35);background:#fff}
+.gate .plink{color:#6f665c}
+.gate .lang{background:#fff!important;border:1px solid #e3d8c7!important}.gate .lang button{color:#6f665c!important}.gate .lang button.on{color:#fff!important}
+@media(max-width:600px){.gfld span:nth-child(3n+2),.gfld span:nth-child(3n+3){display:none}.gfld span svg{width:40px;height:40px}.glogo{width:230px}}
 </style>
 </head>
 <body>
@@ -234,6 +245,18 @@ label.f{display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--fk
 let fkI=0;function fkMark(){const m='fkm'+(++fkI);return `<svg viewBox="0 0 118 118" aria-hidden="true"><defs><mask id="${m}"><rect width="118" height="118" fill="#fff"/><circle cx="59" cy="59" r="22" fill="#000"/></mask></defs><g mask="url(#${m})"><rect x="7" y="7" width="48" height="48" rx="12" fill="#397F8F"/><rect x="63" y="7" width="48" height="48" rx="12" fill="#E0A037"/><rect x="7" y="63" width="48" height="48" rx="12" fill="#77987D"/><rect x="63" y="63" width="48" height="48" rx="12" fill="#BD5038"/></g><circle cx="59" cy="59" r="15.8" fill="#896B45"/></svg>`}
 function fkLock(name,cls,attrs){return `<div class="fk-lock ${cls||''}" ${attrs||''}>${fkMark()}<div><span class="fk-k">FORKA</span><span class="fk-n">${name}</span></div></div>`}
 const CFG=window.FORKA_APPS||{};
+/* Sign-in background: Forka logos, blurred; the ones near the mouse or finger come into focus */
+let _gbg='';
+function gateBg(){if(_gbg)return _gbg;const C=['#397F8F','#E0A037','#77987D','#BD5038','multi'];let r=7,o='';const rnd=()=>{r=(r*16807)%2147483647;return r/2147483647};
+  const mk=(c,s)=>{const m=c==='multi',cs=m?['#397F8F','#E0A037','#77987D','#BD5038']:[c,c,c,c],op=m?[1,1,1,1]:[1,.85,.68,.95],dot=m?'#896B45':c;
+    return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 118 118" aria-hidden="true">'+[[7,7],[63,7],[7,63],[63,63]].map((p,i)=>'<rect x="'+p[0]+'" y="'+p[1]+'" width="48" height="48" rx="12" fill="'+cs[i]+'" opacity="'+op[i]+'"/>').join('')+'<circle cx="59" cy="59" r="22" fill="#f6f3ee"/><circle cx="59" cy="59" r="15.8" fill="'+dot+'"/></svg>'};
+  for(let y=0;y<8;y++)for(let x=0;x<12;x++){const c=C[(y*3+x)%5],s=[54,64,78][Math.floor(rnd()*3)];o+='<span style="left:'+(x*8.6+rnd()*3-1.5+1).toFixed(1)+'%;top:'+(y*13+rnd()*4-2+1).toFixed(1)+'%;transform:rotate('+Math.round(rnd()*24-12)+'deg)">'+mk(c,s)+'</span>'}
+  return _gbg='<div class="gfld gblur" aria-hidden="true">'+o+'</div><div class="gfld gsharp" aria-hidden="true">'+o+'</div>'}
+(()=>{let tx=-600,ty=-600,cx=-600,cy=-600,run=false;const R=document.documentElement;
+  const mv=e=>{tx=e.clientX;ty=e.clientY;if(!run){run=true;requestAnimationFrame(step)}};
+  function step(){cx+=(tx-cx)*.18;cy+=(ty-cy)*.18;R.style.setProperty('--gx',cx.toFixed(1)+'px');R.style.setProperty('--gy',cy.toFixed(1)+'px');if(Math.abs(tx-cx)+Math.abs(ty-cy)>.5&&document.querySelector('.gfld'))requestAnimationFrame(step);else run=false}
+  addEventListener('pointermove',mv,{passive:true});addEventListener('pointerdown',mv,{passive:true});document.addEventListener('pointerleave',()=>{tx=-600;ty=-600;mv({clientX:-600,clientY:-600})})})();
+
 const LIVE=!!(CFG.ACCOUNTS_URL&&CFG.GOOGLE_CLIENT_ID);
 /* ---------- settings ---------- */
 const PROCUREMENT_URL='https://procurement.forka.com/';
@@ -492,7 +515,7 @@ function vGate(){
   else{const m={waiting:['waitT','waitTxt','ok'],pending:['pendT','pendTxt','ok'],blocked:['blockT','blockTxt','err'],rejected:['rejT','blockTxt','err']}[g.step];
     const r=DATA.requests[g.email];
     body='<h2>'+t(m[0])+'</h2><div class="'+m[2]+'">'+t(m[1])+(g.step==='rejected'&&r&&r.reason?'<br><b>'+esc(r.reason)+'</b>':'')+'</div><div class="note">'+esc(g.email)+'</div><button class="lnk" data-a="g-start">'+t('back')+'</button>'}
-  return '<div class="gate">'+langSw()+fkLock(lang==='ar'?t('apps'):'App','big')+'<div class="gcard">'+body+'</div><a class="plink" href="help/?lang='+lang+'" target="_blank" rel="noopener">'+t('help')+'</a> · <a class="plink" href="privacy.html">'+t('privacy')+'</a></div>'}
+  return '<div class="gate">'+gateBg()+langSw()+'<img class="glogo" src="logos/forka-app-logo.svg" alt="Forka App">'+'<div class="gcard">'+body+'</div><a class="plink" href="help/?lang='+lang+'" target="_blank" rel="noopener">'+t('help')+'</a> · <a class="plink" href="privacy.html">'+t('privacy')+'</a></div>'}
 
 function vTop(){const p=person(me);
   return '<div class="top">'+'<button class="toplogo" data-a="home" aria-label="Forka App"><img src="logos/forka-app-logo.png" alt="Forka App" height="38"></button>'+'<div class="sp"></div>'+
@@ -582,7 +605,7 @@ function render(){
   const gm=document.getElementById('gmail');if(gm)gate.typed=gm.value;
   const fq=document.activeElement&&document.activeElement.id==='fq'?document.activeElement.selectionStart:null;
   if(me&&(!person(me)||person(me).status!=='active')){me=null;view='gate';try{sessionStorage.removeItem('fa-me')}catch(_){}}
-  if(CFG.MODE==='live'&&!LIVE){root.innerHTML='<div class="gate">'+langSw()+fkLock(lang==='ar'?t('apps'):'App','big')+'<div class="gcard"><h2>'+t('setupT')+'</h2><p>'+t('setupTxt')+'</p></div></div>';return}
+  if(CFG.MODE==='live'&&!LIVE){root.innerHTML='<div class="gate">'+gateBg()+langSw()+'<img class="glogo" src="logos/forka-app-logo.svg" alt="Forka App">'+'<div class="gcard"><h2>'+t('setupT')+'</h2><p>'+t('setupTxt')+'</p></div></div>';return}
   if(!me){root.innerHTML=vGate();if(LIVE&&gate.step==='start')drawGoogle()}
   else{if(view==='gate')view='home';
     if((view==='people'||view==='activity')&&!isCeo(person(me)))view='home';
