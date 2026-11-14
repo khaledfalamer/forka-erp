@@ -50,3 +50,24 @@ In Cloud Shell: `cd forka-erp && git pull`, then the deploy line from step 3.
 
 **Rollback:** in NameSilo, put the `erp` CNAME back to `khaledfalamer.github.io` (GitHub Pages still publishes on
 every push to main). Or Firebase console > Hosting > release history > roll back to an earlier version.
+
+## Automatic publishing of the new app (no Cloud Shell)
+
+Workflow: `.github/workflows/app-test-site.yml`. On every push to a working branch (never main) it builds the new app
+(`app/`), runs its checks, and, if they pass, publishes it to the **test address** https://forka-erp-next.web.app.
+erp.forka.com and procurement.forka.com are not touched; going live still needs Khaled's "go live".
+
+**Switch it on (Khaled, once, about 10 minutes):**
+1. Cloud Shell, project **forka-apps**: `cd forka-erp && git pull && bash tools/firebase_deploy_setup.sh`
+   (creates a Google account that may only publish web pages, and allows only this GitHub repository to use it;
+   no password or key is created).
+2. GitHub: **forka-erp > Settings > Secrets and variables > Actions > Variables > New repository variable**:
+   name `FIREBASE_DEPLOY`, value `on`.
+
+Until step 2, the workflow still builds and checks every change but publishes nothing.
+
+**See what happened:** GitHub > forka-erp > **Actions** > "New Forka App - check and publish to the test address".
+
+**Switch it off:** set the variable `FIREBASE_DEPLOY` to `off` (stops at once). To remove the Google side as well, in Cloud Shell:
+`gcloud iam workload-identity-pools delete github --location global --project forka-apps` and
+`gcloud iam service-accounts delete github-deploy@forka-apps.iam.gserviceaccount.com --project forka-apps`.

@@ -1,0 +1,60 @@
+name: New Forka App - check and publish to the test address
+# Every push to a working branch (never main): build the new app (app/), run its checks, and, if they pass,
+# publish it to the TEST address https://forka-erp-next.web.app. erp.forka.com is not touched.
+# Publishing only runs once the repository variable FIREBASE_DEPLOY is "on" (Settings > Secrets and variables >
+# Actions > Variables), after the one-time Google setup in tools/firebase_deploy_setup.sh.
+# No password or key is stored: GitHub proves who it is to Google (Workload Identity Federation), for this repository only.
+on:
+  push:
+    branches-ignore: [main]
+    paths:
+      - 'app/**'
+      - 'index.html'
+      - 'boards/**'
+      - 'hiring/**'
+      - 'apply/**'
+      - 'help/**'
+      - 'logos/**'
+      - 'config.js'
+      - 'sw.js'
+      - 'manifest.webmanifest'
+      - 'privacy.html'
+      - 'about.html'
+      - '.github/workflows/app-test-site.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  id-token: write   # lets GitHub prove to Google which repository is asking (no stored key)
+concurrency:
+  group: app-test-site
+  cancel-in-progress: true
+jobs:
+  check-and-publish:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+      - name: Install
+        run: npm ci
+      - name: Build (type check, unknown-name checks for Board, Hire and Procurement)
+        run: npm run build
+      - name: Browser for the checks
+        run: npx playwright install --with-deps chromium
+      - name: Hub checks (sign-in, People and access, English and Arabic, phone)
+        run: npm test
+      - name: Sign in to Google as the publishing account (no stored key)
+        if: vars.FIREBASE_DEPLOY == 'on'
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: projects/443945615318/locations/global/workloadIdentityPools/github/providers/forka-erp
+          service_account: github-deploy@forka-apps.iam.gserviceaccount.com
+      - name: Publish to the test address (forka-erp-next.web.app)
+        if: vars.FIREBASE_DEPLOY == 'on'
+        run: npx -y firebase-tools@14 deploy --only hosting --project forka-apps --non-interactive --message "${GITHUB_REF_NAME} ${GITHUB_SHA::7}"
