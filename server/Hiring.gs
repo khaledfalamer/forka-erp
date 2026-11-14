@@ -281,7 +281,14 @@ function reveal_(b, who) {
 
 /* ---------------- booking: candidate picks an interview or HR-call time ---------------- */
 const HIRE_C = '#C8891F', HIRE_LOGO = 'https://erp.forka.com/logos/forka-hire-logo.png', STAFF_FOOT = 'You get this email because you use Forka App.';
-function candFoot_(lang) { return lang === 'ar' ? 'وصلتك هذه الرسالة لأنك تقدمت لوظيفة في فوركا.\napply.forka.com' : 'You get this email because you applied for a role at Forka.\napply.forka.com'; }
+function candFoot_(lang) { return askHr_(lang) + '\n' + (lang === 'ar' ? 'وصلتك هذه الرسالة لأنك تقدمت لوظيفة في فوركا.\napply.forka.com' : 'You get this email because you applied for a role at Forka.\napply.forka.com'); }
+/* Emails go out from Google's no-reply address of the company (noreply@forka.com), not from the
+   account that published this script, so staff never see whose account runs it. If Google refuses
+   (only Workspace accounts may use it), the email is still sent the normal way. */
+function mail_(o) { try { MailApp.sendEmail(Object.assign({ noReply: true }, o)); } catch (e) { MailApp.sendEmail(o); } }
+// Candidates who reply or have questions reach HR, never a personal inbox. Script property HR_REPLY_TO changes it.
+function hrReply_() { return String(props_().getProperty('HR_REPLY_TO') || 'hr@forka.com').trim(); }
+function askHr_(lang) { return (lang === 'ar' ? 'لأي سؤال راسلنا على ' : 'Questions? Write to ') + hrReply_(); }
 const BOOK_KINDS = { call: { en: 'HR call', ar: 'مكالمة مع الموارد البشرية' }, interview: { en: 'Interview', ar: 'مقابلة' } };
 function applyBase_() { return String(props_().getProperty('APPLY_URL') || 'https://apply.forka.com/').replace(/\/?$/, '/'); }
 function findBook_(token) {
@@ -345,7 +352,7 @@ function invite_(b, who) {
     const body = lang === 'ar'
       ? 'مرحباً ' + first + '،\n\nشكراً لاهتمامك بوظيفة ' + job + ' في فوركا. نود ترتيب ' + BOOK_KINDS[kind].ar + ' معك.\nاختر الوقت المناسب لك من هذا الرابط:\n' + link + '\n\n' + (bk.note ? bk.note + '\n\n' : '') + 'فريق التوظيف - فوركا'
       : 'Hello ' + first + ',\n\nThank you for your interest in the ' + job + ' role at Forka. We would like to arrange an ' + BOOK_KINDS[kind].en.toLowerCase() + ' with you.\nPlease pick a time that suits you here:\n' + link + '\n\n' + (bk.note ? bk.note + '\n\n' : '') + 'Forka Hiring team';
-    try { MailApp.sendEmail({ to: c.email, subject: (lang === 'ar' ? 'اختر موعد ' + BOOK_KINDS[kind].ar + ' - ' : 'Pick a time for your ' + BOOK_KINDS[kind].en.toLowerCase() + ' - ') + job, name: 'Forka Hiring', replyTo: who.email, body: body,
+    try { mail_({ to: c.email, subject: (lang === 'ar' ? 'اختر موعد ' + BOOK_KINDS[kind].ar + ' - ' : 'Pick a time for your ' + BOOK_KINDS[kind].en.toLowerCase() + ' - ') + job, name: 'Forka Hiring', replyTo: hrReply_(), body: body + '\n\n' + askHr_(lang),
       htmlBody: fkMail_({ c: HIRE_C, logo: HIRE_LOGO, alt: 'Forka', lang: lang, kick: lang === 'ar' ? 'دعوة' : 'Invitation',
         title: lang === 'ar' ? 'اختر موعد ' + BOOK_KINDS[kind].ar : 'Pick a time for your ' + BOOK_KINDS[kind].en.toLowerCase(),
         hi: lang === 'ar' ? 'مرحباً ' + first + '،' : 'Hello ' + first + ',',
@@ -382,17 +389,17 @@ function book_(b) {
   const c = f.c, k = f.b, lang = c.lang === 'ar' ? 'ar' : 'en', job = c.jobTitle || '';
   const file = () => Utilities.newBlob(ics_(k, c, k.token), 'text/calendar', 'forka-' + k.kind + '.ics');
   const where = k.mode + (k.place ? ' - ' + k.place : '');
-  try { MailApp.sendEmail({ to: c.email, name: 'Forka Hiring', replyTo: k.by, attachments: [file()],
+  try { mail_({ to: c.email, name: 'Forka Hiring', replyTo: hrReply_(), attachments: [file()],
     subject: (lang === 'ar' ? 'تم تأكيد ' + BOOK_KINDS[k.kind].ar + ' - ' : 'Confirmed: your ' + BOOK_KINDS[k.kind].en.toLowerCase() + ' - ') + job,
     body: (lang === 'ar' ? 'تم تأكيد موعدك: ' : 'You are booked for ') + when_(t, lang) + '\n' + where + '\n\n' + (k.note ? k.note + '\n\n' : '') +
-      (lang === 'ar' ? 'لتغيير الموعد استخدم نفس الرابط: ' : 'Need to change it? Use the same link: ') + applyBase_() + '#book=' + k.token + '\n\nForka Hiring',
+      (lang === 'ar' ? 'لتغيير الموعد استخدم نفس الرابط: ' : 'Need to change it? Use the same link: ') + applyBase_() + '#book=' + k.token + '\n\n' + askHr_(lang) + '\n\nForka Hiring',
     htmlBody: fkMail_({ c: HIRE_C, logo: HIRE_LOGO, alt: 'Forka', lang: lang, kick: lang === 'ar' ? 'تم التأكيد' : 'Confirmed',
       title: lang === 'ar' ? 'تم تأكيد ' + BOOK_KINDS[k.kind].ar : 'Your ' + BOOK_KINDS[k.kind].en.toLowerCase() + ' is booked',
       body: lang === 'ar' ? 'أرفقنا ملف التقويم لإضافته إلى هاتفك. لتغيير الموعد استخدم الزر أدناه.' : 'The calendar file is attached so you can add it to your phone. Need to change it? Use the button below.',
       quote: k.note, rows: [[lang === 'ar' ? 'الوظيفة' : 'Role', job], [lang === 'ar' ? 'الموعد' : 'When', when_(t, lang)], [lang === 'ar' ? 'المكان' : 'Where', where]],
       btn: lang === 'ar' ? 'تغيير الموعد' : 'Change the time', url: applyBase_() + '#book=' + k.token, foot: candFoot_(lang) }) }); } catch (e) {}
   const to = [k.by].concat(String(props_().getProperty('HR_EMAILS') || '').split(/[,\s]+/)).filter((x, i, a) => x && a.indexOf(x) === i);
-  try { MailApp.sendEmail({ to: to.join(','), name: 'Forka Hiring', attachments: [file()],
+  try { mail_({ to: to.join(','), name: 'Forka Hiring', attachments: [file()],
     subject: BOOK_KINDS[k.kind].en + ' booked: ' + c.name + ' - ' + when_(t, 'en'),
     body: c.name + ' (' + job + ') picked ' + when_(t, 'en') + '.\n' + where + '\n\nAdd to Google Calendar: ' + gcal_(k, c) + '\nOpen Hiring: https://erp.forka.com/hiring/',
     htmlBody: fkMail_({ c: HIRE_C, logo: HIRE_LOGO, alt: 'Forka Hire', lang: 'en', kick: BOOK_KINDS[k.kind].en + ' booked', title: c.name + ' picked a time',
@@ -426,7 +433,7 @@ function hrDigest() {
     if (MailApp.getRemainingDailyQuota() <= MAIL_KEEP) return;           // keep the rest of today's emails for candidates
     c.remove('hrmail:wait'); c.put('hrmail:sent', '1', HR_MAIL_GAP);
     const one = w.n === 1 ? w.lines[0] : null;
-    MailApp.sendEmail({ to: to.join(','), name: 'Forka Hiring',
+    mail_({ to: to.join(','), name: 'Forka Hiring',
       subject: one ? 'New application: ' + one.job + ' - ' + one.name : w.n + ' new applications - Forka Hiring',
       body: one ? one.text + '\n\nOpen Hiring: https://erp.forka.com/hiring/'
         : w.n + ' people applied in the last few minutes.\n\n' + w.lines.map(l => '- ' + l.name + ' - ' + l.job + (l.ko ? ' (did not meet: ' + l.ko + ')' : '')).join('\n') +
