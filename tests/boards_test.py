@@ -486,7 +486,7 @@ async def main():
             body = await pg.inner_text('#myreqs')
             check('The requester sees it was accepted and who is doing it', 'Accepted' in body and 'Technician' in body, body)
             await pg.click('#myreqs tr:has-text("Replace the broken shelf")'); await pg.wait_for_timeout(100)
-            check('The requester can read and comment, but not change it', await pg.locator('.md fieldset[disabled]').count() == 2 and await pg.locator('#cmt').count() == 1)
+            check('The requester created it, so they may change the details and comment (task rules, 14 Nov 2026)', await pg.locator('.md textarea#mt').count() == 1 and await pg.locator('#cdesc').count() == 1 and await pg.locator('#cmt').count() == 1)
             await pg.keyboard.press('Escape')
 
             await view_as(pg, 'os')
