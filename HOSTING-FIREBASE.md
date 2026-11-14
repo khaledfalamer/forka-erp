@@ -47,6 +47,8 @@ In Cloud Shell: `cd forka-erp && git pull`, then the deploy line from step 3.
 2. In NameSilo, replace the `erp` CNAME record (now `khaledfalamer.github.io`) with the records Firebase shows.
 3. Wait until Firebase shows the certificate as ready (minutes to a few hours). Keep GitHub Pages running until then.
 4. Then the same for apply.forka.com and procurement.forka.com, then make the repositories private.
+   procurement.forka.com must forward to erp.forka.com/procurement/ **keeping the part after #** (Board's purchase-request
+   cards link to procurement.forka.com/#rq=<id>, and Board only accepts procurement.forka.com links for them).
 
 **Rollback:** in NameSilo, put the `erp` CNAME back to `khaledfalamer.github.io` (GitHub Pages still publishes on
 every push to main). Or Firebase console > Hosting > release history > roll back to an earlier version.
