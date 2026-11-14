@@ -146,6 +146,7 @@ body.dragging,body.dragging *{cursor:grabbing!important}
 .mt:focus{background:#fff;color:var(--charcoal)}
 .msub{padding:0 28px 6px;color:var(--muted);font-size:13.5px}
 .msub b{color:var(--text);text-decoration:underline;text-underline-offset:3px;font-weight:600}
+.msub .procl{display:inline-flex;align-items:center;gap:5px;color:var(--text);font-weight:600;text-decoration:underline;text-underline-offset:3px}.msub .procl svg{width:14px;height:14px;flex:none}
 .mbody{display:grid;grid-template-columns:minmax(0,1fr) 210px;gap:22px;padding:10px 28px 26px}
 .mbody>div{min-width:0}
 div.sec{margin-top:18px}
@@ -334,6 +335,24 @@ button.st{cursor:pointer}
 .from{color:var(--bronze)!important;font-weight:600}
 .newt{width:100%;display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:12px}
 fieldset.ro{border:0;padding:0;margin:0;min-width:0}
+/* task rules: read-only details, archive requests, undo */
+.rov{min-height:34px;display:flex;align-items:center;font-size:14px;padding:0 2px;overflow-wrap:anywhere}
+.rom{color:var(--muted)}
+h2.mtro{margin:0;cursor:default}
+.descro{white-space:pre-wrap;min-height:0;cursor:default;overflow-wrap:anywhere;border:0;background:transparent;padding:4px 2px;font-size:14px}
+.ronote{margin:8px 28px 0}.ronote[hidden]{display:none}
+.lockb{flex:none;align-self:center;width:30px;height:30px;margin-inline-start:6px;border:1px solid var(--line,#e5ded4);border-radius:8px;background:none;color:var(--muted);display:inline-flex;align-items:center;justify-content:center;cursor:pointer}.lockb:hover,.lockb[aria-expanded=true]{color:var(--teal,#397F8F);border-color:currentColor}.lockb svg{width:15px;height:15px}
+@media(max-width:760px){.lockb{width:40px;height:40px}}
+.arqb{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;margin:8px 28px 0;padding:10px 12px;border-radius:9px;background:var(--notebg);color:var(--notefg);font-size:13.5px;line-height:1.4}
+.arqb>span{flex:1;min-width:180px}
+.arqb .btn{height:30px;padding:0 11px;font-size:13px}
+.arqw{display:block;font-style:italic;margin-top:2px}
+.arqt{color:var(--notefg);background:var(--notebg);padding:1px 6px;border-radius:5px;font-weight:600}
+.arqf textarea{width:100%;min-height:56px;border-radius:8px;border:1px solid var(--line);background:var(--field);padding:8px 10px;outline:none;resize:vertical;margin:6px 0}
+.ckro{width:17px;height:17px;display:inline-flex;align-items:center;justify-content:center;color:var(--muted);flex:none}
+.ckro.on{color:var(--ok)}
+.redirb{margin-top:8px;display:inline-flex;align-items:center;gap:6px}
+.toast .tundo{margin-inline-start:12px;color:var(--bronze-l);font-weight:700;text-decoration:underline;text-underline-offset:3px}
 /* tidy: room for the close button, side boxes stacked, phone top bar */
 .mhead{padding-inline-end:58px!important}
 .side2 .row{flex-wrap:wrap}
@@ -819,6 +838,7 @@ const ICON={
   grid:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>',
   stamp:'<path d="M9 3h6l-1 7h-4z"/><path d="M5 14h14v3H5zM4 21h16"/>', up:'<path d="M18 15l-6-6-6 6"/>', updown:'<path d="M8 9l4-4 4 4M8 15l4 4 4-4"/>', alert:'<circle cx="12" cy="12" r="9"/><path d="M12 7v6M12 16.5v.5"/>', list:'<path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/>'
 };
+Object.assign(ICON,{redir:'<path d="M4 18v-3a5 5 0 0 1 5-5h11"/><path d="M16 6l4 4-4 4"/>',lock:'<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>'});
 const ic=(n,cls)=>`<svg viewBox="0 0 24 24"${cls?` class="${cls}"`:''} aria-hidden="true">${ICON[n]}</svg>`;
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const uid=p=>p+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
@@ -848,7 +868,7 @@ en:{app:'Boards',search:'Search this board',addCard:'Add a card',addCardBtn:'Add
   back:'Back',boardsOf:'{d} boards',you:'you',
   newTask:'New task',collapse:'Collapse or expand the menu',ntTitle:'Task',ntTitlePh:'What needs to be done?',forDept:'Department',onBoard:'Board',inListL:'List',assignTo:'Who will do it',
   assignHint:'Leave empty and the {d} head will assign it.',priority:'Priority',p_low:'Low',p_normal:'Normal',p_high:'High',p_urgent:'Urgent',
-  checkLines:'Checklist (one item per line)',createTask:'Create task',need:'Fill in the boxes in red.',reqBoard:'Requests to {d}',asReq:'Request to {d}',
+  checkLines:'Checklist (one item per line)',createTask:'Create task',need:'Fill in the boxes in red.',reqBoard:'Requests to {d}',procBoard:'Purchase requests',fromProc:'From Procurement: {n}',fromProcH:'Open this purchase request in Procurement',lb_preq:'Purchase request',asReq:'Request to {d}',
   reqNote:'This goes to {d} as a request. Their head sees it first and assigns it. You can follow it in My tasks.',requested:'My requests to other departments',
   fromD:'From {d}',reqBy:'requested by {p} ({d})',moveBoard:'Move to board',l_req:'sent this request from {a}',roNote:'You asked for this task. You can follow it and comment.',
   stateL:'Where it is',doneTag:'Done',
@@ -941,7 +961,7 @@ ar:{app:'اللوحات',search:'بحث في هذه اللوحة',addCard:'إض�
   back:'رجوع',boardsOf:'لوحات {d}',you:'أنت',
   newTask:'مهمة جديدة',collapse:'طي القائمة أو فتحها',ntTitle:'المهمة',ntTitlePh:'ما المطلوب إنجازه؟',forDept:'القسم',onBoard:'اللوحة',inListL:'القائمة',assignTo:'من سينفّذها',
   assignHint:'اتركها فارغة وسيُسندها مسؤول {d}.',priority:'الأولوية',p_low:'منخفضة',p_normal:'عادية',p_high:'عالية',p_urgent:'عاجلة',
-  checkLines:'قائمة المهام (بند في كل سطر)',createTask:'إنشاء المهمة',need:'عبّئ الخانات الحمراء.',reqBoard:'طلبات إلى {d}',asReq:'طلب إلى {d}',
+  checkLines:'قائمة المهام (بند في كل سطر)',createTask:'إنشاء المهمة',need:'عبّئ الخانات الحمراء.',reqBoard:'طلبات إلى {d}',procBoard:'طلبات الشراء',fromProc:'من المشتريات: {n}',fromProcH:'افتح طلب الشراء هذا في المشتريات',lb_preq:'طلب شراء',asReq:'طلب إلى {d}',
   reqNote:'تُرسل إلى {d} كطلب. يراها مسؤول القسم أولاً ويُسندها. يمكنك متابعتها في مهامي.',requested:'طلباتي من الأقسام الأخرى',
   fromD:'من {d}',reqBy:'طلبها {p} ({d})',moveBoard:'نقل إلى لوحة',l_req:'أرسل هذا الطلب من {a}',roNote:'أنت طلبت هذه المهمة. يمكنك متابعتها والتعليق.',
   stateL:'أين وصلت',doneTag:'منجزة',
@@ -1011,6 +1031,27 @@ ar:{app:'اللوحات',search:'بحث في هذه اللوحة',addCard:'إض�
   anyPri:'أي أولوية',ownerF:'المسؤول',priF:'الأولوية',searchingFor:'بحث: {x}',clearSearch:'مسح البحث',cardsN:'{n} بطاقات',addTo:'إضافة بطاقة إلى {x}',moreN:'+{n} أخرى',dayTitle:'المهام المستحقة {d}',noTasksDay:'لا توجد مهام مستحقة في هذا اليوم.',newOnDay:'مهمة جديدة في هذا اليوم',openDay:'فتح {d}',
   tlNow:'اليوم',tlTasks:'المهمة',tlProjects:'المشروع',g_ess:'الأساسيات',g_sched:'المواعيد',g_det:'التفاصيل',optional:'اختياري',reqd:'مطلوب',e_title:'اكتب ما المطلوب إنجازه.',e_owner:'اختر من سينفّذها.',e_due:'اختر تاريخ الاستحقاق.',ownerNote:'أول شخص تختاره هو المسؤول.',
   attHintLive:'صور أو PDF أو ملفات Office حتى 5 ميغابايت لكل ملف. تُحفظ في مجلد خاص على Google Drive، ولا يفتحها إلا من يرى هذه المهمة.'}};
+/* Task rules (Khaled, 14 Nov 2026) */
+Object.assign(T.en,{roWhy:'Why can\'t I change this?',roEd:'Only {p} (who created this task) or the department head can change the details.',roHead:'Only the head of {d} can change the details.',
+  roWork:'You can tick items, mark it complete, move it, attach files, redirect it, add a supervisor and comment.',roSee:'You can comment and follow it.',noneV:'None',notDone:'Not complete',
+  redirect:'Redirect',redirTitle:'Redirect to someone in your team',redirHint:'They take your place on this task. The task creator is told.',noTeam:'Nobody in your team can take it on this board.',
+  l_redir:'redirected this task from {a} to {b}',supervisor:'Supervisor',pickSup:'Choose a supervisor',supHint:'The supervisor sees the task, gets its alerts and can comment.',
+  l_sup:'made {a} the supervisor',l_supx:'removed the supervisor',askArch:'Ask to archive',arqWhyPh:'Why? (optional)',arqSend:'Send request',arqBy:'Archive requested by {p}',
+  arqTag:'Archive requested',arqAccept:'Accept and archive',arqDecline:'Decline',arqWithdraw:'Withdraw request',arqSent:'Request sent to the task creator.',arqHint:'The task creator decides.',
+  l_arq:'asked to archive this task',l_arqok:'accepted the archive request',l_arqno:'declined the archive request',l_arqx:'withdrew the archive request',
+  n_redir:'{p} redirected a task to you',n_redirc:'{p} redirected your task to {x}',n_sup:'{p} made you the supervisor of a task',n_archreq:'{p} asked to archive your task',
+  n_archno:'{p} did not agree to archive the task',n_archok:'{p} archived the task you asked about',undo:'Undo',archUndo:'Task archived.',isArch:'This task is archived.',
+  myArch:'Archived tasks you created',myArqs:'Waiting for your OK to archive',supervising:'Tasks you supervise',redirOk:'Redirected to {p}.'});
+Object.assign(T.ar,{roWhy:'لماذا لا يمكنني تغيير هذا؟',roEd:'فقط {p} (منشئ هذه المهمة) أو رئيس القسم يمكنه تغيير التفاصيل.',roHead:'فقط رئيس قسم {d} يمكنه تغيير التفاصيل.',
+  roWork:'يمكنك وضع علامة على البنود، وإكمال المهمة، ونقلها، وإرفاق الملفات، وتحويلها، وإضافة مشرف، والتعليق.',roSee:'يمكنك التعليق ومتابعة المهمة.',noneV:'لا يوجد',notDone:'غير مكتملة',
+  redirect:'تحويل',redirTitle:'تحويل إلى شخص من فريقك',redirHint:'يحل مكانك في هذه المهمة، ويُبلَّغ منشئ المهمة.',noTeam:'لا يوجد أحد من فريقك يمكنه استلامها في هذه اللوحة.',
+  l_redir:'حوّل هذه المهمة من {a} إلى {b}',supervisor:'المشرف',pickSup:'اختر مشرفاً',supHint:'يرى المشرف المهمة، وتصله تنبيهاتها، ويمكنه التعليق.',
+  l_sup:'جعل {a} مشرفاً',l_supx:'أزال المشرف',askArch:'طلب الأرشفة',arqWhyPh:'السبب (اختياري)',arqSend:'إرسال الطلب',arqBy:'طلب {p} أرشفة هذه المهمة',
+  arqTag:'طُلبت الأرشفة',arqAccept:'قبول وأرشفة',arqDecline:'رفض',arqWithdraw:'سحب الطلب',arqSent:'أُرسل الطلب إلى منشئ المهمة.',arqHint:'منشئ المهمة يقرر.',
+  l_arq:'طلب أرشفة هذه المهمة',l_arqok:'قبل طلب الأرشفة',l_arqno:'رفض طلب الأرشفة',l_arqx:'سحب طلب الأرشفة',
+  n_redir:'حوّل إليك {p} مهمة',n_redirc:'حوّل {p} مهمتك إلى {x}',n_sup:'جعلك {p} مشرفاً على مهمة',n_archreq:'طلب {p} أرشفة مهمتك',
+  n_archno:'لم يوافق {p} على أرشفة المهمة',n_archok:'أرشف {p} المهمة التي طلبت أرشفتها',undo:'تراجع',archUndo:'تمت أرشفة المهمة.',isArch:'هذه المهمة مؤرشفة.',
+  myArch:'مهام مؤرشفة أنشأتها',myArqs:'بانتظار موافقتك على الأرشفة',supervising:'مهام تشرف عليها',redirOk:'تم التحويل إلى {p}.'});
 let lang=(()=>{try{return localStorage.getItem('fb-lang')==='ar'?'ar':'en'}catch(e){return 'en'}})();
 const t=(k,v)=>{let s=(T[lang][k]??T.en[k]??k);if(v)Object.keys(v).forEach(x=>{s=s.split('{'+x+'}').join(v[x])});return s};
 
@@ -1058,7 +1099,7 @@ const lname=l=>l?(l.name||T[lang]['lb_'+l.id]||T.en['lb_'+l.id]||''):'';
 const PALETTE=['#4f8a3c','#9a6b3f','#3e6aa1','#7a5aa6','#b8432f','#2f8a85','#a8732c','#5c6680','#b05a7a','#6b655c'];
 const day=864e5,today=()=>{const d=new Date();d.setHours(0,0,0,0);return d.getTime()};
 const DONE_RX=/^(done|completed?|finished|مكتمل|منجز|تم)/i;
-const SYS={todo:['To do','للعمل'],doing:['In progress','قيد التنفيذ'],done:['Done','منجز'],week:['This week','هذا الأسبوع'],now:['Doing','نعمل عليه'],wait:['Waiting on others','بانتظار الآخرين'],
+const SYS={needinfo:['Needs info','بحاجة لمعلومات'],todo:['To do','للعمل'],doing:['In progress','قيد التنفيذ'],done:['Done','منجز'],week:['This week','هذا الأسبوع'],now:['Doing','نعمل عليه'],wait:['Waiting on others','بانتظار الآخرين'],
   waiting:['Waiting','بالانتظار'],newreq:['New requests','طلبات جديدة'],acc:['Accepted','مقبولة'],reported:['Reported','تم الإبلاغ'],sched:['Scheduled','مجدولة'],inprog:['In progress','قيد التنفيذ'],fixed:['Fixed','تم الإصلاح']};
 const sysKey=name=>Object.keys(SYS).find(k=>SYS[k][0]===name);
 const LN=l=>!l?'':l.sys&&SYS[l.sys]?SYS[l.sys][lang==='ar'?1:0]:l.name;
@@ -1189,7 +1230,9 @@ const myDept=()=>meP().ceo?'ceo':(V.nt&&V.nt.from&&inD(meP(),V.nt.from)?V.nt.fro
 function reqBoard(dep,create,X){X=X||D;let b=Object.values(X.boards).find(x=>x.dept===dep&&x.kind==='requests');
   if(!b&&create){b={id:uid('b'),dept:dep,name:'',kind:'requests',members:[],status:null,lists:[]};['newreq','acc','done'].forEach(k=>{const l={id:uid('l'),name:SYS[k][0],sys:k,cards:[],col:false};X.lists[l.id]=l;b.lists.push(l.id)});X.boards[b.id]=b;X.order.unshift(b.id)}
   return b}
-const bname=b=>b.kind==='requests'?t('reqBoard',{d:deptName(b.dept)}):b.name;
+const bname=b=>b.kind==='requests'?t('reqBoard',{d:deptName(b.dept)}):b.procReq&&b.name==='Purchase requests'?t('procBoard'):b.name;
+/* a card opened from a purchase request (procurement.forka.com): its link back, only to the Procurement app */
+const procLink=c=>c&&c.proc&&/^https:\/\/procurement\.forka\.com\/[^\s"'<>]*$/.test(String(c.proc.url||''))?c.proc:null;
 const allCards=()=>Object.values(D.boards).flatMap(b=>cardsOf(b).map(c=>({c,b})));
 
 /* ---------- helpers ---------- */
@@ -1225,7 +1268,7 @@ const blockingOf=c=>Object.values(D.cards).filter(x=>!x.archived&&(x.waits||[]).
 function waitsOn(a,b,seen){seen=seen||{};if(!a||seen[a.id])return false;seen[a.id]=1;return (a.waits||[]).some(id=>id===b.id||waitsOn(D.cards[id],b,seen))}
 function canFinish(c){const w=openWaits(c);if(w.length){flash(t('waitFirst',{x:w[0].title}));return false}return true}
 function afterDone(c,quiet){if(!quiet){if(c.requester)notify(c.requester,'done',c.id);
-  (c.follow||[]).filter(f=>f!==c.requester&&!c.members.includes(f)).forEach(f=>notify(f,'fdone',c.id))}
+  [...new Set((c.follow||[]).concat(c.sup?[c.sup]:[]))].filter(f=>f!==c.requester&&!c.members.includes(f)).forEach(f=>notify(f,'fdone',c.id))}
   blockingOf(c).forEach(w=>{if(!openWaits(w).length)w.members.forEach(m=>notify(m,'unblocked',w.id,{x:c.title}))})}
 const apS=c=>(c.appr&&c.appr.s)||'pending';
 const canDecide=c=>isCEO()||c.members.includes(ME());
@@ -1234,6 +1277,27 @@ const numFmt=v=>isNaN(+v)?v:Number(v).toLocaleString('en-GB');
 function fieldChips(c,b){return ((b&&b.fields)||[]).map(f=>{const v=(c.f||{})[f.id];if(v==null||v==='')return '';
   if(f.type==='select'){const o=(f.opts||[]).find(o=>o.id===v);return o?`<span class="fch"><i style="background:${o.color}"></i>${esc(o.name)}</span>`:''}
   return `<span class="fch">${esc(f.name)}: <b dir="auto">${esc(f.type==='number'?numFmt(v):v)}</b></span>`}).join('')}
+
+/* ---------- task rules (Khaled, 14 Nov 2026) ----------
+   The task creator, the head(s) of the board's department and the CEO change the details, archive and delete.
+   People the task is given to do the work, redirect it to someone in their team, add a supervisor and ask to archive.
+   Everyone else who sees it: comment and follow. The servers (Boards.gs, platform) enforce the same rules.
+   Cards from before have no creator: the first history entry ("added", "sent this request") counts, else the head(s). */
+const cardBoard=c=>{const l=listOf(c.id);return l?boardOfList(l.id):null};
+const logCreator=c=>{const f=(c.log||[]).slice().sort((x,y)=>(x.at||0)-(y.at||0))[0];return f&&(f.k==='l_added'||f.k==='l_req')&&f.by?f.by:''};
+function creatorsOf(c){const n=c.by||logCreator(c);if(n)return [n];const b=cardBoard(c);return b?PEOPLE.filter(p=>isHd(p,b.dept)).map(p=>p.id):[]}
+function cap(c){const b=cardBoard(c),ed=isCEO()||creatorsOf(c).includes(ME())||(!!b&&headOf(b.dept)),as=(c.members||[]).includes(ME());
+  return {ed,as,work:ed||as,redir:!ed&&as,sup:ed||as,askArch:!ed&&as}}
+const sameTeam=p=>isCEO()||dlist(meP()).some(d=>inD(person(p),d));
+/* People I may hand the task to (redirect) or make supervisor: on the board's member pool and in one of my departments. */
+function teamPool(c){const b=cardBoard(c);if(!b)return [];
+  return [...new Set(boardPeople(b).concat(c.members,PEOPLE.filter(x=>inD(x,b.dept)).map(x=>x.id)))].filter(p=>p!==ME()&&!person(p).invited&&!person(p).ceo&&sameTeam(p))}
+function edNote(c){const b=cardBoard(c),n=c.by||logCreator(c);return n?t('roEd',{p:pname(n)}):t('roHead',{d:b?deptName(b.dept):''})}
+function doRedirect(c,to){const from=ME(),wasOwner=own(c)===from;c.members=[...new Set(c.members.map(m=>m===from?to:m))];
+  if(wasOwner||!c.members.includes(c.owner))c.owner=to;logTo(c,{k:'l_redir',a:from,b:to});
+  notify(to,'redir',c.id);[...new Set(creatorsOf(c).concat(c.sup?[c.sup]:[]))].filter(p=>p!==to).forEach(p=>notify(p,'redirc',c.id,{w:to}))}
+function archiveCard(c,k){c.archived=true;c.archivedAt=Date.now();logTo(c,{k:k||'l_arch'});V.card=null;save();flashUndo(t('archUndo'),c.id)}
+function restoreCard(c){c.archived=false;delete c.archivedAt;delete c.arq;logTo(c,{k:'l_restore'});save()}
 
 /* ---------- render ---------- */
 function render(){
@@ -1263,7 +1327,7 @@ function render(){
     ${V.prof?profHTML():''}
     ${V.sp?spaceHTML():''}
     ${V.pop?popHTML():''}
-    ${V.toast?`<div class="toast" role="status">${esc(V.toast)}</div>`:''}
+    ${V.toast?`<div class="toast" role="status">${esc(V.toast.m||V.toast)}${V.toast.undo?`<button class="tundo" data-a="undo" data-v="${V.toast.undo}">${t('undo')}</button>`:''}</div>`:''}
     ${ASK?`<div class="ov" style="z-index:60;align-items:center"><div class="md" role="alertdialog" aria-modal="true" style="max-width:400px;padding:22px"><p style="margin:0 0 18px;font-size:15px;line-height:1.45">${esc(ASK.msg)}</p><div class="row" style="justify-content:flex-end"><button class="btn sec" data-a="ask-no">${t('cancel')}</button><button class="btn" style="background:#a33a2c" data-a="ask-yes">${t('yes')}</button></div></div></div>`:''}
   </div>`;
   const c2=document.querySelector('.canvas');if(c2)c2.scrollLeft=sx;
@@ -1380,7 +1444,7 @@ function mineHTML(){const tab=V.mtab||'list',grp=V.mgrp||'sec',items=myItems(),M
       <td><b dir="auto">${esc(c.title)}</b><div class="sm">${esc(deptName(b.dept))}</div></td>
       <td>${c.done?`<span class="st on"><i></i>${t('doneTag')}</span>`:`<span class="st none">${esc(LN(listOf(c.id)))}</span>`}</td>
       <td class="sm">${c.members.length?c.members.map(m=>esc(pname(m))).join(', '):''}</td>
-      <td class="num">${c.due?`<span class="due ${dueCls(c)}" style="display:inline-flex;gap:4px;align-items:center">${ic('clock')}${fmtDay(c.due)}</span>`:''}</td></tr>`).join('')}</table></div>`:'')}
+      <td class="num">${c.due?`<span class="due ${dueCls(c)}" style="display:inline-flex;gap:4px;align-items:center">${ic('clock')}${fmtDay(c.due)}</span>`:''}</td></tr>`).join('')}</table></div>`:'')+myRulesHTML()}
   else if(tab==='board'){
     body=`<div class="mboard"><div class="canvas" id="canvas">${M.secs.map(s=>{const its=items.filter(x=>secOf(x)===s.id);
       return `<div class="list" data-id="${s.id}"><div class="lhead nodrag"><div class="ltitle" dir="auto">${esc(secName(s))}</div><span class="lcount">${its.length}</span></div>
@@ -1392,6 +1456,15 @@ function mineHTML(){const tab=V.mtab||'list',grp=V.mgrp||'sec',items=myItems(),M
       <td><div class="att" style="border:0;padding:0;background:none">${/^image\//.test(a.type)?`<img class="th" data-att="${a.id}" alt="">`:`<span class="th">${esc((a.name.split('.').pop()||'').toUpperCase().slice(0,4))}</span>`}<div class="nm" dir="auto">${esc(a.name)}<small>${Math.max(1,Math.round(a.size/1024))} KB · ${esc(pname(a.by))} · ${ago(a.at)}</small></div></div></td>
       <td class="sm"><b dir="auto" style="color:var(--text)">${esc(c.title)}</b><div>${esc(bname(b))}</div></td><td style="text-align:end"><button class="btn sec" data-a="attopen" data-v="${a.id}">${t('openF')}</button></td></tr>`).join('')}</table></div>`:`<div class="empty-p">${t('noFiles')}</div>`}
   return `<div class="page"><h1>${t('mine')}</h1><p class="lead">${t('mineLead')}</p>${tabs}${body}</div>`}
+
+/* Task rules: archive requests waiting for me, tasks I supervise, and my archived tasks (restore them here even when I am not on the board) */
+function myRulesHTML(){const me=ME(),mineC=c=>creatorsOf(c).includes(me);
+  const live=Object.values(D.cards).filter(c=>{const l=listOf(c.id);return l&&!l.archived&&cardBoard(c)});
+  const arqs=live.filter(c=>c.arq&&!c.archived&&mineC(c)),sup=live.filter(c=>c.sup===me&&!c.done&&!c.archived),arch=live.filter(c=>c.archived&&mineC(c)).sort((a,b)=>(b.archivedAt||0)-(a.archivedAt||0));
+  const row=(c,extra)=>`<tr class="click" data-a="open" data-id="${c.id}"><td><b dir="auto">${esc(c.title)}</b><div class="sm">${esc(bname(cardBoard(c)))}</div></td><td class="sm">${extra||''}</td></tr>`;
+  return (arqs.length?`<div class="mine-g">${ic('archive')}${t('myArqs')} <span class="c">${arqs.length}</span></div><div class="tw"><table class="tbl" id="myarqs">${arqs.map(c=>row(c,esc(t('arqBy',{p:pname(c.arq.by)}))+' · '+ago(c.arq.at))).join('')}</table></div>`:'')+
+    (sup.length?`<div class="mine-g">${ic('eye')}${t('supervising')} <span class="c">${sup.length}</span></div><div class="tw"><table class="tbl" id="mysup">${sup.map(c=>row(c,esc(c.members.map(pname).join(', ')))).join('')}</table></div>`:'')+
+    (arch.length?`<div class="mine-g">${ic('archive')}${t('myArch')} <span class="c">${arch.length}</span></div><div class="tw"><table class="tbl" id="myarch">${arch.map(c=>row(c,`${c.archivedAt?ago(c.archivedAt):''} <button class="btn sec" style="height:28px;padding:0 9px;font-size:12.5px;margin-inline-start:8px" data-a="crestore" data-v="${c.id}">${t('restore')}</button>`)).join('')}</table></div>`:'')}
 
 /* Projects: every board you can see, with search, filters and sorting */
 function lastMod(b){let m=(b.status&&b.status.at)||0;b.lists.forEach(l=>{const L=D.lists[l];if(L)L.cards.forEach(id=>{const c=D.cards[id];if(c)c.log.forEach(x=>{if(x.at>m)m=x.at})})});return m}
@@ -1850,7 +1923,7 @@ function cardHTML(c){const b=B();
   const du=c.due?`<span class="due ${dc}">${ic('clock')}<bdi>${fmtRange(c)}</bdi></span>`:'';
   const fr=c.fromDept&&b&&c.fromDept!==b.dept?`<span class="from">${ic('inbox')}${esc(t('fromD',{d:deptName(c.fromDept)}))}</span>`:'';
   const o=own(c),who=c.members.length?[o].concat(c.members.filter(m=>m!==o)):[];
-  const badges=(c.type==='approval'?apChip(c):'')+(wt?`<span class="wt">${ic('link')}${t('waitTag')}</span>`:'')+fr+[c.repeat?`<span title="${t('repeat')}">${ic('repeat')}${t('r_'+c.repeat)}</span>`:'',
+  const badges=(c.arq&&!c.done?`<span class="arqt">${ic('archive')}${t('arqTag')}</span>`:'')+(c.type==='approval'?apChip(c):'')+(wt?`<span class="wt">${ic('link')}${t('waitTag')}</span>`:'')+fr+[c.repeat?`<span title="${t('repeat')}">${ic('repeat')}${t('r_'+c.repeat)}</span>`:'',
     c.desc?`<span title="${t('desc')}">${ic('desc')}</span>`:'',cm?`<span>${ic('chat')}${cm}</span>`:'',n?`<span class="ckc ${d===n?'full':''}">${ic('check')}${d}/${n}</span>`:'',
     sn?`<span class="ckc ${sd===sn?'full':''}" title="${t('subtasks')}">${ic('subs')}${sd}/${sn}</span>`:'',(c.atts||[]).length?`<span title="${t('attach')}">${ic('clip')}${c.atts.length}</span>`:''].join('');
   const fc=fieldChips(c,b);
@@ -1864,89 +1937,108 @@ function cardHTML(c){const b=B();
   </div>`}
 function modalHTML(c){
   const l=listOf(c.id),b=boardOfList(l.id),admin=canAdmin(b),n=c.check.length,d=c.check.filter(x=>x.d).length,pc=n?Math.round(d/n*100):0;
-  const ro=!canSee(b)&&!c.members.includes(ME());
+  /* Who may change what (Khaled, 14 Nov 2026): details only the creator, the department head and the CEO (ed); the work also whoever it is given to (wk). */
+  const K=cap(c),ed=K.ed,wk=K.work;
   const pool=[...new Set(boardPeople(b).concat(c.members,PEOPLE.filter(x=>inD(x,b.dept)).map(x=>x.id)))];
-  const moveTo=admin?D.order.map(x=>D.boards[x]).filter(x=>x&&canAdmin(x)):[];
+  const moveTo=admin&&ed?D.order.map(x=>D.boards[x]).filter(x=>x&&canAdmin(x)):[];
   const copyTo=boards();
   const log=c.log.slice().sort((x,y)=>y.at-x.at);
   const subs=c.subs||[],sd=subs.filter(x=>x.done).length,sp=subs.length?Math.round(sd/subs.length*100):0;
   const inL=x=>x&&listOf(x.id),waits=(c.waits||[]).map(id=>D.cards[id]).filter(inL),blk=blockingOf(c).filter(inL),fol=c.follow||[];
-  const cand=boards().map(x=>{const cs=cardsOf(x).filter(y=>y.id!==c.id&&!y.done&&!(c.waits||[]).includes(y.id)&&!waitsOn(y,c));
-    return cs.length?`<optgroup label="${esc(bname(x))}">${cs.map(y=>`<option value="${y.id}">${esc(y.title.slice(0,70))}</option>`).join('')}</optgroup>`:''}).join('');
+  const cand=ed?boards().map(x=>{const cs=cardsOf(x).filter(y=>y.id!==c.id&&!y.done&&!(c.waits||[]).includes(y.id)&&!waitsOn(y,c));
+    return cs.length?`<optgroup label="${esc(bname(x))}">${cs.map(y=>`<option value="${y.id}">${esc(y.title.slice(0,70))}</option>`).join('')}</optgroup>`:''}).join(''):'';
   const SL=(k,top)=>`<div class="sl" style="font-size:12px;font-weight:600;color:var(--muted);margin:${top?4:14}px 0 6px">${t(k)}</div>`;
+  const RO=v=>`<div class="rov" dir="auto">${v||`<span class="rom">${t('noneV')}</span>`}</div>`;
+  const tickRO=on=>`<span class="ckro ${on?'on':''}" aria-label="${on?t('doneTag'):t('notDone')}">${on?ic('tick'):ic('check')}</span>`;
   const wrow=w=>`<div class="wrow"><span class="${w.done?'okd':'opn'}">${w.done?ic('tick'):ic('clock')}</span><button class="lk" data-a="open" data-id="${w.id}" dir="auto">${esc(w.title)}</button><small>${esc(bname(boardOfList(listOf(w.id).id)))}</small>`;
+  const supC=teamPool(c).filter(p=>!c.members.includes(p)&&p!==c.sup);
+  const lbOn=labelsOf(b).filter(x=>c.labels.includes(x.id));
   return `<div class="ov" data-a="ov"><div class="md" role="dialog" aria-modal="true" aria-label="${esc(c.title)}">
     <button class="ib x" data-a="mclose" aria-label="${t('close')}">${ic('x')}</button>
-    <div class="mhead">${ic(c.type==='milestone'?'diamond':c.type==='approval'?'stamp':'card')}<textarea class="mt" dir="auto" id="mt" rows="1" maxlength="300" ${ro?'readonly':''}>${esc(c.title)}</textarea></div>
-    <div class="msub">${esc(bname(b))} · ${t('inList')} <b>${esc(LN(l))}</b>${c.requester?` · <span class="from">${esc(t('reqBy',{p:pname(c.requester),d:deptName(c.fromDept)}))}</span>`:''}</div>
-    ${ro?`<div class="reqnote" style="margin:6px 28px 0">${ic('inbox')}${t('roNote')}</div>`:''}
-    <div class="mbody"><div><fieldset class="ro" ${ro?'disabled':''}>
+    <div class="mhead">${ic(c.type==='milestone'?'diamond':c.type==='approval'?'stamp':'card')}${ed?`<textarea class="mt" dir="auto" id="mt" rows="1" maxlength="300">${esc(c.title)}</textarea>`:`<h2 class="mt mtro" dir="auto" id="mtro">${esc(c.title)}</h2><button type="button" class="lockb" id="lockb" aria-expanded="false" aria-controls="ronote" title="${esc(t('roWhy'))}" aria-label="${esc(t('roWhy'))}" onclick="const n=document.getElementById('ronote');n.hidden=!n.hidden;this.setAttribute('aria-expanded',String(!n.hidden))">${ic('lock')}</button>`}</div>
+    <div class="msub">${esc(bname(b))} · ${t('inList')} <b>${esc(LN(l))}</b>${c.requester?` · <span class="from">${esc(t('reqBy',{p:pname(c.requester),d:deptName(c.fromDept)}))}</span>`:''}${procLink(c)?` · <a class="procl" id="procl" href="${esc(procLink(c).url)}" title="${esc(t('fromProcH'))}">${ic('link')}<bdi>${esc(t('fromProc',{n:procLink(c).no||''}))}</bdi></a>`:''}</div>
+    ${c.archived?`<div class="arqb" id="archb">${ic('archive')}<span>${t('isArch')}</span>${ed?`<button class="btn" data-a="crestore" data-v="${c.id}">${t('restore')}</button>`:''}</div>`:''}
+    ${c.arq&&!c.archived?`<div class="arqb" id="arqb" role="status">${ic('archive')}<span><b>${esc(t('arqBy',{p:pname(c.arq.by)}))}</b> · ${ago(c.arq.at)}${c.arq.why?`<span class="arqw" dir="auto">"${esc(c.arq.why)}"</span>`:''}</span>
+      ${ed?`<button class="btn" data-a="arqok">${t('arqAccept')}</button><button class="btn sec" data-a="arqno">${t('arqDecline')}</button>`:c.arq.by===ME()?`<button class="btn sec" data-a="arqwd">${t('arqWithdraw')}</button>`:''}</div>`:''}
+    ${ed?'':`<div class="reqnote ronote" id="ronote" hidden>${ic('lock')}<span>${esc(edNote(c))} ${t(wk?'roWork':'roSee')}</span></div>`}
+    <div class="mbody"><div><fieldset class="ro">
       ${c.type==='approval'?`<div class="apbox ${apS(c)}"><div>${apChip(c)}${c.appr&&c.appr.by?` <span class="sm">${esc(t('apBy',{s:t('ap_'+apS(c)),p:pname(c.appr.by)}))} · ${ago(c.appr.at)}</span>`:''}</div>
         ${canDecide(c)?`<div class="row"><button class="btn okb" data-a="appr" data-v="approved">${ic('tick')}${t('approve')}</button><button class="btn sec" data-a="appr" data-v="changes">${t('reqChanges')}</button><button class="btn dan" data-a="appr" data-v="rejected">${t('reject')}</button></div>`:`<div class="lock" style="padding:6px 0 0">${t('apOnly')}</div>`}</div>`:''}
       <div class="sec kv">
-        <div><label>${t(c.type==='approval'?'approvers':'members')}</label><div class="lchips">${pool.map(p=>`<button class="pchip ${c.members.includes(p)?'on':''}" data-a="cm" data-v="${p}">${av(p)}${esc(pname(p))}</button>`).join('')}</div></div>
+        <div><label>${t(c.type==='approval'?'approvers':'members')}</label><div class="lchips">${ed?pool.map(p=>`<button class="pchip ${c.members.includes(p)?'on':''}" data-a="cm" data-v="${p}">${av(p)}${esc(pname(p))}</button>`).join('')
+          :c.members.length?c.members.map(p=>`<span class="pchip on">${av(p)}${esc(pname(p))}</span>`).join(''):RO('')}</div>
+          ${K.redir?`<button class="btn sec redirb" data-a="redir">${ic('redir')}${t('redirect')}</button>`:''}</div>
       </div>
       <div class="sec kv">
-        ${c.members.length?`<div><label>${t('owner')}</label><select class="fld" id="cown" title="${t('ownerHint')}">${c.members.map(m=>`<option value="${m}" ${own(c)===m?'selected':''}>${esc(pname(m))}</option>`).join('')}</select></div>`:''}
-        <div><label>${t('startD')}</label><input class="fld ${V.dateErr?'miss':''}" type="date" id="cstart" value="${V.dateErr?V.dateErr.s:c.start?ymd(c.start):''}"></div>
-        <div><label>${t('due')}</label><div class="row" style="margin:0"><input class="fld" type="date" id="cdue" value="${V.dateErr?V.dateErr.d:c.due?ymd(c.due):''}">
-          <button class="donebx ${c.done?'on':''}" data-a="cdone">${ic('tick')}${t('complete')}</button></div></div>
+        ${c.members.length?`<div><label>${t('owner')}</label>${ed?`<select class="fld" id="cown" title="${t('ownerHint')}">${c.members.map(m=>`<option value="${m}" ${own(c)===m?'selected':''}>${esc(pname(m))}</option>`).join('')}</select>`:RO(esc(pname(own(c))))}</div>`:''}
+        <div><label>${t('startD')}</label>${ed?`<input class="fld ${V.dateErr?'miss':''}" type="date" id="cstart" value="${V.dateErr?V.dateErr.s:c.start?ymd(c.start):''}">`:RO(c.start?fmtDay(c.start):'')}</div>
+        <div><label>${t('due')}</label><div class="row" style="margin:0">${ed?`<input class="fld" type="date" id="cdue" value="${V.dateErr?V.dateErr.d:c.due?ymd(c.due):''}">`:RO(c.due?`<bdi>${fmtDay(c.due)}</bdi>`:'')}
+          ${wk?`<button class="donebx ${c.done?'on':''}" data-a="cdone">${ic('tick')}${t('complete')}</button>`:`<span class="donebx ${c.done?'on':''}">${ic('tick')}${t(c.done?'doneTag':'notDone')}</span>`}</div></div>
       </div>
       ${V.dateErr?`<div class="errbox">${t('startAfter')}</div>`:''}
-      <div class="sec"><div class="sh">${ic('tag')}${t('labels')}</div><div class="lchips">${labelsOf(b).map(x=>`<button class="lchip ${c.labels.includes(x.id)?'on':''}" style="background:${x.color}" data-a="cl" data-v="${x.id}">${c.labels.includes(x.id)?ic('tick'):''}${esc(lname(x))}</button>`).join('')}</div></div>
-      ${(b.fields||[]).length?`<div class="sec"><div class="sh">${ic('grid')}${t('fields')}</div><div class="cfg">${b.fields.map(f=>{const v=(c.f||{})[f.id]??'';return `<label><span dir="auto">${esc(f.name)}</span>${f.type==='select'
+      <div class="sec"><div class="sh">${ic('tag')}${t('labels')}</div><div class="lchips">${ed?labelsOf(b).map(x=>`<button class="lchip ${c.labels.includes(x.id)?'on':''}" style="background:${x.color}" data-a="cl" data-v="${x.id}">${c.labels.includes(x.id)?ic('tick'):''}${esc(lname(x))}</button>`).join('')
+        :lbOn.length?lbOn.map(x=>`<span class="lchip on" style="background:${x.color}">${esc(lname(x))}</span>`).join(''):RO('')}</div></div>
+      ${(b.fields||[]).length?`<div class="sec"><div class="sh">${ic('grid')}${t('fields')}</div><div class="cfg">${b.fields.map(f=>{const v=(c.f||{})[f.id]??'';return `<label><span dir="auto">${esc(f.name)}</span>${!ed
+        ?RO(f.type==='select'?esc(((f.opts||[]).find(o=>o.id===v)||{}).name||''):esc(f.type==='number'&&v!==''?numFmt(v):v))
+        :f.type==='select'
         ?`<select class="fld cf" data-f="${f.id}"><option value="">-</option>${(f.opts||[]).map(o=>`<option value="${o.id}" ${v===o.id?'selected':''}>${esc(o.name)}</option>`).join('')}</select>`
         :`<input class="fld cf" data-f="${f.id}" type="${f.type==='number'?'number':'text'}" value="${esc(v)}" dir="auto" maxlength="120">`}</label>`}).join('')}</div></div>`:''}
-      <div class="sec"><div class="sh">${ic('desc')}${t('desc')}</div><textarea class="desc" dir="auto" id="cdesc" placeholder="${t('descPh')}">${esc(c.desc)}</textarea></div>
+      <div class="sec"><div class="sh">${ic('desc')}${t('desc')}</div>${ed?`<textarea class="desc" dir="auto" id="cdesc" placeholder="${t('descPh')}">${esc(c.desc)}</textarea>`:`<div class="desc descro" dir="auto" id="cdescro">${c.desc?esc(c.desc):`<span class="rom">${t('noneV')}</span>`}</div>`}</div>
       <div class="sec"><div class="sh">${ic('subs')}${t('subtasks')}</div>
         ${subs.length?`<div class="prog"><span>${sd}/${subs.length}</span><div class="bar"><i class="${sp===100?'full':''}" style="width:${sp}%"></i></div></div>`:''}
-        ${subs.map((s,i)=>`<div class="subr ${s.done?'done':''}"><input type="checkbox" data-a="subck" data-i="${i}" ${s.done?'checked':''} aria-label="${esc(s.t)}"><span dir="auto">${esc(s.t)}</span>
-          <select class="fld subw" data-i="${i}" aria-label="${t('assignTo')}"><option value="">${t('nobody')}</option>${pool.map(p=>`<option value="${p}" ${s.who===p?'selected':''}>${esc(pname(p))}</option>`).join('')}</select>
+        ${subs.map((s,i)=>`<div class="subr ${s.done?'done':''}">${wk||s.who===ME()?`<input type="checkbox" data-a="subck" data-i="${i}" ${s.done?'checked':''} aria-label="${esc(s.t)}">`:tickRO(s.done)}<span dir="auto">${esc(s.t)}</span>
+          ${ed?`<select class="fld subw" data-i="${i}" aria-label="${t('assignTo')}"><option value="">${t('nobody')}</option>${pool.map(p=>`<option value="${p}" ${s.who===p?'selected':''}>${esc(pname(p))}</option>`).join('')}</select>
           <input class="fld subd ${s.due&&!s.done&&s.due<today()?'late':''}" type="date" data-i="${i}" value="${s.due?ymd(s.due):''}" aria-label="${t('due')}">
-          <button class="ib" data-a="subdel" data-i="${i}" aria-label="${t('removeF')}">${ic('x')}</button></div>`).join('')}
-        <div class="row"><input class="fld" style="flex:1" dir="auto" id="subin" placeholder="${t('subPh')}" maxlength="200"><button class="btn sec" data-a="subadd">${t('add')}</button></div></div>
-      <div class="sec"><div class="sh">${ic('link')}${t('waitingOn')}</div><div class="lock" style="padding:0 0 6px">${t('waitHint')}</div>
-        ${waits.map(w=>wrow(w)+`<button class="ib" data-a="waitdel" data-v="${w.id}" aria-label="${t('removeF')}">${ic('x')}</button></div>`).join('')}
-        <div class="row"><select class="fld" style="flex:1;min-width:0" id="wadd" aria-label="${t('waitingOn')}"><option value="">${t('pickTask')}</option>${cand}</select><button class="btn sec" data-a="waitadd">${t('addWait')}</button></div>
+          <button class="ib" data-a="subdel" data-i="${i}" aria-label="${t('removeF')}">${ic('x')}</button>`:`<small class="rom">${esc(s.who?pname(s.who):t('nobody'))}${s.due?' · '+fmtDay(s.due):''}</small>`}</div>`).join('')}
+        ${ed?`<div class="row"><input class="fld" style="flex:1" dir="auto" id="subin" placeholder="${t('subPh')}" maxlength="200"><button class="btn sec" data-a="subadd">${t('add')}</button></div>`:subs.length?'':RO('')}</div>
+      <div class="sec"><div class="sh">${ic('link')}${t('waitingOn')}</div>${ed?`<div class="lock" style="padding:0 0 6px">${t('waitHint')}</div>`:''}
+        ${waits.map(w=>wrow(w)+(ed?`<button class="ib" data-a="waitdel" data-v="${w.id}" aria-label="${t('removeF')}">${ic('x')}</button>`:'')+'</div>').join('')}
+        ${ed?`<div class="row"><select class="fld" style="flex:1;min-width:0" id="wadd" aria-label="${t('waitingOn')}"><option value="">${t('pickTask')}</option>${cand}</select><button class="btn sec" data-a="waitadd">${t('addWait')}</button></div>`:waits.length?'':RO('')}
         ${blk.length?`<div class="lock" style="padding:12px 0 4px">${t('blocking')}</div>${blk.map(w=>wrow(w)+'</div>').join('')}`:''}</div>
-      <div class="sec"><div class="sh">${ic('clip')}${t('attach')}<span class="sp"></span><label class="btn sec upl">${ic('plus')}${t('addFile')}<input type="file" id="fileup" multiple accept="image/*,application/pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx"></label></div>
+      <div class="sec"><div class="sh">${ic('clip')}${t('attach')}<span class="sp"></span>${wk?`<label class="btn sec upl">${ic('plus')}${t('addFile')}<input type="file" id="fileup" multiple accept="image/*,application/pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx"></label>`:''}</div>
         <div class="atts">${(c.atts||[]).map(x=>`<div class="att">${/^image\//.test(x.type)?`<img class="th" data-att="${x.id}" alt="">`:`<span class="th">${esc((x.name.split('.').pop()||'').toUpperCase().slice(0,4))}</span>`}
           <div class="nm" dir="auto">${esc(x.name)}<small>${Math.max(1,Math.round(x.size/1024))} KB · ${esc(pname(x.by))} · ${ago(x.at)}</small></div>
           <button class="btn sec" data-a="attopen" data-v="${x.id}">${t('openF')}</button>
-          ${/^image\//.test(x.type)?`<button class="btn sec" data-a="attcover" data-v="${x.id}">${c.cover===x.id?t('noCover'):t('makeCover')}</button>`:''}
-          ${admin||x.by===ME()?`<button class="btn sec" data-a="attdel" data-v="${x.id}">${t('removeF')}</button>`:''}</div>`).join('')}</div>
-        <div class="lock" style="padding:6px 0 0">${t(LIVE?'attHintLive':'attHint')}</div></div>
+          ${wk&&/^image\//.test(x.type)?`<button class="btn sec" data-a="attcover" data-v="${x.id}">${c.cover===x.id?t('noCover'):t('makeCover')}</button>`:''}
+          ${ed||(wk&&x.by===ME())?`<button class="btn sec" data-a="attdel" data-v="${x.id}">${t('removeF')}</button>`:''}</div>`).join('')}</div>
+        ${wk?`<div class="lock" style="padding:6px 0 0">${t(LIVE?'attHintLive':'attHint')}</div>`:''}</div>
       <div class="sec"><div class="sh">${ic('check')}${t('checklist')}</div>
         ${n?`<div class="prog"><span>${pc}%</span><div class="bar"><i class="${pc===100?'full':''}" style="width:${pc}%"></i></div></div>`:''}
-        ${c.check.map((x,i)=>`<div class="cki ${x.d?'done':''}"><input type="checkbox" data-a="ck" data-i="${i}" ${x.d?'checked':''} aria-label="${esc(x.t)}"><span dir="auto">${esc(x.t)}</span><button class="ib" data-a="ckdel" data-i="${i}" aria-label="${t('del')}">${ic('x')}</button></div>`).join('')}
-        <div class="row"><input class="fld" style="flex:1" dir="auto" id="ckin" placeholder="${t('itemPh')}" maxlength="200"><button class="btn sec" data-a="ckadd">${t('add')}</button></div></div>
+        ${c.check.map((x,i)=>`<div class="cki ${x.d?'done':''}">${wk?`<input type="checkbox" data-a="ck" data-i="${i}" ${x.d?'checked':''} aria-label="${esc(x.t)}">`:tickRO(x.d)}<span dir="auto">${esc(x.t)}</span>${ed?`<button class="ib" data-a="ckdel" data-i="${i}" aria-label="${t('del')}">${ic('x')}</button>`:''}</div>`).join('')}
+        ${ed?`<div class="row"><input class="fld" style="flex:1" dir="auto" id="ckin" placeholder="${t('itemPh')}" maxlength="200"><button class="btn sec" data-a="ckadd">${t('add')}</button></div>`:n?'':RO('')}</div>
       </fieldset>
       <div class="sec"><div class="sh">${ic('activity')}${t('activity')}</div>
         <div class="act" style="margin-top:0">${av(ME())}<div class="tx"><textarea class="desc" dir="auto" id="cmt" style="min-height:44px" placeholder="${t('commentPh')} ${t('mentionHint')}"></textarea><div class="row" style="margin-top:6px"><button class="btn" data-a="cmt">${t('save')}</button></div></div></div>
-        ${log.map(x=>`<div class="act">${av(x.by)}<div class="tx"><b>${esc(pname(x.by))}</b> ${x.c?'':esc(t(x.k,{a:x.a||'',b:x.b||''}))}<div class="tm">${ago(x.at)}</div>${x.c?`<div class="bub" dir="auto">${withMentions(x.c)}</div>`:''}</div></div>`).join('')}
+        ${log.map(x=>{const nm=['l_redir','l_sup'].includes(x.k);return `<div class="act">${av(x.by)}<div class="tx"><b>${esc(pname(x.by))}</b> ${x.c?'':esc(t(x.k,{a:nm?pname(x.a):x.a||'',b:nm?pname(x.b):x.b||''}))}<div class="tm">${ago(x.at)}</div>${x.c?`<div class="bub" dir="auto">${withMentions(x.c)}</div>`:''}</div></div>`}).join('')}
       </div>
     </div>
-    <div class="side2"><fieldset class="ro" ${ro?'disabled':''}>
+    <div class="side2"><fieldset class="ro">
       ${SL('type',1)}
-      <select class="fld" style="width:100%" id="ctype">${['task','milestone','approval'].map(r=>`<option value="${r}" ${(c.type||'task')===r?'selected':''}>${t('ty_'+r)}</option>`).join('')}</select>
+      ${ed?`<select class="fld" style="width:100%" id="ctype">${['task','milestone','approval'].map(r=>`<option value="${r}" ${(c.type||'task')===r?'selected':''}>${t('ty_'+r)}</option>`).join('')}</select>`:RO(t('ty_'+(c.type||'task')))}
       ${SL('priority')}
-      <select class="fld" style="width:100%" id="cpri">${['low','normal','high','urgent'].map(r=>`<option value="${r}" ${(c.priority||'normal')===r?'selected':''}>${t('p_'+r)}</option>`).join('')}</select>
+      ${ed?`<select class="fld" style="width:100%" id="cpri">${['low','normal','high','urgent'].map(r=>`<option value="${r}" ${(c.priority||'normal')===r?'selected':''}>${t('p_'+r)}</option>`).join('')}</select>`:RO(t('p_'+(c.priority||'normal')))}
+      ${SL('supervisor')}
+      <div class="fols" id="csupv">${c.sup?`<span class="fol">${av(c.sup)}<span>${esc(pname(c.sup))}</span>${K.sup?`<button class="ib" data-a="supdel" aria-label="${t('removeF')}">${ic('x')}</button>`:''}</span>`:RO('')}</div>
+      ${K.sup&&supC.length?`<select class="fld" style="width:100%;margin-top:6px" id="csup" aria-label="${t('pickSup')}"><option value="">${t('pickSup')}</option>${supC.map(p=>`<option value="${p}">${esc(pname(p))}</option>`).join('')}</select>`:''}
+      ${K.sup?`<div class="lock" style="padding:6px 0 0">${t('supHint')}</div>`:''}
       ${SL('followers')}
-      <div class="fols">${fol.map(f=>`<span class="fol">${av(f)}<span>${esc(pname(f))}</span><button class="ib" data-a="fdel" data-v="${f}" aria-label="${t('removeF')}">${ic('x')}</button></span>`).join('')}</div>
+      <div class="fols">${fol.map(f=>`<span class="fol">${av(f)}<span>${esc(pname(f))}</span>${wk||f===ME()?`<button class="ib" data-a="fdel" data-v="${f}" aria-label="${t('removeF')}">${ic('x')}</button>`:''}</span>`).join('')}</div>
       <button class="btn sec" style="width:100%;display:flex;align-items:center;gap:8px;margin:6px 0" data-a="follow">${ic('eye')}${fol.includes(ME())?t('unfollow'):t('follow')}</button>
-      <select class="fld" style="width:100%" id="fadd" aria-label="${t('addFollower')}"><option value="">${t('addFollower')}</option>${PEOPLE.filter(p=>!fol.includes(p.id)&&!p.invited).map(p=>`<option value="${p.id}">${esc(pname(p.id))}</option>`).join('')}</select>
+      ${wk?`<select class="fld" style="width:100%" id="fadd" aria-label="${t('addFollower')}"><option value="">${t('addFollower')}</option>${PEOPLE.filter(p=>!fol.includes(p.id)&&!p.invited).map(p=>`<option value="${p.id}">${esc(pname(p.id))}</option>`).join('')}</select>`:''}
       <div class="lock" style="padding:6px 0 0">${t('followHint')}</div>
       ${SL('repeat')}
-      <select class="fld" style="width:100%" id="crep">${['','daily','weekly','monthly'].map(r=>`<option value="${r}" ${c.repeat===r?'selected':''}>${t('r_'+r)}</option>`).join('')}</select>
+      ${ed?`<select class="fld" style="width:100%" id="crep">${['','daily','weekly','monthly'].map(r=>`<option value="${r}" ${c.repeat===r?'selected':''}>${t('r_'+r)}</option>`).join('')}</select>`:RO(c.repeat?t('r_'+c.repeat):'')}
       ${SL('move')}
-      <select class="fld" style="width:100%" id="cmove">${b.lists.map(id=>`<option value="${id}" ${l&&l.id===id?'selected':''}>${esc(LN(D.lists[id]))}</option>`).join('')}</select>
+      ${wk&&!c.archived?`<select class="fld" style="width:100%" id="cmove">${b.lists.map(id=>`<option value="${id}" ${l&&l.id===id?'selected':''}>${esc(LN(D.lists[id]))}</option>`).join('')}</select>`:RO(esc(LN(l)))}
       ${SL('copyTo')}
       <div class="row" style="margin:0"><select class="fld" style="flex:1;min-width:0" id="ccopy">${copyTo.map(x=>`<option value="${x.id}" ${x.id===b.id?'selected':''}>${esc(bname(x))}</option>`).join('')}</select><button class="btn sec" data-a="ccopy">${ic('copy')}${t('copyBtn')}</button></div>
       ${moveTo.length>1?`${SL('moveTo')}
       <div class="row" style="margin:0"><select class="fld" style="flex:1;min-width:0" id="cboard">${moveTo.map(x=>`<option value="${x.id}" ${x.id===b.id?'selected':''}>${esc(bname(x))}</option>`).join('')}</select><button class="btn sec" data-a="cboardgo">${t('moveBtn')}</button></div>`:''}
       ${SL('actions')}
       <button class="btn sec" style="width:100%;display:flex;align-items:center;gap:8px;margin-bottom:6px" data-a="ctpl">${ic('copy')}${t('cardTpl')}</button>
-      <button class="btn dan" style="width:100%;display:flex;align-items:center;gap:8px" data-a="carch">${ic('archive')}${t('archiveCard')}</button>
+      ${c.archived?'':ed?`<button class="btn dan" style="width:100%;display:flex;align-items:center;gap:8px" data-a="carch">${ic('archive')}${t('archiveCard')}</button>`
+        :K.askArch&&!c.arq?(V.arqF===c.id?`<div class="arqf"><textarea id="arqwhy" dir="auto" maxlength="240" placeholder="${t('arqWhyPh')}"></textarea><div class="row" style="margin:0"><button class="btn" data-a="arqsend">${t('arqSend')}</button><button class="btn sec" data-a="arqx">${t('cancel')}</button></div><div class="lock" style="padding:6px 0 0">${t('arqHint')}</div></div>`
+          :`<button class="btn dan" style="width:100%;display:flex;align-items:center;gap:8px" data-a="arqask">${ic('archive')}${t('askArch')}</button>`):''}
     </fieldset></div></div>
   </div></div>`}
 /* New task: every card starts with the details. Task, who does it and the due date are required (red until filled).
@@ -2041,7 +2133,10 @@ function popHTML(){const p=V.pop,b=B();
   if(p.kind==='archive'){const ac=b.lists.flatMap(l=>D.lists[l]?D.lists[l].cards.map(id=>D.cards[id]).filter(c=>c&&c.archived&&!(D.lists[l].archived)):[]),al=b.lists.map(id=>D.lists[id]).filter(l=>l&&l.archived),adm=canAdmin(b);
     return `<div class="pop wide" id="pop" style="width:360px"><h4>${t('archived')}</h4>${!ac.length&&!al.length?`<div class="lock">${t('noArch')}</div>`:''}
       ${al.map(l=>`<div class="arch"><span dir="auto"><b>${esc(LN(l))}</b><small>${t('archiveList')} · ${l.cards.length} ${t('cards')}</small></span>${adm?`<button class="btn sec" data-a="lrestore" data-v="${l.id}">${t('restore')}</button><button class="btn dan" data-a="lgone" data-v="${l.id}">${t('delForever')}</button>`:''}</div>`).join('')}
-      ${ac.map(c=>`<div class="arch"><span dir="auto">${esc(c.title)}<small>${esc(LN(listOf(c.id)))} · ${c.archivedAt?ago(c.archivedAt):''}</small></span><button class="btn sec" data-a="crestore" data-v="${c.id}">${t('restore')}</button>${adm?`<button class="btn dan" data-a="cgone" data-v="${c.id}">${t('delForever')}</button>`:''}</div>`).join('')}</div>`}
+      ${ac.map(c=>`<div class="arch"><span dir="auto">${esc(c.title)}<small>${esc(LN(listOf(c.id)))} · ${c.archivedAt?ago(c.archivedAt):''}</small></span>${cap(c).ed?`<button class="btn sec" data-a="crestore" data-v="${c.id}">${t('restore')}</button><button class="btn dan" data-a="cgone" data-v="${c.id}">${t('delForever')}</button>`:''}</div>`).join('')}</div>`}
+  if(p.kind==='redir'){const c=D.cards[V.card];if(!c)return '';const L=teamPool(c).filter(x=>!c.members.includes(x));
+    return `<div class="pop wide" id="pop" role="dialog" aria-label="${t('redirTitle')}"><h4>${t('redirTitle')}</h4><div class="lock">${t('redirHint')}</div>
+      ${L.length?L.map(x=>`<button class="mrow" data-a="redirgo" data-v="${x}">${av(x)}<span><span>${esc(pname(x))}</span><div class="r">${esc(dnames(person(x)))}</div></span></button>`).join(''):`<div class="lock">${t('noTeam')}</div>`}</div>`}
   if(p.kind==='notes'){const L=notesFor();return `<div class="pop wide" id="pop" style="width:360px"><h4>${t('alerts')}</h4>
     ${L.length?L.map(x=>`<button class="note-i ${x.read?'':'unread'}" data-a="nopen" data-v="${x.id||''}" data-id="${x.card||''}" data-ch="${x.ch||''}">${av(x.by||ME())}<span><span dir="auto">${esc(x.txt)}</span><small dir="auto">${esc(x.title)} · ${x.at?ago(x.at):''}</small></span></button>`).join(''):`<div class="lock">${t('noAlerts')}</div>`}
     <hr><button class="mi" data-a="nread">${ic('tick')}${t('markRead')}</button>
@@ -2072,7 +2167,7 @@ function logTo(c,e){c.log.push(Object.assign({at:Date.now(),by:ME()},e))}
 /* Alerts: stored ones (assigned, mentioned, request, done) plus "due soon" worked out live. In the live app they are emailed too. */
 function notify(to,k,card,x){if(!to||to===ME())return;(D.notes=D.notes||[]).push(Object.assign({id:uid('n'),to,by:ME(),k,card,at:Date.now(),read:false},x||{}));if(D.notes.length>500)D.notes=D.notes.slice(-500)}
 function notesFor(){const me=ME(),out=(D.notes||[]).filter(x=>x.to===me&&(D.cards[x.card]||x.ch)).map(x=>Object.assign({},x,{title:x.ch?chName(x.ch):D.cards[x.card].title,
-    txt:t('n_'+x.k,{p:pname(x.by),d:deptName(x.d||''),x:x.x||''})}));
+    txt:t('n_'+x.k,{p:pname(x.by),d:deptName(x.d||''),x:x.w?pname(x.w):x.x||''})}));
   const t0=today();allCards().forEach(({c})=>{if(!c.done&&c.due&&c.members.includes(me)&&c.due<t0+2*day){const w=c.due<t0?'w_over':c.due<t0+day?'w_today':'w_tomorrow';
     out.push({card:c.id,k:'due',title:c.title,txt:t('n_due',{w:t(w)}),at:0,read:true,by:me})}});
   return out.sort((a,b)=>(b.at||0)-(a.at||0)).slice(0,60)}
@@ -2090,7 +2185,7 @@ function makeBoard(dep,name,tplId){const h=headOfDept(dep);const b={id:uid('b'),
   const lists=saved?saved.lists:bi.lists.map((k,i)=>({name:SYS[k][0],sys:k,cards:i===0?(bi.cards||[]).map(x=>({title:x[lang==='ar'?1:0]})):[]}));
   if(saved)b.labels=saved.labels?JSON.parse(JSON.stringify(saved.labels)):undefined;
   lists.forEach(L=>{const ln=typeof L==='string'?L:L.name,l={id:uid('l'),name:ln,sys:L.sys||undefined,cards:[],col:false};D.lists[l.id]=l;b.lists.push(l.id);
-    (L.cards||[]).forEach(x=>{const c={id:uid('c'),title:x.title,desc:x.desc||'',labels:(x.labels||[]).slice(),members:[],due:null,done:DONE_RX.test(ln),doneAt:null,repeat:'',priority:x.priority||'normal',check:(x.check||[]).map(k=>({t:k.t,d:false})),log:[]};
+    (L.cards||[]).forEach(x=>{const c={id:uid('c'),title:x.title,desc:x.desc||'',labels:(x.labels||[]).slice(),members:[],due:null,done:DONE_RX.test(ln),doneAt:null,repeat:'',priority:x.priority||'normal',check:(x.check||[]).map(k=>({t:k.t,d:false})),log:[],by:ME()};
       logTo(c,{k:'l_added',a:LN(l)});D.cards[c.id]=c;l.cards.push(c.id)})});
   D.boards[b.id]=b;D.order.push(b.id);return b}
 function boardAsTpl(b){return {id:uid('t'),name:b.name,labels:b.labels?JSON.parse(JSON.stringify(b.labels)):null,lists:liveLists(b).map(id=>({name:D.lists[id].name,sys:D.lists[id].sys,
@@ -2108,9 +2203,9 @@ const URLS={};
 async function hydrate(){for(const img of document.querySelectorAll('img[data-att]')){const k=img.dataset.att;if(!URLS[k]){const bl=await FILES.get(k);if(bl)URLS[k]=URL.createObjectURL(bl)}if(URLS[k]&&img.src!==URLS[k])img.src=URLS[k]}}
 function copyCard(c,b2){const l2=D.lists[liveLists(b2).find(id=>D.lists[id].name===(listOf(c.id)||{}).name)||liveLists(b2)[0]];if(!l2)return;
   const ppl=boardPeople(b2),x={id:uid('c'),title:c.title,desc:c.desc,labels:c.labels.filter(id=>labelsOf(b2).some(l=>l.id===id)),members:c.members.filter(m=>ppl.includes(m)),due:c.due,done:false,doneAt:null,repeat:c.repeat,priority:c.priority||'normal',
-    check:c.check.map(k=>({t:k.t,d:k.d})),atts:(c.atts||[]).map(a=>Object.assign({},a)),cover:c.cover||null,log:[]};
+    check:c.check.map(k=>({t:k.t,d:k.d})),atts:(c.atts||[]).map(a=>Object.assign({},a)),cover:c.cover||null,log:[],by:ME()};
   logTo(x,{k:'l_added',a:l2.name});D.cards[x.id]=x;l2.cards.push(x.id);return x}
-function addCard(lid,title){title=title.trim();if(!title)return;const l=D.lists[lid];const c={id:uid('c'),title,desc:'',labels:[],members:[],due:null,done:DONE_RX.test(l.name),doneAt:DONE_RX.test(l.name)?Date.now():null,repeat:'',check:[],log:[]};
+function addCard(lid,title){title=title.trim();if(!title)return;const l=D.lists[lid];const c={id:uid('c'),title,desc:'',labels:[],members:[],due:null,done:DONE_RX.test(l.name),doneAt:DONE_RX.test(l.name)?Date.now():null,repeat:'',check:[],log:[],by:ME()};
   logTo(c,{k:'l_added',a:LN(l)});D.cards[c.id]=c;l.cards.push(c.id);save()}
 function moveCard(cid,toL,idx){const from=listOf(cid);if(!from)return;
   if(from.id!==toL&&DONE_RX.test(D.lists[toL].name)&&!D.cards[cid].done&&!canFinish(D.cards[cid]))return false;
@@ -2125,13 +2220,16 @@ document.addEventListener('click',e=>{
   if(DR.justDropped){DR.justDropped=false;return}
   const a=e.target.closest('[data-a]');
   if(V.side&&!e.target.closest('.side')&&!(a&&a.dataset.a==='side')){V.side=false;render();if(!a)return}
-  if(V.pop&&!e.target.closest('#pop')&&!(a&&['bmenu','lmenu','members','status','bell','labels','archv','fieldsed','wlc'].includes(a.dataset.a))){V.pop=null;render();if(!a)return}
+  if(V.pop&&!e.target.closest('#pop')&&!(a&&['bmenu','lmenu','members','status','bell','labels','archv','fieldsed','wlc','redir'].includes(a.dataset.a))){V.pop=null;render();if(!a)return}
   if(e.target.closest('select.msec,select.ppri'))return;
   if(!a){const card=e.target.closest('.card[data-id]');if(card&&!V.nt){V.card=card.dataset.card||card.dataset.id;V.comp=null;render()}
     if(V.editList&&!e.target.closest('.lhead'))saveListName();
     return}
   const k=a.dataset.a,id=a.dataset.id,v=a.dataset.v;
   const c=V.card?D.cards[V.card]:null;
+  /* task rules: details only for the creator, the department head and the CEO; the work also for whoever it is given to */
+  if(c){const K=cap(c);if(['cm','cl','ckdel','ckadd','subadd','subdel','waitadd','waitdel','cboardgo','cdel','carch','arqok','arqno'].includes(k)&&!K.ed)return;
+    if(['cdone','ck','attcover'].includes(k)&&!K.work)return;if(k==='subck'&&!K.work&&(c.subs[+a.dataset.i]||{}).who!==ME())return}
   switch(k){
     case '':break;
     case 'side':V.side=!V.side;render();break;
@@ -2220,9 +2318,20 @@ document.addEventListener('click',e=>{
     case 'larch':{const l=D.lists[id];l.archived=true;l.archivedAt=Date.now();V.pop=null;save();flash(t('archivedOk'));break}
     case 'lrestore':D.lists[v].archived=false;save();render();break;
     case 'lgone':ask(t('delListQ'),()=>{D.lists[v].cards.forEach(cid=>delete D.cards[cid]);delete D.lists[v];B().lists=B().lists.filter(x=>x!==v);save();V.pop={kind:'archive',anchor:'[data-a=bmenu]'}});break;
-    case 'crestore':{const x=D.cards[v];x.archived=false;logTo(x,{k:'l_restore'});save();render();break}
-    case 'cgone':ask(t('delQ'),()=>{const l=listOf(v);if(l)l.cards.splice(l.cards.indexOf(v),1);delete D.cards[v];save();V.pop={kind:'archive',anchor:'[data-a=bmenu]'}});break;
-    case 'carch':commitModalFields();c.archived=true;c.archivedAt=Date.now();logTo(c,{k:'l_arch'});V.card=null;save();flash(t('archivedOk'));break;
+    case 'crestore':{const x=D.cards[v];if(!x||!cap(x).ed)break;restoreCard(x);render();break}
+    case 'undo':{const x=D.cards[v];V.toast=null;if(x&&x.archived&&cap(x).ed)restoreCard(x);render();break}
+    case 'redir':V.pop=V.pop&&V.pop.kind==='redir'?null:{kind:'redir',anchor:'[data-a=redir]'};render();break;
+    case 'redirgo':{if(!c||!cap(c).redir||!teamPool(c).includes(v))break;commitModalFields();doRedirect(c,v);V.pop=null;save();flash(t('redirOk',{p:pname(v)}));break}
+    case 'supdel':if(!c||!cap(c).sup)break;delete c.sup;logTo(c,{k:'l_supx'});save();render();break;
+    case 'arqask':V.arqF=c.id;render();focusSel('#arqwhy');break;
+    case 'arqx':V.arqF=null;render();break;
+    case 'arqsend':{if(!c||!cap(c).askArch)break;const why=(document.getElementById('arqwhy')||{}).value||'';c.arq={by:ME(),at:Date.now(),why:why.trim().slice(0,240)};logTo(c,{k:'l_arq'});
+      creatorsOf(c).forEach(p=>notify(p,'archreq',c.id));V.arqF=null;save();flash(t('arqSent'));break}
+    case 'arqwd':if(!c||!c.arq||c.arq.by!==ME())break;delete c.arq;logTo(c,{k:'l_arqx'});save();render();break;
+    case 'arqok':{const by=c.arq&&c.arq.by;delete c.arq;if(by)notify(by,'archok',c.id);logTo(c,{k:'l_arqok'});archiveCard(c);break}
+    case 'arqno':{const by=c.arq&&c.arq.by;delete c.arq;logTo(c,{k:'l_arqno'});if(by)notify(by,'archno',c.id);save();render();break}
+    case 'cgone':if(!D.cards[v]||!cap(D.cards[v]).ed)break;ask(t('delQ'),()=>{const l=listOf(v);if(l)l.cards.splice(l.cards.indexOf(v),1);delete D.cards[v];save();V.pop={kind:'archive',anchor:'[data-a=bmenu]'}});break;
+    case 'carch':commitModalFields();archiveCard(c);break;
     case 'ctpl':commitModalFields();(D.cardTpl=D.cardTpl||[]).push({id:uid('ct'),title:c.title,desc:c.desc,labels:c.labels.slice(),priority:c.priority||'normal',check:c.check.map(k=>k.t)});save();flash(t('cardTplSaved'));break;
     case 'ccopy':{commitModalFields();const b2=D.boards[document.getElementById('ccopy').value];if(b2&&copyCard(c,b2)){save();flash(t('copied2',{b:bname(b2)}))}break}
     case 'cboardgo':{commitModalFields();const nb=D.boards[document.getElementById('cboard').value],cur=listOf(c.id);if(!nb||nb.lists.includes(cur.id))return;
@@ -2263,7 +2372,7 @@ document.addEventListener('click',e=>{
     case 'cm':commitModalFields();if(c.members.includes(v))c.members=c.members.filter(x=>x!==v);else{c.members=c.members.concat(v);notify(v,'assign',c.id)}
       if(!c.members.includes(c.owner))c.owner=c.members[0]||null;save();render();break;
     case 'appr':{commitModalFields();if(!canDecide(c))break;c.appr={s:v,by:ME(),at:Date.now()};logTo(c,{k:'l_ap',a:t('ap_'+v)});
-      [c.by,c.requester].concat(c.follow||[]).filter((x,i,arr)=>x&&arr.indexOf(x)===i).forEach(m=>notify(m,'ap_'+v,c.id));
+      [c.by,c.requester,c.sup].concat(c.follow||[]).filter((x,i,arr)=>x&&arr.indexOf(x)===i).forEach(m=>notify(m,'ap_'+v,c.id));
       if(v!=='changes'&&!c.done){c.done=true;c.doneAt=Date.now();logTo(c,{k:'l_done'});afterDone(c,true)}else if(v==='changes'&&c.done){c.done=false;c.doneAt=null}
       save();render();break}
     case 'subadd':addSub();break;
@@ -2288,13 +2397,14 @@ document.addEventListener('click',e=>{
     case 'ckdel':commitModalFields();c.check.splice(+a.dataset.i,1);save();render();break;
     case 'ckadd':addCheck();break;
     case 'cmt':{const tx=document.getElementById('cmt').value.trim();if(!tx)return;commitModalFields();logTo(c,{c:tx});const ms=mentioned(tx);ms.forEach(m=>notify(m,'mention',c.id));
-      [...new Set(c.members.concat(c.follow||[],c.requester?[c.requester]:[]))].filter(m=>!ms.includes(m)).forEach(m=>notify(m,'comment',c.id));save();render();break}
+      [...new Set(c.members.concat(c.follow||[],c.requester?[c.requester]:[],c.sup?[c.sup]:[]))].filter(m=>!ms.includes(m)).forEach(m=>notify(m,'comment',c.id));save();render();break}
     case 'ment':{const mi=V.mentIn||'cmt',ta=document.getElementById(mi),pos=ta.selectionStart,before=ta.value.slice(0,pos).replace(/@[^@\n]{0,30}$/,''),after=ta.value.slice(pos);ta.value=before+'@'+pname(v)+' '+after;V.pop=null;
       const keep=ta.value;render();const t2=document.getElementById(mi);t2.value=keep;t2.focus();t2.setSelectionRange(before.length+pname(v).length+2,before.length+pname(v).length+2);break}
     case 'cdel':commitModalFields();ask(t('delQ'),()=>{const l=listOf(c.id);if(l)l.cards.splice(l.cards.indexOf(c.id),1);delete D.cards[c.id];V.card=null;save()});break;
   }
 });
 async function await_(k){const bl=await FILES.get(k);if(!bl){flash(t('fileGone'));return}const w=window.open(URL.createObjectURL(bl),'_blank');if(!w)location.href=URL.createObjectURL(bl)}
+function flashUndo(m,cid){V.toast={m,undo:cid};render();clearTimeout(flash.t);flash.t=setTimeout(()=>{V.toast=null;const el=document.querySelector('.toast');if(el)el.remove()},6000)}
 function flash(m){V.toast=m;render();clearTimeout(flash.t);flash.t=setTimeout(()=>{V.toast=null;const el=document.querySelector('.toast');if(el)el.remove()},2600)}   // never redraw here: it would wipe what someone is typing
 function focusSel(s){const el=document.querySelector(s);if(el){el.focus();if(el.select&&el.tagName==='INPUT')el.select()}}
 function scrollListEnd(id){const el=document.querySelector(`.list[data-id="${id}"] .cards`);if(el)el.scrollTop=el.scrollHeight}
@@ -2338,7 +2448,7 @@ document.addEventListener('input',e=>{
   if(e.target.id==='q'){V.f.q=e.target.value;const pos=e.target.selectionStart;render();const q=document.getElementById('q');q.focus();q.setSelectionRange(pos,pos)}
   if(e.target.id==='mt'){e.target.style.height='auto';e.target.style.height=e.target.scrollHeight+'px'}});
 document.addEventListener('change',e=>{
-  if(e.target.id==='viewas'||e.target.id==='viewas2'){V.pf=null;V.pg=null;V.calDay=null;D.me=e.target.value;V.side=false;V.card=null;V.pop=null;V.nt=null;home();save();render();return}
+  if(e.target.id==='viewas'||e.target.id==='viewas2'){V.toast=null;V.arqF=null;V.pf=null;V.pg=null;V.calDay=null;D.me=e.target.value;V.side=false;V.card=null;V.pop=null;V.nt=null;home();save();render();return}
   if(V.nt&&e.target.id==='nt-type'){ntSync();render();return}
   if(V.nt&&['nt-due','nt-start','nt-title'].includes(e.target.id)){ntLive();return}
   if(e.target.id==='pg-range'){const P=pgState();P.range=+e.target.value||7;pgSave();render();return}
@@ -2368,6 +2478,10 @@ document.addEventListener('change',e=>{
   if(V.nt&&e.target.id==='nt-tpl'){ntSync();const x=(D.cardTpl||[]).find(k=>k.id===e.target.value),n=V.nt;n.tpl=e.target.value;
     if(x){n.title=x.title;n.desc=x.desc||'';n.labels=x.labels.filter(id=>labelsOf(D.boards[n.board]).some(l=>l.id===id));n.pri=x.priority||'normal';n.check=(x.check||[]).join('\n')}render();return}
   const c=V.card&&D.cards[V.card];if(!c)return;
+  {const K=cap(c),id=e.target.id,cl=e.target.classList;
+    if((['cdue','cstart','cown','ctype','crep','cpri'].includes(id)||cl.contains('cf')||cl.contains('subw')||cl.contains('subd'))&&!K.ed)return;
+    if(['cmove','fileup','fadd'].includes(id)&&!K.work)return;
+    if(id==='csup'){if(!K.sup||!e.target.value||!teamPool(c).includes(e.target.value))return;commitModalFields();c.sup=e.target.value;logTo(c,{k:'l_sup',a:c.sup});notify(c.sup,'sup',c.id);save();render();return}}
   if(e.target.id==='fileup'){commitModalFields();const fs=[...e.target.files],cid=c.id;(async()=>{for(const f of fs){if(f.size>5*1024*1024){flash(t('tooBig',{f:f.name}));continue}
       const id=await FILES.put(uid('f'),f),c2=D.cards[cid];if(id&&c2){(c2.atts=c2.atts||[]).push({id,name:f.name,type:f.type||'application/octet-stream',size:f.size,by:ME(),at:Date.now()});if(!c2.cover&&/^image\//.test(f.type))c2.cover=id}}
     save();render()})();return}
@@ -2397,7 +2511,7 @@ document.addEventListener('pointerdown',e=>{
   if(e.button!==0||V.card||(V.view!=='board'&&!myB))return;
   if(e.target.closest('input,textarea,button,select'))return;
   const card=e.target.closest('.card[data-id]'),head=e.target.closest('.lhead'),col=e.target.closest('.list.col');
-  let type,el;if(card){type='card';el=card}else if(!myB&&(head||col)&&canAdmin(B())){type='list';el=(head||col).closest('.list')}else return;
+  let type,el;if(card){if(!myB){const cc=D.cards[card.dataset.id];if(cc&&!cap(cc).work)return}type='card';el=card}else if(!myB&&(head||col)&&canAdmin(B())){type='list';el=(head||col).closest('.list')}else return;
   DR.d={type,id:el.dataset.id,el,sx:e.clientX,sy:e.clientY,started:false,touch:e.pointerType!=='mouse'};DR.x=e.clientX;DR.y=e.clientY;
   if(DR.d.touch)DR.timer=setTimeout(()=>{if(DR.d&&!DR.d.started)start()},300);
 });

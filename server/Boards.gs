@@ -11,6 +11,8 @@
  *  4. Deploy > New deployment > Web app. Execute as: Me. Who has access: Anyone. Copy the /exec address.
  *     (Only this first time "New deployment". Later updates: Deploy > Manage deployments > pencil > New version.)
  *  5. The /exec address goes into config.js as BOARDS_URL.
+ * Purchase requests from Procurement ("Open in Board"): Project settings > Script properties > PROC_BOARD_KEY = the same long
+ *  random value as in the Procurement script "Procurment". Optional PROC_BOARD_DEPT (default proc = Procurement).
  * Nothing secret is in this file.
  */
 const ACCOUNTS_URL = 'https://forka-apps-443945615318.me-central1.run.app/accounts';
@@ -21,9 +23,12 @@ const KINDS = ['board', 'list', 'card', 'goal', 'port', 'msg', 'note', 'user', '
 const DELETABLE = ['board', 'list', 'card', 'goal', 'port', 'tpl', 'ctpl', 'space'];
 const DEPTS = ['adm', 'ops', 'mkt', 'proc', 'fin', 'hr', 'mnt', 'dev', 'oman'];
 const EMAIL_KINDS = { assign: 'gave you a task', mention: 'mentioned you', req: 'sent a request to your department', done: 'finished your request', subassign: 'gave you a subtask',
-  unblocked: 'a task you were waiting for is done', ap_approved: 'approved', ap_changes: 'asked for changes', ap_rejected: 'rejected', chat: 'mentioned you in a chat' };
+  unblocked: 'a task you were waiting for is done', ap_approved: 'approved', ap_changes: 'asked for changes', ap_rejected: 'rejected', chat: 'mentioned you in a chat',
+  redir: 'redirected a task to you', redirc: 'redirected your task', sup: 'made you the supervisor of a task', archreq: 'asked to archive your task', archno: 'did not agree to archive the task' };
 const BOARD_KICK = { assign: 'New task', mention: 'You were mentioned', req: 'New request', done: 'Request finished', subassign: 'New subtask',
-  unblocked: 'Ready to start', ap_approved: 'Approved', ap_changes: 'Changes asked', ap_rejected: 'Not approved', chat: 'Chat' };
+  unblocked: 'Ready to start', ap_approved: 'Approved', ap_changes: 'Changes asked', ap_rejected: 'Not approved', chat: 'Chat',
+  redir: 'Task redirected to you', redirc: 'Task redirected', sup: 'You supervise a task', archreq: 'Archive request', archno: 'Archive declined' };
+const LABEL_IDS = ['fin', 'proc', 'mnt', 'hr', 'urg', 'mkt'];   // the six labels a board has until it edits its own
 const MAX_JSON = 45000;          // one cell holds 50,000 characters
 const MAX_FILE = 5 * 1024 * 1024;
 
@@ -120,7 +125,7 @@ function boardOk_(x, b) {
   if (!b) return false;
   return x.ceo || headOf_(x, b.dept) || (b.members || []).indexOf(x.me) >= 0 || (!!b.allDept && !!x.depts[b.dept]);
 }
-function cardMine_(x, c) { return !!c && (c.requester === x.me || (c.members || []).indexOf(x.me) >= 0 || (c.follow || []).indexOf(x.me) >= 0); }
+function cardMine_(x, c) { return !!c && (c.requester === x.me || c.by === x.me || c.sup === x.me || (c.members || []).indexOf(x.me) >= 0 || (c.follow || []).indexOf(x.me) >= 0); }
 function boardOfList_(x, lid) { return x.bol[lid] || null; }
 function chanOk_(x, k) { return k === 'all' || (k.indexOf('dm:') === 0 ? k.slice(3).split('|').indexOf(x.me) >= 0 : x.ceo || !!x.depts[k]); }
 function visible_(x, d) {
@@ -145,12 +150,12 @@ function mayWrite_(x, d, old) {
     case 'list': {
       const b = boardOfList_(x, d.id);
       if (!b) return !o;                                     // a new list, saved together with its board
-      return boardOk_(x, b.json) || b.json.kind === 'requests' || (!!o && (o.cards || []).some(id => { const c = x.all[id]; return c && cardMine_(x, c.json); }));
+      return boardOk_(x, b.json) || b.json.kind === 'requests' || (!!o && (o.cards || []).some(id => { const c = x.all[id]; return c && cardMine_(x, c.json); })) || (!!o && listMove_(x, o, j));
     }
     case 'card': {
-      if (o && (boardOk_(x, (boardOfList_(x, o.l) || {}).json) || cardMine_(x, o))) return true;
+      if (o) return (boardOk_(x, (boardOfList_(x, o.l) || {}).json) || cardMine_(x, o)) && cardRules_(x, d, o);
       const b = boardOfList_(x, j.l);
-      return !o && (!b || boardOk_(x, b.json) || b.json.kind === 'requests');
+      return (!b || boardOk_(x, b.json) || b.json.kind === 'requests') && cardRules_(x, d, null);
     }
     case 'goal': { const lv = o ? o.lvl : j.lvl; return x.ceo || (lv !== 'company' && lv === j.lvl && headOf_(x, lv)); }
     case 'port': return x.ceo || ((o ? o.owner : j.owner) === x.me && j.owner === x.me);
@@ -177,6 +182,88 @@ function mayWrite_(x, d, old) {
   }
   return false;
 }
+/* Someone a card is given to, who is not on its board (for example the requester of a purchase request), moves it
+   into another list of that board: the list may change only by taking in or giving up cards given to them. */
+function listMove_(x, o, j) {
+  const oc = o.cards || [], nc = j.cards || [];
+  const diff = oc.filter(c => nc.indexOf(c) < 0).concat(nc.filter(c => oc.indexOf(c) < 0));
+  if (!diff.length) return false;
+  if (Object.keys(Object.assign({}, o, j)).some(k => k !== 'cards' && norm_(o[k]) !== norm_(j[k]))) return false;
+  return diff.every(id => { const c = x.all[id]; return !!c && !c.del && c.kind === 'card' && ((c.json || {}).members || []).indexOf(x.me) >= 0; });
+}
+/* ---------------- task rules (Khaled, 14 Nov 2026) ----------------
+   The task creator, the head(s) of the board's department and the active CEO change the details, archive and delete.
+   People the task is given to do the work: tick, complete, move between lists, attach files, approve, redirect it to
+   someone in their own team, set a supervisor and ask the creator to archive. Everyone else who sees it: comment and follow.
+   Cards made before this rule have no creator: it is taken from the first entry of the card's history ("added" / "sent
+   this request"); if there is none, the department head(s) count as the creator. */
+function logCreator_(c) {
+  const f = (c.log || []).filter(e => e && typeof e === 'object').slice().sort((a, b) => (a.at || 0) - (b.at || 0))[0];
+  return f && (f.k === 'l_added' || f.k === 'l_req') && f.by ? key_(f.by) : '';
+}
+function headsOf_(x, dep) { return dep ? Object.keys(x.mem).filter(e => depts_(x.mem[e])[dep] === 'head') : []; }
+function creators_(x, c) {
+  if (c.by) return [key_(c.by)];
+  const lc = logCreator_(c); if (lc) return [lc];
+  const b = boardOfList_(x, c.l); return headsOf_(x, b && b.json ? b.json.dept : '');
+}
+function team_(x, p) { const m = depts_(x.mem[key_(p)]); return x.ceo || Object.keys(x.depts).some(k => !!m[k]); }
+/* the same value whatever the order of its keys (the database may store keys in another order) */
+function canon_(v) { return JSON.stringify(v, (k, x) => x && typeof x === 'object' && !Array.isArray(x) ? Object.keys(x).sort().reduce((o, q) => { o[q] = x[q]; return o; }, {}) : x); }
+function norm_(v) {
+  if (v == null || v === '' || v === false || (Array.isArray(v) && !v.length) || (typeof v === 'object' && !Array.isArray(v) && !Object.keys(v).length)) return null;
+  return canon_(v);
+}
+const CARD_DETAILS = ['title', 'desc', 'start', 'due', 'priority', 'type', 'repeat', 'waits', 'requester', 'fromDept'];
+const CARD_WORK = ['l', 'done', 'doneAt', 'appr', 'atts', 'cover'];
+const CARD_KNOWN = CARD_DETAILS.concat(CARD_WORK, ['id', 'by', 'labels', 'f', 'check', 'subs', 'archived', 'archivedAt', 'arq', 'members', 'owner', 'sup', 'follow', 'log']);
+function cardRules_(x, d, o) {
+  const j = d.json || {};
+  if (!o) { if (!d.del) j.by = x.me; return true; }                 // a new card: whoever saves it is its creator
+  const b = (boardOfList_(x, o.l) || {}).json || {};
+  const cr = creators_(x, o), ed = x.ceo || cr.indexOf(x.me) >= 0 || headOf_(x, b.dept);
+  if (d.del) return ed;
+  // the creator never changes (only the CEO may); a card without one keeps the one worked out from its history
+  const want = o.by ? key_(o.by) : logCreator_(o);
+  if (j.by && key_(j.by) !== want && !x.ceo) return false;
+  if (!j.by && want) j.by = want;
+  if (ed) return true;
+  const as = (o.members || []).indexOf(x.me) >= 0;
+  const same = k => norm_(o[k]) === norm_(j[k]);
+  if (!CARD_DETAILS.every(same)) return false;
+  if (!as && !CARD_WORK.every(same)) return false;
+  if (Object.keys(Object.assign({}, o, j)).some(k => CARD_KNOWN.indexOf(k) < 0 && !same(k))) return false;
+  // labels and custom fields: only the clean-up after a head removed one from the board
+  const ol = o.labels || [], nl = j.labels || [], bl = (b.labels || LABEL_IDS.map(id => ({ id }))).map(l => l.id);
+  if (nl.some(l => ol.indexOf(l) < 0) || ol.some(l => nl.indexOf(l) < 0 && bl.indexOf(l) >= 0)) return false;
+  const of = o.f || {}, nf = j.f || {}, bf = (b.fields || []).map(f => f.id);
+  if (Object.keys(Object.assign({}, of, nf)).some(k => norm_(of[k]) !== norm_(nf[k]) && (norm_(nf[k]) !== null || bf.indexOf(k) >= 0))) return false;
+  // checklist and subtasks: the items stay as they are; ticking is work
+  const oc = o.check || [], nc = j.check || [];
+  if (oc.length !== nc.length || oc.some((it, i) => !nc[i] || it.t !== nc[i].t || (!as && !!it.d !== !!nc[i].d))) return false;
+  const os = o.subs || [], ns = j.subs || [];
+  if (os.length !== ns.length || os.some((s, i) => { const n = ns[i]; return !n || s.id !== n.id || s.t !== n.t || norm_(s.who) !== norm_(n.who) || norm_(s.due) !== norm_(n.due)
+    || ((!!s.done !== !!n.done || norm_(s.doneAt) !== norm_(n.doneAt)) && !as && key_(s.who) !== x.me); })) return false;
+  if (!!j.archived !== !!o.archived) return false;                    // archive and restore: creator, head or CEO
+  if (!same('arq')) {                                                 // "Ask to archive": only someone the task is given to, for themselves
+    if (!as) return false;
+    if (j.arq ? key_(j.arq.by) !== x.me || (o.arq && key_(o.arq.by) !== x.me) : key_((o.arq || {}).by) !== x.me) return false;
+  }
+  if (!same('members') || !same('owner')) {                           // redirect: give my place to someone in my own team
+    const om = o.members || [], nm = j.members || [];
+    const gone = om.filter(m => nm.indexOf(m) < 0), added = nm.filter(m => om.indexOf(m) < 0);
+    if (!as || gone.length !== 1 || gone[0] !== x.me || added.length !== 1 || !team_(x, added[0])) return false;
+    if (j.owner && nm.indexOf(j.owner) < 0) return false;
+  }
+  if (!same('sup') && (!as || (j.sup && !team_(x, j.sup)))) return false;   // supervisor: set by someone the task is given to, from their team
+  if (!same('follow') && !as) {                                       // others may only follow or unfollow themselves
+    const of2 = o.follow || [], nf2 = j.follow || [];
+    if (of2.concat(nf2).some(p => (of2.indexOf(p) < 0) !== (nf2.indexOf(p) < 0) && p !== x.me)) return false;
+  }
+  const ol2 = o.log || [], nl2 = j.log || [];                          // the history only grows (comments, moves)
+  if (nl2.length < ol2.length || ol2.some((e, i) => canon_(e) !== canon_(nl2[i]))) return false;
+  return true;
+}
 function scopeOf_(kind, id, j) {
   if (kind === 'msg') return String(j.k || '');
   if (kind === 'note') return key_(j.to);
@@ -190,7 +277,7 @@ function doGet() { return out_({ ok: true, service: 'forka-boards' }); }
 function doPost(e) {
   let b;
   try { b = JSON.parse(e.postData.contents); } catch (err) { return out_({ ok: false, error: 'bad' }); }
-  const writes = ['save', 'upload'].indexOf(String(b.action || '')) >= 0;
+  const writes = ['save', 'upload', 'procCard'].indexOf(String(b.action || '')) >= 0;
   const lock = writes ? LockService.getScriptLock() : null;
   if (lock) { try { lock.waitLock(20000); } catch (err) { return out_({ ok: false, error: 'busy' }); } }
   try { return out_(handle_(b)); }
@@ -199,6 +286,7 @@ function doPost(e) {
 }
 function handle_(b) {
   const a = String(b.action || '');
+  if (a === 'procCard') return procCard_(b);          // from the Procurement server, with the shared key (not a person's sign-in)
   const me = erpWho_(b.token);
   if (!me) return { ok: false, error: 'session' };
   const all = readAll_(), x = ctx_(me, all);
@@ -280,6 +368,91 @@ function emailNotes_(x, notes) {
       left--;
     } catch (e) {}
   });
+}
+/* ---------------- Purchase requests from Procurement (Khaled, 14 Nov 2026) ----------------
+   "Open in Board" on a purchase request (procurement.forka.com) makes ONE card per request on the board "Purchase requests"
+   in the Procurement department, so Purchasing and the requester can share logos, designs and questions.
+   Only the Procurement server may ask: it checks the person and the request first, then sends the shared key from its
+   Script properties. This script keeps the same key in its own Script properties (PROC_BOARD_KEY). No key here, ever.
+   Optional Script property PROC_BOARD_DEPT: the department of the board (default "proc" = Procurement).
+   The card: in "Needs info"; members = the requester and the buyer (when they have a Forka Apps account); owner = the buyer,
+   else the requester; creator = the person who pressed the button. The creator, the Procurement head(s) and the CEO change
+   the details; the requester and the buyer attach files, comment, tick and move it (the task rules above). Pressing again
+   returns the same card and adds the buyer if one was given since. */
+const PROC_URL = 'https://procurement.forka.com/';
+const PROC_LISTS = [['needinfo', 'Needs info'], ['doing', 'In progress'], ['done', 'Done']];
+const PROC_LABELS = [{ id: 'preq', color: '#BD5038' }, { id: 'fin', color: '#4f8a3c' }, { id: 'proc', color: '#9a6b3f' }, { id: 'mnt', color: '#3e6aa1' },
+  { id: 'hr', color: '#7a5aa6' }, { id: 'urg', color: '#b8432f' }, { id: 'mkt', color: '#2f8a85' }];
+function rnd_(p) { return p + Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
+/* compares every character whatever the answer, so the time taken says nothing about the key */
+function sameKey_(given, key) {
+  given = String(given || ''); key = String(key || '');
+  if (!key) return false;
+  let d = given.length === key.length ? 0 : 1;
+  for (let i = 0; i < key.length; i++) d |= key.charCodeAt(i) ^ (given.charCodeAt(i % Math.max(1, given.length)) || 0);
+  return d === 0;
+}
+function procCard_(b) {
+  const key = props_().getProperty('PROC_BOARD_KEY');
+  if (!key || key.length < 20) return { ok: false, error: 'nosetup' };
+  if (!sameKey_(b.key, key)) return { ok: false, error: 'key' };
+  const em = v => { const e = key_(v); return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e) ? e : ''; };
+  const q = b.req || {}, rid = String(q.id || ''), no = String(q.no || '').trim().slice(0, 40), by = em((b.by || {}).email);
+  if (!/^[A-Za-z0-9_\-.~:@+]{1,60}$/.test(rid) || !no || !by) return { ok: false, error: 'bad' };
+  const all = readAll_(), sh = tab_(DATA_TAB, D_HEAD), now = Date.now();
+  const x = ctx_({ email: by, ceo: false }, all); x.tok = String(b.token || '');
+  const dep = String(props_().getProperty('PROC_BOARD_DEPT') || 'proc').trim();
+  if (!deptOk_(x, dep)) return { ok: false, error: 'dept' };
+  // people: only those with a Forka Apps account (if the list cannot be read, the emails the Procurement server sent are used)
+  const dir = accounts_(x.tok), known = e => !!e && (!dir.length || dir.some(p => p.email === e));
+  const rq = em((b.requester || {}).email);
+  let bu = em((b.buyer || {}).email);
+  if (!bu && b.buyer && b.buyer.name && dir.length) { const n = key_(b.buyer.name), f = dir.filter(p => key_(p.name) === n); if (f.length === 1) bu = f[0].email; }
+  const people = [bu, rq].filter((e, i, a) => known(e) && a.indexOf(e) === i);
+  const put = (id, kind, json) => { const old = all[id], d = { id, kind, scope: scopeOf_(kind, id, json), json, at: now, by, del: false };
+    if (old) d._row = old._row; writeRow_(sh, d); all[id] = d; return d; };
+  const notes = [], tell = (to, cid) => { if (to === by) return; const nid = rnd_('n'); const n = { id: nid, to, by, k: 'assign', card: cid, at: now, read: false }; put('note:' + nid, 'note', n); notes.push(n); };
+  const link = String(q.url || '').indexOf(PROC_URL) === 0 ? String(q.url).slice(0, 300) : PROC_URL + '#rq=' + encodeURIComponent(rid);
+  // the same request again: the same card (the buyer is added when one was given since)
+  const had = Object.values(all).find(d => d.kind === 'card' && !d.del && d.json && d.json.proc && d.json.proc.id === rid);
+  if (had) {
+    const c = had.json, mem = (c.members || []).slice(), add = people.filter(p => mem.indexOf(p) < 0);
+    if (add.length || (!c.owner && people.length)) {
+      c.members = mem.concat(add);
+      if (bu && add.indexOf(bu) >= 0 && (!c.owner || c.owner === rq)) c.owner = bu;   // the buyer takes over from the requester
+      else if (!c.owner) c.owner = c.members[0] || '';
+      put(had.id, 'card', c); add.forEach(p => tell(p, had.id));
+    }
+    if (notes.length) emailNotes_(x, notes);
+    const bd0 = boardOfList_(x, c.l);
+    return { ok: true, cardId: had.id, boardId: bd0 ? bd0.id : '', url: APP_URL + '#card=' + encodeURIComponent(had.id), created: false };
+  }
+  // the board "Purchase requests" of the department (made the first time, with its three lists)
+  let bd = Object.values(all).find(d => d.kind === 'board' && !d.del && d.json && d.json.procReq && d.json.dept === dep);
+  if (!bd) {
+    const bid = rnd_('b'), lids = PROC_LISTS.map(() => rnd_('l'));
+    PROC_LISTS.forEach((l, i) => put(lids[i], 'list', { id: lids[i], name: l[1], sys: l[0], cards: [], col: false }));
+    bd = put(bid, 'board', { id: bid, dept: dep, name: 'Purchase requests', procReq: true, allDept: true, members: [], status: null, lists: lids, labels: PROC_LABELS.map(l => Object.assign({}, l)) });
+    lids.forEach(l => { x.bol[l] = bd; });
+  }
+  const lid = (bd.json.lists || []).filter(l => all[l] && !all[l].del && all[l].kind === 'list')[0];
+  if (!lid) return { ok: false, error: 'board' };
+  const bl = (bd.json.labels || LABEL_IDS.map(id => ({ id }))).map(l => l.id), lab = bl.indexOf('preq') >= 0 ? ['preq'] : bl.indexOf('proc') >= 0 ? ['proc'] : [];
+  const title = String(q.title || '').slice(0, 200), qty = [q.qty, q.unit].filter(v => v !== '' && v != null).join(' ');
+  const row = (l, v) => v ? l + ': ' + String(v).slice(0, 3000) + '\n' : '';
+  const desc = ('Purchase request ' + no + ' from Procurement.\n\n' + row('What', title) + row('Type', q.kind) + row('How much', qty) + row('Needed by', q.needBy) +
+    row('Department', [q.dept, q.branch].filter(Boolean).join(' · ')) + row('Asked by', ((b.requester || {}).name || '') + (rq ? ' (' + rq + ')' : '')) +
+    row('Handled by', (b.buyer && b.buyer.name) || '') + (q.urgent ? 'Urgent\n' : '') + (q.details ? '\nDetails:\n' + String(q.details).slice(0, 3000) + '\n' : '') +
+    '\nOpen the request in Procurement: ' + link).slice(0, 8000);
+  const due = /^\d{4}-\d{2}-\d{2}$/.test(String(q.needBy || '')) ? new Date(q.needBy + 'T00:00:00+04:00').getTime() : null;
+  const cid = rnd_('c'), list = all[lid].json;
+  const card = { id: cid, l: lid, title: (no + ' · ' + title).slice(0, 300), desc, labels: lab, members: people, owner: people[0] || '', due, done: false, doneAt: null,
+    repeat: '', priority: q.urgent ? 'urgent' : '', check: [], log: [{ at: now, by, k: 'l_added', a: list.name || 'Needs info' }], by, proc: { id: rid, no, url: link } };
+  put(cid, 'card', card);
+  list.cards = (list.cards || []).concat([cid]); put(lid, 'list', list);
+  people.forEach(p => tell(p, cid));
+  if (notes.length) emailNotes_(x, notes);
+  return { ok: true, cardId: cid, boardId: bd.id, url: APP_URL + '#card=' + encodeURIComponent(cid), created: true };
 }
 function esc_(s) { return String(s || '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
 
