@@ -36,7 +36,7 @@ async def open_board(pg, dept, name):
 L = lambda n: f'.list:has(.ltitle:text-is("{n}"))'
 
 async def main():
-    srv = subprocess.Popen([sys.executable, '-m', 'http.server', str(PORT), '--bind', '127.0.0.1'], cwd=ROOT, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL); time.sleep(1)
+    srv = subprocess.Popen([sys.executable, '-m', 'http.server', str(PORT), '--bind', '127.0.0.1'], cwd=os.environ.get('SITE_ROOT', ROOT), stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL); time.sleep(1)
     try:
         async with async_playwright() as p:
             b = await p.chromium.launch(executable_path=os.environ.get('PW_CHROMIUM') or None)
@@ -559,7 +559,7 @@ async def main():
             check('Phone: chat opens full screen with a back button', await pg.locator('.chl').is_visible() == False and await pg.locator('.chback').is_visible() and await pg.evaluate('document.documentElement.scrollWidth<=innerWidth+1'))
             await pg.screenshot(path=OUT + '/boards_rb_phone_chat.png')
             check('No page errors (phone)', not errs, errs[:3])
-            src = open(ROOT + '/boards/index.html', encoding='utf-8').read()
+            src = open(ROOT + '/boards/index.html', encoding='utf-8').read() if not os.environ.get('SITE_ROOT') else ''.join(open(f, encoding='utf-8').read() for f in __import__('glob').glob(ROOT + '/app/src/board/**/*.ts*', recursive=True))
             check('No emojis', not re.search('[\U0001F300-\U0001FAFF☀-➿]', src))
             await b.close()
     finally:

@@ -1,10 +1,20 @@
 # Forka App in React + TypeScript (app/)
 
 The Forka App pages are moving from hand-written HTML to **React + TypeScript** (the same language as the People app
-skeleton), one piece at a time. **Moved so far: the hub** (sign-in, app tiles, CEO numbers, People and access,
-Activity, install the app and notifications). It looks the same as the live hub and talks to the same accounts server.
+skeleton), one piece at a time.
 
-Not moved yet, copied in unchanged by `scripts/add_legacy.sh`: Hire (`hiring/`), Board (`boards/`), the careers copy
+**Moved so far:**
+- **Hub** (`/`, `src/`): sign-in, app tiles, CEO numbers, People and access, Activity, install the app and notifications.
+  Same look, same accounts server. Fully typed React.
+- **Board** (`/boards/`, `src/board/`): every screen. Same look, same Board server, same behaviour; passes all 249
+  existing Board checks (`tests/boards_*.py`, run with `SITE_ROOT=app/dist`). How it is built, for now:
+  - `core.ts` is the original page's logic (data, permissions, saving, every action), moved unchanged. It is not
+    type-checked yet (`// @ts-nocheck`); types are added step by step.
+  - `views/*.tsx`, `Shell.tsx`, `ui.tsx`: every screen in React (JSX), element for element as before.
+  - Every change redraws the whole page (`render()` in core), as the original did. Next steps: give core proper types,
+    then let screens redraw only what changed.
+
+Not moved yet, copied in unchanged by `scripts/add_legacy.sh`: Hire (`hiring/`), the careers copy
 (`apply/`), the team guide (`help/`), privacy and about pages. Each one is removed from that list when its React
 version replaces it.
 
@@ -24,7 +34,8 @@ version replaces it.
 ```bash
 cd app && npm ci
 npm run build      # type check, build to dist/, add the pages not moved yet
-npm test           # 49 browser checks in demo mode (made-up people)
+npm test           # 49 hub browser checks in demo mode (made-up people)
+cd .. && SITE_ROOT=$PWD/app/dist python3 tests/boards_test.py   # Board checks against this build (also boards_redesign_test, board_sidebar_test, boards_live_test)
 ```
 
 ## Publish to the test address (Cloud Shell, project forka-apps)

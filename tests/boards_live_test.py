@@ -10,7 +10,7 @@ def check(n, ok, info=''):
     res.append(bool(ok)); print(('PASS ' if ok else 'FAIL ') + n + ('' if ok else ' - ' + str(info)[:300]))
 
 async def main():
-    web = subprocess.Popen([sys.executable, '-m', 'http.server', str(WEB), '--bind', '127.0.0.1'], cwd=ROOT, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    web = subprocess.Popen([sys.executable, '-m', 'http.server', str(WEB), '--bind', '127.0.0.1'], cwd=os.environ.get('SITE_ROOT', ROOT), stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     api = subprocess.Popen(['node', ROOT + '/tests/boards_fake_server.js', str(API)]); time.sleep(1.2)
     try:
         async with async_playwright() as p:
@@ -18,7 +18,7 @@ async def main():
             errs = []
             async def person(who):
                 ctx = await b.new_context(viewport={'width': 1440, 'height': 900})
-                await ctx.route('**/config.js', lambda r: r.fulfill(status=200, content_type='application/javascript', body=CFG))
+                await ctx.route('**/config.js*', lambda r: r.fulfill(status=200, content_type='application/javascript', body=CFG))
                 if who: await ctx.add_init_script(f"try{{localStorage.setItem('fa-token','{TOK[who]}')}}catch(e){{}}")
                 pg = await ctx.new_page(); pg.on('pageerror', lambda e: errs.append(who + ': ' + str(e)))
                 await pg.goto(URL); await pg.wait_for_timeout(900); return pg

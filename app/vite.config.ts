@@ -6,5 +6,9 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react()],
   publicDir: false,
-  build: { outDir: 'dist', emptyOutDir: true, assetsDir: 'assets' },
+  build: {
+    outDir: 'dist', emptyOutDir: true, assetsDir: 'assets',
+    // one page per app: the hub at /, Board at /boards/
+    rollupOptions: { input: { hub: 'index.html', board: 'boards/index.html' } },
+  },
 });
