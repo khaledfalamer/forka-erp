@@ -1,4 +1,5 @@
 /* Forka Hire: start. The logic (core) is the original page's, unchanged; React draws each area of the page. */
+import '../shared/keepTyping'; // keep what people type when a screen is redrawn (same code in every Forka app)
 import './hire.css';
 import * as core from './core';
 import * as pages from './views/pages';

@@ -25,7 +25,7 @@ Owner: Khaled Alamer, CEO of Forka Collective (F&B group: UAE branches Sharjah, 
 - Apps Script changes do NOT deploy from GitHub. Khaled pastes the file into the script project, then Deploy > Manage deployments > pencil > New version (keeping the same web address). Tell him exactly which project and which file. Never let him choose "New deployment".
 
 ## Checks (run before every push)
-node tests/server_test.js · node tests/hiring_server_test.js · node tests/boards_server_test.js · python3 tests/ci_test.py · python3 tests/hiring_test.py · python3 tests/boards_test.py · python3 tests/boards_live_test.py · python3 tests/pwa_test.py · python3 tests/keep_typing_test.py · TEST_DATABASE_URL=... node tests/platform_accounts_test.mjs (skips without a database) · cd app && npm run build && npm test · SITE_ROOT=app/dist for the four Board and three Hire test files (tests/live_test.py runs in CI)
+node tests/server_test.js · node tests/hiring_server_test.js · node tests/boards_server_test.js · python3 tests/ci_test.py · python3 tests/hiring_test.py · python3 tests/boards_test.py · python3 tests/boards_live_test.py · python3 tests/pwa_test.py · python3 tests/keep_typing_test.py · TEST_DATABASE_URL=... node tests/platform_accounts_test.mjs (skips without a database) · cd app && npm run build && npm test · SITE_ROOT=app/dist for the four Board, three Hire and keep_typing test files (tests/live_test.py runs in CI)
 
 ## Rollback
 Website: revert the commit on main. Apps Script: Manage deployments > pencil > choose the previous version.

@@ -1,20 +1,26 @@
 """Typed text is never wiped by a redraw (Board, Hire, Forka App home). python3 tests/keep_typing_test.py"""
-import asyncio, os, pathlib, subprocess, sys, time
+import asyncio, os, re, pathlib, subprocess, sys, time
 from playwright.async_api import async_playwright
 
 ROOT = str(pathlib.Path(__file__).resolve().parent.parent)
 PORT = 8797; BASE = f'http://127.0.0.1:{PORT}/'
 res = []
+
+def page_code(f):
+    """The page and the scripts it loads (SITE_ROOT = another build, e.g. app/dist)."""
+    site = pathlib.Path(os.environ.get('SITE_ROOT', ROOT)); html = (site / f).read_text()
+    for src in re.findall(r'(?:<script[^>]+src|<link[^>]+href)="(/assets/[^"]+\.js)"', html): html += (site / src.lstrip('/')).read_text()
+    return html
 def check(n, ok, info=''):
     res.append(bool(ok)); print(('PASS ' if ok else 'FAIL ') + n + ('' if ok else ' - ' + str(info)[:300]))
 
 async def main():
-    srv = subprocess.Popen([sys.executable, '-m', 'http.server', str(PORT), '--bind', '127.0.0.1'], cwd=ROOT, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL); time.sleep(1)
+    srv = subprocess.Popen([sys.executable, '-m', 'http.server', str(PORT), '--bind', '127.0.0.1'], cwd=os.environ.get('SITE_ROOT', ROOT), stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL); time.sleep(1)
     try:
         async with async_playwright() as p:
             b = await p.chromium.launch(executable_path=os.environ.get('PW_CHROMIUM') or None)
             for f in ['index.html', 'boards/index.html', 'hiring/index.html']:
-                check(f'{f}: has the keep-what-is-typed guard', 'window.__fkKeep' in (pathlib.Path(ROOT) / f).read_text())
+                check(f'{f}: has the keep-what-is-typed guard', 'window.__fkKeep' in page_code(f))
 
             # ---------- Board ----------
             ctx = await b.new_context(viewport={'width': 1440, 'height': 900}); pg = await ctx.new_page(); errs = []
@@ -43,7 +49,7 @@ async def main():
             # ---------- Forka App home: request-access form survives a language switch ----------
             ctx = await b.new_context(viewport={'width': 1280, 'height': 900}); pg = await ctx.new_page(); errs = []
             pg.on('pageerror', lambda e: errs.append(str(e)))
-            await ctx.route('**/config.js', lambda r: r.fulfill(body='', content_type='application/javascript'))
+            await ctx.route('**/config.js*', lambda r: r.fulfill(body='', content_type='application/javascript'))
             await pg.goto(BASE); await pg.wait_for_timeout(2400)
             await pg.click('[data-a=g-open]'); await pg.fill('#gmail', 'new.person@forka.com'); await pg.click('[data-a=g-go]'); await pg.wait_for_timeout(200)
             await pg.fill('#rq [name=why]', 'Need Procurement for the store')

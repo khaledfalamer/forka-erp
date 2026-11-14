@@ -70,9 +70,9 @@ export function Gate({ gate, setGate, pickable, onGoogleToken, onDemoEmail, onPi
       <h2>{t('signin')}</h2><p>{t('signinTxt')}</p>
       {LIVE
         ? <><GoogleButton onToken={onGoogleToken} />{gate.err && <div className="err">{gate.err}</div>}</>
-        : <button className="gbtn" onClick={() => setGate({ ...gate, step: 'pick', err: '' })}><GoogleIcon /><span>{t('google')}</span></button>}
+        : <button className="gbtn" data-a="g-open" onClick={() => setGate({ ...gate, step: 'pick', err: '' })}><GoogleIcon /><span>{t('google')}</span></button>}
       <div className="or">{t('or')}</div>
-      <button className="lnk" onClick={() => setGate({ ...gate, step: 'pin', pinErr: '' })}>{t('usePin')}</button>
+      <button className="lnk" data-a="g-pin" onClick={() => setGate({ ...gate, step: 'pin', pinErr: '' })}>{t('usePin')}</button>
     </>;
   } else if (gate.step === 'pick' && DEMO) {
     body = <>
@@ -84,7 +84,7 @@ export function Gate({ gate, setGate, pickable, onGoogleToken, onDemoEmail, onPi
       <label className="f">{t('other')}<input type="email" id="gmail" placeholder="name@forka.com" value={typed}
         onChange={e => setTyped(e.target.value)} onKeyDown={e => { if (e.key === 'Enter') onDemoEmail(typed); }} /></label>
       {gate.err && <div className="err">{gate.err}</div>}
-      <button className="btn pri" onClick={() => onDemoEmail(typed.trim() || pick)}>{t('cont')}</button>
+      <button className="btn pri" data-a="g-go" onClick={() => onDemoEmail(typed.trim() || pick)}>{t('cont')}</button>
       <button className="lnk" onClick={back}>{t('back')}</button>
     </>;
   } else if (gate.step === 'pin') {

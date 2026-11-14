@@ -236,7 +236,7 @@ export function applyRemote(r,fromCache){if(r.me)SME=r.me;if(r.ver)RVER=r.ver;if
     keepData();ch.forEach(fire);return}
   if(r.data){Object.keys(RDATA).forEach(c=>{RDATA[c]=r.data[c]||{}});if(!fromCache)keepData();Object.keys(RDATA).forEach(fire)}}
 export async function pull(light){const r=await api("load",RVER?{ver:RVER,since:RSINCE,vk:RVK}:{ver:""});
-  if(r.ok){if(r.same){if(r.me)SME=r.me;return}const typing=document.activeElement&&["INPUT","TEXTAREA","SELECT"].includes(document.activeElement.tagName)&&$("#modal").classList.contains("on");
+  if(r.ok){if(r.same){if(r.me)SME=r.me;return}const ae=document.activeElement,typing=!!ae&&(["TEXTAREA","SELECT"].includes(ae.tagName)||(ae.tagName==="INPUT"&&!/^(checkbox|radio|button|submit|file|range|color)$/.test(ae.type)));   // anywhere, not only in a pop-up
     if(typing&&light)return;applyRemote(r);banner("");return}
   if(r.error==="session")return gone("signin");if(r.error==="noaccess")return gone("noaccess");
   if(!light)banner("Can't reach the hiring data right now — showing what was saved on this device.")}

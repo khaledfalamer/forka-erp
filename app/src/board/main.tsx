@@ -1,4 +1,5 @@
 /* Forka Board: start. The logic (core) is the original page's, unchanged; React draws the screens. */
+import '../shared/keepTyping'; // keep what people type when a screen is redrawn (same code in every Forka app)
 import { createRoot } from 'react-dom/client';
 import { flushSync } from 'react-dom';
 import './board.css';
