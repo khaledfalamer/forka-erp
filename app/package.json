@@ -1,0 +1,24 @@
+{
+  "name": "forka-app",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Forka App (erp.forka.com) in React + TypeScript. Replaces the HTML pages one by one: the hub first.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "typecheck": "tsc --noEmit",
+    "build": "tsc --noEmit && vite build && bash scripts/add_legacy.sh",
+    "test": "node tests/hub_test.mjs"
+  },
+  "dependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^5.0.0",
+    "typescript": "^5.6.0",
+    "vite": "^7.0.0"
+  }
+}
