@@ -110,7 +110,7 @@ export function vABC() {
 export function vSupAna() {
   const { L } = abc(); const cls = {}; L.forEach(x => cls[x.l.id] = x.cls); const by = {}; lines().forEach(l => { const k = l.sup || '—'; const v = calc(l).v; by[k] = by[k] || { n: k, v: 0, items: 0, A: 0, pay: {} }; by[k].v += v; by[k].items++; if (cls[l.id] === 'A') by[k].A++; by[k].pay[l.pay || ''] = 1 });
   const S = (Object.values(by) as any[]).sort((a, b) => b.v - a.v), tot = S.reduce((a, x) => a + x.v, 0); let cum = 0; S.forEach(x => { cum += x.v; x.cum = tot ? cum / tot : 0 });
-  const top5 = S.slice(0, 5).reduce((a, x) => a + x.v, 0), D = recs('Deliveries'); void D;
+  const top5 = S.slice(0, 5).reduce((a, x) => a + x.v, 0), D = recs('Deliveries');
   const pe = lines().filter(l => l.pay === 'pemo').reduce((a, l) => a + calc(l).v, 0), cr = lines().filter(l => l.pay === 'credit').reduce((a, l) => a + calc(l).v, 0);
   const n80 = S.findIndex(x => x.cum >= 0.8) + 1;
   return <><div className="grid kpis">
