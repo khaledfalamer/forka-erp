@@ -56,8 +56,13 @@ swap('mails.length = 0', 'clearMails()');
 body = body.replace(/\bmails\b(?!\()/g, 'readMails()');
 swap("const row = ap.d.find(x => x[0] === 'sara@forka.com');", "const row = accountRow('sara@forka.com');");
 swap('ss.sheets.Data.d.slice(1).forEach(r => { r[4] -= 60000; });', "sql('update boards.docs set at = at - 60000');");
+// task rules (14 Nov 2026): read a stored card, and put in a card saved before the rule (no creator), straight from the database
+swap("const drow = id => { const r = ss.sheets.Data.d.find(x => x[0] === id); return r && r[3] ? JSON.parse(r[3]) : null; };",
+  "const drow = id => { const r = sql(`select json::text from boards.docs where id=${lit(id)} and not del`); return r ? JSON.parse(r) : null; };");
+swap("const legacy = (id, json) => ss.sheets.Data.d.push([id, 'card', '', JSON.stringify(json), 1, 'x', '']);",
+  "const legacy = (id, json) => sql(`insert into boards.docs (id, kind, scope, json, at, by_, del) values (${lit(id)}, 'card', '', ${lit(JSON.stringify(json))}, 1, 'x', false)`);");
 swap("ck('Upload a photo to a card you can see (private Drive folder)', r.ok && /^d:/.test(r.id), r);", "ck('Upload a photo to a card you can see (private storage)', r.ok && /^g:/.test(r.id), r);");
-try { new Function('ck', 'call', 'load', 'save', 'ids', 'tok', 'clearMails', 'readMails', 'accountRow', 'sql', 'Buffer', body)(ck, call, load, save, ids, tok, clearMails, readMails, accountRow, sql, Buffer); }
+try { new Function('ck', 'call', 'load', 'save', 'ids', 'tok', 'clearMails', 'readMails', 'accountRow', 'sql', 'lit', 'Buffer', body)(ck, call, load, save, ids, tok, clearMails, readMails, accountRow, sql, lit, Buffer); }
 catch (e) { console.log('FAIL the checks stopped: ' + e.message); res.push(false); }
 
 // New checks for the server version

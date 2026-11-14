@@ -12,7 +12,9 @@ const KINDS = ['board', 'list', 'card', 'goal', 'port', 'msg', 'note', 'user', '
 const DELETABLE = ['board', 'list', 'card', 'goal', 'port', 'tpl', 'ctpl', 'space'];
 const DEPTS = ['adm', 'ops', 'mkt', 'proc', 'fin', 'hr', 'mnt', 'dev', 'oman'];
 const EMAIL_KINDS = { assign: 'gave you a task', mention: 'mentioned you', req: 'sent a request to your department', done: 'finished your request', subassign: 'gave you a subtask',
-  unblocked: 'a task you were waiting for is done', ap_approved: 'approved', ap_changes: 'asked for changes', ap_rejected: 'rejected', chat: 'mentioned you in a chat' };
+  unblocked: 'a task you were waiting for is done', ap_approved: 'approved', ap_changes: 'asked for changes', ap_rejected: 'rejected', chat: 'mentioned you in a chat',
+  redir: 'redirected a task to you', redirc: 'redirected your task', sup: 'made you the supervisor of a task', archreq: 'asked to archive your task', archno: 'did not agree to archive the task' };
+const LABEL_IDS = ['fin', 'proc', 'mnt', 'hr', 'urg', 'mkt'];   // the six labels a board has until it edits its own
 const MAX_JSON = 45000;
 const MAX_FILE = 5 * 1024 * 1024;
 const key = e => String(e || '').trim().toLowerCase();
@@ -50,7 +52,7 @@ function boardOk(x, b) {
   if (!b) return false;
   return x.ceo || headOf(x, b.dept) || (b.members || []).includes(x.me) || (!!b.allDept && !!x.depts[b.dept]);
 }
-function cardMine(x, c) { return !!c && (c.requester === x.me || (c.members || []).includes(x.me) || (c.follow || []).includes(x.me)); }
+function cardMine(x, c) { return !!c && (c.requester === x.me || c.by === x.me || c.sup === x.me || (c.members || []).includes(x.me) || (c.follow || []).includes(x.me)); }
 const boardOfList = (x, lid) => x.bol[lid] || null;
 function chanOk(x, k) { return k === 'all' || (k.indexOf('dm:') === 0 ? k.slice(3).split('|').includes(x.me) : x.ceo || !!x.depts[k]); }
 function visible(x, d) {
@@ -78,9 +80,9 @@ function mayWrite(x, d, old) {
       return boardOk(x, b.json) || b.json.kind === 'requests' || (!!o && (o.cards || []).some(id => { const c = x.all[id]; return c && cardMine(x, c.json); }));
     }
     case 'card': {
-      if (o && (boardOk(x, (boardOfList(x, o.l) || {}).json) || cardMine(x, o))) return true;
+      if (o) return (boardOk(x, (boardOfList(x, o.l) || {}).json) || cardMine(x, o)) && cardRules(x, d, o);
       const b = boardOfList(x, j.l);
-      return !o && (!b || boardOk(x, b.json) || b.json.kind === 'requests');
+      return (!b || boardOk(x, b.json) || b.json.kind === 'requests') && cardRules(x, d, null);
     }
     case 'goal': { const lv = o ? o.lvl : j.lvl; return x.ceo || (lv !== 'company' && lv === j.lvl && headOf(x, lv)); }
     case 'port': return x.ceo || ((o ? o.owner : j.owner) === x.me && j.owner === x.me);
@@ -104,6 +106,80 @@ function mayWrite(x, d, old) {
     case 'tpl': case 'ctpl': return !o || old.by === x.me || x.ceo;
   }
   return false;
+}
+// ---------------- task rules (Khaled, 14 Nov 2026), the same as in server/Boards.gs ----------------
+/*
+   The task creator, the head(s) of the board's department and the active CEO change the details, archive and delete.
+   People the task is given to do the work: tick, complete, move between lists, attach files, approve, redirect it to
+   someone in their own team, set a supervisor and ask the creator to archive. Everyone else who sees it: comment and follow.
+   Cards made before this rule have no creator: it is taken from the first entry of the card's history ("added" / "sent
+   this request"); if there is none, the department head(s) count as the creator. */
+function logCreator(c) {
+  const f = (c.log || []).filter(e => e && typeof e === 'object').slice().sort((a, b) => (a.at || 0) - (b.at || 0))[0];
+  return f && (f.k === 'l_added' || f.k === 'l_req') && f.by ? key(f.by) : '';
+}
+function headsOf(x, dep) { return dep ? Object.keys(x.mem).filter(e => depts(x.mem[e])[dep] === 'head') : []; }
+function creators(x, c) {
+  if (c.by) return [key(c.by)];
+  const lc = logCreator(c); if (lc) return [lc];
+  const b = boardOfList(x, c.l); return headsOf(x, b && b.json ? b.json.dept : '');
+}
+function team(x, p) { const m = depts(x.mem[key(p)]); return x.ceo || Object.keys(x.depts).some(k => !!m[k]); }
+/* the same value whatever the order of its keys (the database may store keys in another order) */
+function canon(v) { return JSON.stringify(v, (k, x) => x && typeof x === 'object' && !Array.isArray(x) ? Object.keys(x).sort().reduce((o, q) => { o[q] = x[q]; return o; }, {}) : x); }
+function norm(v) {
+  if (v == null || v === '' || v === false || (Array.isArray(v) && !v.length) || (typeof v === 'object' && !Array.isArray(v) && !Object.keys(v).length)) return null;
+  return canon(v);
+}
+const CARD_DETAILS = ['title', 'desc', 'start', 'due', 'priority', 'type', 'repeat', 'waits', 'requester', 'fromDept'];
+const CARD_WORK = ['l', 'done', 'doneAt', 'appr', 'atts', 'cover'];
+const CARD_KNOWN = CARD_DETAILS.concat(CARD_WORK, ['id', 'by', 'labels', 'f', 'check', 'subs', 'archived', 'archivedAt', 'arq', 'members', 'owner', 'sup', 'follow', 'log']);
+function cardRules(x, d, o) {
+  const j = d.json || {};
+  if (!o) { if (!d.del) j.by = x.me; return true; }                 // a new card: whoever saves it is its creator
+  const b = (boardOfList(x, o.l) || {}).json || {};
+  const cr = creators(x, o), ed = x.ceo || cr.indexOf(x.me) >= 0 || headOf(x, b.dept);
+  if (d.del) return ed;
+  // the creator never changes (only the CEO may); a card without one keeps the one worked out from its history
+  const want = o.by ? key(o.by) : logCreator(o);
+  if (j.by && key(j.by) !== want && !x.ceo) return false;
+  if (!j.by && want) j.by = want;
+  if (ed) return true;
+  const as = (o.members || []).indexOf(x.me) >= 0;
+  const same = k => norm(o[k]) === norm(j[k]);
+  if (!CARD_DETAILS.every(same)) return false;
+  if (!as && !CARD_WORK.every(same)) return false;
+  if (Object.keys(Object.assign({}, o, j)).some(k => CARD_KNOWN.indexOf(k) < 0 && !same(k))) return false;
+  // labels and custom fields: only the clean-up after a head removed one from the board
+  const ol = o.labels || [], nl = j.labels || [], bl = (b.labels || LABEL_IDS.map(id => ({ id }))).map(l => l.id);
+  if (nl.some(l => ol.indexOf(l) < 0) || ol.some(l => nl.indexOf(l) < 0 && bl.indexOf(l) >= 0)) return false;
+  const of = o.f || {}, nf = j.f || {}, bf = (b.fields || []).map(f => f.id);
+  if (Object.keys(Object.assign({}, of, nf)).some(k => norm(of[k]) !== norm(nf[k]) && (norm(nf[k]) !== null || bf.indexOf(k) >= 0))) return false;
+  // checklist and subtasks: the items stay as they are; ticking is work
+  const oc = o.check || [], nc = j.check || [];
+  if (oc.length !== nc.length || oc.some((it, i) => !nc[i] || it.t !== nc[i].t || (!as && !!it.d !== !!nc[i].d))) return false;
+  const os = o.subs || [], ns = j.subs || [];
+  if (os.length !== ns.length || os.some((s, i) => { const n = ns[i]; return !n || s.id !== n.id || s.t !== n.t || norm(s.who) !== norm(n.who) || norm(s.due) !== norm(n.due)
+    || ((!!s.done !== !!n.done || norm(s.doneAt) !== norm(n.doneAt)) && !as && key(s.who) !== x.me); })) return false;
+  if (!!j.archived !== !!o.archived) return false;                    // archive and restore: creator, head or CEO
+  if (!same('arq')) {                                                 // "Ask to archive": only someone the task is given to, for themselves
+    if (!as) return false;
+    if (j.arq ? key(j.arq.by) !== x.me || (o.arq && key(o.arq.by) !== x.me) : key((o.arq || {}).by) !== x.me) return false;
+  }
+  if (!same('members') || !same('owner')) {                           // redirect: give my place to someone in my own team
+    const om = o.members || [], nm = j.members || [];
+    const gone = om.filter(m => nm.indexOf(m) < 0), added = nm.filter(m => om.indexOf(m) < 0);
+    if (!as || gone.length !== 1 || gone[0] !== x.me || added.length !== 1 || !team(x, added[0])) return false;
+    if (j.owner && nm.indexOf(j.owner) < 0) return false;
+  }
+  if (!same('sup') && (!as || (j.sup && !team(x, j.sup)))) return false;   // supervisor: set by someone the task is given to, from their team
+  if (!same('follow') && !as) {                                       // others may only follow or unfollow themselves
+    const of2 = o.follow || [], nf2 = j.follow || [];
+    if (of2.concat(nf2).some(p => (of2.indexOf(p) < 0) !== (nf2.indexOf(p) < 0) && p !== x.me)) return false;
+  }
+  const ol2 = o.log || [], nl2 = j.log || [];                          // the history only grows (comments, moves)
+  if (nl2.length < ol2.length || ol2.some((e, i) => canon(e) !== canon(nl2[i]))) return false;
+  return true;
 }
 function scopeOf(kind, id, j) {
   if (kind === 'msg') return String(j.k || '');
