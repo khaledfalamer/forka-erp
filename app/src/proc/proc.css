@@ -311,6 +311,9 @@ tr.r-due td:first-child{box-shadow:inset 3px 0 0 var(--fk-warning)}
 .rq-close{margin-top:14px;border:1.5px solid var(--fk-bronze-light);background:#fbf6ef;border-radius:12px;padding:14px 16px}
 textarea.miss{border-color:var(--fk-danger);background:var(--fk-danger-bg)}
 button.btn.miss{border-color:var(--fk-danger);background:var(--fk-danger-bg);color:var(--fk-danger)}
+.rqboard{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin-top:14px;padding-top:14px;border-top:1px solid var(--fk-line)}
+.rqboard .rqboardb{display:inline-flex;align-items:center;gap:7px;text-decoration:none}.rqboard .rqboardb svg{width:16px;height:16px;flex:none}
+.rqboard .hint{white-space:normal;flex:1 1 220px;min-width:0}.rqboard .banner{flex-basis:100%;margin:0}
 .rq-msg.t-status{padding:6px 12px}
 /* bill */
 .bill .bill-mark{font-family:var(--fk-serif);font-weight:600;font-size:30px;letter-spacing:7px;text-transform:uppercase;line-height:1}

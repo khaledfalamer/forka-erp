@@ -3,8 +3,7 @@
 import {
   t, lang, esc, dd, fmt, RQST, RQOPEN, daysTo, rqDraft, RQK, DEPTS, RQLOC, me, RQI, nm, rqAge, rqOpenId, recs, sideTabs,
   rqF, rqG, RQ_FD, rqInGroup, RQIN, RQGO, RQCH, RQS, rqMore, rqViews, rqCurView, rqNaming, rec, SHEET, editMode, side,
-  SPECF, SPECREQ, rqMiss, rqClose, RQREAS, suppliers,
-} from '../core';
+  SPECF, SPECREQ, rqMiss, rqClose, RQREAS, suppliers, rqBoardCan, BOARD_CARD_URL, rqBoardBusy, rqBoardMsg } from '../core';
 import { paint, svg, css, offAtStart, Fragment } from '../ui';
 import { banner } from './shell';
 
@@ -111,7 +110,7 @@ export function vPrq(mode) {
 
 export function vRqDetail(id, proc) {
   const r = Object.assign({ id }, rec('Requests', id)); if (!r.no) return null; const st = r.status || 'new'; const can = (!SHEET || editMode); const editable = proc && can && side !== 'ceo' && !['done', 'rejected', 'cancelled'].includes(st);
-  const log = (r.log || []).filter(e => proc || ['msg', 'reply', 'status'].includes(e.type)); const thread = log.filter(e => e.type !== 'status'), hist = log.filter(e => e.type === 'status');
+  const log = (r.log || []).filter(e => proc || ['msg', 'reply', 'status', 'board'].includes(e.type)); const thread = log.filter(e => e.type !== 'status'), hist = log.filter(e => e.type === 'status');
   const steps = ['new', 'review', 'sourcing', 'quotes', 'approval', 'ordered', 'done']; const st0 = st === 'later' || st === 'rejected' ? (r.prevStatus || 'new') : st; const si = st0 === 'approved' ? steps.indexOf('approval') + 0.5 : steps.indexOf(st0); const ceo = side === 'ceo';
   const specKeys = SPECF[r.kind] || SPECF.other; const req = SPECREQ[r.kind] || SPECREQ.other; const spec = r.spec || {}; const M = rqMiss(r);
   const opts = r.opts || []; const showSpec = proc && st !== 'new'; const showOpts = proc && (RQGO.includes(st) || st === 'done' || (['later', 'rejected'].includes(st) && RQGO.includes(r.prevStatus)));
@@ -131,7 +130,7 @@ export function vRqDetail(id, proc) {
     <div className="fld" style={css('grid-column:1/-1')}><label>{(rqClose.to === 'ceoback' ? t('ceoNoteReq') : t('rqNote')) + ' '}<REQ_STAR /></label><textarea id="rqcn" dir="auto" className={String(rqClose.note || '').trim() ? '' : 'miss'} style={css('min-height:70px')} defaultValue={rqClose.note || ''}></textarea></div></div>
     <div className="controls" style={css('margin-top:10px')}><span className="sp"></span><button className="btn" data-act="rqcloseno">{t('cancelS')}</button><button className="btn btn-primary" data-act="rqcloseok">{t('rqConfirm')}</button></div></div> : null;
   const why = ['later', 'rejected'].includes(st) && r.closeReason ? <div className={`banner ${st === 'rejected' ? 'bn-warn' : 'bn-info'}`} style={css('margin-top:12px')}><b>{t('rs_' + st)}</b>{' · ' + t('rr_' + r.closeReason) + (r.closeNote ? ' — ' + r.closeNote : '') + (r.reviewOn ? ' · ' + t('rqReviewOn') + ' ' : '')}{r.reviewOn ? <bdi>{r.reviewOn}</bdi> : null}</div> : null;
-  const msg = (e, key) => <div key={key} className={`rq-msg t-${e.type}`}><div className="hint"><bdi dangerouslySetInnerHTML={{ __html: dd(e.at, 1) }} />{' · '}<b>{e.by || ''}</b>{' · ' + t('lt_' + e.type)}{proc && ['note', 'call', 'meet', 'ceo'].includes(e.type) ? <>{' '}<span className="badge b-mute">{t('rqInternal')}</span></> : null}</div><div style={css('white-space:pre-wrap')} dir="auto">{e.text}</div></div>;
+  const msg = (e, key) => <div key={key} className={`rq-msg t-${e.type}`}><div className="hint"><bdi dangerouslySetInnerHTML={{ __html: dd(e.at, 1) }} />{' · '}<b>{e.by || ''}</b>{' · ' + t('lt_' + e.type)}{proc && ['note', 'call', 'meet', 'ceo'].includes(e.type) ? <>{' '}<span className="badge b-mute">{t('rqInternal')}</span></> : null}</div><div style={css('white-space:pre-wrap')} dir="auto">{e.type === 'board' ? t('rqBoardOpened') : e.text}</div></div>;
   const hst = (e, key) => { const p = String(e.text || '').split('|'); return <li key={key} className="rq-msg t-status"><div>{rqBadge(p[0])}{p.length > 1 ? <>{' '}<span dir="auto">{p.slice(1).join(' — ')}</span></> : null}</div><div className="hint"><bdi dangerouslySetInnerHTML={{ __html: dd(e.at, 1) }} />{' · '}<b>{e.by || ''}</b></div></li>; };
   const meta = [[t('rqQty'), <><bdi>{r.qty ?? '—'}</bdi>{' ' + (r.unit || '')}</>], [t('rqNeed'), r.needBy ? <bdi>{rqNeedTxt(r, 1)}</bdi> : '—'], [t('rqBudget').replace(/ \(.*\)/, ''), r.budget ? <bdi>{`AED ${fmt(+r.budget)}`}</bdi> : '—']];
   return <><div className="controls"><button className="btn" data-act="rqback">{(lang === 'ar' ? '→' : '←') + ' ' + (side === 'ceo' ? t('appr') : proc ? t(RQIN.includes(st) ? 'prq' : 'pon') : t('rmine'))}</button><span className="sp"></span>{r.urg === 'urgent' ? rqUrgB() : null}{rqBadge(st)}</div>
@@ -150,6 +149,7 @@ export function vRqDetail(id, proc) {
         {A.length ? <div className="controls rqacts">{A.map((x, i) => <Fragment key={i}>{x}</Fragment>)}</div> : null}
         {['approval', 'approved', 'ordered', 'done'].includes(st) || (r.ceo && r.ceo.decision) ? rqCeoBox(r) : null}
         {!proc && st === 'new' && can ? <div className="controls rqacts"><span className="sp"></span><button className="btn" data-rqgo="cancelled">{t('rqCancel')}</button></div> : null}
+        {rqBoardHtml(r)}
         {closeBox}</section>
       {showOpts ? <div className="card rqd-wide"><h3 className="sec">{t('rqOpts')}</h3><p className="hint" style={css('white-space:normal;margin:-6px 0 12px')}>{t('rqOptsH')}</p>
         {opts.length ? <div style={css('overflow:auto')}><table><thead><tr><th>{t('rqOptSup')}</th><th className="n">{t('rqOptPrice')}</th><th>{t('rqOptLead')}</th><th>{t('rqOptNote')}</th><th>{t('rqQuote')}</th><th>{t('rqPick')}</th><th></th></tr></thead><tbody>{opts.map((o, i) => <tr key={i} className={o.pick ? 'r-ok' : ''}>
@@ -195,4 +195,13 @@ export function rqCeoBox(r) {
     <div><div className="hint">{t('ceoSays')}</div>{r.status === 'approval' ? <><span className="badge b-warn">{t('rs_approval')}</span>{' '}<span className="hint" dangerouslySetInnerHTML={{ __html: `${t('rqWaitSince')} ${dd(r.sentCeoAt)}` }} /></>
       : c.decision === 'approved' ? <><span className="badge b-ok">{t('rqApproved')}</span>{' '}<span className="hint" dangerouslySetInnerHTML={{ __html: `${esc(c.by || '')} · ${dd(c.at)}` }} /></>
         : c.decision === 'returned' ? <><span className="badge b-bad">{t('ap_back')}</span>{' '}<span className="hint" dangerouslySetInnerHTML={{ __html: dd(c.at) }} />{c.note ? <div style={css('margin-top:4px')}>{c.note}</div> : null}</> : '—'}</div></div>;
+}
+
+/* "Open in Board" (Khaled, 14 Nov 2026): one card per request on the Board "Purchase requests". Same as the live page. */
+export function rqBoardHtml(r) {
+  if (!rqBoardCan(r)) return null;
+  const c = r.boardCard;
+  if (c && c.id) return <div className="rqboard"><a className="btn rqboardb" id="rqboard" href={BOARD_CARD_URL + encodeURIComponent(c.id)}>{rqI('board')}<span>{t('rqBoardGo')}</span></a></div>;
+  const busy = rqBoardBusy === r.id, m = rqBoardMsg && rqBoardMsg.id === r.id ? rqBoardMsg.k : '';
+  return <div className="rqboard"><button className="btn rqboardb" id="rqboard" data-rqboard={r.id} ref={offAtStart(busy)}>{rqI('board')}<span>{t(busy ? 'rqBoardWait' : 'rqBoardOpen')}</span></button><span className="hint">{t('rqBoardH')}</span>{m ? <div className="banner bn-warn" role="alert">{t(m)}</div> : null}</div>;
 }

@@ -14,7 +14,7 @@ CARD = 'Instagram posts - week 1'      # December Campaign: created by the Marke
 ROTA = 'Staff rota for opening week'   # Ajman Branch Opening: created by the Operations Head (oh), given to the Operations Supervisor (os)
 
 async def main():
-    srv = subprocess.Popen([sys.executable, '-m', 'http.server', str(PORT), '--bind', '127.0.0.1'], cwd=ROOT, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL); time.sleep(1)
+    srv = subprocess.Popen([sys.executable, '-m', 'http.server', str(PORT), '--bind', '127.0.0.1'], cwd=os.environ.get('SITE_ROOT', ROOT), stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL); time.sleep(1)
     try:
         async with async_playwright() as p:
             b = await p.chromium.launch(executable_path=os.environ.get('PW_CHROMIUM') or None)
@@ -167,7 +167,7 @@ async def main():
             await shot('6-card-arabic.png')
             await pg.keyboard.press('Escape'); await pg.click('[data-a=lang][data-v=en]')
             check('No page errors', not errs, errs[:3])
-            src = open(os.path.join(ROOT, 'boards', 'index.html'), encoding='utf-8').read() + await pg.inner_text('body')
+            src = (open(os.path.join(ROOT, 'boards', 'index.html'), encoding='utf-8').read() if not os.environ.get('SITE_ROOT') else ''.join(open(f, encoding='utf-8').read() for f in __import__('glob').glob(ROOT + '/app/src/board/**/*.ts*', recursive=True))) + await pg.inner_text('body')
             check('No emojis', not re.search('[\U0001F300-\U0001FAFF\u2600-\u27BF]', src))
             await b.close()
     finally:

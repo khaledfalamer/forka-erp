@@ -5,8 +5,7 @@ import {
   invEdit, saving, rqNewCount, rqApprCount, rqGoCount, unlocked, omSub, sideTabs, tabName, TAB_IC, CFG, eff, notifOpen,
   gateSide, lastTab, OMAN, poOpen, poAutoRestock, vSups, omr, EDIT_SEL, canEl, canSeeBank, hideBank, invAfter, calPrep,
   calEl, calClose, grnOpen, status, calc, stockVal, fmt, DOOR_IC, doorBadge, ERP, ERP_SIDES, gateMsg, DEMO_PIN, pMini, pSide,
-  __set,
-} from '../core';
+  __set, rqDeepLink } from '../core';
 import { paint, svg, css, offAtStart, Fragment } from '../ui';
 import { vFill } from './inv';
 import { vSum, vAna } from './sup';
@@ -86,7 +85,7 @@ export function renderTop() {
 }
 
 export function render() {
-  __set('_lead', null);
+  __set('_lead', null); rqDeepLink();
   document.documentElement.lang = lang; document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
   renderTop(); const P: any = document.getElementById('page');
   if (!unlocked) { paint(P, gateSide ? vPin() : vLanding()); __set('lastTab', ''); const pp = document.getElementById('pin'); if (pp) pp.focus(); return; }

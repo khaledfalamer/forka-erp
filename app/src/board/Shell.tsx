@@ -96,7 +96,7 @@ export function AppView() {
         {V.prof ? profHTML() : null}
         {V.sp ? spaceHTML() : null}
         {V.pop ? popHTML() : null}
-        {V.toast ? <div className="toast" role="status">{V.toast}</div> : null}
+        {V.toast ? <div className="toast" role="status">{V.toast.m || V.toast}{V.toast.undo ? <button className="tundo" data-a="undo" data-v={V.toast.undo}>{t('undo')}</button> : null}</div> : null}
         {ASK ? (
           <div className="ov" style={{ zIndex: 60, alignItems: 'center' }}>
             <div className="md" role="alertdialog" aria-modal="true" style={{ maxWidth: 400, padding: 22 }}>

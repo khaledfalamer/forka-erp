@@ -2,8 +2,7 @@
 import {
   D, V, PEOPLE, DEPTS, lang, t, LIVE, pgState, dlist, meP, boards, cardsOf, stats, headOfDept, pname, bname, deptName, ago,
   boardPeople, dnames, PRANGES, myState, label, LN, listOf, itCls, itDate, secName, myItems, allCards, ME, day, today,
-  dueCls, fmtDay, pfState, lastMod, bOwner, depts, dept, goalPct, goalsSeen, isCEO, headAny, canGoal, scopeD, inD,
-} from '../core';
+  dueCls, fmtDay, pfState, lastMod, bOwner, depts, dept, goalPct, goalsSeen, isCEO, headAny, canGoal, scopeD, inD, creatorsOf, cardBoard } from '../core';
 import { ic, av, pbar, stChip, apChip, chevTd, chevTh, css, Fragment } from '../ui';
 import { calHTML } from './board';
 
@@ -99,6 +98,7 @@ export function mineHTML() {
         <td>{c.done ? <span className="st on"><i></i>{t('doneTag')}</span> : <span className="st none">{LN(listOf(c.id))}</span>}</td>
         <td className="sm">{c.members.length ? c.members.map(m => pname(m)).join(', ') : ''}</td>
         <td className="num">{c.due ? <span className={`due ${dueCls(c)}`} style={css('display:inline-flex;gap:4px;align-items:center')}>{ic('clock')}{fmtDay(c.due)}</span> : null}</td></tr>)}</tbody></table></div></> : null}
+      {myRulesHTML()}
     </>;
   }
   else if (tab === 'board') {
@@ -190,4 +190,19 @@ export function goalFormHTML() {
         <div className="row" style={css('justify-content:flex-end;margin-top:18px')}>{f.id && !ro ? <button className="btn dan" data-a="gdel" style={css('margin-inline-end:auto')}>{t('delGoal')}</button> : null}<button className="btn sec" data-a="gx">{t('cancel')}</button>{ro ? null : <button className="btn" data-a="gsave">{t('saveB')}</button>}</div>
       </fieldset></div></div></div>
   );
+}
+
+
+/* Under My tasks (Board task rules, Khaled 14 Nov 2026): archive requests waiting for you, tasks you supervise, your archived tasks. */
+export function myRulesHTML() {
+  const me = ME(), mineC = c => creatorsOf(c).includes(me);
+  const live = Object.values(D.cards).filter((c: any) => { const l = listOf(c.id); return l && !l.archived && cardBoard(c); }) as any[];
+  const arqs = live.filter(c => c.arq && !c.archived && mineC(c)), sup = live.filter(c => c.sup === me && !c.done && !c.archived),
+    arch = live.filter(c => c.archived && mineC(c)).sort((a, b) => (b.archivedAt || 0) - (a.archivedAt || 0));
+  const row = (c, extra) => <tr key={c.id} className="click" data-a="open" data-id={c.id}><td><b dir="auto">{c.title}</b><div className="sm">{bname(cardBoard(c))}</div></td><td className="sm">{extra || ''}</td></tr>;
+  return <>
+    {arqs.length ? <><div className="mine-g">{ic('archive')}{t('myArqs')}{' '}<span className="c">{arqs.length}</span></div><div className="tw"><table className="tbl" id="myarqs"><tbody>{arqs.map(c => row(c, t('arqBy', { p: pname(c.arq.by) }) + ' · ' + ago(c.arq.at)))}</tbody></table></div></> : null}
+    {sup.length ? <><div className="mine-g">{ic('eye')}{t('supervising')}{' '}<span className="c">{sup.length}</span></div><div className="tw"><table className="tbl" id="mysup"><tbody>{sup.map(c => row(c, c.members.map(pname).join(', ')))}</tbody></table></div></> : null}
+    {arch.length ? <><div className="mine-g">{ic('archive')}{t('myArch')}{' '}<span className="c">{arch.length}</span></div><div className="tw"><table className="tbl" id="myarch"><tbody>{arch.map(c => row(c, <>{c.archivedAt ? ago(c.archivedAt) : ''}{' '}<button className="btn sec" style={css('height:28px;padding:0 9px;font-size:12.5px;margin-inline-start:8px')} data-a="crestore" data-v={c.id}>{t('restore')}</button></>))}</tbody></table></div></> : null}
+  </>;
 }

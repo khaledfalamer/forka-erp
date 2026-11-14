@@ -13,8 +13,8 @@ export { render };
 export let fkI=0;
 export const CFG=window.FORKA_CONFIG||{};
 export const SHEET=!!CFG.SHEET_URL;
-export let REFRESH=null,ERP='',ERP_SIDES=null;
-(function(){try{const m=location.hash.match(/erp=([A-Za-z0-9-]{20,120})/);if(m){sessionStorage.setItem('pp-erp',m[1]);history.replaceState(null,'',location.pathname+location.search)}ERP=sessionStorage.getItem('pp-erp')||''}catch(_){}})();
+export let REFRESH=null,ERP='',ERP_SIDES=null,RQ_LINK='';
+(function(){try{const q=location.hash.match(/rq=([A-Za-z0-9_\-.~:@+]{1,60})/);if(q){sessionStorage.setItem('pp-rq',decodeURIComponent(q[1]));if(!/erp=/.test(location.hash))history.replaceState(null,'',location.pathname+location.search)}RQ_LINK=sessionStorage.getItem('pp-rq')||''}catch(_){}try{const m=location.hash.match(/erp=([A-Za-z0-9-]{20,120})/);if(m){sessionStorage.setItem('pp-erp',m[1]);history.replaceState(null,'',location.pathname+location.search)}ERP=sessionStorage.getItem('pp-erp')||''}catch(_){}})();
 export let pin='',pinNeeded=false,editMode=false,saving=false,editMsg='',myRole='';
 export const EDIT_SEL='[data-f],[data-sf],button[data-act="ok"],button[data-act="rmitem"],button[data-act="invedit"],button[data-act="add"],button[data-act="addsup"],button[data-act="tog"],button[data-act="rate"],button[data-act="ontime"],button[data-act="neweval"],button[data-act="newdeliv"],button[data-act="newgrn"],button[data-act="gset"],button[data-act="gdel"],button[data-act="mdel"],button[data-act="gstatus"],button[data-act="gstock"],[data-gl],[data-media],[data-scan],#gadd,[data-rf],button[data-act="useprice"]';
 export const T={
@@ -1037,9 +1037,41 @@ export async function boot(){
       err=>{clearTimeout(timer);mode=err&&err.code==='revoked'?'local':'offline';render()});
   }catch(e){clearTimeout(timer);mode='local';render()}
 }
+/* ===== "Open in Board" (Khaled, 14 Nov 2026): one card per request on the Board "Purchase requests" (Procurement department), so
+   Purchasing and the requester can share logos, designs and questions. Shown to Purchasing, the CEO and the person who asked (by email).
+   The page only says which request: the Procurement server checks the person and the request, makes the card through the Boards
+   server, and keeps the card on the request (boardCard). Not in the Oman section. */
+Object.assign(T.en,{rqBoardOpen:'Open in Board',rqBoardGo:'Open the Board card',rqBoardH:'One card on the Board "Purchase requests" to share logos, designs and questions with the requester.',
+ rqBoardWait:'Opening the Board...',rqBoardSetup:'The Board link is not set up yet. Please ask Khaled to finish the set-up.',rqBoardErr:'The Board could not be reached. Please try again in a minute.',
+ rqBoardRole:'Only Purchasing, the CEO and the person who asked can open this request in Board.',rqBoardDone:'The Board card is ready',lt_board:'Board',rqBoardOpened:'Opened a Board card for this request'});
+Object.assign(T.ar,{rqBoardOpen:'افتح في اللوحة',rqBoardGo:'افتح بطاقة اللوحة',rqBoardH:'بطاقة واحدة في لوحة "طلبات الشراء" لتبادل الشعارات والتصاميم والأسئلة مع مقدم الطلب.',
+ rqBoardWait:'جارٍ فتح اللوحة...',rqBoardSetup:'ربط اللوحة غير مُعدّ بعد. يرجى الطلب من خالد إكمال الإعداد.',rqBoardErr:'تعذّر الوصول إلى اللوحة. حاول مرة أخرى بعد دقيقة.',
+ rqBoardRole:'فقط المشتريات والرئيس التنفيذي ومقدم الطلب يمكنهم فتح هذا الطلب في اللوحة.',rqBoardDone:'بطاقة اللوحة جاهزة',lt_board:'اللوحة',rqBoardOpened:'فتح بطاقة في اللوحة لهذا الطلب'});
+RQI.board='<rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9.5 4v16M14.5 4v10"/>';
+export const BOARD_CARD_URL='https://erp.forka.com/boards/#card=';
+export let rqBoardBusy=null,rqBoardMsg=null;
+export function rqBoardCan(r){if(!SHEET||OMAN()||!r||!r.no)return false;const em=String(myEmail||'').trim().toLowerCase(),S=ERP_SIDES||[];
+  return S.includes('plan')||S.includes('ceo')||(!!em&&String(r.byEmail||'').trim().toLowerCase()===em)}
+export async function rqBoard(id){if(rqBoardBusy)return;rqBoardBusy=id;rqBoardMsg=null;render();
+  const j=await post({pin,side,boardCard:id});rqBoardBusy=null;
+  if(j&&j.ok&&j.cardId){const cur=recShared.Requests[id]||{};recShared.Requests[id]=j.rec&&j.rec.no?j.rec:Object.assign({},cur,{boardCard:{id:j.cardId,url:j.url}});
+    const lo=recLocal.Requests[id];if(lo&&lo.log&&j.rec&&j.rec.log){const add=j.rec.log.filter(e=>e.type==='board'&&!lo.log.some(x=>x.type==='board'));if(add.length)lo.log=lo.log.concat(add)}   // a change still being saved keeps the note
+    toast(t('rqBoardDone'))}
+  else rqBoardMsg={id,k:j&&j.error==='nosetup'?'rqBoardSetup':j&&j.error==='role'?'rqBoardRole':'rqBoardErr'};
+  render()}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-rqboard]');if(b){e.preventDefault();rqBoard(b.dataset.rqboard)}});
+/* https://procurement.forka.com/#rq=<id> (the link on the Board card) opens that request once the data is in */
+export function rqDeepLink(){if(!RQ_LINK||mode!=='live')return;const r=recShared.Requests&&recShared.Requests[RQ_LINK];if(!r||OMAN())return;
+  const st=r.status||'new',T2=sideTabs()||[];let tb='';
+  if(T2.includes('prq'))tb=RQIN.includes(st)?'prq':'pon';else if(T2.includes('appr'))tb='appr';else if(T2.includes('rmine'))tb='rmine';
+  if(!tb)return;tab=tb;rqOpenId=RQ_LINK;RQ_LINK='';try{sessionStorage.removeItem('pp-rq')}catch(_){}}
+
 /** For the browser checks and the console: change a top-level value from outside (as the old page allowed). */
-export const SETTABLE = ["openMail", "ACT", "BASE", "BGWAIT", "BRANCHES", "EMIRATES", "ERP", "ERP_SIDES", "LPLOC", "OUTBOX", "PEOPLE", "PRELOAD", "REFRESH", "REGION", "SBASE", "SNAPOFF", "VER", "_lead", "abcF", "anaTab", "apF", "billOpen", "calEl", "db", "delivOpen", "editMode", "editMsg", "evalOpen", "fkI", "fl", "gateMsg", "gateSide", "grnDoc", "grnOpen", "invAvg", "invEdit", "invH", "invHK", "invOpen", "invR", "invWin", "isOwner", "issueAsk", "ivMenu", "ivNaming", "ivRaf", "keepIds", "keepKey", "lang", "lastTab", "local", "me", "mode", "mvF", "myBranch", "myEmail", "myRole", "notifOpen", "omSub", "payF", "pin", "pinNeeded", "poAutoDone", "poAutoMsg", "poDoc", "poF", "poOpen", "ppDraft", "ppOpen", "qsT", "recLocal", "recShared", "redrawLater", "reqF", "reqOpen", "rowRank", "rowRankKey", "rqClose", "rqDraft", "rqF", "rqG", "rqMore", "rqNaming", "rqOpenId", "rqTry", "saveAgain", "saving", "scanBusy", "scanMsg", "searchT", "shared", "side", "soaAsk", "soaSup", "sq", "supLocal", "supOpen", "supRank", "supRankKey", "supShared", "tab", "uid", "unlocked", "user"];
+export const SETTABLE = ["RQ_LINK", "rqBoardBusy", "rqBoardMsg", "openMail", "ACT", "BASE", "BGWAIT", "BRANCHES", "EMIRATES", "ERP", "ERP_SIDES", "LPLOC", "OUTBOX", "PEOPLE", "PRELOAD", "REFRESH", "REGION", "SBASE", "SNAPOFF", "VER", "_lead", "abcF", "anaTab", "apF", "billOpen", "calEl", "db", "delivOpen", "editMode", "editMsg", "evalOpen", "fkI", "fl", "gateMsg", "gateSide", "grnDoc", "grnOpen", "invAvg", "invEdit", "invH", "invHK", "invOpen", "invR", "invWin", "isOwner", "issueAsk", "ivMenu", "ivNaming", "ivRaf", "keepIds", "keepKey", "lang", "lastTab", "local", "me", "mode", "mvF", "myBranch", "myEmail", "myRole", "notifOpen", "omSub", "payF", "pin", "pinNeeded", "poAutoDone", "poAutoMsg", "poDoc", "poF", "poOpen", "ppDraft", "ppOpen", "qsT", "recLocal", "recShared", "redrawLater", "reqF", "reqOpen", "rowRank", "rowRankKey", "rqClose", "rqDraft", "rqF", "rqG", "rqMore", "rqNaming", "rqOpenId", "rqTry", "saveAgain", "saving", "scanBusy", "scanMsg", "searchT", "shared", "side", "soaAsk", "soaSup", "sq", "supLocal", "supOpen", "supRank", "supRankKey", "supShared", "tab", "uid", "unlocked", "user"];
 export function __set(name, v) { switch (name) {
+  case 'RQ_LINK': RQ_LINK = v; break;
+  case 'rqBoardBusy': rqBoardBusy = v; break;
+  case 'rqBoardMsg': rqBoardMsg = v; break;
   case 'openMail': openMail = v; break; // the checks put a stand-in here so no real email opens
   case 'ACT': ACT = v; break;
   case 'BASE': BASE = v; break;

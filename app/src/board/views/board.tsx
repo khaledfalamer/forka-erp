@@ -176,6 +176,7 @@ export function cardHTML(c) {
   const fr = c.fromDept && b && c.fromDept !== b.dept ? <span className="from">{ic('inbox')}{t('fromD', { d: deptName(c.fromDept) })}</span> : null;
   const o = own(c), who = c.members.length ? [o].concat(c.members.filter(m => m !== o)) : [];
   const badgeList = [
+    c.arq && !c.done ? <span key="arq" className="arqt">{ic('archive')}{t('arqTag')}</span> : null,
     c.type === 'approval' ? <Fragment key="ap">{apChip(c)}</Fragment> : null,
     wt ? <span key="wt" className="wt">{ic('link')}{t('waitTag')}</span> : null,
     fr ? <Fragment key="fr">{fr}</Fragment> : null,

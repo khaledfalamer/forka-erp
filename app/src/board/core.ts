@@ -63,6 +63,7 @@ export const ICON: Record<string,string>={
   grid:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>',
   stamp:'<path d="M9 3h6l-1 7h-4z"/><path d="M5 14h14v3H5zM4 21h16"/>', up:'<path d="M18 15l-6-6-6 6"/>', updown:'<path d="M8 9l4-4 4 4M8 15l4 4 4-4"/>', alert:'<circle cx="12" cy="12" r="9"/><path d="M12 7v6M12 16.5v.5"/>', list:'<path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/>'
 };
+Object.assign(ICON,{redir:'<path d="M4 18v-3a5 5 0 0 1 5-5h11"/><path d="M16 6l4 4-4 4"/>',lock:'<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>'});
 export const uid=p=>p+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
 export const T: any={
 en:{app:'Boards',search:'Search this board',addCard:'Add a card',addCardBtn:'Add card',cardPh:'Enter a title for this card',addList:'Add another list',listPh:'Enter list name',addListBtn:'Add list',cancel:'Cancel',
@@ -88,7 +89,7 @@ en:{app:'Boards',search:'Search this board',addCard:'Add a card',addCardBtn:'Add
   back:'Back',boardsOf:'{d} boards',you:'you',
   newTask:'New task',collapse:'Collapse or expand the menu',ntTitle:'Task',ntTitlePh:'What needs to be done?',forDept:'Department',onBoard:'Board',inListL:'List',assignTo:'Who will do it',
   assignHint:'Leave empty and the {d} head will assign it.',priority:'Priority',p_low:'Low',p_normal:'Normal',p_high:'High',p_urgent:'Urgent',
-  checkLines:'Checklist (one item per line)',createTask:'Create task',need:'Fill in the boxes in red.',reqBoard:'Requests to {d}',asReq:'Request to {d}',
+  checkLines:'Checklist (one item per line)',createTask:'Create task',need:'Fill in the boxes in red.',reqBoard:'Requests to {d}',procBoard:'Purchase requests',fromProc:'From Procurement: {n}',fromProcH:'Open this purchase request in Procurement',lb_preq:'Purchase request',asReq:'Request to {d}',
   reqNote:'This goes to {d} as a request. Their head sees it first and assigns it. You can follow it in My tasks.',requested:'My requests to other departments',
   fromD:'From {d}',reqBy:'requested by {p} ({d})',moveBoard:'Move to board',l_req:'sent this request from {a}',roNote:'You asked for this task. You can follow it and comment.',
   stateL:'Where it is',doneTag:'Done',
@@ -181,7 +182,7 @@ ar:{app:'اللوحات',search:'بحث في هذه اللوحة',addCard:'إض�
   back:'رجوع',boardsOf:'لوحات {d}',you:'أنت',
   newTask:'مهمة جديدة',collapse:'طي القائمة أو فتحها',ntTitle:'المهمة',ntTitlePh:'ما المطلوب إنجازه؟',forDept:'القسم',onBoard:'اللوحة',inListL:'القائمة',assignTo:'من سينفّذها',
   assignHint:'اتركها فارغة وسيُسندها مسؤول {d}.',priority:'الأولوية',p_low:'منخفضة',p_normal:'عادية',p_high:'عالية',p_urgent:'عاجلة',
-  checkLines:'قائمة المهام (بند في كل سطر)',createTask:'إنشاء المهمة',need:'عبّئ الخانات الحمراء.',reqBoard:'طلبات إلى {d}',asReq:'طلب إلى {d}',
+  checkLines:'قائمة المهام (بند في كل سطر)',createTask:'إنشاء المهمة',need:'عبّئ الخانات الحمراء.',reqBoard:'طلبات إلى {d}',procBoard:'طلبات الشراء',fromProc:'من المشتريات: {n}',fromProcH:'افتح طلب الشراء هذا في المشتريات',lb_preq:'طلب شراء',asReq:'طلب إلى {d}',
   reqNote:'تُرسل إلى {d} كطلب. يراها مسؤول القسم أولاً ويُسندها. يمكنك متابعتها في مهامي.',requested:'طلباتي من الأقسام الأخرى',
   fromD:'من {d}',reqBy:'طلبها {p} ({d})',moveBoard:'نقل إلى لوحة',l_req:'أرسل هذا الطلب من {a}',roNote:'أنت طلبت هذه المهمة. يمكنك متابعتها والتعليق.',
   stateL:'أين وصلت',doneTag:'منجزة',
@@ -251,6 +252,26 @@ ar:{app:'اللوحات',search:'بحث في هذه اللوحة',addCard:'إض�
   anyPri:'أي أولوية',ownerF:'المسؤول',priF:'الأولوية',searchingFor:'بحث: {x}',clearSearch:'مسح البحث',cardsN:'{n} بطاقات',addTo:'إضافة بطاقة إلى {x}',moreN:'+{n} أخرى',dayTitle:'المهام المستحقة {d}',noTasksDay:'لا توجد مهام مستحقة في هذا اليوم.',newOnDay:'مهمة جديدة في هذا اليوم',openDay:'فتح {d}',
   tlNow:'اليوم',tlTasks:'المهمة',tlProjects:'المشروع',g_ess:'الأساسيات',g_sched:'المواعيد',g_det:'التفاصيل',optional:'اختياري',reqd:'مطلوب',e_title:'اكتب ما المطلوب إنجازه.',e_owner:'اختر من سينفّذها.',e_due:'اختر تاريخ الاستحقاق.',ownerNote:'أول شخص تختاره هو المسؤول.',
   attHintLive:'صور أو PDF أو ملفات Office حتى 5 ميغابايت لكل ملف. تُحفظ في مجلد خاص على Google Drive، ولا يفتحها إلا من يرى هذه المهمة.'}};
+Object.assign(T.en,{roWhy:'Why can\'t I change this?',roEd:'Only {p} (who created this task) or the department head can change the details.',roHead:'Only the head of {d} can change the details.',
+  roWork:'You can tick items, mark it complete, move it, attach files, redirect it, add a supervisor and comment.',roSee:'You can comment and follow it.',noneV:'None',notDone:'Not complete',
+  redirect:'Redirect',redirTitle:'Redirect to someone in your team',redirHint:'They take your place on this task. The task creator is told.',noTeam:'Nobody in your team can take it on this board.',
+  l_redir:'redirected this task from {a} to {b}',supervisor:'Supervisor',pickSup:'Choose a supervisor',supHint:'The supervisor sees the task, gets its alerts and can comment.',
+  l_sup:'made {a} the supervisor',l_supx:'removed the supervisor',askArch:'Ask to archive',arqWhyPh:'Why? (optional)',arqSend:'Send request',arqBy:'Archive requested by {p}',
+  arqTag:'Archive requested',arqAccept:'Accept and archive',arqDecline:'Decline',arqWithdraw:'Withdraw request',arqSent:'Request sent to the task creator.',arqHint:'The task creator decides.',
+  l_arq:'asked to archive this task',l_arqok:'accepted the archive request',l_arqno:'declined the archive request',l_arqx:'withdrew the archive request',
+  n_redir:'{p} redirected a task to you',n_redirc:'{p} redirected your task to {x}',n_sup:'{p} made you the supervisor of a task',n_archreq:'{p} asked to archive your task',
+  n_archno:'{p} did not agree to archive the task',n_archok:'{p} archived the task you asked about',undo:'Undo',archUndo:'Task archived.',isArch:'This task is archived.',
+  myArch:'Archived tasks you created',myArqs:'Waiting for your OK to archive',supervising:'Tasks you supervise',redirOk:'Redirected to {p}.'});
+Object.assign(T.ar,{roWhy:'لماذا لا يمكنني تغيير هذا؟',roEd:'فقط {p} (منشئ هذه المهمة) أو رئيس القسم يمكنه تغيير التفاصيل.',roHead:'فقط رئيس قسم {d} يمكنه تغيير التفاصيل.',
+  roWork:'يمكنك وضع علامة على البنود، وإكمال المهمة، ونقلها، وإرفاق الملفات، وتحويلها، وإضافة مشرف، والتعليق.',roSee:'يمكنك التعليق ومتابعة المهمة.',noneV:'لا يوجد',notDone:'غير مكتملة',
+  redirect:'تحويل',redirTitle:'تحويل إلى شخص من فريقك',redirHint:'يحل مكانك في هذه المهمة، ويُبلَّغ منشئ المهمة.',noTeam:'لا يوجد أحد من فريقك يمكنه استلامها في هذه اللوحة.',
+  l_redir:'حوّل هذه المهمة من {a} إلى {b}',supervisor:'المشرف',pickSup:'اختر مشرفاً',supHint:'يرى المشرف المهمة، وتصله تنبيهاتها، ويمكنه التعليق.',
+  l_sup:'جعل {a} مشرفاً',l_supx:'أزال المشرف',askArch:'طلب الأرشفة',arqWhyPh:'السبب (اختياري)',arqSend:'إرسال الطلب',arqBy:'طلب {p} أرشفة هذه المهمة',
+  arqTag:'طُلبت الأرشفة',arqAccept:'قبول وأرشفة',arqDecline:'رفض',arqWithdraw:'سحب الطلب',arqSent:'أُرسل الطلب إلى منشئ المهمة.',arqHint:'منشئ المهمة يقرر.',
+  l_arq:'طلب أرشفة هذه المهمة',l_arqok:'قبل طلب الأرشفة',l_arqno:'رفض طلب الأرشفة',l_arqx:'سحب طلب الأرشفة',
+  n_redir:'حوّل إليك {p} مهمة',n_redirc:'حوّل {p} مهمتك إلى {x}',n_sup:'جعلك {p} مشرفاً على مهمة',n_archreq:'طلب {p} أرشفة مهمتك',
+  n_archno:'لم يوافق {p} على أرشفة المهمة',n_archok:'أرشف {p} المهمة التي طلبت أرشفتها',undo:'تراجع',archUndo:'تمت أرشفة المهمة.',isArch:'هذه المهمة مؤرشفة.',
+  myArch:'مهام مؤرشفة أنشأتها',myArqs:'بانتظار موافقتك على الأرشفة',supervising:'مهام تشرف عليها',redirOk:'تم التحويل إلى {p}.'});
 export let lang: any=(()=>{try{return localStorage.getItem('fb-lang')==='ar'?'ar':'en'}catch(e){return 'en'}})();
 export const t=(k,v)=>{let s=(T[lang][k]??T.en[k]??k);if(v)Object.keys(v).forEach(x=>{s=s.split('{'+x+'}').join(v[x])});return s};
 export const DEPTS0=[{id:'adm',en:'Executive & Administration',ar:'الإدارة التنفيذية',tint:'#ece6dc',dot:'#7a6a55'},{id:'ops',en:'Operations',ar:'العمليات',tint:'#e3e8dc',dot:'#6f8a5a'},{id:'mkt',en:'Marketing',ar:'التسويق',tint:'#e2e7ec',dot:'#5b7896'},
@@ -292,7 +313,7 @@ export const lname=l=>l?(l.name||T[lang]['lb_'+l.id]||T.en['lb_'+l.id]||''):'';
 export const PALETTE=['#4f8a3c','#9a6b3f','#3e6aa1','#7a5aa6','#b8432f','#2f8a85','#a8732c','#5c6680','#b05a7a','#6b655c'];
 export const day=864e5,today=()=>{const d=new Date();d.setHours(0,0,0,0);return d.getTime()};
 export const DONE_RX=/^(done|completed?|finished|مكتمل|منجز|تم)/i;
-export const SYS={todo:['To do','للعمل'],doing:['In progress','قيد التنفيذ'],done:['Done','منجز'],week:['This week','هذا الأسبوع'],now:['Doing','نعمل عليه'],wait:['Waiting on others','بانتظار الآخرين'],
+export const SYS={needinfo:['Needs info','بحاجة لمعلومات'],todo:['To do','للعمل'],doing:['In progress','قيد التنفيذ'],done:['Done','منجز'],week:['This week','هذا الأسبوع'],now:['Doing','نعمل عليه'],wait:['Waiting on others','بانتظار الآخرين'],
   waiting:['Waiting','بالانتظار'],newreq:['New requests','طلبات جديدة'],acc:['Accepted','مقبولة'],reported:['Reported','تم الإبلاغ'],sched:['Scheduled','مجدولة'],inprog:['In progress','قيد التنفيذ'],fixed:['Fixed','تم الإصلاح']};
 export const sysKey=name=>Object.keys(SYS).find(k=>SYS[k][0]===name);
 export const LN=l=>!l?'':l.sys&&SYS[l.sys]?SYS[l.sys][lang==='ar'?1:0]:l.name;
@@ -418,7 +439,8 @@ export const myDept=()=>meP().ceo?'ceo':(V.nt&&V.nt.from&&inD(meP(),V.nt.from)?V
 export function reqBoard(dep,create,X){X=X||D;let b=Object.values(X.boards).find(x=>x.dept===dep&&x.kind==='requests');
   if(!b&&create){b={id:uid('b'),dept:dep,name:'',kind:'requests',members:[],status:null,lists:[]};['newreq','acc','done'].forEach(k=>{const l={id:uid('l'),name:SYS[k][0],sys:k,cards:[],col:false};X.lists[l.id]=l;b.lists.push(l.id)});X.boards[b.id]=b;X.order.unshift(b.id)}
   return b}
-export const bname=b=>b.kind==='requests'?t('reqBoard',{d:deptName(b.dept)}):b.name;
+export const bname=b=>b.kind==='requests'?t('reqBoard',{d:deptName(b.dept)}):b.procReq&&b.name==='Purchase requests'?t('procBoard'):b.name;
+export const procLink=c=>c&&c.proc&&/^https:\/\/procurement\.forka\.com\/[^\s"'<>]*$/.test(String(c.proc.url||''))?c.proc:null;
 export const allCards=()=>Object.values(D.boards).flatMap(b=>cardsOf(b).map(c=>({c,b})));
 export const fmtDay=ts=>new Date(ts).toLocaleDateString(lang==='ar'?'ar-AE':'en-GB',{day:'numeric',month:'short'});
 export function dueCls(c){if(!c.due)return '';if(c.done)return 'ok';const d=c.due-today();return d<0?'over':d<=day?'soon':''}
@@ -448,11 +470,25 @@ export const blockingOf=c=>Object.values(D.cards).filter(x=>!x.archived&&(x.wait
 export function waitsOn(a,b,seen){seen=seen||{};if(!a||seen[a.id])return false;seen[a.id]=1;return (a.waits||[]).some(id=>id===b.id||waitsOn(D.cards[id],b,seen))}
 export function canFinish(c){const w=openWaits(c);if(w.length){flash(t('waitFirst',{x:w[0].title}));return false}return true}
 export function afterDone(c,quiet){if(!quiet){if(c.requester)notify(c.requester,'done',c.id);
-  (c.follow||[]).filter(f=>f!==c.requester&&!c.members.includes(f)).forEach(f=>notify(f,'fdone',c.id))}
+  [...new Set((c.follow||[]).concat(c.sup?[c.sup]:[]))].filter(f=>f!==c.requester&&!c.members.includes(f)).forEach(f=>notify(f,'fdone',c.id))}
   blockingOf(c).forEach(w=>{if(!openWaits(w).length)w.members.forEach(m=>notify(m,'unblocked',w.id,{x:c.title}))})}
 export const apS=c=>(c.appr&&c.appr.s)||'pending';
 export const canDecide=c=>isCEO()||c.members.includes(ME());
 export const numFmt=v=>isNaN(+v)?v:Number(v).toLocaleString('en-GB');
+export const cardBoard=c=>{const l=listOf(c.id);return l?boardOfList(l.id):null};
+export const logCreator=c=>{const f=(c.log||[]).slice().sort((x,y)=>(x.at||0)-(y.at||0))[0];return f&&(f.k==='l_added'||f.k==='l_req')&&f.by?f.by:''};
+export function creatorsOf(c){const n=c.by||logCreator(c);if(n)return [n];const b=cardBoard(c);return b?PEOPLE.filter(p=>isHd(p,b.dept)).map(p=>p.id):[]}
+export function cap(c){const b=cardBoard(c),ed=isCEO()||creatorsOf(c).includes(ME())||(!!b&&headOf(b.dept)),as=(c.members||[]).includes(ME());
+  return {ed,as,work:ed||as,redir:!ed&&as,sup:ed||as,askArch:!ed&&as}}
+export const sameTeam=p=>isCEO()||dlist(meP()).some(d=>inD(person(p),d));
+export function teamPool(c){const b=cardBoard(c);if(!b)return [];
+  return [...new Set(boardPeople(b).concat(c.members,PEOPLE.filter(x=>inD(x,b.dept)).map(x=>x.id)))].filter(p=>p!==ME()&&!person(p).invited&&!person(p).ceo&&sameTeam(p))}
+export function edNote(c){const b=cardBoard(c),n=c.by||logCreator(c);return n?t('roEd',{p:pname(n)}):t('roHead',{d:b?deptName(b.dept):''})}
+export function doRedirect(c,to){const from=ME(),wasOwner=own(c)===from;c.members=[...new Set(c.members.map(m=>m===from?to:m))];
+  if(wasOwner||!c.members.includes(c.owner))c.owner=to;logTo(c,{k:'l_redir',a:from,b:to});
+  notify(to,'redir',c.id);[...new Set(creatorsOf(c).concat(c.sup?[c.sup]:[]))].filter(p=>p!==to).forEach(p=>notify(p,'redirc',c.id,{w:to}))}
+export function archiveCard(c,k){c.archived=true;c.archivedAt=Date.now();logTo(c,{k:k||'l_arch'});V.card=null;save();flashUndo(t('archUndo'),c.id)}
+export function restoreCard(c){c.archived=false;delete c.archivedAt;delete c.arq;logTo(c,{k:'l_restore'});save()}
 export function bMini(on){const b=document.body;on=on===undefined?!b.classList.contains('bside-mini'):on;b.classList.toggle('bside-mini',on);try{localStorage.setItem('fb-side',on?'mini':'full')}catch(_){}}
 try{if(localStorage.getItem('fb-side')==='mini')document.addEventListener('DOMContentLoaded',()=>document.body.classList.add('bside-mini'))}catch(_){}
 export const PRANGES=[7,30,90];
@@ -628,7 +664,7 @@ export function placePop(){const el=document.getElementById('pop'),a=V.pop.ancho
 export function logTo(c,e){c.log.push(Object.assign({at:Date.now(),by:ME()},e))}
 export function notify(to,k,card,x){if(!to||to===ME())return;(D.notes=D.notes||[]).push(Object.assign({id:uid('n'),to,by:ME(),k,card,at:Date.now(),read:false},x||{}));if(D.notes.length>500)D.notes=D.notes.slice(-500)}
 export function notesFor(){const me=ME(),out=(D.notes||[]).filter(x=>x.to===me&&(D.cards[x.card]||x.ch)).map(x=>Object.assign({},x,{title:x.ch?chName(x.ch):D.cards[x.card].title,
-    txt:t('n_'+x.k,{p:pname(x.by),d:deptName(x.d||''),x:x.x||''})}));
+    txt:t('n_'+x.k,{p:pname(x.by),d:deptName(x.d||''),x:x.w?pname(x.w):x.x||''})}));
   const t0=today();allCards().forEach(({c})=>{if(!c.done&&c.due&&c.members.includes(me)&&c.due<t0+2*day){const w=c.due<t0?'w_over':c.due<t0+day?'w_today':'w_tomorrow';
     out.push({card:c.id,k:'due',title:c.title,txt:t('n_due',{w:t(w)}),at:0,read:true,by:me})}});
   return out.sort((a,b)=>(b.at||0)-(a.at||0)).slice(0,60)}
@@ -645,7 +681,7 @@ export function makeBoard(dep,name,tplId){const h=headOfDept(dep);const b={id:ui
   const lists=saved?saved.lists:bi.lists.map((k,i)=>({name:SYS[k][0],sys:k,cards:i===0?(bi.cards||[]).map(x=>({title:x[lang==='ar'?1:0]})):[]}));
   if(saved)b.labels=saved.labels?JSON.parse(JSON.stringify(saved.labels)):undefined;
   lists.forEach(L=>{const ln=typeof L==='string'?L:L.name,l={id:uid('l'),name:ln,sys:L.sys||undefined,cards:[],col:false};D.lists[l.id]=l;b.lists.push(l.id);
-    (L.cards||[]).forEach(x=>{const c={id:uid('c'),title:x.title,desc:x.desc||'',labels:(x.labels||[]).slice(),members:[],due:null,done:DONE_RX.test(ln),doneAt:null,repeat:'',priority:x.priority||'normal',check:(x.check||[]).map(k=>({t:k.t,d:false})),log:[]};
+    (L.cards||[]).forEach(x=>{const c={id:uid('c'),title:x.title,desc:x.desc||'',labels:(x.labels||[]).slice(),members:[],due:null,done:DONE_RX.test(ln),doneAt:null,repeat:'',priority:x.priority||'normal',check:(x.check||[]).map(k=>({t:k.t,d:false})),log:[],by:ME()};
       logTo(c,{k:'l_added',a:LN(l)});D.cards[c.id]=c;l.cards.push(c.id)})});
   D.boards[b.id]=b;D.order.push(b.id);return b}
 export function boardAsTpl(b){return {id:uid('t'),name:b.name,labels:b.labels?JSON.parse(JSON.stringify(b.labels)):null,lists:liveLists(b).map(id=>({name:D.lists[id].name,sys:D.lists[id].sys,
@@ -662,9 +698,9 @@ export const URLS: Record<string,string>={};
 export async function hydrate(){for(const img of document.querySelectorAll('img[data-att]')){const k=img.dataset.att;if(!URLS[k]){const bl=await FILES.get(k);if(bl)URLS[k]=URL.createObjectURL(bl)}if(URLS[k]&&img.src!==URLS[k])img.src=URLS[k]}}
 export function copyCard(c,b2){const l2=D.lists[liveLists(b2).find(id=>D.lists[id].name===(listOf(c.id)||{}).name)||liveLists(b2)[0]];if(!l2)return;
   const ppl=boardPeople(b2),x={id:uid('c'),title:c.title,desc:c.desc,labels:c.labels.filter(id=>labelsOf(b2).some(l=>l.id===id)),members:c.members.filter(m=>ppl.includes(m)),due:c.due,done:false,doneAt:null,repeat:c.repeat,priority:c.priority||'normal',
-    check:c.check.map(k=>({t:k.t,d:k.d})),atts:(c.atts||[]).map(a=>Object.assign({},a)),cover:c.cover||null,log:[]};
+    check:c.check.map(k=>({t:k.t,d:k.d})),atts:(c.atts||[]).map(a=>Object.assign({},a)),cover:c.cover||null,log:[],by:ME()};
   logTo(x,{k:'l_added',a:l2.name});D.cards[x.id]=x;l2.cards.push(x.id);return x}
-export function addCard(lid,title){title=title.trim();if(!title)return;const l=D.lists[lid];const c={id:uid('c'),title,desc:'',labels:[],members:[],due:null,done:DONE_RX.test(l.name),doneAt:DONE_RX.test(l.name)?Date.now():null,repeat:'',check:[],log:[]};
+export function addCard(lid,title){title=title.trim();if(!title)return;const l=D.lists[lid];const c={id:uid('c'),title,desc:'',labels:[],members:[],due:null,done:DONE_RX.test(l.name),doneAt:DONE_RX.test(l.name)?Date.now():null,repeat:'',check:[],log:[],by:ME()};
   logTo(c,{k:'l_added',a:LN(l)});D.cards[c.id]=c;l.cards.push(c.id);save()}
 export function moveCard(cid,toL,idx){const from=listOf(cid);if(!from)return;
   if(from.id!==toL&&DONE_RX.test(D.lists[toL].name)&&!D.cards[cid].done&&!canFinish(D.cards[cid]))return false;
@@ -677,13 +713,16 @@ document.addEventListener('click',e=>{
   if(DR.justDropped){DR.justDropped=false;return}
   const a=e.target.closest('[data-a]');
   if(V.side&&!e.target.closest('.side')&&!(a&&a.dataset.a==='side')){V.side=false;render();if(!a)return}
-  if(V.pop&&!e.target.closest('#pop')&&!(a&&['bmenu','lmenu','members','status','bell','labels','archv','fieldsed','wlc'].includes(a.dataset.a))){V.pop=null;render();if(!a)return}
+  if(V.pop&&!e.target.closest('#pop')&&!(a&&['bmenu','lmenu','members','status','bell','labels','archv','fieldsed','wlc','redir'].includes(a.dataset.a))){V.pop=null;render();if(!a)return}
   if(e.target.closest('select.msec,select.ppri'))return;
   if(!a){const card=e.target.closest('.card[data-id]');if(card&&!V.nt){V.card=card.dataset.card||card.dataset.id;V.comp=null;render()}
     if(V.editList&&!e.target.closest('.lhead'))saveListName();
     return}
   const k=a.dataset.a,id=a.dataset.id,v=a.dataset.v;
   const c=V.card?D.cards[V.card]:null;
+  /* task rules: details only for the creator, the department head and the CEO; the work also for whoever it is given to */
+  if(c){const K=cap(c);if(['cm','cl','ckdel','ckadd','subadd','subdel','waitadd','waitdel','cboardgo','cdel','carch','arqok','arqno'].includes(k)&&!K.ed)return;
+    if(['cdone','ck','attcover'].includes(k)&&!K.work)return;if(k==='subck'&&!K.work&&(c.subs[+a.dataset.i]||{}).who!==ME())return}
   switch(k){
     case '':break;
     case 'side':V.side=!V.side;render();break;
@@ -772,9 +811,20 @@ document.addEventListener('click',e=>{
     case 'larch':{const l=D.lists[id];l.archived=true;l.archivedAt=Date.now();V.pop=null;save();flash(t('archivedOk'));break}
     case 'lrestore':D.lists[v].archived=false;save();render();break;
     case 'lgone':ask(t('delListQ'),()=>{D.lists[v].cards.forEach(cid=>delete D.cards[cid]);delete D.lists[v];B().lists=B().lists.filter(x=>x!==v);save();V.pop={kind:'archive',anchor:'[data-a=bmenu]'}});break;
-    case 'crestore':{const x=D.cards[v];x.archived=false;logTo(x,{k:'l_restore'});save();render();break}
-    case 'cgone':ask(t('delQ'),()=>{const l=listOf(v);if(l)l.cards.splice(l.cards.indexOf(v),1);delete D.cards[v];save();V.pop={kind:'archive',anchor:'[data-a=bmenu]'}});break;
-    case 'carch':commitModalFields();c.archived=true;c.archivedAt=Date.now();logTo(c,{k:'l_arch'});V.card=null;save();flash(t('archivedOk'));break;
+    case 'crestore':{const x=D.cards[v];if(!x||!cap(x).ed)break;restoreCard(x);render();break}
+    case 'undo':{const x=D.cards[v];V.toast=null;if(x&&x.archived&&cap(x).ed)restoreCard(x);render();break}
+    case 'redir':V.pop=V.pop&&V.pop.kind==='redir'?null:{kind:'redir',anchor:'[data-a=redir]'};render();break;
+    case 'redirgo':{if(!c||!cap(c).redir||!teamPool(c).includes(v))break;commitModalFields();doRedirect(c,v);V.pop=null;save();flash(t('redirOk',{p:pname(v)}));break}
+    case 'supdel':if(!c||!cap(c).sup)break;delete c.sup;logTo(c,{k:'l_supx'});save();render();break;
+    case 'arqask':V.arqF=c.id;render();focusSel('#arqwhy');break;
+    case 'arqx':V.arqF=null;render();break;
+    case 'arqsend':{if(!c||!cap(c).askArch)break;const why=(document.getElementById('arqwhy')||{}).value||'';c.arq={by:ME(),at:Date.now(),why:why.trim().slice(0,240)};logTo(c,{k:'l_arq'});
+      creatorsOf(c).forEach(p=>notify(p,'archreq',c.id));V.arqF=null;save();flash(t('arqSent'));break}
+    case 'arqwd':if(!c||!c.arq||c.arq.by!==ME())break;delete c.arq;logTo(c,{k:'l_arqx'});save();render();break;
+    case 'arqok':{const by=c.arq&&c.arq.by;delete c.arq;if(by)notify(by,'archok',c.id);logTo(c,{k:'l_arqok'});archiveCard(c);break}
+    case 'arqno':{const by=c.arq&&c.arq.by;delete c.arq;logTo(c,{k:'l_arqno'});if(by)notify(by,'archno',c.id);save();render();break}
+    case 'cgone':if(!D.cards[v]||!cap(D.cards[v]).ed)break;ask(t('delQ'),()=>{const l=listOf(v);if(l)l.cards.splice(l.cards.indexOf(v),1);delete D.cards[v];save();V.pop={kind:'archive',anchor:'[data-a=bmenu]'}});break;
+    case 'carch':commitModalFields();archiveCard(c);break;
     case 'ctpl':commitModalFields();(D.cardTpl=D.cardTpl||[]).push({id:uid('ct'),title:c.title,desc:c.desc,labels:c.labels.slice(),priority:c.priority||'normal',check:c.check.map(k=>k.t)});save();flash(t('cardTplSaved'));break;
     case 'ccopy':{commitModalFields();const b2=D.boards[document.getElementById('ccopy').value];if(b2&&copyCard(c,b2)){save();flash(t('copied2',{b:bname(b2)}))}break}
     case 'cboardgo':{commitModalFields();const nb=D.boards[document.getElementById('cboard').value],cur=listOf(c.id);if(!nb||nb.lists.includes(cur.id))return;
@@ -815,7 +865,7 @@ document.addEventListener('click',e=>{
     case 'cm':commitModalFields();if(c.members.includes(v))c.members=c.members.filter(x=>x!==v);else{c.members=c.members.concat(v);notify(v,'assign',c.id)}
       if(!c.members.includes(c.owner))c.owner=c.members[0]||null;save();render();break;
     case 'appr':{commitModalFields();if(!canDecide(c))break;c.appr={s:v,by:ME(),at:Date.now()};logTo(c,{k:'l_ap',a:t('ap_'+v)});
-      [c.by,c.requester].concat(c.follow||[]).filter((x,i,arr)=>x&&arr.indexOf(x)===i).forEach(m=>notify(m,'ap_'+v,c.id));
+      [c.by,c.requester,c.sup].concat(c.follow||[]).filter((x,i,arr)=>x&&arr.indexOf(x)===i).forEach(m=>notify(m,'ap_'+v,c.id));
       if(v!=='changes'&&!c.done){c.done=true;c.doneAt=Date.now();logTo(c,{k:'l_done'});afterDone(c,true)}else if(v==='changes'&&c.done){c.done=false;c.doneAt=null}
       save();render();break}
     case 'subadd':addSub();break;
@@ -840,13 +890,14 @@ document.addEventListener('click',e=>{
     case 'ckdel':commitModalFields();c.check.splice(+a.dataset.i,1);save();render();break;
     case 'ckadd':addCheck();break;
     case 'cmt':{const tx=document.getElementById('cmt').value.trim();if(!tx)return;commitModalFields();logTo(c,{c:tx});const ms=mentioned(tx);ms.forEach(m=>notify(m,'mention',c.id));
-      [...new Set(c.members.concat(c.follow||[],c.requester?[c.requester]:[]))].filter(m=>!ms.includes(m)).forEach(m=>notify(m,'comment',c.id));save();render();break}
+      [...new Set(c.members.concat(c.follow||[],c.requester?[c.requester]:[],c.sup?[c.sup]:[]))].filter(m=>!ms.includes(m)).forEach(m=>notify(m,'comment',c.id));save();render();break}
     case 'ment':{const mi=V.mentIn||'cmt',ta=document.getElementById(mi),pos=ta.selectionStart,before=ta.value.slice(0,pos).replace(/@[^@\n]{0,30}$/,''),after=ta.value.slice(pos);ta.value=before+'@'+pname(v)+' '+after;V.pop=null;
       const keep=ta.value;render();const t2=document.getElementById(mi);t2.value=keep;t2.focus();t2.setSelectionRange(before.length+pname(v).length+2,before.length+pname(v).length+2);break}
     case 'cdel':commitModalFields();ask(t('delQ'),()=>{const l=listOf(c.id);if(l)l.cards.splice(l.cards.indexOf(c.id),1);delete D.cards[c.id];V.card=null;save()});break;
   }
 });
 export async function await_(k){const bl=await FILES.get(k);if(!bl){flash(t('fileGone'));return}const w=window.open(URL.createObjectURL(bl),'_blank');if(!w)location.href=URL.createObjectURL(bl)}
+export function flashUndo(m,cid){V.toast={m,undo:cid};render();clearTimeout(flash.t);flash.t=setTimeout(()=>{V.toast=null;const el=document.querySelector('.toast');if(el)el.remove()},6000)}
 export function flash(m){V.toast=m;render();clearTimeout(flash.t);flash.t=setTimeout(()=>{V.toast=null;const el=document.querySelector('.toast');if(el)el.remove()},2600)}
 export function focusSel(s){const el=document.querySelector(s);if(el){el.focus();if(el.select&&el.tagName==='INPUT')el.select()}}
 export function scrollListEnd(id){const el=document.querySelector(`.list[data-id="${id}"] .cards`);if(el)el.scrollTop=el.scrollHeight}
@@ -890,7 +941,7 @@ document.addEventListener('input',e=>{
   if(e.target.id==='q'){V.f.q=e.target.value;const pos=e.target.selectionStart;render();const q=document.getElementById('q');q.focus();q.setSelectionRange(pos,pos)}
   if(e.target.id==='mt'){e.target.style.height='auto';e.target.style.height=e.target.scrollHeight+'px'}});
 document.addEventListener('change',e=>{
-  if(e.target.id==='viewas'||e.target.id==='viewas2'){V.pf=null;V.pg=null;V.calDay=null;D.me=e.target.value;V.side=false;V.card=null;V.pop=null;V.nt=null;home();save();render();return}
+  if(e.target.id==='viewas'||e.target.id==='viewas2'){V.toast=null;V.arqF=null;V.pf=null;V.pg=null;V.calDay=null;D.me=e.target.value;V.side=false;V.card=null;V.pop=null;V.nt=null;home();save();render();return}
   if(V.nt&&e.target.id==='nt-type'){ntSync();render();return}
   if(V.nt&&['nt-due','nt-start','nt-title'].includes(e.target.id)){ntLive();return}
   if(e.target.id==='pg-range'){const P=pgState();P.range=+e.target.value||7;pgSave();render();return}
@@ -920,6 +971,10 @@ document.addEventListener('change',e=>{
   if(V.nt&&e.target.id==='nt-tpl'){ntSync();const x=(D.cardTpl||[]).find(k=>k.id===e.target.value),n=V.nt;n.tpl=e.target.value;
     if(x){n.title=x.title;n.desc=x.desc||'';n.labels=x.labels.filter(id=>labelsOf(D.boards[n.board]).some(l=>l.id===id));n.pri=x.priority||'normal';n.check=(x.check||[]).join('\n')}render();return}
   const c=V.card&&D.cards[V.card];if(!c)return;
+  {const K=cap(c),id=e.target.id,cl=e.target.classList;
+    if((['cdue','cstart','cown','ctype','crep','cpri'].includes(id)||cl.contains('cf')||cl.contains('subw')||cl.contains('subd'))&&!K.ed)return;
+    if(['cmove','fileup','fadd'].includes(id)&&!K.work)return;
+    if(id==='csup'){if(!K.sup||!e.target.value||!teamPool(c).includes(e.target.value))return;commitModalFields();c.sup=e.target.value;logTo(c,{k:'l_sup',a:c.sup});notify(c.sup,'sup',c.id);save();render();return}}
   if(e.target.id==='fileup'){commitModalFields();const fs=[...e.target.files],cid=c.id;(async()=>{for(const f of fs){if(f.size>5*1024*1024){flash(t('tooBig',{f:f.name}));continue}
       const id=await FILES.put(uid('f'),f),c2=D.cards[cid];if(id&&c2){(c2.atts=c2.atts||[]).push({id,name:f.name,type:f.type||'application/octet-stream',size:f.size,by:ME(),at:Date.now()});if(!c2.cover&&/^image\//.test(f.type))c2.cover=id}}
     save();render()})();return}
@@ -947,7 +1002,7 @@ document.addEventListener('pointerdown',e=>{
   if(e.button!==0||V.card||(V.view!=='board'&&!myB))return;
   if(e.target.closest('input,textarea,button,select'))return;
   const card=e.target.closest('.card[data-id]'),head=e.target.closest('.lhead'),col=e.target.closest('.list.col');
-  let type,el;if(card){type='card';el=card}else if(!myB&&(head||col)&&canAdmin(B())){type='list';el=(head||col).closest('.list')}else return;
+  let type,el;if(card){if(!myB){const cc=D.cards[card.dataset.id];if(cc&&!cap(cc).work)return}type='card';el=card}else if(!myB&&(head||col)&&canAdmin(B())){type='list';el=(head||col).closest('.list')}else return;
   DR.d={type,id:el.dataset.id,el,sx:e.clientX,sy:e.clientY,started:false,touch:e.pointerType!=='mouse'};DR.x=e.clientX;DR.y=e.clientY;
   if(DR.d.touch)DR.timer=setTimeout(()=>{if(DR.d&&!DR.d.started)start()},300);
 });
