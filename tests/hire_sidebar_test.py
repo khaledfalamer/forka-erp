@@ -1,6 +1,6 @@
 """Forka Hire left menu: every item opens its page, the menu stays on the LEFT in Arabic, collapses to icons,
 becomes a drawer on phones, and keeps the role rules. python3 tests/hire_sidebar_test.py"""
-import asyncio, pathlib, subprocess, sys, time
+import os, asyncio, pathlib, subprocess, sys, time
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 sys.argv = [sys.argv[0]]
 src = (ROOT / 'tests' / 'hiring_test.py').read_text().replace('asyncio.run(main())', '')
@@ -10,7 +10,7 @@ res = []
 def check(n, ok, info=''):
     res.append(bool(ok)); print(('PASS ' if ok else 'FAIL ') + n + ('' if ok else ' - ' + str(info)[:300]))
 async def main():
-    srv = subprocess.Popen([sys.executable, '-m', 'http.server', str(ht['PORT']), '--bind', '127.0.0.1'], cwd=str(ROOT), stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL); time.sleep(1)
+    srv = subprocess.Popen([sys.executable, '-m', 'http.server', str(ht['PORT']), '--bind', '127.0.0.1'], cwd=os.environ.get('SITE_ROOT', str(ROOT)), stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL); time.sleep(1)
     try:
         async with async_playwright() as p:
             b = await p.chromium.launch(executable_path=__import__('os').environ.get('PW_CHROMIUM') or None)

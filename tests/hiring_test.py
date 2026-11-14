@@ -1,5 +1,5 @@
 """Hiring (erp.forka.com/hiring) and careers page (apply.forka.com) - browser checks. python3 tests/hiring_test.py"""
-import asyncio, json, pathlib, re, subprocess, sys, time
+import os, asyncio, json, pathlib, re, subprocess, sys, time
 from playwright.async_api import async_playwright
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
@@ -102,7 +102,7 @@ async def ctx_for(b, cfg, w=1280, h=900, token=None, handler=None):
     return ctx, pg, errs
 
 async def main():
-    srv = subprocess.Popen([sys.executable, '-m', 'http.server', str(PORT), '--bind', '127.0.0.1'], cwd=ROOT, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    srv = subprocess.Popen([sys.executable, '-m', 'http.server', str(PORT), '--bind', '127.0.0.1'], cwd=os.environ.get('SITE_ROOT', ROOT), stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     time.sleep(1)
     try:
         async with async_playwright() as p:

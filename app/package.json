@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "vite",
     "typecheck": "tsc --noEmit",
-    "build": "tsc --noEmit && node scripts/check_board.mjs && vite build && bash scripts/add_legacy.sh",
+    "build": "tsc --noEmit && node scripts/check_board.mjs && node scripts/check_hire.mjs && vite build && bash scripts/add_legacy.sh",
     "test": "node tests/hub_test.mjs"
   },
   "dependencies": {

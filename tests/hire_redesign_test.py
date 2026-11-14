@@ -99,7 +99,7 @@ async def shot(pg, name, full=False):
 async def main_text(pg): return await pg.inner_text('main')
 
 async def main():
-    srv_p = subprocess.Popen([sys.executable, '-m', 'http.server', str(PORT), '--bind', '127.0.0.1'], cwd=ROOT, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    srv_p = subprocess.Popen([sys.executable, '-m', 'http.server', str(PORT), '--bind', '127.0.0.1'], cwd=os.environ.get('SITE_ROOT', ROOT), stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     time.sleep(1); allerrs = []
     try:
         async with async_playwright() as p:
