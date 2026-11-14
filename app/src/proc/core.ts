@@ -272,7 +272,9 @@ export async function startEdit(){
   editMsg='';mode='loading';render();
   try{shared=await sheetLoad();mode='live';editMode=myRole!=='viewer'}catch(e){if(e.code==='pin'){signOut(errMsg(e.err));return}mode='offline'}
   render();sendLeftovers()}
-export function applyMe(m){const was=myRole;if(m&&m.email)myEmail=String(m.email);if(m&&m.role){myRole=m.role;myBranch=m.branch||'';if(m.name){me=m.name;ls('pp-me',me)}}else if(!myRole)myRole='team';}
+export function applyMe(m){const was=myRole;
+  // Signed in through Forka Apps: a named person, never the shared team (the server sends no role for them). Khaled, 14 Nov 2026
+  if(m&&!m.role&&ERP&&m.name)m=Object.assign({},m,{role:'admin'});if(m&&m.email)myEmail=String(m.email);if(m&&m.role){myRole=m.role;myBranch=m.branch||'';if(m.name){me=m.name;ls('pp-me',me)}}else if(!myRole)myRole='team';}
 export function signOut(msg){pin='';clearSnap();bgDone();try{sessionStorage.removeItem('pp-pin')}catch(_){}editMode=false;myRole='';myBranch='';reqOpen=null;billOpen=null;shared={};supShared={};recShared={Evaluations:{},Deliveries:{},GRN:{},Transfers:{},Requests:{},POs:{}};supOpen=null;grnOpen=null;mode='login';editMsg=msg||'';unlocked=null;gateMsg=msg||'';if(msg&&gateSide)gateSide=gateSide;else gateSide=null;try{sessionStorage.removeItem('pp-ok')}catch(_){}render()}
 export function errMsg(e){if(e==='erp'){setTimeout(erpGone,0);return t('erpExpired')}return e==='side'?t('pinNoSide'):e==='pin'?t('wrongPin'):e==='nopin'?t('noPinSet'):e==='net'?t('net'):e==='locked'?t('errLocked'):e==='role'?t('errRole'):e==='split'?t('errSplit'):e==='notready'?t('errNotready'):e==='paid'?t('errPaid'):t('oldScript')}
 export const BANKF=['bankName','accName','iban','accNo','swift'];
