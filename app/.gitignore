@@ -2,3 +2,4 @@ node_modules/
 dist/
 .firebase/
 tests/shots/
+src/proc/views/_orig/

@@ -15,5 +15,5 @@
     "types": ["vite/client"]
   },
   "include": ["src", "vite.config.ts"],
-  "exclude": ["src/board", "src/hire"]
+  "exclude": ["src/board", "src/hire", "src/proc"]
 }

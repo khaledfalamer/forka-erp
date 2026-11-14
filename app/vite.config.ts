@@ -8,7 +8,7 @@ export default defineConfig({
   publicDir: false,
   build: {
     outDir: 'dist', emptyOutDir: true, assetsDir: 'assets',
-    // one page per app: the hub at /, Board at /boards/, Hire at /hiring/
-    rollupOptions: { input: { hub: 'index.html', board: 'boards/index.html', hire: 'hiring/index.html' } },
+    // one page per app: the hub at /, Board at /boards/, Hire at /hiring/, Procurement at /procurement/
+    rollupOptions: { input: { hub: 'index.html', board: 'boards/index.html', hire: 'hiring/index.html', proc: 'procurement/index.html' } },
   },
 });
