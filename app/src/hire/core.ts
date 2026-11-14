@@ -692,3 +692,5 @@ export function __set(name, v) { switch (name) {
   case '_kt': _kt = v; break;
   case 'resolving': resolving = v; break;
 } }
+export function setDRAFT(v) { DRAFT = v; }
+export function setSCH(v) { SCH = v; }

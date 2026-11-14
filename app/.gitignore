@@ -2,4 +2,3 @@ node_modules/
 dist/
 .firebase/
 tests/shots/
-src/hire/views/_orig/

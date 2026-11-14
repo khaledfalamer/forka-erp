@@ -6,7 +6,7 @@ import {
   submitApp, api, toast, USER, DEPTS, saveMember, saveMemberMail, NAMES, render,
   __set,
 } from '../core';
-import { paint, svg, css } from '../ui';
+import { paint, svg, css, offAtStart } from '../ui';
 import { bStat } from './pages';
 
 
@@ -15,12 +15,12 @@ export function pvHtml(){ const J=Object.values(S.jobs).filter((j: any)=>j.open)
 
 export function pCareers(){ const e=bEd(), pm=V.pvm||"desktop";
   return <>
-  <div className="top"><div><h1>Careers page</h1><p>Your employer brand: what every candidate sees first. Edit the words here; open roles appear automatically when HR posts them.</p></div>{HURL?<a className="btn sec" href={CFG.APPLY_URL||"https://apply.forka.com/"} target="_blank" rel="noopener">Open the careers page</a>:<button className="btn sec" onClick={()=>{V.viewAs='candidate';V.page=null;afterData()}} disabled={!!DEMO}>Preview as candidate</button>}</div>
+  <div className="top"><div><h1>Careers page</h1><p>Your employer brand: what every candidate sees first. Edit the words here; open roles appear automatically when HR posts them.</p></div>{HURL?<a className="btn sec" href={CFG.APPLY_URL||"https://apply.forka.com/"} target="_blank" rel="noopener">Open the careers page</a>:<button className="btn sec" onClick={()=>{V.viewAs='candidate';V.page=null;afterData()}} ref={offAtStart(!!DEMO)}>Preview as candidate</button>}</div>
   <div className="hx-ced">
    <div className="hx-ced-ed">
     {BSEC.map(([k,t,id,help])=><div key={k} className="card hx-bs" data-sec={k}><div className="row"><h3><label htmlFor={id} style={css(`all:unset`)}>{t}</label></h3><span className="sp"></span>{bStat(k)}</div><p className="small muted">{help}</p>
      <textarea id={id} style={css(`min-height:${k==="benefits"?96:130}px`)} onInput={ev=>bEdit(k,ev.currentTarget)} defaultValue={e[k]??""}></textarea>
-     <div className="row" style={css(`margin-top:10px`)}><button className="btn" id={`bs_${k}`} disabled={!(V.bdraft&&V.bdraft[k]!=null)} onClick={()=>saveSec(k)}>Save</button><span className="small muted">Saves this part only. The careers page changes only when you save.</span></div></div>)}
+     <div className="row" style={css(`margin-top:10px`)}><button className="btn" id={`bs_${k}`} ref={offAtStart(!(V.bdraft&&V.bdraft[k]!=null))} onClick={()=>saveSec(k)}>Save</button><span className="small muted">Saves this part only. The careers page changes only when you save.</span></div></div>)}
     {V.role==="hr"?<div className="card" id="aiguidecard"><h3>Guidance for AI</h3><p className="small muted">The AI follows this every time it drafts a job description or job ad. Write it like a note to a new HR assistant: tone, what to always include, what never to say.</p>
      <textarea id="ai_guide" style={css(`min-height:150px`)} placeholder={"For example:\n- Warm and simple English. Short sentences.\n- Always mention: free staff meal, visa provided, one day off a week.\n- Never mention salary or the branch manager's name.\n- Arabic ad in Gulf-friendly Modern Standard Arabic."} defaultValue={(S.aiguide&&S.aiguide.text)||""}></textarea>
      <div className="row" style={css(`margin-top:10px`)}><button className="btn" onClick={()=>saveGuide()}>Save guidance</button>{S.aiguide&&S.aiguide.at?<span className="small muted">{`Last saved ${fmtD(S.aiguide.at)}`}</span>:null}</div></div>:null}

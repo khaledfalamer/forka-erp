@@ -6,7 +6,7 @@ import {
   fmtN, fmtD, fmtT, reqAct, f1, scr, ivAvg, workDaysSince, allCands, reqOf, views, sortReq, liveQ,
   useView, saveView, delView, RF0, bulk, shown, purgeOld, reconsider, maskPhone, maskEmail, canReveal, reveal,
 } from '../core';
-import { svg, css, Fragment } from '../ui';
+import { svg, css, Fragment, offAtStart } from '../ui';
 import { render, opt } from './shell';
 import { reqForm, openReq, addApplicant } from './request';
 import { openCand } from './cand';
@@ -170,7 +170,7 @@ export function pPipeline(C) {
   if (f.stage) L = L.filter(c => c.stage === f.stage);
   const sel = V.sel;
   const rows = shown(L.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)), "list");
-  return <>{head}{V.role === "hr" ? <div className="row hx-bulk"><span className="small muted">{`${sel.size} selected`}</span><button className="btn sm sec" disabled={!sel.size} onClick={() => bulk('advance')}>Move to next stage</button><button className="btn sm sec" disabled={!sel.size} onClick={() => bulk('pool')}>Talent pool</button><button className="btn sm bad" disabled={!sel.size} onClick={() => bulk('reject')}>Reject with reason</button></div> : null}
+  return <>{head}{V.role === "hr" ? <div className="row hx-bulk"><span className="small muted">{`${sel.size} selected`}</span><button className="btn sm sec" ref={offAtStart(!sel.size)} onClick={() => bulk('advance')}>Move to next stage</button><button className="btn sm sec" ref={offAtStart(!sel.size)} onClick={() => bulk('pool')}>Talent pool</button><button className="btn sm bad" ref={offAtStart(!sel.size)} onClick={() => bulk('reject')}>Reject with reason</button></div> : null}
     <div className="card"><div className="hx-tw"><table className="hx-t"><thead><tr>{V.role === "hr" ? <th scope="col"><input type="checkbox" style={css('width:auto')} aria-label="Select all" onChange={e => (window as any).L_all(e.currentTarget.checked)} /></th> : null}<th scope="col">Candidate</th><th scope="col">Role</th><th scope="col">Stage</th><th scope="col">Screen</th><th scope="col">Interview</th><th scope="col">Applied</th></tr></thead><tbody>
       {rows.length ? rows.map(c => { const r = reqOf(c); return <tr key={c.id} className="click" onClick={() => openCand(c.id)}>{V.role === "hr" ? <td onClick={e => e.stopPropagation()}><input type="checkbox" style={css('width:auto')} aria-label="Select" defaultChecked={!!sel.has(c.id)} onChange={e => { e.currentTarget.checked ? V.sel.add(c.id) : V.sel.delete(c.id); render(); }} /></td> : null}<td><b>{c.name}</b><div className="small muted">{c.source || ""}</div></td><td>{r.title || "—"}</td><td>{stageSum(c)}</td><td><bdi>{f1(scr(c, r))}</bdi></td><td><bdi>{f1(ivAvg(c))}</bdi></td><td><bdi>{fmtD(c.createdAt)}</bdi></td></tr>; }) : <tr><td colSpan={7} className="empty">No candidates.</td></tr>}{moreRow(L, "list", 7)}</tbody></table></div></div></>;
 }

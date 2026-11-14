@@ -259,7 +259,7 @@ async def main():
             # head: no talent pool page; anything outside their department says "HR only"
             srv = Server(seed()); ctx, pg, errs = await open_hire(b, srv, token=CHEF); allerrs.append(errs)
             check('Head: no Talent pool page (same as before)', 'Talent pool' not in await pg.inner_text('#nav'))
-            check('Head: details outside their department say "HR only", no Show', await pg.evaluate("(()=>{const h=contactHTML({id:'zz',req:'q1',phone:'+971501234521',email:'a.b@mail.com'});return h.includes('HR only')&&!h.includes('hx-show')})()"))
+            check('Head: details outside their department say "HR only", no Show', await pg.evaluate("(()=>{const h0=contactHTML({id:'zz',req:'q1',phone:'+971501234521',email:'a.b@mail.com'}),h=typeof h0==='string'?h0:staticHtml(h0);return h.includes('HR only')&&!h.includes('hx-show')})()"))
             await go(pg, 'pipeline')
             check('Head: candidates list keeps the shortlist-onward rule', sorted(await pg.locator('main table tr.click td:nth-child(1) b').all_inner_texts()) == ['Faris Demo', 'Huda Demo', 'Mona Demo', 'Nadia Demo', 'Sami Demo'])
             check('Head: no Add applicant, no bulk actions', await pg.locator('text=Add applicant').count() == 0 and await pg.locator('.hx-bulk').count() == 0)

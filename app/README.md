@@ -14,7 +14,15 @@ skeleton), one piece at a time.
   - Every change redraws the whole page (`render()` in core), as the original did. Next steps: give core proper types,
     then let screens redraw only what changed.
 
-Not moved yet, copied in unchanged by `scripts/add_legacy.sh`: Hire (`hiring/`), the careers copy
+- **Hire** (`/hiring/`, `src/hire/`): every screen. Same look (30 of 30 test screenshots match the old page pixel for
+  pixel, apart from a clock time), same Hiring server; passes all 183 existing Hire checks (`tests/hiring_test.py`,
+  `hire_sidebar_test.py`, `hire_redesign_test.py`, run with `SITE_ROOT=app/dist`). Built like Board: `core.ts` is the
+  original logic (with the Arabic text layer), not type-checked yet; `views/*.tsx` are the screens. Hire draws each area
+  of the page on its own (`paint()` in `paint.tsx`, the React version of `area.innerHTML = ...`). The page skeleton
+  (menu frame, header) is plain HTML in `hiring/index.html`. The two small question boxes (`ask`, `sure`) are still built
+  as page text in core.
+
+Not moved yet, copied in unchanged by `scripts/add_legacy.sh`: the careers copy
 (`apply/`), the team guide (`help/`), privacy and about pages. Each one is removed from that list when its React
 version replaces it.
 

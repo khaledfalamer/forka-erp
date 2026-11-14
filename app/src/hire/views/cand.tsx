@@ -7,7 +7,7 @@ import {
   COMPETENCY, PR, HR_Q, ivScore, bookLink, whenTxt, waLink, copyTxt, uaeParts, uaeTime, schTog, schSend,
 } from '../core';
 import * as core from '../core';
-import { css, nchange, Fragment } from '../ui';
+import { css, nchange, Fragment, offAtStart } from '../ui';
 import { stageHead, contactHTML, stageTag } from './pages';
 import { cvLink } from './team';
 import { aiSumHTML, aiQs } from './request';
@@ -21,7 +21,7 @@ export function openCand(id){
   const c=allCands()[id]; if(!c) return; const r=reqOf(c);
   if(!DRAFT||DRAFT.id!==id) setDRAFT(JSON.parse(JSON.stringify(c)));
   const d=DRAFT, isHR=V.role==="hr", isHead=V.role==="head", st=d.stage, si=SI[st]??-1;
-  const scoreBtns=(path,val,dis)=><div className="score">{[1,2,3,4,5].map(n=><button key={n} disabled={!!dis} className={val===n?"on":""} onClick={() => setScore(path,n)}>{n}</button>)}</div>;
+  const scoreBtns=(path,val,dis)=><div className="score">{[1,2,3,4,5].map(n=><button key={n} ref={offAtStart(!!dis)} className={val===n?"on":""} onClick={() => setScore(path,n)}>{n}</button>)}</div>;
   const sAvg=scr(d,r), iAvg=ivAvg(d);
   const myIv=(d.iv||{})[V.me]||{tech:[],comp:[]};
   const body: any[]=[];
@@ -75,16 +75,16 @@ export function openCand(id){
   // actions
   const A: any[]=[]; const can=(x)=>x; void can;
   if(isHR&&st==="applied") A.push(<button key="a1" className="btn br" onClick={() => move('screening')}>Start screening</button>);
-  if(isHR&&st==="screening") A.push(<button key="a2" className="btn br" disabled={!(sAvg!=null&&sAvg>=PASS&&d.cv&&d.call&&Object.keys(d.cv).length>=(r.mustHaves||[]).length&&Object.keys(d.call).length>=CALL.length)} onClick={() => move('personality')}>Pass → personality assessment</button>);
-  if(isHR&&st==="personality") A.push(<button key="a3" className="btn br" disabled={!((d.personality||{}).consent&&(d.personality||{}).summary)} onClick={() => move('shortlist')}>Send to {r.dept} head's shortlist</button>);
+  if(isHR&&st==="screening") A.push(<button key="a2" className="btn br" ref={offAtStart(!(sAvg!=null&&sAvg>=PASS&&d.cv&&d.call&&Object.keys(d.cv).length>=(r.mustHaves||[]).length&&Object.keys(d.call).length>=CALL.length))} onClick={() => move('personality')}>Pass → personality assessment</button>);
+  if(isHR&&st==="personality") A.push(<button key="a3" className="btn br" ref={offAtStart(!((d.personality||{}).consent&&(d.personality||{}).summary))} onClick={() => move('shortlist')}>Send to {r.dept} head's shortlist</button>);
   if(isHR&&["screening","personality"].includes(st)&&!(d.books||{}).call) A.push(<button key="a4" className="btn sec" onClick={() => schedDlg('call')}>Book the HR call</button>);
   if((isHead||isHR)&&st==="shortlist") A.push(<button key="a5" className="btn br" onClick={() => inviteIv()}>Invite to interview</button>);
   if((isHead||isHR)&&st==="interview"&&!(d.books||{}).interview) A.push(<button key="a6" className="btn sec" onClick={() => schedDlg('interview')}>Send interview times</button>);
-  if((isHead||isHR)&&st==="interview") A.push(<button key="a7" className="btn br" disabled={!(panelDone(d)&&iAvg!=null&&iAvg>=PASS)} title={`Needs the head's and HR's submitted scorecards, panel average ${PASS}+`} onClick={() => move('references')}>Passed → references</button>);
-  if(isHR&&st==="references") A.push(<button key="a8" className="btn br" disabled={!((d.refs||[]).filter(x=>x&&x.ok&&x.ok.startsWith("Verified")).length>=2)} onClick={() => move('final')}>References clear → final evaluation</button>);
-  if(isHR&&st==="final") A.push(<button key="a9" className="btn br" disabled={!(d.fin?.total&&d.fin?.nego&&d.fin?.rec)} onClick={() => move('approval')}>Send to CEO for approval</button>);
+  if((isHead||isHR)&&st==="interview") A.push(<button key="a7" className="btn br" ref={offAtStart(!(panelDone(d)&&iAvg!=null&&iAvg>=PASS))} title={`Needs the head's and HR's submitted scorecards, panel average ${PASS}+`} onClick={() => move('references')}>Passed → references</button>);
+  if(isHR&&st==="references") A.push(<button key="a8" className="btn br" ref={offAtStart(!((d.refs||[]).filter(x=>x&&x.ok&&x.ok.startsWith("Verified")).length>=2))} onClick={() => move('final')}>References clear → final evaluation</button>);
+  if(isHR&&st==="final") A.push(<button key="a9" className="btn br" ref={offAtStart(!(d.fin?.total&&d.fin?.nego&&d.fin?.rec))} onClick={() => move('approval')}>Send to CEO for approval</button>);
   if(V.ceo&&st==="approval") A.push(<Fragment key="a10"><button className="btn sec" onClick={() => move('final','CEO asked to renegotiate')}>Renegotiate</button><button className="btn ok" onClick={() => move('offer','CEO approved candidate and package')}>Approve</button></Fragment>);
-  if(isHR&&st==="offer") A.push(<button key="a11" className="btn ok" disabled={!(d.offer?.accepted&&d.offer?.join&&DOCS.every((x,i)=>(d.offer?.docs||{})[i]))} onClick={() => move('hired')}>Mark hired → onboarding</button>);
+  if(isHR&&st==="offer") A.push(<button key="a11" className="btn ok" ref={offAtStart(!(d.offer?.accepted&&d.offer?.join&&DOCS.every((x,i)=>(d.offer?.docs||{})[i])))} onClick={() => move('hired')}>Mark hired → onboarding</button>);
   if(isHR&&(st==="rejected"||st==="pool")) A.push(<button key="a12" className="btn sec" onClick={() => move('applied','Reopened')}>Reopen</button>);
   const rej=!["hired","rejected","pool"].includes(st)&&(isHR||(isHead&&["shortlist","interview"].includes(st)));
   void myIv;
@@ -100,7 +100,7 @@ export function ivCard(d,r,lock){
   const hidden=others.filter(([,s]: [string, any])=>s.done&&(s.hidden||!canSee)), shown=canSee?Object.entries(d.iv||{}).filter(([,s]: [string, any])=>!s.hidden&&s.done):[];
   const iAvg=ivAvg(d), sheet=ivSheet(V.role==="head"?"head":"hr",r,d);
   const val=(k,i)=>k==="prac"?PV(myIv)[i]:(myIv[k]||[])[i];
-  const sb=(path,v,dis)=><div className="score">{[1,2,3,4,5].map(n=><button key={n} disabled={!!dis} className={v===n?"on":""} onClick={() => setScore(path,n)}>{n}</button>)}</div>;
+  const sb=(path,v,dis)=><div className="score">{[1,2,3,4,5].map(n=><button key={n} ref={offAtStart(!!dis)} className={v===n?"on":""} onClick={() => setScore(path,n)}>{n}</button>)}</div>;
   const waiting=["head","hr"].filter(w=>!Object.entries(d.iv||{}).some(([k,s])=>whoOf(k,s)===w&&(s as any).done)).map(w=>w==="head"?(reqOf(d).dept||"Dept")+" head":"HR");
   return <div className="card sec"><div className="row"><h3>Interview scorecards</h3>{shown.length?<span className={`tag ${iAvg>=PASS?"ok":"warn"}`}>panel avg {f1(iAvg)}</span>:null}{waiting.length&&!lock?<span className="tag warn">waiting for {waiting.join(" + ")}</span>:lock?null:<span className="tag ok">panel complete</span>}<span className="sp"></span>{SAMPLE&&!mine?<button className="btn sm ai" onClick={() => aiQs()}>Interview questions</button>:null}</div>
   {shown.length?ivCompare(d,r):hidden.length?<p className="small muted">{hidden.map(([k])=>nm(k)).join(", ")} submitted. Their scores and notes open here once you submit yours, so nobody is swayed by the other.</p>:null}
@@ -153,4 +153,4 @@ export function schedRender(){ const d=DRAFT, S2=SCH, days=[]; const t0=uaeParts
   <div><label>Length (minutes)</label><input type="number" min="15" max="180" defaultValue={S2.mins} onInput={e => { SCH.mins=+e.currentTarget.value||30; }}/></div>
   <div><label>Where / link <span className="hint">address, phone or Meet link</span></label><input defaultValue={S2.place??""} onInput={e => { SCH.place=e.currentTarget.value; }}/></div></div>
   <label>Message to the candidate <span className="hint">optional — e.g. bring your passport copy</span></label><textarea onInput={e => { SCH.note=e.currentTarget.value; }} defaultValue={S2.note??""}></textarea></div>
-  <div className="ft"><span className="small muted">{S2.slots.size} time{S2.slots.size===1?"":"s"} picked</span><span className="sp"></span><button className="btn sec" onClick={back}>Cancel</button><button className="btn br" id="schGo" disabled={!S2.slots.size} onClick={() => schSend()}>Send booking link</button></div></>) }
+  <div className="ft"><span className="small muted">{S2.slots.size} time{S2.slots.size===1?"":"s"} picked</span><span className="sp"></span><button className="btn sec" onClick={back}>Cancel</button><button className="btn br" id="schGo" ref={offAtStart(!S2.slots.size)} onClick={() => schSend()}>Send booking link</button></div></>) }

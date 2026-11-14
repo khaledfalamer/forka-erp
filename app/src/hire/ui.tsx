@@ -30,3 +30,7 @@ export function css(s) {
 /** The browser's own "change" event (fires when you leave a text box), which React's onChange is not.
     Use as ref={nchange(e => ...)} on text, number, date and textarea fields that had onchange="...". */
 export const nchange = fn => el => { if (el && !el.__nchange) { el.__nchange = true; el.addEventListener('change', fn); } };
+
+/** A button's starting disabled state, set on the page element only (not held by React), because the logic
+    enables and disables buttons itself as you type, as the original page did. Use as ref={offAtStart(condition)}. */
+export const offAtStart = on => el => { if (el) el.disabled = !!on; };

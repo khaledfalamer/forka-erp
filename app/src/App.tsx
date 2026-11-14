@@ -35,6 +35,8 @@ export default function App() {
   const [toast, setToast] = useState('');
   const token = useRef(''), ver = useRef(''), idToken = useRef(''), woke = useRef(false);
   const apps = useMemo(appList, []);
+  // the app list under its old name, for the browser console and the checks
+  (window as unknown as { APPS: AppDef[] }).APPS = apps;
 
   const errText = useCallback((e?: string) => ({
     net: t('netErr'), noclient: t('noClient'), need: t('need'), dupe: t('dupe'), pinBad: t('pinBad'), pinDupe: t('pinDupe'), lastCeo: t('lastCeo'),
