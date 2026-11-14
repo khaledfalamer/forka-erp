@@ -1,2 +1,4 @@
 tests/shots/
 tests/shots/
+_site/
+.firebase/
