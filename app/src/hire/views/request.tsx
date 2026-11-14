@@ -28,7 +28,7 @@ export function reqForm(copyId?: any, fresh?: any) {
       <p className="small muted hx-stepn"><span id="w_stepn">Step 1 of 4</span> · <span>Fields marked * are required</span></p>
       {dr && !copyId ? <div className="note info hx-dn"><span>Your draft is back</span> · <bdi>{fmtT(dr.at)}</bdi> <button type="button" className="btn sm sec" onClick={() => reqDraftClear(true)}>Start over</button></div> : null}
       <section data-wstep="1"><h3>Role &amp; location</h3>
-        {prev.length ? <div className="note info" style={css("margin-top:8px")}>Same role as before? <select style={css("width:auto;margin-inline-start:6px")} onChange={e => { e.currentTarget.value && reqForm(e.currentTarget.value); }}><option value="">Start from a previous request…</option>{prev.map(p => <option key={p.id} value={p.id}>{`${sx(p.title)} · ${sx(p.branch)} · ${fmtD(p.createdAt)}`}</option>)}</select></div> : null}
+        {prev.length ? <div className="note info" style={css("margin-top:8px")}>Same role as before? <select style={css("width:auto;margin-inline-start:6px")} onChangeCapture={e => { e.currentTarget.value && reqForm(e.currentTarget.value); }}><option value="">Start from a previous request…</option>{prev.map(p => <option key={p.id} value={p.id}>{`${sx(p.title)} · ${sx(p.branch)} · ${fmtD(p.createdAt)}`}</option>)}</select></div> : null}
         <div className="grid g3">
           {F("f_title", "Role title", inp("f_title", r.title, { placeholder: "e.g. Branch Supervisor", 'aria-required': "true" }), { req: 1 })}
           {F("f_dept", "Department", V.role === "head" && V.dept ? sel("f_dept", [V.dept], V.dept) : sel("f_dept", DEPTS, r.dept), { req: 1 })}
