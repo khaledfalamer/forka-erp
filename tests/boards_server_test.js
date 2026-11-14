@@ -228,5 +228,59 @@ ck('No upload to a card you cannot see', call({ action: 'upload', token: tok('ST
 ck('Too-big text is refused', save('MKT', [{ id: 'c9', kind: 'card', json: { l: 'l1', title: 'x'.repeat(50000) } }]).rejected[0] === 'c9');
 ck('Unknown kinds are refused', save('CEO', [{ id: 'x1', kind: 'secret', json: {} }]).rejected[0] === 'x1');
 
+// "Open in Board" from Procurement: one card per purchase request, asked by the Procurement server with a shared key
+{
+  const KEY = 'k'.repeat(12) + 'PROC-BOARD-TEST-KEY-1234567890';
+  const pc = o => call(Object.assign({ action: 'procCard', key: KEY, token: tok('RUBY'),
+    req: { id: 'R-abc1', no: 'PRQ-261114-01', title: 'Menu board logo', kind: 'Design or creative', qty: '1', unit: 'PCS', needBy: '2026-11-20', dept: 'Marketing', branch: 'AMK Sharjah', details: 'Need the new logo files', url: 'https://procurement.forka.com/#rq=R-abc1' },
+    requester: { email: 'store@kuwaitikitchen.com', name: 'Hamim' }, buyer: null, by: { email: 'admin@forka.com', name: 'Ruby' } }, o || {}));
+  const docsOf = kind => ss.sheets.Data.d.slice(1).filter(r => r[1] === kind && !r[6]).map(r => JSON.parse(r[3]));
+  ck('procCard: without PROC_BOARD_KEY set it answers "not set up yet"', pc().error === 'nosetup');
+  props.PROC_BOARD_KEY = KEY;
+  ck('procCard: a wrong or missing key is refused, nothing is written', pc({ key: KEY.slice(0, -1) + 'X' }).error === 'key' && pc({ key: '' }).error === 'key' && pc({ key: KEY + 'X' }).error === 'key' && !docsOf('board').some(b => b.procReq));
+  ck('procCard: a sign-in token alone (no key) is not enough', call({ action: 'procCard', token: tok('CEO'), req: { id: 'R-x', no: 'PRQ-x' }, by: { email: 'ceo@forka.com' } }).error === 'key');
+  const m0 = mails.length;
+  let p = pc();
+  const pb = docsOf('board').filter(b => b.procReq), card = docsOf('card').find(c => c.id === p.cardId);
+  const L = pb[0] ? pb[0].lists.map(l => docsOf('list').find(x => x.id === l)) : [];
+  ck('procCard: makes the board "Purchase requests" in Procurement once, open to the department, with Needs info / In progress / Done',
+    p.ok && p.created && pb.length === 1 && pb[0].dept === 'proc' && pb[0].name === 'Purchase requests' && pb[0].allDept && L.map(l => l && l.name).join('|') === 'Needs info|In progress|Done' && p.boardId === pb[0].id, [p, pb, L]);
+  ck('procCard: the card is in Needs info, titled "<no> · <title>", with the details and the link back to the request',
+    card && card.l === L[0].id && L[0].cards.includes(card.id) && card.title === 'PRQ-261114-01 · Menu board logo' && /Need the new logo files/.test(card.desc) && /https:\/\/procurement\.forka\.com\/#rq=R-abc1/.test(card.desc)
+    && card.proc.id === 'R-abc1' && card.proc.no === 'PRQ-261114-01' && card.proc.url === 'https://procurement.forka.com/#rq=R-abc1' && card.labels.join() === 'preq' && p.url === 'https://erp.forka.com/boards/#card=' + card.id, card);
+  ck('procCard: members = the requester; owner = the requester (no buyer yet); creator = the person who pressed; history entry',
+    card.members.join() === 'store@kuwaitikitchen.com' && card.owner === 'store@kuwaitikitchen.com' && card.by === 'admin@forka.com' && card.log.length === 1 && card.log[0].k === 'l_added' && card.log[0].by === 'admin@forka.com', card);
+  ck('procCard: the requester gets the usual "gave you a task" alert and email', docsOf('note').some(n => n.to === 'store@kuwaitikitchen.com' && n.k === 'assign' && n.card === card.id) && mails.length === m0 + 1 && mails[mails.length - 1].to === 'store@kuwaitikitchen.com', mails.slice(m0));
+  let p2 = pc();
+  ck('procCard: pressing again gives the same card (one card per request, one board)', p2.ok && !p2.created && p2.cardId === p.cardId && docsOf('card').filter(c => c.proc && c.proc.id === 'R-abc1').length === 1 && docsOf('board').filter(b => b.procReq).length === 1 && mails.length === m0 + 1, p2);
+  p2 = pc({ buyer: { email: '', name: 'Ruby Ann Margate' } });
+  const c2 = docsOf('card').find(c => c.id === p.cardId);
+  ck('procCard: a buyer given since is added (found by name among Forka Apps people), becomes the owner and is told', p2.cardId === p.cardId && c2.members.includes('admin@forka.com') && c2.members.includes('store@kuwaitikitchen.com') && c2.owner === 'admin@forka.com' && c2.by === 'admin@forka.com', c2);
+  const p3 = pc({ req: { id: 'R-abc2', no: 'PRQ-261114-02', title: 'Takeaway bags print' }, requester: { email: 'nobody@else.com', name: 'X' }, buyer: { email: 'design@forka.com', name: 'Designer' }, by: { email: 'ceo@forka.com' } });
+  const c3 = docsOf('card').find(c => c.id === p3.cardId);
+  ck('procCard: a second request is a second card on the same board; people without a Forka Apps account are left out; buyer is owner', p3.ok && p3.cardId !== p.cardId && p3.boardId === p.boardId && c3.members.join() === 'design@forka.com' && c3.owner === 'design@forka.com' && c3.by === 'ceo@forka.com', c3);
+  ck('procCard: a bad request (no number or no presser) is refused', pc({ req: { id: 'R-abc9', no: '' } }).error === 'bad' && pc({ by: { email: 'x' } }).error === 'bad');
+  props.PROC_BOARD_DEPT = 'nosuchdept';
+  ck('procCard: PROC_BOARD_DEPT set to an unknown department gives a clear error', pc({ req: { id: 'R-abc8', no: 'PRQ-8', title: 'x' } }).error === 'dept');
+  delete props.PROC_BOARD_DEPT;
+  // the requester works on the card (board rules): sees it, attaches, comments, moves it; cannot change details
+  r = load('STORE');
+  ck('Requester sees the card, its list and the board (through the card)', [p.cardId, L[0].id, p.boardId].every(i => ids(r).includes(i)) && !ids(r).includes(p3.cardId), ids(r));
+  ck('Someone not on the request does not see it', !ids(load('DES')).includes(p.cardId) && ids(load('DES')).includes(p3.cardId));
+  let cc = JSON.parse(JSON.stringify(docsOf('card').find(c => c.id === p.cardId)));
+  cc.atts = [{ id: 'd:x1', name: 'logo.png', type: 'image/png', size: 2000, by: 'store@kuwaitikitchen.com', at: Date.now() }]; cc.log.push({ at: Date.now(), by: 'store@kuwaitikitchen.com', c: 'Here is the logo @Ruby' });
+  r = save('STORE', [{ id: cc.id, kind: 'card', json: cc }]);
+  ck('Requester attaches a logo and comments', r.ok && !r.rejected.length, r);
+  ck('Requester uploads the file to the card', call({ action: 'upload', token: tok('STORE'), card: cc.id, name: 'logo.png', type: 'image/png', data: Buffer.from('LOGO').toString('base64') }).ok);
+  const moved = Object.assign({}, cc, { l: L[1].id });
+  r = save('STORE', [{ id: cc.id, kind: 'card', json: moved }, { id: L[0].id, kind: 'list', json: Object.assign({}, L[0], { cards: [] }) }, { id: L[1].id, kind: 'list', json: Object.assign({}, L[1], { cards: [cc.id] }) }]);
+  ck('Requester moves the card to In progress', r.ok && !r.rejected.length, r);
+  r = save('STORE', [{ id: cc.id, kind: 'card', json: Object.assign({}, moved, { title: 'Changed' }) }]);
+  ck('...but cannot change the card details (title)', r.rejected.join() === cc.id, r);
+  cc = docsOf('card').find(c => c.id === p.cardId);
+  r = save('RUBY', [{ id: cc.id, kind: 'card', json: Object.assign({}, cc, { title: cc.title + ' (3 sizes)' }) }]);
+  ck('The person who opened it (creator) changes the details', r.ok && !r.rejected.length, r);
+}
+
 console.log(`${res.filter(Boolean).length}/${res.length} boards server checks passed`);
 process.exit(res.every(Boolean) ? 0 : 1);

@@ -49,6 +49,8 @@ jobs:
         run: python tests/boards_redesign_test.py
       - name: Board task rules checks (creator edits, assigned people work, redirect, supervisor, ask to archive, restore and undo; EN/AR)
         run: python tests/board_rules_test.py
+      - name: Board purchase-request card checks ("From Procurement" link, Purchase requests board; EN/AR)
+        run: python tests/board_proc_test.py
       - name: Boards server checks (who sees and changes what)
         run: node tests/boards_server_test.js
       - name: Boards signed-in checks (several people, real server code)

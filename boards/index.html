@@ -146,6 +146,7 @@ body.dragging,body.dragging *{cursor:grabbing!important}
 .mt:focus{background:#fff;color:var(--charcoal)}
 .msub{padding:0 28px 6px;color:var(--muted);font-size:13.5px}
 .msub b{color:var(--text);text-decoration:underline;text-underline-offset:3px;font-weight:600}
+.msub .procl{display:inline-flex;align-items:center;gap:5px;color:var(--text);font-weight:600;text-decoration:underline;text-underline-offset:3px}.msub .procl svg{width:14px;height:14px;flex:none}
 .mbody{display:grid;grid-template-columns:minmax(0,1fr) 210px;gap:22px;padding:10px 28px 26px}
 .mbody>div{min-width:0}
 div.sec{margin-top:18px}
@@ -867,7 +868,7 @@ en:{app:'Boards',search:'Search this board',addCard:'Add a card',addCardBtn:'Add
   back:'Back',boardsOf:'{d} boards',you:'you',
   newTask:'New task',collapse:'Collapse or expand the menu',ntTitle:'Task',ntTitlePh:'What needs to be done?',forDept:'Department',onBoard:'Board',inListL:'List',assignTo:'Who will do it',
   assignHint:'Leave empty and the {d} head will assign it.',priority:'Priority',p_low:'Low',p_normal:'Normal',p_high:'High',p_urgent:'Urgent',
-  checkLines:'Checklist (one item per line)',createTask:'Create task',need:'Fill in the boxes in red.',reqBoard:'Requests to {d}',asReq:'Request to {d}',
+  checkLines:'Checklist (one item per line)',createTask:'Create task',need:'Fill in the boxes in red.',reqBoard:'Requests to {d}',procBoard:'Purchase requests',fromProc:'From Procurement: {n}',fromProcH:'Open this purchase request in Procurement',lb_preq:'Purchase request',asReq:'Request to {d}',
   reqNote:'This goes to {d} as a request. Their head sees it first and assigns it. You can follow it in My tasks.',requested:'My requests to other departments',
   fromD:'From {d}',reqBy:'requested by {p} ({d})',moveBoard:'Move to board',l_req:'sent this request from {a}',roNote:'You asked for this task. You can follow it and comment.',
   stateL:'Where it is',doneTag:'Done',
@@ -960,7 +961,7 @@ ar:{app:'اللوحات',search:'بحث في هذه اللوحة',addCard:'إض�
   back:'رجوع',boardsOf:'لوحات {d}',you:'أنت',
   newTask:'مهمة جديدة',collapse:'طي القائمة أو فتحها',ntTitle:'المهمة',ntTitlePh:'ما المطلوب إنجازه؟',forDept:'القسم',onBoard:'اللوحة',inListL:'القائمة',assignTo:'من سينفّذها',
   assignHint:'اتركها فارغة وسيُسندها مسؤول {d}.',priority:'الأولوية',p_low:'منخفضة',p_normal:'عادية',p_high:'عالية',p_urgent:'عاجلة',
-  checkLines:'قائمة المهام (بند في كل سطر)',createTask:'إنشاء المهمة',need:'عبّئ الخانات الحمراء.',reqBoard:'طلبات إلى {d}',asReq:'طلب إلى {d}',
+  checkLines:'قائمة المهام (بند في كل سطر)',createTask:'إنشاء المهمة',need:'عبّئ الخانات الحمراء.',reqBoard:'طلبات إلى {d}',procBoard:'طلبات الشراء',fromProc:'من المشتريات: {n}',fromProcH:'افتح طلب الشراء هذا في المشتريات',lb_preq:'طلب شراء',asReq:'طلب إلى {d}',
   reqNote:'تُرسل إلى {d} كطلب. يراها مسؤول القسم أولاً ويُسندها. يمكنك متابعتها في مهامي.',requested:'طلباتي من الأقسام الأخرى',
   fromD:'من {d}',reqBy:'طلبها {p} ({d})',moveBoard:'نقل إلى لوحة',l_req:'أرسل هذا الطلب من {a}',roNote:'أنت طلبت هذه المهمة. يمكنك متابعتها والتعليق.',
   stateL:'أين وصلت',doneTag:'منجزة',
@@ -1098,7 +1099,7 @@ const lname=l=>l?(l.name||T[lang]['lb_'+l.id]||T.en['lb_'+l.id]||''):'';
 const PALETTE=['#4f8a3c','#9a6b3f','#3e6aa1','#7a5aa6','#b8432f','#2f8a85','#a8732c','#5c6680','#b05a7a','#6b655c'];
 const day=864e5,today=()=>{const d=new Date();d.setHours(0,0,0,0);return d.getTime()};
 const DONE_RX=/^(done|completed?|finished|مكتمل|منجز|تم)/i;
-const SYS={todo:['To do','للعمل'],doing:['In progress','قيد التنفيذ'],done:['Done','منجز'],week:['This week','هذا الأسبوع'],now:['Doing','نعمل عليه'],wait:['Waiting on others','بانتظار الآخرين'],
+const SYS={needinfo:['Needs info','بحاجة لمعلومات'],todo:['To do','للعمل'],doing:['In progress','قيد التنفيذ'],done:['Done','منجز'],week:['This week','هذا الأسبوع'],now:['Doing','نعمل عليه'],wait:['Waiting on others','بانتظار الآخرين'],
   waiting:['Waiting','بالانتظار'],newreq:['New requests','طلبات جديدة'],acc:['Accepted','مقبولة'],reported:['Reported','تم الإبلاغ'],sched:['Scheduled','مجدولة'],inprog:['In progress','قيد التنفيذ'],fixed:['Fixed','تم الإصلاح']};
 const sysKey=name=>Object.keys(SYS).find(k=>SYS[k][0]===name);
 const LN=l=>!l?'':l.sys&&SYS[l.sys]?SYS[l.sys][lang==='ar'?1:0]:l.name;
@@ -1229,7 +1230,9 @@ const myDept=()=>meP().ceo?'ceo':(V.nt&&V.nt.from&&inD(meP(),V.nt.from)?V.nt.fro
 function reqBoard(dep,create,X){X=X||D;let b=Object.values(X.boards).find(x=>x.dept===dep&&x.kind==='requests');
   if(!b&&create){b={id:uid('b'),dept:dep,name:'',kind:'requests',members:[],status:null,lists:[]};['newreq','acc','done'].forEach(k=>{const l={id:uid('l'),name:SYS[k][0],sys:k,cards:[],col:false};X.lists[l.id]=l;b.lists.push(l.id)});X.boards[b.id]=b;X.order.unshift(b.id)}
   return b}
-const bname=b=>b.kind==='requests'?t('reqBoard',{d:deptName(b.dept)}):b.name;
+const bname=b=>b.kind==='requests'?t('reqBoard',{d:deptName(b.dept)}):b.procReq&&b.name==='Purchase requests'?t('procBoard'):b.name;
+/* a card opened from a purchase request (procurement.forka.com): its link back, only to the Procurement app */
+const procLink=c=>c&&c.proc&&/^https:\/\/procurement\.forka\.com\/[^\s"'<>]*$/.test(String(c.proc.url||''))?c.proc:null;
 const allCards=()=>Object.values(D.boards).flatMap(b=>cardsOf(b).map(c=>({c,b})));
 
 /* ---------- helpers ---------- */
@@ -1953,7 +1956,7 @@ function modalHTML(c){
   return `<div class="ov" data-a="ov"><div class="md" role="dialog" aria-modal="true" aria-label="${esc(c.title)}">
     <button class="ib x" data-a="mclose" aria-label="${t('close')}">${ic('x')}</button>
     <div class="mhead">${ic(c.type==='milestone'?'diamond':c.type==='approval'?'stamp':'card')}${ed?`<textarea class="mt" dir="auto" id="mt" rows="1" maxlength="300">${esc(c.title)}</textarea>`:`<h2 class="mt mtro" dir="auto" id="mtro">${esc(c.title)}</h2><button type="button" class="lockb" id="lockb" aria-expanded="false" aria-controls="ronote" title="${esc(t('roWhy'))}" aria-label="${esc(t('roWhy'))}" onclick="const n=document.getElementById('ronote');n.hidden=!n.hidden;this.setAttribute('aria-expanded',String(!n.hidden))">${ic('lock')}</button>`}</div>
-    <div class="msub">${esc(bname(b))} · ${t('inList')} <b>${esc(LN(l))}</b>${c.requester?` · <span class="from">${esc(t('reqBy',{p:pname(c.requester),d:deptName(c.fromDept)}))}</span>`:''}</div>
+    <div class="msub">${esc(bname(b))} · ${t('inList')} <b>${esc(LN(l))}</b>${c.requester?` · <span class="from">${esc(t('reqBy',{p:pname(c.requester),d:deptName(c.fromDept)}))}</span>`:''}${procLink(c)?` · <a class="procl" id="procl" href="${esc(procLink(c).url)}" title="${esc(t('fromProcH'))}">${ic('link')}<bdi>${esc(t('fromProc',{n:procLink(c).no||''}))}</bdi></a>`:''}</div>
     ${c.archived?`<div class="arqb" id="archb">${ic('archive')}<span>${t('isArch')}</span>${ed?`<button class="btn" data-a="crestore" data-v="${c.id}">${t('restore')}</button>`:''}</div>`:''}
     ${c.arq&&!c.archived?`<div class="arqb" id="arqb" role="status">${ic('archive')}<span><b>${esc(t('arqBy',{p:pname(c.arq.by)}))}</b> · ${ago(c.arq.at)}${c.arq.why?`<span class="arqw" dir="auto">"${esc(c.arq.why)}"</span>`:''}</span>
       ${ed?`<button class="btn" data-a="arqok">${t('arqAccept')}</button><button class="btn sec" data-a="arqno">${t('arqDecline')}</button>`:c.arq.by===ME()?`<button class="btn sec" data-a="arqwd">${t('arqWithdraw')}</button>`:''}</div>`:''}
