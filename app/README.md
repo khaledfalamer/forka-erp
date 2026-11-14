@@ -22,6 +22,14 @@ skeleton), one piece at a time.
   (menu frame, header) is plain HTML in `hiring/index.html`. The two small question boxes (`ask`, `sure`) are still built
   as page text in core.
 
+- **Procurement** (`/procurement/`, `src/proc/`): moved here from the separate Forka-Procurment repository (procurement.forka.com),
+  every screen in React. Same look (all test screenshots match the live page apart from one-pixel number smoothing in the
+  stock table's price boxes), same Procurement server (`PROCUREMENT_SERVER` in config.js, read by `src/proc/settings.ts`);
+  passes all 220 existing Procurement checks. The checks live in the Forka-Procurment repo:
+  `cd Forka-Procurment && SITE_ROOT=<forka-erp>/app/dist SITE_PATH=/procurement python3 tests/<name>_test.py`.
+  Built like Hire (`core.ts` = original logic, not type-checked yet; areas drawn with `paint()`); its logos and made-up
+  `demo-data.json` are in `app/procurement/`. The hub's Procurement tile opens `/procurement/`.
+
 Not moved yet, copied in unchanged by `scripts/add_legacy.sh`: the careers copy
 (`apply/`), the team guide (`help/`), privacy and about pages. Each one is removed from that list when its React
 version replaces it.

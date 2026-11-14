@@ -14,7 +14,8 @@ export interface AppDef {
 /** Apps on the home page. Hire and Board open the pages that are not moved to React yet. */
 export function appList(): AppDef[] {
   const list: AppDef[] = [
-    { id: 'proc', color: '#a8703d', url: CFG.PROCUREMENT_URL || 'https://procurement.forka.com/' },
+    // Procurement is part of this app now (/procurement/); its server address comes from config.js (PROCUREMENT_SERVER).
+    { id: 'proc', color: '#a8703d', url: new URL('/procurement/', location.href).href },
     CFG.HIRING_URL
       ? { id: 'hire', color: '#2c7a76', url: new URL('/hiring/', location.href).href }
       : { id: 'hire', color: '#2c7a76', url: 'https://claude.ai/artifact/Bn6y2FWinUhxH9AyVsu7BY', ceoOnlyUntilMoved: true },
