@@ -339,7 +339,9 @@ fieldset.ro{border:0;padding:0;margin:0;min-width:0}
 .rom{color:var(--muted)}
 h2.mtro{margin:0;cursor:default}
 .descro{white-space:pre-wrap;min-height:0;cursor:default;overflow-wrap:anywhere;border:0;background:transparent;padding:4px 2px;font-size:14px}
-.ronote{margin:8px 28px 0}
+.ronote{margin:8px 28px 0}.ronote[hidden]{display:none}
+.lockb{flex:none;align-self:center;width:30px;height:30px;margin-inline-start:6px;border:1px solid var(--line,#e5ded4);border-radius:8px;background:none;color:var(--muted);display:inline-flex;align-items:center;justify-content:center;cursor:pointer}.lockb:hover,.lockb[aria-expanded=true]{color:var(--teal,#397F8F);border-color:currentColor}.lockb svg{width:15px;height:15px}
+@media(max-width:760px){.lockb{width:40px;height:40px}}
 .arqb{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;margin:8px 28px 0;padding:10px 12px;border-radius:9px;background:var(--notebg);color:var(--notefg);font-size:13.5px;line-height:1.4}
 .arqb>span{flex:1;min-width:180px}
 .arqb .btn{height:30px;padding:0 11px;font-size:13px}
@@ -1029,7 +1031,7 @@ ar:{app:'اللوحات',search:'بحث في هذه اللوحة',addCard:'إض�
   tlNow:'اليوم',tlTasks:'المهمة',tlProjects:'المشروع',g_ess:'الأساسيات',g_sched:'المواعيد',g_det:'التفاصيل',optional:'اختياري',reqd:'مطلوب',e_title:'اكتب ما المطلوب إنجازه.',e_owner:'اختر من سينفّذها.',e_due:'اختر تاريخ الاستحقاق.',ownerNote:'أول شخص تختاره هو المسؤول.',
   attHintLive:'صور أو PDF أو ملفات Office حتى 5 ميغابايت لكل ملف. تُحفظ في مجلد خاص على Google Drive، ولا يفتحها إلا من يرى هذه المهمة.'}};
 /* Task rules (Khaled, 14 Nov 2026) */
-Object.assign(T.en,{roEd:'Only {p} (who created this task) or the department head can change the details.',roHead:'Only the head of {d} can change the details.',
+Object.assign(T.en,{roWhy:'Why can\'t I change this?',roEd:'Only {p} (who created this task) or the department head can change the details.',roHead:'Only the head of {d} can change the details.',
   roWork:'You can tick items, mark it complete, move it, attach files, redirect it, add a supervisor and comment.',roSee:'You can comment and follow it.',noneV:'None',notDone:'Not complete',
   redirect:'Redirect',redirTitle:'Redirect to someone in your team',redirHint:'They take your place on this task. The task creator is told.',noTeam:'Nobody in your team can take it on this board.',
   l_redir:'redirected this task from {a} to {b}',supervisor:'Supervisor',pickSup:'Choose a supervisor',supHint:'The supervisor sees the task, gets its alerts and can comment.',
@@ -1039,7 +1041,7 @@ Object.assign(T.en,{roEd:'Only {p} (who created this task) or the department hea
   n_redir:'{p} redirected a task to you',n_redirc:'{p} redirected your task to {x}',n_sup:'{p} made you the supervisor of a task',n_archreq:'{p} asked to archive your task',
   n_archno:'{p} did not agree to archive the task',n_archok:'{p} archived the task you asked about',undo:'Undo',archUndo:'Task archived.',isArch:'This task is archived.',
   myArch:'Archived tasks you created',myArqs:'Waiting for your OK to archive',supervising:'Tasks you supervise',redirOk:'Redirected to {p}.'});
-Object.assign(T.ar,{roEd:'فقط {p} (منشئ هذه المهمة) أو رئيس القسم يمكنه تغيير التفاصيل.',roHead:'فقط رئيس قسم {d} يمكنه تغيير التفاصيل.',
+Object.assign(T.ar,{roWhy:'لماذا لا يمكنني تغيير هذا؟',roEd:'فقط {p} (منشئ هذه المهمة) أو رئيس القسم يمكنه تغيير التفاصيل.',roHead:'فقط رئيس قسم {d} يمكنه تغيير التفاصيل.',
   roWork:'يمكنك وضع علامة على البنود، وإكمال المهمة، ونقلها، وإرفاق الملفات، وتحويلها، وإضافة مشرف، والتعليق.',roSee:'يمكنك التعليق ومتابعة المهمة.',noneV:'لا يوجد',notDone:'غير مكتملة',
   redirect:'تحويل',redirTitle:'تحويل إلى شخص من فريقك',redirHint:'يحل مكانك في هذه المهمة، ويُبلَّغ منشئ المهمة.',noTeam:'لا يوجد أحد من فريقك يمكنه استلامها في هذه اللوحة.',
   l_redir:'حوّل هذه المهمة من {a} إلى {b}',supervisor:'المشرف',pickSup:'اختر مشرفاً',supHint:'يرى المشرف المهمة، وتصله تنبيهاتها، ويمكنه التعليق.',
@@ -1950,12 +1952,12 @@ function modalHTML(c){
   const lbOn=labelsOf(b).filter(x=>c.labels.includes(x.id));
   return `<div class="ov" data-a="ov"><div class="md" role="dialog" aria-modal="true" aria-label="${esc(c.title)}">
     <button class="ib x" data-a="mclose" aria-label="${t('close')}">${ic('x')}</button>
-    <div class="mhead">${ic(c.type==='milestone'?'diamond':c.type==='approval'?'stamp':'card')}${ed?`<textarea class="mt" dir="auto" id="mt" rows="1" maxlength="300">${esc(c.title)}</textarea>`:`<h2 class="mt mtro" dir="auto" id="mtro">${esc(c.title)}</h2>`}</div>
+    <div class="mhead">${ic(c.type==='milestone'?'diamond':c.type==='approval'?'stamp':'card')}${ed?`<textarea class="mt" dir="auto" id="mt" rows="1" maxlength="300">${esc(c.title)}</textarea>`:`<h2 class="mt mtro" dir="auto" id="mtro">${esc(c.title)}</h2><button type="button" class="lockb" id="lockb" aria-expanded="false" aria-controls="ronote" title="${esc(t('roWhy'))}" aria-label="${esc(t('roWhy'))}" onclick="const n=document.getElementById('ronote');n.hidden=!n.hidden;this.setAttribute('aria-expanded',String(!n.hidden))">${ic('lock')}</button>`}</div>
     <div class="msub">${esc(bname(b))} · ${t('inList')} <b>${esc(LN(l))}</b>${c.requester?` · <span class="from">${esc(t('reqBy',{p:pname(c.requester),d:deptName(c.fromDept)}))}</span>`:''}</div>
     ${c.archived?`<div class="arqb" id="archb">${ic('archive')}<span>${t('isArch')}</span>${ed?`<button class="btn" data-a="crestore" data-v="${c.id}">${t('restore')}</button>`:''}</div>`:''}
     ${c.arq&&!c.archived?`<div class="arqb" id="arqb" role="status">${ic('archive')}<span><b>${esc(t('arqBy',{p:pname(c.arq.by)}))}</b> · ${ago(c.arq.at)}${c.arq.why?`<span class="arqw" dir="auto">"${esc(c.arq.why)}"</span>`:''}</span>
       ${ed?`<button class="btn" data-a="arqok">${t('arqAccept')}</button><button class="btn sec" data-a="arqno">${t('arqDecline')}</button>`:c.arq.by===ME()?`<button class="btn sec" data-a="arqwd">${t('arqWithdraw')}</button>`:''}</div>`:''}
-    ${ed?'':`<div class="reqnote ronote" id="ronote">${ic('lock')}<span>${esc(edNote(c))} ${t(wk?'roWork':'roSee')}</span></div>`}
+    ${ed?'':`<div class="reqnote ronote" id="ronote" hidden>${ic('lock')}<span>${esc(edNote(c))} ${t(wk?'roWork':'roSee')}</span></div>`}
     <div class="mbody"><div><fieldset class="ro">
       ${c.type==='approval'?`<div class="apbox ${apS(c)}"><div>${apChip(c)}${c.appr&&c.appr.by?` <span class="sm">${esc(t('apBy',{s:t('ap_'+apS(c)),p:pname(c.appr.by)}))} · ${ago(c.appr.at)}</span>`:''}</div>
         ${canDecide(c)?`<div class="row"><button class="btn okb" data-a="appr" data-v="approved">${ic('tick')}${t('approve')}</button><button class="btn sec" data-a="appr" data-v="changes">${t('reqChanges')}</button><button class="btn dan" data-a="appr" data-v="rejected">${t('reject')}</button></div>`:`<div class="lock" style="padding:6px 0 0">${t('apOnly')}</div>`}</div>`:''}

@@ -48,7 +48,12 @@ async def main():
 
             # ---------- the assigned person ----------
             await as_('md'); await board('mkt', 'December Campaign'); await card(CARD)
+            check('Assigned: the lock note is hidden until the lock is pressed', await pg.locator('#ronote').is_hidden() and await pg.locator('#lockb').count() == 1)
+            await pg.click('#lockb'); await pg.wait_for_timeout(150)
             note = await pg.inner_text('#ronote')
+            check('Pressing the lock shows who can change the details', await pg.locator('#ronote').is_visible(), note)
+            await shot('2b-lock-open.png')
+            await pg.click('#lockb'); await pg.wait_for_timeout(150)
             check('Assigned: details are read-only text with the note who may change them', await pg.locator('textarea#mt').count() == 0 and await pg.locator('h2#mtro').count() == 1 and await pg.locator('#cdesc').count() == 0
                   and await pg.locator('#cdescro').count() == 1 and 'Only Marketing Head (who created this task) or the department head can change the details.' in note, note)
             check('Assigned: no inputs for dates, priority, type, labels, repeats; no checklist add or remove', all([await pg.locator(s).count() == 0 for s in ['#cdue', '#cstart', '#cpri', '#ctype', '#crep', '[data-a=cl]', '#ckin', '[data-a=ckdel]', '#wadd', '[data-a=cm]']]))
@@ -156,6 +161,7 @@ async def main():
             # ---------- Arabic ----------
             await as_('md'); await pg.click('[data-a=lang][data-v=ar]'); await pg.wait_for_timeout(150)
             await board('mkt', 'December Campaign'); await card(CARD)
+            await pg.click('#lockb'); await pg.wait_for_timeout(150)
             body = await pg.inner_text('.md')
             check('Arabic: right to left, read-only note, Redirect, Supervisor and Ask to archive in Arabic', await pg.get_attribute('html', 'dir') == 'rtl' and 'منشئ هذه المهمة' in body and 'تحويل' in body and 'المشرف' in body and 'طلب الأرشفة' in body, body[:200])
             await shot('6-card-arabic.png')
