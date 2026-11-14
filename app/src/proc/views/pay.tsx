@@ -6,12 +6,11 @@ import {
   issueAsk, grnOpen, payRows, payF, supAgg, schedTxt, daysTo, notes, grnTot, soaSup, soaAsk, __set, rqOpenId, apF, nm,
   DEPTS, rqApprCount, peopleList, ppDraft, SIDEK, ALERTK, ACT, OUTBOX,
 } from '../core';
-import { css, offAtStart, Fragment } from '../ui';
+import { css, Fragment } from '../ui';
 import { banner } from './shell';
 import { vGRNForm } from './recv';
 import { vRqDetail, rqKindTag, rqBadge } from './req';
 
-void offAtStart;
 
 export function vHome(){const L=lines(),T=recs('Transfers'),G=recs('GRN');
   const miss=L.filter(l=>status(l)==='missing').length,below=L.filter(l=>stockState(l)==='below').length,order=L.filter(l=>stockState(l)==='order').length;
